@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Mini-quiz C1</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:       #185FA5;
+      --blue-light: #E6F1FB;
+      --blue-mid:   #D0E6F7;
+      --green:      #0F6E56;
+      --green-light:#E1F5EE;
+      --red:        #C0392B;
+      --red-light:  #FDECEA;
+      --yellow:     #856404;
+      --yellow-bg:  #FFF3CD;
+      --bg:         #F4F7FB;
+      --white:      #FFFFFF;
+      --text:       #1A1A1A;
+      --muted:      #6B7280;
+      --border:     #E2E8F0;
+      --radius:     14px;
+      --shadow:     0 4px 24px rgba(24,95,165,0.10);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    /* ── HEADER ── */
+    .logo-bar {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 2.5rem;
+      text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px; height: 32px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 16px; height: 16px; fill: white; }
+    .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+
+    /* ── CARD WRAPPER ── */
+    .card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      width: 100%;
+      max-width: 640px;
+      overflow: hidden;
+    }
+
+    /* ── QUIZ HEADER ── */
+    .quiz-header {
+      background: var(--blue);
+      padding: 2rem 2rem 1.5rem;
+      color: white;
+    }
+    .quiz-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 0.75rem;
+    }
+    .quiz-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      font-weight: 400;
+      line-height: 1.25;
+      margin-bottom: 0.4rem;
+    }
+    .quiz-header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap {
+      padding: 1.25rem 2rem 0;
+    }
+    .progress-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .progress-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--blue);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+
+    /* ── QUESTION ── */
+    .question-wrap {
+      padding: 1.75rem 2rem 0;
+    }
+    .q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--blue);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+    .q-text {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text);
+    }
+
+    /* ── OPTIONS ── */
+    .options {
+      padding: 1.25rem 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+      width: 100%;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--blue);
+      background: var(--blue-light);
+      transform: translateY(-1px);
+    }
+    .option-letter {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .option-btn:hover:not(:disabled) .option-letter {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: white;
+    }
+
+    /* correct / wrong states */
+    .option-btn.correct {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .option-btn.correct .option-letter {
+      background: var(--green); border-color: var(--green); color: white;
+    }
+    .option-btn.wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+    .option-btn.wrong .option-letter {
+      background: var(--red); border-color: var(--red); color: white;
+    }
+    .option-btn.dimmed {
+      opacity: 0.4;
+    }
+    .option-btn:disabled { cursor: default; transform: none; }
+
+    /* ── FEEDBACK ── */
+    .feedback {
+      margin: 1rem 2rem 0;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 14px;
+      font-weight: 500;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+      line-height: 1.5;
+    }
+    .feedback.show { display: flex; }
+    .feedback.correct-fb { background: var(--green-light); color: var(--green); }
+    .feedback.wrong-fb   { background: var(--red-light);   color: var(--red); }
+    .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── NEXT BTN ── */
+    .next-wrap {
+      padding: 1.25rem 2rem 2rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-next {
+      background: var(--blue);
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-next.show { display: flex; }
+    .btn-next:hover { background: #1352a0; transform: translateY(-1px); }
+
+    /* ── RESULT SCREEN ── */
+    .result-screen {
+      display: none;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .result-screen.show { display: flex; }
+
+    .result-icon {
+      font-size: 56px;
+      margin-bottom: 1rem;
+      animation: pop 0.5s cubic-bezier(.36,1.6,.6,1) both;
+    }
+    @keyframes pop {
+      0%  { transform: scale(0.4); opacity: 0; }
+      100%{ transform: scale(1);   opacity: 1; }
+    }
+
+    .result-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .result-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+      max-width: 360px;
+      line-height: 1.6;
+    }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 99px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 1.75rem;
+    }
+    .score-badge.pass { background: var(--green-light); color: var(--green); }
+    .score-badge.fail { background: var(--red-light);   color: var(--red); }
+
+    .result-message {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: left;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    .result-message strong { color: var(--text); }
+
+    .btn-retry {
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 12px 26px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: border-color 0.15s;
+    }
+    .btn-retry:hover { border-color: var(--blue); color: var(--blue); }
+
+    .btn-continue {
+      background: var(--green);
+      color: white;
+      border: none;
+      padding: 12px 26px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-continue:hover { background: #0a5640; }
+    .btn-continue.hidden { display: none; }
+
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    /* ── DIVIDER LINE ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0 2rem;
+    }
+
+    @media (max-width: 480px) {
+      .quiz-header { padding: 1.5rem 1.25rem 1.25rem; }
+      .progress-bar-wrap, .question-wrap, .options, .feedback, .next-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .feedback { margin: 1rem 1.25rem 0; }
+      .divider { margin: 0 1.25rem; }
+      .result-screen { padding: 2rem 1.25rem; }
+      .q-text { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="kursus-c.html" class="logo-bar">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    <span class="logo-text">LearnAI DK</span>
+  </a>
+
+  <div class="card">
+
+    <!-- QUIZ HEADER -->
+    <div class="quiz-header">
+      <div class="quiz-tag">Del C1 &nbsp;·&nbsp; Mini-quiz</div>
+      <h1>Tjek din forståelse</h1>
+      <p>6 spørgsmål &nbsp;·&nbsp; Minimum 5 rigtige for at gå videre</p>
+    </div>
+
+    <!-- PROGRESS -->
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="prog-label">Spørgsmål 1 af 6</span>
+        <span id="prog-score">0 rigtige</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- QUESTION -->
+    <div class="question-wrap">
+      <div class="q-number" id="q-number">Spørgsmål 1</div>
+      <div class="q-text" id="q-text"></div>
+    </div>
+
+    <!-- OPTIONS -->
+    <div class="options" id="options"></div>
+
+    <!-- FEEDBACK -->
+    <div class="feedback" id="feedback">
+      <span class="feedback-icon" id="fb-icon"></span>
+      <span id="fb-text"></span>
+    </div>
+
+    <div class="divider" style="margin-top:1.25rem;"></div>
+
+    <!-- NEXT -->
+    <div class="next-wrap">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        Næste spørgsmål <span>→</span>
+      </button>
+    </div>
+
+    <!-- RESULT SCREEN -->
+    <div class="result-screen" id="result-screen">
+      <div class="result-icon" id="result-icon"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-sub" id="result-sub"></p>
+      <div class="score-badge" id="score-badge"></div>
+      <div class="result-message" id="result-message"></div>
+      <div class="btn-row">
+        <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
+        <a href="kursus-c2.html" class="btn-continue hidden" id="btn-continue">
+          Fortsæt til Del C2 →
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+const questions = [
+  {
+    q: "Du bruger AI mandag til at researche et emne. Tirsdag åbner du en ny samtale og spørger AI om hvad I talte om. AI svarer at den ikke ved det. Hvad skyldes det?",
+    options: [
+      "AI sletter samtaler efter 24 timer af sikkerhedshensyn",
+      "Du skal opgradere til en betalt konto for at få samtalehukommelse",
+      "Hver ny samtale starter med et tomt kontekstvindue — AI har ingen adgang til tidligere sessioner",
+      "AI husker kun samtaler hvis du er logget ind med samme konto"
+    ],
+    correct: 2,
+    explanation: "Kontekstvinduet er kun aktivt i den igangværende samtale. Lukker du den og starter en ny, begynder AI helt forfra — uanset konto eller abonnement."
+  },
+  {
+    q: "En kollega siger: 'AI hallucination sker fordi modellen ikke gider tjekke sine kilder.' Hvad er problemet med den forklaring?",
+    options: [
+      "Den er korrekt — modellen er designet til at spare tid ved at springe kildekontrol over",
+      "AI har ingen adgang til kilder overhovedet, så den kan ikke 'gide' eller 'ikke gide'",
+      "Hallucination skyldes lav temperature, ikke manglende kildekontrol",
+      "Forklaringen er præcis nok til praksis, selv om den er teknisk upræcis"
+    ],
+    correct: 1,
+    explanation: "AI 'tjekker' ikke kilder — den genererer sandsynlige svar baseret på mønstre i træningsdata. Der er ingen bevidst valg om at springe noget over. Hallucination opstår fordi modellen producerer plausibel tekst, ikke verificeret fakta."
+  },
+  {
+    q: "Du vil have AI til at skrive et jobopslag i en bestemt tone. Du prøver: 'Skriv et jobopslag til en marketingmedarbejder.' Svaret er for generisk. Hvad er det mest effektive næste skridt?",
+    options: [
+      "Starte en ny samtale og skrive prompten på engelsk i stedet",
+      "Tilføje en rolleprompt: 'Du er HR-chef i et kreativt bureau' og beskrive kulturen",
+      "Bede AI om at prøve igen med højere kreativitet",
+      "Skrive en meget længere prompt med alle detaljer på én gang"
+    ],
+    correct: 1,
+    explanation: "Rolleprompt giver AI kontekst og perspektiv — den ved nu hvem den skriver som og til hvem. Én ekstra sætning med rolle og kultur slår en lang upersonlig prompt."
+  },
+  {
+    q: "Hvornår er kædetænkning ('tænk skridt for skridt') MINDST nyttig?",
+    options: [
+      "Når du beder AI analysere et komplekst argument",
+      "Når du beder AI om at løse en matematikopgave med flere trin",
+      "Når du beder AI skrive en kort velkomsttekst til en hjemmeside",
+      "Når du beder AI vurdere fordele og ulemper ved en beslutning"
+    ],
+    correct: 2,
+    explanation: "Kædetænkning hjælper ved komplekse, logiske opgaver. En kort velkomsttekst kræver ikke trinvis ræsonnement — her kan teknikken faktisk gøre svaret omstændeligt og overkompliceret."
+  },
+  {
+    q: "Du spørger AI om prisen på en bestemt bil fra 2024. AI svarer præcist og selvsikkert. Hvad bør du gøre?",
+    options: [
+      "Stole på det — priser er faktuelle og AI er præcis med tal",
+      "Bede AI om at bruge kædetænkning for at bekræfte svaret",
+      "Tjekke det eksternt — priser ændrer sig og AI's viden har en skæringsdato",
+      "Spørge igen i en ny samtale for at få et second opinion"
+    ],
+    correct: 2,
+    explanation: "AI's træningsdata har en skæringsdato, og priser ændrer sig løbende. Selvsikkerhed i svaret er ingen garanti — faktatjek er særlig vigtigt ved priser, love og datoer."
+  },
+  {
+    q: "Du har bedt AI skrive en email. Den er god, men bruger udtrykket 'Jeg håber denne email finder dig vel' som du hader. I din næste besked skriver du: 'Fjern den indledning.' AI retter det. Hvilken teknik brugte du?",
+    options: [
+      "Rolleprompt — du gav AI en ny identitet",
+      "Kædetænkning — du bad AI ræsonnere trin for trin",
+      "Negativ afgrænsning kombineret med iterativ forfining",
+      "Få-skuds prompting — du viste AI et eksempel"
+    ],
+    correct: 2,
+    explanation: "Du brugte iterativ forfining (du byggede videre i samme samtale) og negativ afgrænsning (du specificerede hvad AI skal undgå). De to teknikker arbejder godt sammen."
+  }
+];
+
+const PASS_SCORE = 5;
+let current = 0;
+let score    = 0;
+let answered = false;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('q-number').textContent = `Spørgsmål ${current + 1}`;
+  document.getElementById('q-text').textContent   = q.q;
+  document.getElementById('prog-label').textContent = `Spørgsmål ${current + 1} af ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
+  updateScoreLabel();
+
+  const optEl = document.getElementById('options');
+  optEl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optEl.appendChild(btn);
+  });
+
+  // reset feedback + next
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback';
+  document.getElementById('btn-next').className = 'btn-next';
+  answered = false;
+}
+
+function updateScoreLabel() {
+  document.getElementById('prog-score').textContent =
+    score === 1 ? '1 rigtig' : `${score} rigtige`;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q       = questions[current];
+  const buttons = document.querySelectorAll('.option-btn');
+  const fb      = document.getElementById('feedback');
+  const isRight = idx === q.correct;
+
+  if (isRight) score++;
+
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && !isRight) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+
+  fb.className = `feedback show ${isRight ? 'correct-fb' : 'wrong-fb'}`;
+  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = q.explanation;
+
+  const nextBtn = document.getElementById('btn-next');
+  const isLast  = current === questions.length - 1;
+  nextBtn.className = 'btn-next show';
+  nextBtn.innerHTML = isLast
+    ? 'Se resultat <span>→</span>'
+    : 'Næste spørgsmål <span>→</span>';
+
+  updateScoreLabel();
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) {
+    showResult();
+  } else {
+    render();
+  }
+}
+
+function showResult() {
+  // hide quiz elements
+  document.querySelector('.progress-bar-wrap').style.display = 'none';
+  document.querySelector('.question-wrap').style.display     = 'none';
+  document.querySelector('.options').style.display           = 'none';
+  document.querySelector('.feedback').style.display          = 'none';
+  document.querySelector('.divider').style.display           = 'none';
+  document.querySelector('.next-wrap').style.display         = 'none';
+
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-icon').textContent  = passed ? '🎉' : '💪';
+  document.getElementById('result-title').textContent = passed ? 'Godt klaret!' : 'Ikke helt endnu';
+  document.getElementById('result-sub').textContent   = passed
+    ? `Du svarede rigtigt på ${score} ud af ${questions.length} spørgsmål — du er klar til Del C2!`
+    : `Du fik ${score} ud af ${questions.length} rigtige. Du skal have mindst ${PASS_SCORE} for at gå videre. Prøv igen!`;
+
+  const badge = document.getElementById('score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${score} / ${questions.length} rigtige`;
+
+  document.getElementById('result-message').innerHTML = passed
+    ? `<strong>Næste skridt:</strong> Du har styr på de grundlæggende begreber fra Del C1 — kontekstvindue, hallucination, rolleprompt, kædetænkning, negativ afgrænsning og iterativ forfining. Nu er du klar til at anvende det i Del C2.`
+    : `<strong>Tip:</strong> Gå tilbage og læs de moduler du var usikker på. Du må gerne bruge kursusmaterialet som hjælp. Der er ingen grænse for antal forsøg — det er meningen at du skal lykkes.`;
+
+  if (passed) document.getElementById('btn-continue').classList.remove('hidden');
+
+  document.getElementById('result-screen').className = 'result-screen show';
+}
+
+function restartQuiz() {
+  current  = 0;
+  score    = 0;
+  answered = false;
+
+  document.querySelector('.progress-bar-wrap').style.display = '';
+  document.querySelector('.question-wrap').style.display     = '';
+  document.querySelector('.options').style.display           = '';
+  document.querySelector('.divider').style.display           = '';
+  document.querySelector('.next-wrap').style.display         = '';
+  document.getElementById('result-screen').className = 'result-screen';
+  document.getElementById('btn-continue').classList.add('hidden');
+
+  render();
+}
+
+// init
+render();
+</script>
+</body>
+</html>
