@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Lær AI på dansk</title>
+  <meta name="description" content="Lær AI fra bunden — på dansk. Fra nybegynder til ekspert med strukturerede kurser, eksamen og bevis.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f8f8f6;
+      color: #1a1a1a;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      background: white;
+      border-bottom: 1px solid #e8e8e5;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-size: 17px;
+      font-weight: 600;
+      color: #1a1a1a;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 30px;
+      height: 30px;
+      background: #185FA5;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-icon svg {
+      width: 16px;
+      height: 16px;
+      fill: white;
+    }
+
+    .nav-btn {
+      background: #185FA5;
+      color: white;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* HERO */
+    .hero {
+      background: white;
+      text-align: center;
+      padding: 4rem 1.5rem 3.5rem;
+      border-bottom: 1px solid #e8e8e5;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: #E6F1FB;
+      color: #185FA5;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 1.25rem;
+    }
+
+    .hero h1 {
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 700;
+      color: #1a1a1a;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero p {
+      font-size: 16px;
+      color: #666;
+      max-width: 420px;
+      margin: 0 auto 2rem;
+      line-height: 1.7;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: #185FA5;
+      color: white;
+      border: none;
+      padding: 13px 26px;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: background 0.15s;
+    }
+
+    .btn-primary:hover { background: #1250890; }
+
+    .btn-outline {
+      background: white;
+      color: #1a1a1a;
+      border: 1px solid #ddd;
+      padding: 13px 26px;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+      transition: border-color 0.15s;
+    }
+
+    .btn-outline:hover { border-color: #999; }
+
+    /* STATS */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 2.5rem;
+      padding: 2rem 1.5rem;
+      background: white;
+      border-bottom: 1px solid #e8e8e5;
+      flex-wrap: wrap;
+    }
+
+    .stat { text-align: center; }
+    .stat-num { font-size: 22px; font-weight: 700; color: #185FA5; }
+    .stat-label { font-size: 13px; color: #888; margin-top: 2px; }
+
+    /* SECTIONS */
+    .section {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem;
+    }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #185FA5;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-bottom: 0.4rem;
+    }
+
+    .section-sub {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    /* COURSE CARDS */
+    .courses { display: flex; flex-direction: column; gap: 12px; }
+
+    .course-card {
+      background: white;
+      border: 1px solid #e8e8e5;
+      border-radius: 14px;
+      padding: 1.1rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: box-shadow 0.15s;
+    }
+
+    .course-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .course-card.featured { border: 2px solid #185FA5; }
+
+    .course-letter {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .letter-d { background: #E6F1FB; color: #185FA5; }
+    .letter-c { background: #E1F5EE; color: #0F6E56; }
+    .letter-b { background: #FAEEDA; color: #854F0B; }
+    .letter-a { background: #FBEAF0; color: #993556; }
+
+    .course-info { flex: 1; min-width: 0; }
+
+    .course-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 2px;
+    }
+
+    .course-desc { font-size: 13px; color: #888; }
+
+    .course-tag {
+      display: inline-block;
+      font-size: 11px;
+      color: #888;
+      background: #f3f3f0;
+      border-radius: 5px;
+      padding: 2px 8px;
+      margin-top: 5px;
+    }
+
+    .course-right { text-align: right; flex-shrink: 0; }
+    .price { font-size: 17px; font-weight: 700; color: #1a1a1a; }
+    .price-free { font-size: 15px; font-weight: 700; color: #185FA5; }
+    .price-level { font-size: 12px; color: #aaa; margin-top: 2px; }
+
+    /* SIDE COURSES */
+    .side-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .side-card {
+      background: white;
+      border: 1px solid #e8e8e5;
+      border-radius: 12px;
+      padding: 1rem;
+    }
+
+    .side-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 4px;
+      line-height: 1.4;
+    }
+
+    .side-card-meta { font-size: 12px; color: #aaa; }
+    .side-card-price { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-top: 10px; }
+
+    /* HOW IT WORKS */
+    .steps { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .step {
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: #185FA5;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-title { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 3px; }
+    .step-desc { font-size: 14px; color: #666; }
+
+    /* FAQ */
+    .faq { display: flex; flex-direction: column; }
+
+    .faq-item {
+      padding: 1.1rem 0;
+      border-bottom: 1px solid #e8e8e5;
+      cursor: pointer;
+    }
+
+    .faq-item:first-child { border-top: 1px solid #e8e8e5; }
+
+    .faq-q {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .faq-arrow {
+      font-size: 18px;
+      color: #aaa;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .faq-a {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.7;
+      margin-top: 8px;
+      display: none;
+    }
+
+    .faq-item.open .faq-a { display: block; }
+    .faq-item.open .faq-arrow { transform: rotate(45deg); }
+
+    /* CTA */
+    .cta-section {
+      background: #185FA5;
+      text-align: center;
+      padding: 3.5rem 1.5rem;
+    }
+
+    .cta-section h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 0.75rem;
+    }
+
+    .cta-section p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 1.75rem;
+    }
+
+    .btn-white {
+      background: white;
+      color: #185FA5;
+      border: none;
+      padding: 13px 28px;
+      border-radius: 9px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    /* FOOTER */
+    footer {
+      background: white;
+      border-top: 1px solid #e8e8e5;
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    footer p { font-size: 13px; color: #aaa; }
+
+    .divider {
+      border: none;
+      border-top: 1px solid #e8e8e5;
+    }
+
+    @media (max-width: 480px) {
+      .stats { gap: 1.5rem; }
+      .side-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <a href="https://magnuscode-ai.github.io/ai-kursus" class="nav-btn">Start gratis</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Dansk AI-uddannelse</div>
+  <h1>Lær AI fra bunden — på dansk</h1>
+  <p>Fra komplet nybegynder til professionel AI-bruger. Strukturerede kurser med eksamen og bevis.</p>
+  <div class="hero-btns">
+    <a href="https://magnuscode-ai.github.io/ai-kursus" class="btn-primary">Start gratis med Kursus D</a>
+    <a href="#kurser" class="btn-outline">Se alle kurser</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat">
+    <div class="stat-num">4</div>
+    <div class="stat-label">Niveauer</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">100%</div>
+    <div class="stat-label">På dansk</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Gratis</div>
+    <div class="stat-label">At starte</div>
+  </div>
+  <div class="stat">
+    <div class="stat-num">Bevis</div>
+    <div class="stat-label">Efter eksamen</div>
+  </div>
+</div>
+
+<!-- COURSES -->
+<div class="section" id="kurser">
+  <div class="section-label">Kurser</div>
+  <div class="section-title">Vælg dit niveau</div>
+  <div class="section-sub">Lås op i rækkefølge — start gratis med Kursus D.</div>
+
+  <div class="courses">
+
+    <div class="course-card featured">
+      <div class="course-letter letter-d">D</div>
+      <div class="course-info">
+        <div class="course-name">Kursus D — Nybegynder</div>
+        <div class="course-desc">Fra nul til at bruge AI i hverdagen</div>
+        <span class="course-tag">Gratis — ingen konto krævet</span>
+      </div>
+      <div class="course-right">
+        <div class="price-free">Gratis</div>
+        <div class="price-level">Start her</div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-letter letter-c">C</div>
+      <div class="course-info">
+        <div class="course-name">Kursus C — Mellemniveau</div>
+        <div class="course-desc">Fra average til god AI-bruger</div>
+        <span class="course-tag">Kræver bestået Kursus D</span>
+      </div>
+      <div class="course-right">
+        <div class="price">99 kr</div>
+        <div class="price-level">Engangsbetaling</div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-letter letter-b">B</div>
+      <div class="course-info">
+        <div class="course-name">Kursus B — Øvet</div>
+        <div class="course-desc">Fra god til professionel</div>
+        <span class="course-tag">Kræver bestået Kursus C</span>
+      </div>
+      <div class="course-right">
+        <div class="price">199 kr</div>
+        <div class="price-level">Engangsbetaling</div>
+      </div>
+    </div>
+
+    <div class="course-card">
+      <div class="course-letter letter-a">A</div>
+      <div class="course-info">
+        <div class="course-name">Kursus A — Ekspert</div>
+        <div class="course-desc">Fra professionel til ekspert</div>
+        <span class="course-tag">Kræver bestået Kursus B</span>
+      </div>
+      <div class="course-right">
+        <div class="price">299 kr</div>
+        <div class="price-level">Engangsbetaling</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- SIDE COURSES -->
+<div class="section">
+  <div class="section-label">Sidekurser</div>
+  <div class="section-title">Specialisér dig</div>
+  <div class="section-sub">Kan købes separat — uanset dit niveau.</div>
+
+  <div class="side-grid">
+    <div class="side-card">
+      <div class="side-card-title">AI-værktøjer niveau 1</div>
+      <div class="side-card-meta">Anbefalet: Kursus C bestået</div>
+      <div class="side-card-price">79 kr</div>
+    </div>
+    <div class="side-card">
+      <div class="side-card-title">AI-værktøjer niveau 2</div>
+      <div class="side-card-meta">Anbefalet: Kursus C bestået</div>
+      <div class="side-card-price">99 kr</div>
+    </div>
+    <div class="side-card">
+      <div class="side-card-title">Tjene penge på AI</div>
+      <div class="side-card-meta">Anbefalet: Kursus B bestået</div>
+      <div class="side-card-price">149 kr</div>
+    </div>
+    <div class="side-card">
+      <div class="side-card-title">Lær andre AI</div>
+      <div class="side-card-meta">Anbefalet: Kursus C bestået</div>
+      <div class="side-card-price">99 kr</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <div class="section-label">Sådan virker det</div>
+  <div class="section-title">Fra start til bevis</div>
+  <div class="section-sub">Enkelt og fleksibelt — i dit eget tempo.</div>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div>
+        <div class="step-title">Download kursusmaterialet</div>
+        <div class="step-desc">Kursus D er gratis. Du får et PDF-dokument med 4 moduler og øvelser.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div>
+        <div class="step-title">Læs og lær i dit eget tempo</div>
+        <div class="step-desc">Ingen tidsbegrænsning. Brug kursusmaterialet som hjælp — det er tilladt.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div>
+        <div class="step-title">Tag den online eksamen</div>
+        <div class="step-desc">Multiple choice + en praktisk AI-opgave. Ubegrænsede forsøg.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">4</div>
+      <div>
+        <div class="step-title">Få dit bevis</div>
+        <div class="step-desc">Et digitalt bevis med dit navn og dato — del det på LinkedIn eller CV.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- FAQ -->
+<div class="section">
+  <div class="section-label">Spørgsmål</div>
+  <div class="section-title">Ofte stillede spørgsmål</div>
+
+  <div class="faq">
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Er Kursus D virkelig gratis? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Ja — ingen konto, ingen kreditkort. Du downloader kurset og tager eksamen direkte online. Helt gratis.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Hvad får jeg efter eksamen? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Et digitalt bevis med dit navn og dato. Du tager et screenshot — nemt og hurtigt. Du kan dele det på LinkedIn eller vedhæfte det til dit CV.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Kan jeg prøve eksamen flere gange? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Ja, ubegrænsede forsøg og ingen tidsbegrænsning. Det er meningen at du skal lykkes.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Hvornår kommer Kursus C, B og A? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">De er under udvikling. Start med Kursus D nu — så er du klar når de næste kurser åbner.</div>
+    </div>
+    <div class="faq-item" onclick="toggleFaq(this)">
+      <div class="faq-q">Hvad skal jeg bruge til kurset? <span class="faq-arrow">+</span></div>
+      <div class="faq-a">Bare en computer, tablet eller telefon med internetadgang. Og en gratis konto på Claude.ai eller ChatGPT til den praktiske opgave.</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <h2>Klar til at lære AI?</h2>
+  <p>Download Kursus D gratis og tag din første AI-eksamen i dag.</p>
+  <a href="https://magnuscode-ai.github.io/ai-kursus" class="btn-white">Start gratis nu</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>LearnAI DK &nbsp;·&nbsp; Dansk AI-uddannelse &nbsp;·&nbsp; Alle kurser på dansk</p>
+</footer>
+
+<script>
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+
+  document.querySelector('a[href="#kurser"]').addEventListener('click', function(e) {
+    e.preventDefault();
+    document.getElementById('kurser').scrollIntoView({ behavior: 'smooth' });
+  });
+</script>
+
+</body>
+</html>
