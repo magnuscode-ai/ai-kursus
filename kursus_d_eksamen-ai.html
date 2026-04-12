@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kursus D — Eksamen</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #08090d; --card: #111318; --card2: #181b22; --border: #22262f;
+  --accent: #4f8ef7; --green: #4ecb88; --yellow: #f6c94e; --red: #f25f5f;
+  --text: #e6e8f0; --muted: #6b7080; --radius: 14px;
+}
+body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem 1rem 4rem; }
+.wrap { max-width: 680px; margin: 0 auto; }
+.screen { display: none; animation: fadeUp 0.4s ease both; }
+.screen.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+.chip { display:inline-block; font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; padding:0.28rem 0.85rem; border-radius:100px; margin-bottom:1.2rem; }
+.chip.blue  { background:rgba(79,142,247,0.15); color:var(--accent); border:1px solid rgba(79,142,247,0.3); }
+.chip.green { background:rgba(78,203,136,0.15); color:var(--green);  border:1px solid rgba(78,203,136,0.3); }
+.chip.yellow{ background:rgba(246,201,78,0.15); color:var(--yellow); border:1px solid rgba(246,201,78,0.3); }
+
+h1.hero { font-family:'Syne',sans-serif; font-size:clamp(2rem,6vw,3.2rem); font-weight:800; line-height:1.08; margin-bottom:0.9rem; background:linear-gradient(135deg,#fff 40%,var(--accent)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.sub { color:var(--muted); font-size:0.95rem; line-height:1.65; margin-bottom:2rem; }
+
+.btn { display:inline-flex; align-items:center; gap:0.5rem; border:none; border-radius:10px; padding:0.85rem 1.8rem; font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; cursor:pointer; transition:all 0.18s; text-decoration:none; }
+.btn.primary { background:var(--accent); color:#fff; }
+.btn.primary:hover { background:#3a7ae8; transform:translateY(-2px); box-shadow:0 8px 24px rgba(79,142,247,0.3); }
+.btn.success { background:var(--green); color:#0a1a12; }
+.btn.success:hover { background:#3dba78; transform:translateY(-2px); box-shadow:0 8px 24px rgba(78,203,136,0.3); }
+.btn.ghost { background:transparent; border:1px solid var(--border); color:var(--muted); }
+.btn.ghost:hover { border-color:var(--accent); color:var(--accent); }
+.btn-row { display:flex; gap:0.8rem; flex-wrap:wrap; justify-content:center; margin-top:1.6rem; }
+
+/* REGISTER */
+.reg-hero { text-align:center; padding:2.5rem 0 2rem; }
+.form-group { margin-bottom:1.2rem; }
+.form-group label { display:block; font-family:'Syne',sans-serif; font-size:0.75rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-bottom:0.5rem; }
+.form-group input { width:100%; background:var(--card); border:1.5px solid var(--border); border-radius:10px; padding:0.85rem 1.1rem; color:var(--text); font-family:'DM Sans',sans-serif; font-size:1rem; outline:none; transition:border 0.2s; }
+.form-group input:focus { border-color:var(--accent); }
+.form-group input::placeholder { color:var(--muted); }
+.form-err { color:var(--red); font-size:0.82rem; margin-top:0.4rem; display:none; }
+.info-strip { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1rem 1.2rem; display:grid; grid-template-columns:repeat(3,1fr); gap:0.5rem; margin:1.6rem 0; text-align:center; }
+.info-strip .n { font-family:'Syne',sans-serif; font-size:1.4rem; font-weight:800; color:var(--accent); }
+.info-strip .l { font-size:0.75rem; color:var(--muted); }
+
+/* QUIZ */
+.quiz-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.4rem; padding-bottom:1rem; border-bottom:1px solid var(--border); }
+.quiz-header h2 { font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:var(--muted); }
+.pill { background:var(--card2); border:1px solid var(--border); border-radius:100px; padding:0.28rem 0.85rem; font-family:'Syne',sans-serif; font-size:0.78rem; font-weight:700; color:var(--accent); }
+.prog-bar { height:4px; background:var(--border); border-radius:4px; margin-bottom:1.8rem; overflow:hidden; }
+.prog-fill { height:100%; background:var(--accent); border-radius:4px; transition:width 0.4s ease; }
+.q-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.6rem; margin-bottom:1rem; }
+.q-card .qnum { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent); margin-bottom:0.7rem; }
+.q-card .qtext { font-size:1rem; font-weight:500; line-height:1.5; }
+.options { display:flex; flex-direction:column; gap:0.65rem; }
+.opt { background:var(--card); border:1.5px solid var(--border); border-radius:10px; padding:0.85rem 1.1rem; cursor:pointer; font-size:0.9rem; transition:all 0.15s; display:flex; align-items:center; gap:0.85rem; text-align:left; color:var(--text); width:100%; }
+.opt:hover:not(:disabled) { border-color:var(--accent); background:rgba(79,142,247,0.06); }
+.opt .letter { font-family:'Syne',sans-serif; font-weight:700; font-size:0.75rem; color:var(--muted); min-width:20px; text-align:center; }
+.opt.correct { border-color:var(--green); background:rgba(78,203,136,0.1); }
+.opt.correct .letter { color:var(--green); }
+.opt.wrong { border-color:var(--red); background:rgba(242,95,95,0.08); }
+.opt.wrong .letter { color:var(--red); }
+.opt:disabled { cursor:default; }
+.fb { border-radius:10px; padding:0.85rem 1.1rem; font-size:0.86rem; font-weight:500; display:none; margin-top:0.4rem; line-height:1.5; }
+.fb.show { display:block; }
+.fb.ok  { background:rgba(78,203,136,0.1); border:1px solid rgba(78,203,136,0.3); color:var(--green); }
+.fb.bad { background:rgba(242,95,95,0.08); border:1px solid rgba(242,95,95,0.3); color:#f09090; }
+
+/* RESULT */
+.result-center { text-align:center; padding:2rem 0 1rem; }
+.score-ring { width:120px; height:120px; border-radius:50%; margin:0 auto 1.4rem; display:flex; flex-direction:column; align-items:center; justify-content:center; font-family:'Syne',sans-serif; }
+.score-ring .big { font-size:2.6rem; font-weight:800; line-height:1; }
+.score-ring .of  { font-size:0.75rem; color:var(--muted); }
+.ring-pass { background:radial-gradient(circle,rgba(78,203,136,0.12),transparent); border:3px solid var(--green); color:var(--green); }
+.ring-fail { background:radial-gradient(circle,rgba(242,95,95,0.1),transparent); border:3px solid var(--red); color:var(--red); }
+.result-center h2 { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; margin-bottom:0.4rem; }
+.result-center p { color:var(--muted); font-size:0.9rem; max-width:360px; margin:0 auto 1.6rem; }
+.review { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin:1.4rem 0; text-align:left; }
+.rev-row { display:flex; align-items:flex-start; gap:0.9rem; padding:0.8rem 1.1rem; border-bottom:1px solid var(--border); font-size:0.83rem; }
+.rev-row:last-child { border-bottom:none; }
+.rev-icon { min-width:18px; margin-top:2px; }
+.rev-q { flex:1; color:var(--muted); line-height:1.4; }
+.rev-q strong { color:var(--text); display:block; margin-bottom:0.15rem; font-size:0.85rem; }
+
+/* PROMPT */
+.prompt-hdr { text-align:center; margin-bottom:1.8rem; padding-bottom:1.4rem; border-bottom:1px solid var(--border); }
+.prompt-hdr h2 { font-family:'Syne',sans-serif; font-size:1.6rem; font-weight:800; margin-bottom:0.4rem; }
+.prompt-hdr p { color:var(--muted); font-size:0.88rem; }
+.steps-mini { display:grid; grid-template-columns:repeat(4,1fr); gap:0.55rem; margin-bottom:1.6rem; }
+@media(max-width:480px){ .steps-mini{grid-template-columns:1fr 1fr;} }
+.step-mini { background:var(--card); border:1px solid var(--border); border-radius:10px; padding:0.85rem 0.6rem; text-align:center; }
+.step-mini .n { font-family:'Syne',sans-serif; font-size:1.2rem; font-weight:800; color:var(--accent); display:block; margin-bottom:0.25rem; }
+.step-mini p { font-size:0.72rem; color:var(--muted); line-height:1.4; }
+.prompt-box { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1.4rem; }
+.pb-top { display:flex; align-items:center; justify-content:space-between; padding:0.8rem 1.1rem; background:var(--card2); border-bottom:1px solid var(--border); }
+.dots { display:flex; gap:5px; }
+.dot { width:10px; height:10px; border-radius:50%; }
+.dot.r{background:#f25f5f} .dot.y{background:#f6c94e} .dot.g{background:#4ecb88}
+.pb-label { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
+.copy-btn { background:var(--accent); color:#fff; border:none; border-radius:7px; padding:0.35rem 0.85rem; font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; cursor:pointer; transition:all 0.18s; }
+.copy-btn:hover{background:#3a7ae8} .copy-btn.ok{background:var(--green);color:#0a1a12}
+.pb-text { padding:1.2rem 1.3rem; font-size:0.82rem; line-height:1.85; color:#b0b4c8; white-space:pre-wrap; font-family:'DM Mono','Courier New',monospace; max-height:320px; overflow-y:auto; user-select:all; scrollbar-width:thin; scrollbar-color:var(--border) transparent; }
+.ai-links { display:grid; grid-template-columns:1fr 1fr; gap:0.7rem; margin-bottom:1.4rem; }
+@media(max-width:400px){.ai-links{grid-template-columns:1fr;}}
+.ai-link { display:flex; align-items:center; gap:0.75rem; background:var(--card); border:1px solid var(--border); border-radius:10px; padding:0.85rem 1rem; text-decoration:none; color:var(--text); font-size:0.85rem; font-weight:500; transition:all 0.15s; }
+.ai-link:hover{border-color:var(--accent);background:rgba(79,142,247,0.06);}
+.ai-link .em{font-size:1.3rem}
+.ai-link .lbl{font-size:0.7rem;color:var(--muted);display:block;}
+.code-box { background:var(--card); border:1.5px solid var(--yellow); border-radius:var(--radius); padding:1.4rem; }
+.code-box h3 { font-family:'Syne',sans-serif; font-size:0.95rem; font-weight:700; color:var(--yellow); margin-bottom:0.25rem; }
+.code-box p { font-size:0.82rem; color:var(--muted); margin-bottom:0.9rem; }
+.code-row { display:flex; gap:0.65rem; flex-wrap:wrap; }
+.code-input { flex:1; min-width:140px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:0.7rem 0.9rem; color:var(--text); font-family:'DM Mono','Courier New',monospace; font-size:1rem; letter-spacing:0.1em; outline:none; transition:border 0.2s; }
+.code-input:focus{border-color:var(--yellow);}
+.verify-btn { background:var(--yellow); color:#1a1200; border:none; border-radius:8px; padding:0.7rem 1.2rem; font-family:'Syne',sans-serif; font-size:0.85rem; font-weight:700; cursor:pointer; transition:all 0.18s; }
+.verify-btn:hover{opacity:0.85;}
+.code-res { margin-top:0.8rem; padding:0.7rem 0.9rem; border-radius:8px; font-size:0.85rem; font-weight:500; display:none; }
+.code-res.ok  { background:rgba(78,203,136,0.1); border:1px solid rgba(78,203,136,0.3); color:var(--green); }
+.code-res.err { background:rgba(242,95,95,0.08); border:1px solid rgba(242,95,95,0.3); color:#f09090; }
+
+/* CERTIFICATE */
+.cert-screen { text-align:center; padding:1.5rem 0; }
+.cert-screen h2 { font-family:'Syne',sans-serif; font-size:1.8rem; font-weight:800; margin-bottom:0.4rem; background:linear-gradient(135deg,#fff,var(--green)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.cert-screen > p { color:var(--muted); font-size:0.9rem; margin-bottom:1.2rem; }
+
+.screenshot-tip {
+  display:flex; align-items:flex-start; gap:0.9rem;
+  background:rgba(246,201,78,0.1); border:1px solid rgba(246,201,78,0.3);
+  border-radius:12px; padding:1rem 1.1rem;
+  text-align:left; font-size:0.82rem; color:#c8a83a;
+  margin-bottom:1.6rem; line-height:1.6;
+}
+.screenshot-tip strong { color:var(--yellow); }
+.tip-icon { font-size:1.4rem; margin-top:2px; }
+
+#certificate {
+  background:#fff; color:#1a1a2e;
+  border-radius:8px; overflow:hidden;
+  width:100%;
+  box-shadow:0 4px 30px rgba(0,0,0,0.4);
+  font-family:'DM Sans',sans-serif;
+}
+.cert-top-bar { height:10px; background:linear-gradient(90deg,#1E6FBF,#4ecb88,#f6c94e); }
+.cert-bot-bar { height:10px; background:linear-gradient(90deg,#f6c94e,#4ecb88,#1E6FBF); }
+.cert-body { padding:44px 60px 40px; }
+.cert-logo { font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#1E6FBF; margin-bottom:26px; }
+.cert-level-chip { display:inline-block; background:#1E6FBF; color:#fff; font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:0.22rem 0.7rem; border-radius:100px; margin-bottom:18px; }
+.cert-sub { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#aaa; margin-bottom:5px; }
+.cert-big { font-family:'Playfair Display',serif; font-size:2.7rem; font-weight:900; color:#1a1a2e; line-height:1; margin-bottom:26px; }
+.cert-presented { font-size:0.85rem; color:#999; margin-bottom:7px; }
+.cert-name { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:#1E6FBF; padding-bottom:10px; border-bottom:2px solid #e0eaff; margin-bottom:5px; }
+.cert-email { font-size:0.78rem; color:#bbb; margin-bottom:22px; }
+.cert-desc { font-size:0.87rem; color:#555; line-height:1.65; max-width:500px; margin-bottom:28px; }
+.cert-footer { display:flex; justify-content:space-between; align-items:flex-end; }
+.cert-field .flabel { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:#bbb; margin-bottom:3px; font-family:'Syne',sans-serif; }
+.cert-field .fval { font-family:'DM Mono',monospace; font-size:0.88rem; color:#333; font-weight:700; }
+.cert-field + .cert-field { margin-top:10px; }
+.cert-badge { width:68px; height:68px; border-radius:50%; background:linear-gradient(135deg,#1E6FBF,#4ecb88); display:flex; align-items:center; justify-content:center; font-size:1.7rem; }
+
+.dl-btns { display:flex; gap:0.8rem; justify-content:center; flex-wrap:wrap; margin-bottom:1.2rem; }
+
+/* CONFETTI */
+.conf-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:999;}
+.conf{position:absolute;width:8px;height:8px;border-radius:2px;animation:fall linear both;}
+@keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+@media print {
+  body{background:#fff;padding:0;}
+  .wrap>*:not(#s-cert){display:none!important;}
+  #s-cert{display:block!important;}
+  .cert-screen h2,.cert-screen>p,.dl-btns,.btn-row{display:none!important;}
+  #certificate{box-shadow:none;width:100%;}
+  .cert-preview-wrap{overflow:visible;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ══ REGISTER ══ -->
+<div class="screen active" id="s-reg">
+  <div class="reg-hero">
+    <div class="chip blue">🎓 Kursus D · Officiel Eksamen</div>
+    <h1 class="hero">Velkommen<br>til eksamen</h1>
+    <p class="sub">Udfyld dine oplysninger for at komme i gang. Dine oplysninger bruges til dit personlige beståelses­bevis.</p>
+  </div>
+  <div class="form-group">
+    <label>Fornavn</label>
+    <input type="text" id="firstName" placeholder="Fx. Maria" autocomplete="given-name" />
+    <div class="form-err" id="err-first">Skriv venligst dit fornavn</div>
+  </div>
+  <div class="form-group">
+    <label>Efternavn</label>
+    <input type="text" id="lastName" placeholder="Fx. Hansen" autocomplete="family-name" />
+    <div class="form-err" id="err-last">Skriv venligst dit efternavn</div>
+  </div>
+  <div class="form-group">
+    <label>E-mailadresse</label>
+    <input type="email" id="email" placeholder="Fx. maria@gmail.com" autocomplete="email" />
+    <div class="form-err" id="err-email">Skriv venligst en gyldig email</div>
+  </div>
+  <div class="info-strip">
+    <div><div class="n">10</div><div class="l">Spørgsmål</div></div>
+    <div><div class="n">~15</div><div class="l">Minutter</div></div>
+    <div><div class="n">7/10</div><div class="l">For at bestå</div></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn primary" onclick="startReg()">Start eksamen →</button>
+  </div>
+</div>
+
+<!-- ══ QUIZ ══ -->
+<div class="screen" id="s-quiz">
+  <div class="quiz-header">
+    <h2>Del 1 — Multiple Choice</h2>
+    <div class="pill" id="qPill">1 / 10</div>
+  </div>
+  <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  <div class="q-card">
+    <div class="qnum" id="qNum">Spørgsmål 1</div>
+    <div class="qtext" id="qText"></div>
+  </div>
+  <div class="options" id="optsWrap"></div>
+  <div class="fb" id="fb"></div>
+  <div class="btn-row">
+    <button class="btn primary" id="nextBtn" style="display:none" onclick="next()">Næste →</button>
+  </div>
+</div>
+
+<!-- ══ RESULT ══ -->
+<div class="screen" id="s-result">
+  <div class="result-center">
+    <div class="score-ring" id="sRing">
+      <span class="big" id="sNum">0</span>
+      <span class="of">ud af 10</span>
+    </div>
+    <h2 id="rTitle"></h2>
+    <p id="rDesc"></p>
+    <div class="btn-row" id="rBtns"></div>
+  </div>
+  <div class="review" id="review"></div>
+  <div class="btn-row" id="rBtns2"></div>
+</div>
+
+<!-- ══ PROMPT EXAM ══ -->
+<div class="screen" id="s-prompt">
+  <div class="prompt-hdr">
+    <div class="chip green">✅ Del 1 bestået</div>
+    <h2>Del 2 — Praktisk Opgave</h2>
+    <p>Kopiér promptet og send det i en ny AI-chat. Løs opgaven og tast din kode herunder.</p>
+  </div>
+  <div class="steps-mini">
+    <div class="step-mini"><span class="n">1</span><p>Åbn <strong>Claude</strong> eller <strong>ChatGPT</strong></p></div>
+    <div class="step-mini"><span class="n">2</span><p>Kopiér og send promptet herunder</p></div>
+    <div class="step-mini"><span class="n">3</span><p>Løs opgaven AI'en stiller dig</p></div>
+    <div class="step-mini"><span class="n">4</span><p>Tast din <strong>kode</strong> og få dit bevis</p></div>
+  </div>
+  <div class="prompt-box">
+    <div class="pb-top">
+      <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+      <span class="pb-label">Kopiér dette prompt</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyPrompt()">📋 Kopiér</button>
+    </div>
+    <div class="pb-text" id="promptTxt">Du er eksaminator for et AI-kursus på begynderniveau kaldet "Kursus D". Din opgave er at hjælpe kursisten igennem én simpel praktisk opgave, bedømme svaret venligt og udstede en beståelses­kode når de klarer det.
+
+VIGTIGST AF ALT: Dette er begynderniveau. Vær ekstremt tålmodig, opmuntrende og hjælpsom.
+
+Trin 1 — Byd velkommen og forklar opgaven:
+Fortæl at de skal skrive én besked til en AI om noget fra deres hverdag.
+Giv dette eksempel som inspiration (de må ikke kopiere det):
+"Jeg er pensionist og vil gerne have hjælp til at skrive en kort takketekst til mit barnebarn der har hjulpet mig. Skriv den på 3 linjer."
+
+En god besked har tre ting:
+  👤 Hvem du er
+  📝 Hvad du vil have hjælp til
+  📐 Hvilket format du vil have svaret i
+
+Trin 2 — Bedøm GENERØST. Bestå hvis beskeden giver mening og viser god vilje. Fejl kun hvis beskeden er helt uforståelig eller kopieret ord for ord.
+
+Trin 3 — Giv altid positiv og konkret feedback.
+
+Trin 4 — Hvis bestået, afslut med NØJAGTIG denne tekst:
+---
+🎓 BESTÅET — Kursus D
+Din beståelses­kode er: KD-[antal ord i beskeden]-PASS
+---
+
+Tal ALTID på dansk. Vær ALTID venlig og opmuntrende. Ubegrænsede forsøg.</div>
+  </div>
+  <div class="ai-links">
+    <a class="ai-link" href="https://claude.ai" target="_blank">
+      <span class="em">🤖</span>
+      <div><strong>Åbn Claude</strong><span class="lbl">claude.ai — mest anbefalet</span></div>
+    </a>
+    <a class="ai-link" href="https://chatgpt.com" target="_blank">
+      <span class="em">💬</span>
+      <div><strong>Åbn ChatGPT</strong><span class="lbl">chatgpt.com</span></div>
+    </a>
+  </div>
+  <div class="code-box">
+    <h3>🏆 Tast din beståelses­kode</h3>
+    <p>Når AI'en giver dig en kode, taster du den herunder og får dit bevis.</p>
+    <div class="code-row">
+      <input class="code-input" type="text" id="codeInput" placeholder="Skriv din kode her..." maxlength="20" />
+      <button class="verify-btn" onclick="verifyCode()">Bekræft →</button>
+    </div>
+    <div class="code-res" id="codeRes"></div>
+  </div>
+</div>
+
+<!-- ══ CERTIFICATE ══ -->
+<div class="screen" id="s-cert">
+  <div class="cert-screen">
+    <div style="font-size:3rem;margin-bottom:0.6rem">🎉</div>
+    <h2>Tillykke, <span id="certNameTitle"></span>!</h2>
+    <p>Du har officielt bestået Kursus D! Tag et screenshot af dit bevis herunder.</p>
+
+    <div class="screenshot-tip">
+      <div class="tip-icon">📱</div>
+      <div>
+        <strong>Sådan gemmer du dit bevis:</strong><br>
+        På iPhone: tryk på <strong>sideknappen + lydstyrke op</strong> samtidig<br>
+        På Android: tryk på <strong>tænd/sluk + lydstyrke ned</strong> samtidig<br>
+        På computer: tryk <strong>Windows+Shift+S</strong> eller <strong>Cmd+Shift+4</strong>
+      </div>
+    </div>
+
+    <div id="certificate">
+      <div class="cert-top-bar"></div>
+      <div class="cert-body">
+        <div class="cert-logo">🤖 AI Kursus Platform</div>
+        <div class="cert-level-chip">Kursus D — Nybegynder</div>
+        <div class="cert-sub">Officielt Beståelses­bevis</div>
+        <div class="cert-big">Kursus D</div>
+        <div class="cert-presented">Dette bekræfter at</div>
+        <div class="cert-name" id="certName"></div>
+        <div class="cert-email" id="certEmail"></div>
+        <div class="cert-desc">har gennemført og bestået <strong>Kursus D — Fra nybegynder til average AI-bruger</strong> og demonstreret grundlæggende forståelse for kunstig intelligens, AI-værktøjer og praktisk promptning.</div>
+        <div class="cert-footer">
+          <div>
+            <div class="cert-field">
+              <div class="flabel">Beståelses­kode</div>
+              <div class="fval" id="certCode"></div>
+            </div>
+            <div class="cert-field">
+              <div class="flabel">Udstedt den</div>
+              <div class="fval" id="certDate"></div>
+            </div>
+          </div>
+          <div class="cert-badge">🏆</div>
+        </div>
+      </div>
+      <div class="cert-bot-bar"></div>
+    </div>
+
+    <div class="btn-row" style="margin-top:1.8rem">
+      <button class="btn ghost" onclick="location.reload()">↩ Start forfra</button>
+    </div>
+  </div>
+</div>
+
+</div>
+<div class="conf-wrap" id="confWrap"></div>
+
+<script>
+let user = {first:'',last:'',email:''};
+let current=0, score=0, answers=[], answered=false, finalCode='';
+
+const questions = [
+  {q:"Hvad er kunstig intelligens (AI)?",opts:["En robot der ligner et menneske","Et computerprogram der kan tænke og lære","En ny type telefon","Et socialt medie"],correct:1,explain:"AI er computerprogrammer der er trænet til at løse opgaver intelligent — ikke fysiske robotter."},
+  {q:"Hvilken af disse er IKKE et AI-værktøj?",opts:["ChatGPT","Claude","Microsoft Word","Manus"],correct:2,explain:"Microsoft Word er et tekstbehandlingsprogram — ikke en AI-chatbot der genererer indhold."},
+  {q:"Hvad kaldes den besked du skriver til en AI?",opts:["En kommando","Et prompt","En algoritme","En kode"],correct:1,explain:"Beskeden du sender til AI kaldes et 'prompt'. Jo bedre prompt, jo bedre svar."},
+  {q:"Du vil have AI til at skrive et brev til din bank. Hvilket prompt er bedst?",opts:["Skriv et brev","Hjælp mig","Skriv et formelt brev til min bank, hvor jeg beder om en oversigt over mine gebyrer de sidste 6 måneder","Bank brev nu"],correct:2,explain:"Det bedste prompt er specifikt og fortæller hvad slags brev, til hvem og hvad indholdet skal være."},
+  {q:"Hvad bør du ALDRIG dele med en AI?",opts:["Din yndlingsfarve","Dit CPR-nummer og adgangskoder","En opskrift du vil have hjælp til","Navnet på din yndlingsserie"],correct:1,explain:"Del aldrig fortrolige oplysninger som CPR-nummer, adgangskoder eller bankdata med en AI."},
+  {q:"Hvad betyder det at AI kan 'hallucere'?",opts:["At AI kan se billeder","At AI kan opfinde forkerte svar der lyder troværdige","At AI er træt","At AI taler for hurtigt"],correct:1,explain:"AI kan 'finde på' fakta der lyder rigtige men er forkerte. Dobbelttjek altid vigtige oplysninger."},
+  {q:"Hvad gør kontekst i et prompt?",opts:["Det gør promptet kortere","Det hjælper AI med at forstå situationen og give bedre svar","Det sletter beskeden","Det oversætter beskeden til engelsk"],correct:1,explain:"Kontekst fortæller AI hvem du er og hvad situationen er — det giver meget bedre og mere relevante svar."},
+  {q:"Hvilken er et godt eksempel på at specificere format?",opts:["Fortæl mig noget om ernæring","Lav en liste med 5 sunde morgenmadstips, én linje pr. tip","Hvad er sundt?","Mad"],correct:1,explain:"At bede om 'en liste med 5 tips' og 'én linje pr. tip' fortæller AI præcis hvordan svaret skal se ud."},
+  {q:"Hvornår bør du dobbelttjekke et svar fra AI?",opts:["Aldrig – AI tager aldrig fejl","Kun hvis det handler om sport","Altid ved vigtige oplysninger som sundhed, jura eller økonomi","Kun hvis teksten er lang"],correct:2,explain:"Dobbelttjek altid vigtige oplysninger. AI kan tage fejl, især med tal, datoer og faglige detaljer."},
+  {q:"Hvad er den bedste beskrivelse af AI-assistenter som ChatGPT og Claude?",opts:["De er altid 100% korrekte","De er sprogmodeller der genererer svar baseret på mønstre i tekst","De søger altid på internettet i realtid","De er menneskelige eksperter der skriver svarene"],correct:1,explain:"ChatGPT og Claude er sprogmodeller — de genererer svar baseret på mønstre i enorme mængder tekst."},
+];
+
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function startReg() {
+  const first=document.getElementById('firstName').value.trim();
+  const last=document.getElementById('lastName').value.trim();
+  const em=document.getElementById('email').value.trim();
+  let ok=true;
+  document.getElementById('err-first').style.display=first?'none':'block'; if(!first)ok=false;
+  document.getElementById('err-last').style.display=last?'none':'block';   if(!last)ok=false;
+  const eok=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em);
+  document.getElementById('err-email').style.display=eok?'none':'block';   if(!eok)ok=false;
+  if(!ok)return;
+  user={first,last,email:em};
+  current=0;score=0;answers=[];answered=false;
+  show('s-quiz'); renderQ();
+}
+
+function renderQ() {
+  answered=false;
+  const q=questions[current];
+  const L=['A','B','C','D'];
+  document.getElementById('qNum').textContent=`Spørgsmål ${current+1}`;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('qPill').textContent=`${current+1} / ${questions.length}`;
+  document.getElementById('progFill').style.width=`${(current/questions.length)*100}%`;
+  const fb=document.getElementById('fb'); fb.className='fb'; fb.textContent='';
+  document.getElementById('nextBtn').style.display='none';
+  const wrap=document.getElementById('optsWrap'); wrap.innerHTML='';
+  q.opts.forEach((o,i)=>{
+    const btn=document.createElement('button'); btn.className='opt';
+    btn.innerHTML=`<span class="letter">${L[i]}</span><span>${o}</span>`;
+    btn.onclick=()=>pick(i); wrap.appendChild(btn);
+  });
+}
+
+function pick(idx) {
+  if(answered)return; answered=true;
+  const q=questions[current]; const L=['A','B','C','D'];
+  const opts=document.querySelectorAll('.opt');
+  const fb=document.getElementById('fb');
+  const ok=idx===q.correct;
+  opts.forEach(o=>o.disabled=true);
+  opts[q.correct].classList.add('correct');
+  if(!ok)opts[idx].classList.add('wrong');
+  if(ok){score++;fb.className='fb ok show';fb.textContent=`✅ Rigtigt! ${q.explain}`;}
+  else{fb.className='fb bad show';fb.textContent=`❌ Rigtigt svar var ${L[q.correct]}: ${q.opts[q.correct]}. ${q.explain}`;}
+  answers.push({q:q.q,correct:ok,correctOpt:q.opts[q.correct]});
+  const nb=document.getElementById('nextBtn'); nb.style.display='inline-flex';
+  nb.textContent=current<questions.length-1?'Næste spørgsmål →':'Se resultat →';
+}
+
+function next() {
+  current++;
+  if(current<questions.length)renderQ(); else showResult();
+}
+
+function showResult() {
+  show('s-result');
+  const passed=score>=7;
+  const ring=document.getElementById('sRing');
+  ring.className='score-ring '+(passed?'ring-pass':'ring-fail');
+  document.getElementById('sNum').textContent=score;
+  document.getElementById('rTitle').textContent=passed?`🎉 Godt klaret, ${user.first}!`:'😅 Ikke bestået denne gang';
+  document.getElementById('rDesc').textContent=passed
+    ?`Du fik ${score} ud af 10 rigtige. Du er klar til den praktiske del!`
+    :`Du fik ${score} ud af 10. Du skal bruge mindst 7 rigtige. Prøv igen!`;
+  const rb=document.getElementById('rBtns'); rb.innerHTML='';
+  if(passed){const b=document.createElement('button');b.className='btn success';b.textContent='Videre til del 2 →';b.onclick=()=>show('s-prompt');rb.appendChild(b);}
+  else{const b=document.createElement('button');b.className='btn primary';b.textContent='↩ Prøv igen';b.onclick=()=>{current=0;score=0;answers=[];answered=false;show('s-quiz');renderQ();};rb.appendChild(b);}
+  const rev=document.getElementById('review'); rev.innerHTML='';
+  answers.forEach((a,i)=>{
+    const r=document.createElement('div');r.className='rev-row';
+    r.innerHTML=`<span class="rev-icon">${a.correct?'✅':'❌'}</span><div class="rev-q"><strong>Sp.${i+1}: ${a.q}</strong>${a.correct?'Korrekt!':'Rigtigt svar: '+a.correctOpt}</div>`;
+    rev.appendChild(r);
+  });
+  const rb2=document.getElementById('rBtns2');rb2.innerHTML='';
+  if(!passed){const b=document.createElement('button');b.className='btn ghost';b.textContent='↩ Prøv igen';b.onclick=()=>{current=0;score=0;answers=[];answered=false;show('s-quiz');renderQ();};rb2.appendChild(b);}
+}
+
+function copyPrompt() {
+  navigator.clipboard.writeText(document.getElementById('promptTxt').innerText).then(()=>{
+    const btn=document.getElementById('copyBtn');
+    btn.textContent='✅ Kopieret!';btn.classList.add('ok');
+    setTimeout(()=>{btn.textContent='📋 Kopiér';btn.classList.remove('ok');},2500);
+  });
+}
+
+function verifyCode() {
+  const val=document.getElementById('codeInput').value.trim().toUpperCase();
+  const res=document.getElementById('codeRes'); res.style.display='block';
+  if(/^KD-\d+-PASS$/.test(val)){
+    finalCode=val; res.className='code-res ok'; res.textContent='🎉 Kode bekræftet! Genererer dit bevis...';
+    setTimeout(()=>{confetti();showCert();},1000);
+  } else {
+    res.className='code-res err';
+    res.innerHTML='❌ Koden ser ikke rigtig ud. Tjek at du har kopieret den præcist fra AI\'en.';
+  }
+}
+
+function showCert() {
+  const now=new Date();
+  const dateStr=now.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('certNameTitle').textContent=user.first;
+  document.getElementById('certName').textContent=`${user.first} ${user.last}`;
+  document.getElementById('certEmail').textContent=user.email;
+  document.getElementById('certCode').textContent=finalCode;
+  document.getElementById('certDate').textContent=dateStr;
+  show('s-cert');
+}
+
+function openCertPrint(mode) {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('da-DK',{day:'numeric',month:'long',year:'numeric'});
+  const fullName = `${user.first} ${user.last}`;
+
+  const html = `<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>Kursus D Bevis — ${fullName}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#f0f0f0; font-family:'DM Sans',sans-serif; padding:20px; }
+.no-print { text-align:center; padding:16px; margin-bottom:20px; background:#fff; border-radius:10px; }
+.no-print p { font-size:0.9rem; color:#555; margin-bottom:12px; }
+.no-print button { background:#1E6FBF; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:0.95rem; font-weight:700; cursor:pointer; margin:4px; }
+.no-print button.sec { background:transparent; border:1px solid #ccc; color:#666; }
+.tip { font-size:0.75rem; color:#999; margin-top:8px; }
+.cert { background:#fff; max-width:800px; margin:0 auto; }
+.bar-top { height:10px; background:linear-gradient(90deg,#1E6FBF,#4ecb88,#f6c94e); }
+.bar-bot { height:10px; background:linear-gradient(90deg,#f6c94e,#4ecb88,#1E6FBF); }
+.body { padding:44px 60px 40px; }
+.logo { font-family:'Syne',sans-serif; font-size:0.72rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:#1E6FBF; margin-bottom:24px; }
+.level { display:inline-block; background:#1E6FBF; color:#fff; font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; padding:3px 12px; border-radius:100px; margin-bottom:16px; }
+.sub { font-family:'Syne',sans-serif; font-size:0.68rem; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:#aaa; margin-bottom:4px; }
+.big { font-family:'Playfair Display',serif; font-size:3rem; font-weight:900; color:#1a1a2e; line-height:1; margin-bottom:28px; }
+.presented { font-size:0.85rem; color:#999; margin-bottom:7px; }
+.name { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:700; color:#1E6FBF; padding-bottom:10px; border-bottom:2px solid #e0eaff; margin-bottom:5px; }
+.email { font-size:0.78rem; color:#bbb; margin-bottom:22px; }
+.desc { font-size:0.87rem; color:#555; line-height:1.65; max-width:500px; margin-bottom:28px; }
+.footer { display:flex; justify-content:space-between; align-items:flex-end; }
+.flabel { font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:#bbb; margin-bottom:3px; font-family:'Syne',sans-serif; }
+.fval { font-family:monospace; font-size:0.9rem; color:#333; font-weight:700; }
+.field+.field { margin-top:10px; }
+.badge { width:70px; height:70px; border-radius:50%; background:linear-gradient(135deg,#1E6FBF,#4ecb88); display:flex; align-items:center; justify-content:center; font-size:1.8rem; }
+@media print {
+  body { background:#fff; padding:0; }
+  .no-print { display:none; }
+  .cert { max-width:100%; box-shadow:none; }
+}
+</style>
+</head>
+<body>
+<div class="no-print">
+  <p>✅ Dit bevis er klar! Vælg hvad du vil gøre:</p>
+  <button onclick="window.print()">🖨️ Print / Gem som PDF</button>
+  <button class="sec" onclick="window.close()">✕ Luk</button>
+  <p class="tip">I printmenuen: vælg "Gem som PDF" for at downloade filen til din enhed</p>
+</div>
+<div class="cert">
+  <div class="bar-top"></div>
+  <div class="body">
+    <div class="logo">🤖 AI Kursus Platform</div>
+    <div class="level">Kursus D — Nybegynder</div>
+    <div class="sub">Officielt Beståelses­bevis</div>
+    <div class="big">Kursus D</div>
+    <div class="presented">Dette bekræfter at</div>
+    <div class="name">${fullName}</div>
+    <div class="email">${user.email}</div>
+    <div class="desc">har gennemført og bestået <strong>Kursus D — Fra nybegynder til average AI-bruger</strong> og demonstreret grundlæggende forståelse for kunstig intelligens, AI-værktøjer og praktisk promptning.</div>
+    <div class="footer">
+      <div>
+        <div class="field"><div class="flabel">Beståelses­kode</div><div class="fval">${finalCode}</div></div>
+        <div class="field"><div class="flabel">Udstedt den</div><div class="fval">${dateStr}</div></div>
+      </div>
+      <div class="badge">🏆</div>
+    </div>
+  </div>
+  <div class="bar-bot"></div>
+</div>
+${mode==='print' ? '<script>window.onload=function(){setTimeout(function(){window.print();},800);}<\/script>' : ''}
+</body>
+</html>`;
+
+  // Encode as data URI — works in local HTML files on all devices
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener';
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function confetti() {
+  const wrap=document.getElementById('confWrap');
+  const colors=['#4f8ef7','#4ecb88','#f6c94e','#f25f5f','#c084fc','#fff'];
+  for(let i=0;i<90;i++){
+    const el=document.createElement('div'); el.className='conf';
+    el.style.cssText=`left:${Math.random()*100}%;top:${-10-Math.random()*40}px;background:${colors[Math.floor(Math.random()*colors.length)]};width:${5+Math.random()*8}px;height:${5+Math.random()*8}px;animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()*0.6}s;`;
+    wrap.appendChild(el);
+  }
+  setTimeout(()=>wrap.innerHTML='',4500);
+}
+
+document.getElementById('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')verifyCode();});
+document.getElementById('firstName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('lastName').focus();});
+document.getElementById('lastName').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('email').focus();});
+document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Enter')startReg();});
+</script>
+</body>
+</html>
