@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Kursus C2</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --green-mid:   #c2e8d8;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(15,110,86,0.08);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 56px; position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 16px; font-weight: 700;
+      color: var(--text); text-decoration: none;
+    }
+    .logo-icon {
+      width: 30px; height: 30px; background: var(--blue);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag {
+      font-size: 13px; color: var(--muted);
+      background: var(--grey); padding: 5px 12px; border-radius: 20px;
+    }
+
+    /* ── PROGRESS STEPS ── */
+    .steps-bar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem; display: flex; justify-content: center; gap: 0;
+    }
+    .step-item { display: flex; align-items: center; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.active { background: var(--green); color: white; box-shadow: 0 0 0 3px var(--green-light); }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.done   { color: var(--green); }
+    .step-label.active { color: var(--green); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--green);
+      color: white; padding: 3rem 1.5rem 2.5rem; text-align: center;
+    }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(26px, 5vw, 38px); font-weight: 400;
+      line-height: 1.2; margin-bottom: 0.75rem;
+    }
+    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+    .hero-meta-item span { font-size: 18px; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: var(--green);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem;
+    }
+    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+    /* ── MODULE ── */
+    .module {
+      background: white; border: 1px solid var(--border);
+      border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow);
+    }
+    .module-header {
+      background: var(--green-light); padding: 1.1rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      cursor: pointer; user-select: none;
+    }
+    .module-header:hover { background: var(--green-mid); }
+    .module-letter {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--green); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; flex-shrink: 0;
+    }
+    .module-title-wrap { flex: 1; }
+    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body {
+      display: none; padding: 1.5rem; border-top: 1px solid var(--border);
+    }
+    .module.open .module-body { display: block; }
+
+    /* ── CONTENT ELEMENTS ── */
+    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+
+    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-box p  { font-size: 14px; line-height: 1.6; }
+    .info-box ul { padding-left: 1.1rem; }
+    .info-box li { font-size: 14px; line-height: 1.7; }
+
+    .box-blue   { background: var(--blue-light); }
+    .box-blue .info-box-title   { color: var(--blue); }
+    .box-green  { background: var(--green-light); }
+    .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg); }
+    .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey); }
+    .box-grey .info-box-title   { color: #444; }
+
+    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+
+    .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+    .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    /* tone table */
+    .tone-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 14px; }
+    .tone-table th {
+      background: var(--green); color: white;
+      padding: 10px 14px; text-align: left; font-weight: 700; font-size: 13px;
+    }
+    .tone-table th:first-child { border-radius: 10px 0 0 0; }
+    .tone-table th:last-child  { border-radius: 0 10px 0 0; }
+    .tone-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+    .tone-table tr:nth-child(even) td { background: var(--green-light); }
+    .tone-table tr:last-child td { border-bottom: none; }
+    .tone-table td:first-child { font-weight: 700; white-space: nowrap; }
+
+    /* prompt template */
+    .prompt-template {
+      background: #1e2a3a; color: #e2f0fb;
+      border-radius: 10px; padding: 1rem 1.15rem;
+      font-size: 13px; font-family: 'Courier New', monospace;
+      line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap;
+    }
+    .prompt-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem;
+    }
+
+    /* technique tag */
+    .technique-tag {
+      display: inline-block; background: var(--green); color: white;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem;
+    }
+
+    /* practice */
+    .practice {
+      background: var(--orange-light); border-radius: 12px;
+      padding: 1rem 1.15rem; margin-bottom: 1.25rem;
+    }
+    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .practice li { margin-bottom: 4px; }
+
+    /* summary */
+    .summary {
+      background: var(--green); border-radius: 16px;
+      padding: 1.75rem; color: white; margin-bottom: 2rem;
+    }
+    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+    /* quiz cta */
+    .quiz-cta {
+      background: white; border: 2px solid var(--green);
+      border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow);
+    }
+    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .quiz-cta p  { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+    .quiz-cta .req {
+      display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt);
+      font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem;
+    }
+    .btn-quiz {
+      display: inline-block; background: var(--green); color: white;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+      padding: 14px 36px; border-radius: 12px; text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-quiz:hover { background: #0a5640; transform: translateY(-1px); }
+
+    @media (max-width: 480px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.75rem 1rem 3rem; }
+      .module-body { padding: 1.1rem; }
+      .quiz-cta { padding: 1.5rem 1rem; }
+      .step-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Kursus C — Del 2 af 3</span>
+</nav>
+
+<!-- PROGRESS STEPS -->
+<div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Prompt-teknik</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot active">C2</div>
+    <span class="step-label active">Emails</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q2</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">C3</div>
+    <span class="step-label next">Rapporter</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Kursus C &nbsp;·&nbsp; Del 2 af 3</div>
+  <h1>AI til emails og produktivitet</h1>
+  <p>Sæt teknikkerne fra Del C1 i spil — med konkrete workflows til emails og daglig produktivitet.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span>⏱</span> 45 min – 1 time</div>
+    <div class="hero-meta-item"><span>📋</span> 2 moduler</div>
+    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">Del C2</div>
+  <div class="section-title">Nu anvender vi det du har lært</div>
+  <p class="section-body">Del C1 gav dig teknikkerne. Nu sætter vi dem i spil. I dette modul arbejder du med virkelige situationer — ikke bare teori. Hvert modul har opgaver du skal gennemføre i ChatGPT eller Claude.</p>
+
+  <!-- ── MODULE C2.1: EMAILS ── -->
+  <div class="module open" id="mod1">
+    <div class="module-header" onclick="toggleModule('mod1')">
+      <div class="module-letter">1</div>
+      <div class="module-title-wrap">
+        <div class="module-title">AI til emails og kommunikation</div>
+        <div class="module-sub">Skriv bedre — hurtigere</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Email er en af de største tidstyve i arbejdslivet. AI kan hjælpe dig med at skrive emails hurtigere og bedre. Her er de fire typiske situationer du vil møde.</p>
+
+      <!-- De 4 situationer -->
+      <h3 class="subhead">De fire typiske email-situationer</h3>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">1. Den svære email</div>
+        <p>Til konflikter, dårlige nyheder eller afvisninger.</p>
+        <br>
+        <div class="prompt-label">Skabelon</div>
+        <div class="prompt-template">"Hjælp mig med at skrive en email til [modtager] om [situation].
+Situationen er: [forklar].
+Tone: ærlig men ikke anklagende.
+Under 150 ord. Kom direkte til sagen."</div>
+      </div>
+
+      <div class="info-box box-grey">
+        <div class="info-box-title">2. Opfølgning når ingen svarer</div>
+        <p>Når du har sendt en email og ikke hørt tilbage.</p>
+        <br>
+        <div class="prompt-label">Skabelon</div>
+        <div class="prompt-template">"Skriv en venlig men tydelig opfølgnings-email til [person].
+Jeg sendte en email om [emne] for [X] dage siden uden svar.
+Tone: ikke pressende, men tydeligt at jeg har brug for svar."</div>
+      </div>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">3. Kort svar på lang email</div>
+        <p>Når du har modtaget en lang email og vil svare præcist.</p>
+        <br>
+        <div class="prompt-label">Skabelon</div>
+        <div class="prompt-template">"Her er en email jeg har modtaget: [indsæt].
+Jeg vil svare at: [dine punkter].
+Skriv svaret kort og professionelt. Maks 100 ord."</div>
+      </div>
+
+      <div class="info-box box-grey">
+        <div class="info-box-title">4. Sprogvask og tone-justering</div>
+        <p>Når du har skrevet et udkast, men vil have det poleret.</p>
+        <br>
+        <div class="prompt-label">Skabelon</div>
+        <div class="prompt-template">"Ret følgende email til korrekt, professionelt dansk og forbedre
+formuleringerne uden at ændre indholdet: [indsæt tekst]"</div>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Email-tone skala</h3>
+      <p class="prose">Tilføj altid til din prompt hvilken tone du vil have:</p>
+
+      <table class="tone-table">
+        <tr>
+          <th>Tone</th>
+          <th>Brug til</th>
+        </tr>
+        <tr>
+          <td>Meget formel</td>
+          <td>Juridiske dokumenter, officielle indberetninger, bestyrelseskommunikation</td>
+        </tr>
+        <tr>
+          <td>Professionel</td>
+          <td>Standard arbejdsmails, til kunder du ikke kender godt</td>
+        </tr>
+        <tr>
+          <td>Venlig</td>
+          <td>Kolleger og samarbejdspartnere du kender</td>
+        </tr>
+        <tr>
+          <td>Uformel</td>
+          <td>Intern kommunikation, nærekolleger, teamchat</td>
+        </tr>
+      </table>
+
+      <hr class="divider">
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Skriv en svær email</div>
+        <p>Vælg en situation fra dit eget liv (rigtig eller opdigtet):</p>
+        <ul style="padding-left:1.2rem; margin-top:0.5rem;">
+          <li>Afvis en invitation på en venlig måde</li>
+          <li>Bed om mere tid på en opgave</li>
+          <li>Følg op på noget der ikke er sket</li>
+        </ul>
+        <p style="margin-top:0.75rem;">Brug skabelon 1 eller 2. Ret den derefter med <strong>iterativ forfining</strong> fra C1 Teknik 4.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Tone-eksperiment</div>
+        <p>Bed AI skrive den <strong>samme besked</strong> i to toner: "professionel" og "uformel".</p>
+        <p style="margin-top:0.5rem;">Eksempel: <em>"Vi mødes fredag kl. 10 — skriv det til en kollega du kender."</em></p>
+        <p style="margin-top:0.75rem;">Hvad ændrer sig? Hvornår ville du bruge hvilken tone?</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE C2.2: PRODUKTIVITET ── -->
+  <div class="module" id="mod2">
+    <div class="module-header" onclick="toggleModule('mod2')">
+      <div class="module-letter">2</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Personlige produktivitets-workflows</div>
+        <div class="module-sub">Spar timer hver uge med tre konkrete workflows</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">De mest produktive AI-brugere har ikke én magisk teknik — de har små workflows de bruger konsekvent. Her er de tre mest effektive.</p>
+
+      <hr class="divider">
+
+      <!-- Workflow 1 -->
+      <span class="technique-tag">Workflow 1</span>
+      <h3 class="subhead">Lær noget nyt på 15 minutter</h3>
+      <p class="prose">Brug AI som din personlige lærer, når du hurtigt skal sætte dig ind i et nyt emne.</p>
+
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Giv mig en 80/20-gennemgang af [emne]:
+de 20% information der giver mig 80% af forståelsen.
+Jeg har 15 minutter.
+Afslut med 3 spørgsmål jeg kan stille en ekspert for at virke informeret."</div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU</div>
+        <p>Vælg et emne du gerne vil vide mere om — noget fra skolen, arbejdet, eller bare noget du er nysgerrig på.</p>
+        <p style="margin-top:0.5rem;">Brug prompten og læs svaret.</p>
+        <p style="margin-top:0.5rem;"><strong>Svar på:</strong> Hvad lærte du? Hvad vil du vide mere om?</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Workflow 2 -->
+      <span class="technique-tag">Workflow 2</span>
+      <h3 class="subhead">Beslutningshjælp</h3>
+      <p class="prose">Når du står overfor en svær beslutning, kan AI hjælpe dig med at strukturere dine tanker og se blinde vinkler.</p>
+
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Jeg står overfor en beslutning: [beskriv].
+Mulighed A: [beskriv].
+Mulighed B: [beskriv].
+Hjælp mig med en pro/contra-analyse og peg på faktorer jeg måske overser.
+Giv ikke bare en liste — hjælp mig med at tænke klart."</div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU</div>
+        <p>Brug AI til en rigtig eller hypotetisk beslutning.</p>
+        <p style="margin-top:0.5rem;">Eksempler: <em>"Skal jeg vælge fag X eller Y?"</em> / <em>"Skal jeg købe eller leje cykel?"</em></p>
+        <p style="margin-top:0.5rem;">Brug skabelonen med din egen situation.</p>
+        <p style="margin-top:0.5rem;"><strong>Reflektér:</strong> Hvad overser AI? Hvad overraskede dig i analysen?</p>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Workflow 3 -->
+      <span class="technique-tag">Workflow 3</span>
+      <h3 class="subhead">Kritisk selvevaluering</h3>
+      <p class="prose">AI kan være en ubestikkelig sparringspartner på dit eget arbejde. Bed den om din ærligste feedback.</p>
+
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Her er hvad jeg har skrevet / planlagt / lavet: [beskriv eller indsæt].
+Hvad er de største svagheder?
+Hvad mangler jeg at overveje?
+Vær særlig kritisk — jeg vil have din ærligste vurdering, ikke beroligelse."</div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Afsluttende opgave</div>
+        <p>Tag noget du allerede har lavet: en tekst, en plan, en email eller en idé.</p>
+        <ol style="padding-left:1.2rem; margin-top:0.5rem;">
+          <li>Bed AI om sin mest ærlige og kritiske feedback.</li>
+          <li>Brug derefter <strong>iterativ forfining</strong> (Teknik 4 fra C1) til at forbedre det.</li>
+        </ol>
+        <p style="margin-top:0.75rem;"><strong>Mål:</strong> Lav mindst 2 konkrete forbedringer baseret på AI's feedback.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <h3>Del C2 — Hvad du har lært</h3>
+    <ul>
+      <li>Skrive svære emails med den rigtige tone</li>
+      <li>Opfølgninger der ikke virker pressende</li>
+      <li>Sprogvaske og tone-justere tekster</li>
+      <li>80/20-prompten til hurtig indlæring</li>
+      <li>Bruge AI til beslutningsanalyse</li>
+      <li>Kritisk selvevaluering med AI som sparringspartner</li>
+    </ul>
+  </div>
+
+  <!-- QUIZ CTA -->
+  <div class="quiz-cta">
+    <div class="quiz-cta-icon">📝</div>
+    <h2>Klar til mini-quizzen?</h2>
+    <p>Tjek at du har forstået Del C2 inden du går videre til Del C3 — den sværeste og mest avancerede del af Kursus C.</p>
+    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+    <a href="quiz-c2.html" class="btn-quiz">Start mini-quiz C2 →</a>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(id) {
+  const mod = document.getElementById(id);
+  mod.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
