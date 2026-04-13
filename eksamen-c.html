@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Eksamen Kursus C</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:        #6B3FA0;
+      --purple-light:  #F0EAFA;
+      --blue:          #185FA5;
+      --blue-light:    #E6F1FB;
+      --green:         #0F6E56;
+      --green-light:   #E1F5EE;
+      --red:           #C0392B;
+      --red-light:     #FDECEA;
+      --orange:        #C45000;
+      --orange-light:  #FFF0E6;
+      --yellow-bg:     #FFF3CD;
+      --yellow-txt:    #856404;
+      --bg:            #F6F4FB;
+      --white:         #FFFFFF;
+      --text:          #1A1A1A;
+      --muted:         #6B7280;
+      --border:        #E2E8F0;
+      --radius:        14px;
+      --shadow:        0 4px 24px rgba(107,63,160,0.10);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .logo-bar {
+      display: flex; align-items: center; gap: 9px;
+      margin-bottom: 2.5rem; text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; background: var(--blue);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 16px; height: 16px; fill: white; }
+    .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+
+    .card {
+      background: var(--white); border-radius: 20px;
+      box-shadow: var(--shadow); width: 100%; max-width: 660px; overflow: hidden;
+    }
+
+    /* ── HEADER ── */
+    .quiz-header { background: var(--purple); padding: 2rem 2rem 1.5rem; color: white; }
+    .quiz-tag {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.75rem;
+    }
+    .quiz-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; font-weight: 400; line-height: 1.25; margin-bottom: 0.4rem;
+    }
+    .quiz-header p { font-size: 14px; opacity: 0.8; }
+
+    /* ── SECTION BADGE ── */
+    .section-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 12px; font-weight: 700;
+      margin: 1.5rem 2rem 0;
+    }
+    .badge-c1 { background: var(--blue-light); color: var(--blue); }
+    .badge-c2 { background: var(--green-light); color: var(--green); }
+    .badge-c3 { background: var(--purple-light); color: var(--purple); }
+
+    /* ── PROGRESS ── */
+    .progress-bar-wrap { padding: 1rem 2rem 0; }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: var(--muted); margin-bottom: 8px;
+    }
+    .progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill  { height: 100%; background: var(--purple); border-radius: 99px; transition: width 0.4s ease; }
+
+    /* ── QUESTION ── */
+    .question-wrap { padding: 1.5rem 2rem 0; }
+    .q-number {
+      font-size: 11px; font-weight: 700; color: var(--purple);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .q-text { font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--text); }
+
+    /* ── OPTIONS ── */
+    .options { padding: 1.25rem 2rem 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .option-btn {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 13px 16px;
+      cursor: pointer; text-align: left;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: var(--text); line-height: 1.5; width: 100%;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--purple); background: var(--purple-light); transform: translateY(-1px);
+    }
+    .option-letter {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: var(--white); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .option-btn:hover:not(:disabled) .option-letter {
+      background: var(--purple); border-color: var(--purple); color: white;
+    }
+    .option-btn.correct { border-color: var(--green); background: var(--green-light); }
+    .option-btn.correct .option-letter { background: var(--green); border-color: var(--green); color: white; }
+    .option-btn.wrong   { border-color: var(--red);   background: var(--red-light); }
+    .option-btn.wrong .option-letter   { background: var(--red);   border-color: var(--red);   color: white; }
+    .option-btn.dimmed  { opacity: 0.38; }
+    .option-btn:disabled { cursor: default; transform: none; }
+
+    /* ── FEEDBACK ── */
+    .feedback {
+      margin: 1rem 2rem 0; padding: 12px 16px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; display: none;
+      align-items: flex-start; gap: 10px; line-height: 1.5;
+    }
+    .feedback.show { display: flex; }
+    .feedback.correct-fb { background: var(--green-light); color: var(--green); }
+    .feedback.wrong-fb   { background: var(--red-light);   color: var(--red); }
+    .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .divider { height: 1px; background: var(--border); margin: 0 2rem; }
+
+    .next-wrap { padding: 1.25rem 2rem 2rem; display: flex; justify-content: flex-end; }
+    .btn-next {
+      background: var(--purple); color: white; border: none;
+      padding: 12px 28px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; display: none; align-items: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-next.show { display: flex; }
+    .btn-next:hover { background: #5a2d90; transform: translateY(-1px); }
+
+    /* ── RESULT ── */
+    .result-screen {
+      display: none; padding: 2.5rem 2rem;
+      text-align: center; flex-direction: column; align-items: center;
+    }
+    .result-screen.show { display: flex; }
+    .result-icon { font-size: 56px; margin-bottom: 1rem; animation: pop 0.5s cubic-bezier(.36,1.6,.6,1) both; }
+    @keyframes pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .result-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); margin-bottom: 0.5rem; }
+    .result-sub   { font-size: 15px; color: var(--muted); margin-bottom: 1.5rem; max-width: 400px; line-height: 1.6; }
+    .score-badge  {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: 99px; font-size: 20px; font-weight: 700; margin-bottom: 1.75rem;
+    }
+    .score-badge.pass { background: var(--green-light); color: var(--green); }
+    .score-badge.fail { background: var(--red-light);   color: var(--red); }
+
+    /* score breakdown */
+    .score-breakdown {
+      width: 100%; background: var(--bg); border-radius: var(--radius);
+      padding: 1.1rem 1.25rem; margin-bottom: 1.5rem; text-align: left;
+    }
+    .score-breakdown h4 { font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; }
+    .breakdown-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .breakdown-row:last-child { border-bottom: none; }
+    .breakdown-label { font-weight: 600; }
+    .breakdown-score { font-weight: 700; }
+    .breakdown-score.good { color: var(--green); }
+    .breakdown-score.bad  { color: var(--red); }
+
+    .result-message {
+      background: var(--bg); border-radius: var(--radius); padding: 1rem 1.25rem;
+      font-size: 14px; color: var(--muted); line-height: 1.6;
+      text-align: left; width: 100%; margin-bottom: 1.5rem;
+    }
+    .result-message strong { color: var(--text); }
+
+    .btn-retry {
+      background: white; border: 2px solid var(--border); color: var(--text);
+      padding: 12px 26px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; transition: border-color 0.15s;
+    }
+    .btn-retry:hover { border-color: var(--purple); color: var(--purple); }
+    .btn-continue {
+      background: var(--green); color: white; border: none;
+      padding: 12px 26px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-continue:hover { background: #0a5640; }
+    .btn-continue.hidden { display: none; }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 480px) {
+      .quiz-header { padding: 1.5rem 1.25rem 1.25rem; }
+      .progress-bar-wrap, .question-wrap, .options, .next-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .feedback { margin: 1rem 1.25rem 0; }
+      .section-badge { margin-left: 1.25rem; }
+      .divider { margin: 0 1.25rem; }
+      .result-screen { padding: 2rem 1.25rem; }
+      .q-text { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="kursus-c3.html" class="logo-bar">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    <span class="logo-text">LearnAI DK</span>
+  </a>
+
+  <div class="card">
+    <div class="quiz-header">
+      <div class="quiz-tag">Kursus C &nbsp;·&nbsp; Afsluttende eksamen &nbsp;·&nbsp; Del 1 af 2</div>
+      <h1>Eksamen — Kursus C</h1>
+      <p>15 spørgsmål &nbsp;·&nbsp; Minimum 12 rigtige for at gå videre til del 2</p>
+    </div>
+
+    <div id="section-badge-wrap"></div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="prog-label">Spørgsmål 1 af 15</span>
+        <span id="prog-score">0 rigtige</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-wrap">
+      <div class="q-number" id="q-number">Spørgsmål 1</div>
+      <div class="q-text"  id="q-text"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="feedback" id="feedback">
+      <span class="feedback-icon" id="fb-icon"></span>
+      <span id="fb-text"></span>
+    </div>
+
+    <div class="divider" style="margin-top:1.25rem;"></div>
+
+    <div class="next-wrap">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        Næste spørgsmål <span>→</span>
+      </button>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+      <div class="result-icon" id="result-icon"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-sub"   id="result-sub"></p>
+      <div class="score-badge" id="score-badge"></div>
+      <div class="score-breakdown">
+        <h4>Fordeling</h4>
+        <div class="breakdown-row">
+          <span class="breakdown-label" style="color:var(--blue)">C1 — Prompt-teknik</span>
+          <span class="breakdown-score" id="bd-c1"></span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label" style="color:var(--green)">C2 — Emails og produktivitet</span>
+          <span class="breakdown-score" id="bd-c2"></span>
+        </div>
+        <div class="breakdown-row">
+          <span class="breakdown-label" style="color:var(--purple)">C3 — Rapporter og møder</span>
+          <span class="breakdown-score" id="bd-c3"></span>
+        </div>
+      </div>
+      <div class="result-message" id="result-message"></div>
+      <div class="btn-row">
+        <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
+        <a href="eksamen-c-del2.html" class="btn-continue hidden" id="btn-continue">
+          Fortsæt til del 2 — Praktisk test →
+        </a>
+      </div>
+    </div>
+  </div>
+
+<script>
+// section: 'c1' | 'c2' | 'c3'
+const questions = [
+
+  // ── C1: PROMPT-TEKNIK (5 spørgsmål) ──────────────────────────────────────
+  {
+    section: 'c1',
+    // Rigtigt: B (index 1)
+    q: "Du skriver en lang prompt med mange detaljer, men AI's svar er stadig for generisk. Hvad er den mest sandsynlige årsag?",
+    options: [
+      "Prompten er for lang — AI ignorerer det meste af lange prompts",
+      "Du mangler en rolleprompt — uden den ved AI ikke hvem den skriver til eller som",
+      "Du skal skifte til en anden AI-model der håndterer lange prompts bedre",
+      "AI har nået sit kontekstvindue og kan ikke behandle mere tekst"
+    ],
+    correct: 1,
+    explanation: "Lange prompts uden rolleprompt giver AI meget indhold men intet perspektiv. Rolleprompt definerer hvem AI er, hvem den skriver til og i hvilken kontekst — det er det der fjerner det generiske."
+  },
+  {
+    section: 'c1',
+    // Rigtigt: D (index 3)
+    q: "Du beder AI forklare et komplekst juridisk begreb. Svaret er korrekt men uforståeligt. Hvilken kombination af teknikker løser dette bedst?",
+    options: [
+      "Kædetænkning + faktatjek — bed AI tænke skridt for skridt og verificere sine svar",
+      "Iterativ forfining + negativ afgrænsning — bed om kortere svar og undgå lange forklaringer",
+      "Rolleprompt alene — 'Du er jurist, forklar begrebet enkelt'",
+      "Rolleprompt + negativ afgrænsning — 'Du er jurist der forklarer til lægfolk. Undgå fagtermer og latinske udtryk'"
+    ],
+    correct: 3,
+    explanation: "Rolleprompt sætter ekspertise og målgruppe. Negativ afgrænsning fjerner præcis det der gør svaret uforståeligt. Kombinationen giver et fagligt korrekt svar i et tilgængeligt sprog."
+  },
+  {
+    section: 'c1',
+    // Rigtigt: A (index 0)
+    q: "Du arbejder på et langt dokument og har givet AI meget kontekst i løbet af samtalen. Pludselig begynder AI at modsige sig selv og glemme ting du har aftalt. Hvad er det mest sandsynlige problem?",
+    options: [
+      "Samtalen nærmer sig grænsen for kontekstvinduet — AI har svært ved at holde styr på tidlig information",
+      "AI har opdateret sin model og husker ikke den tidligere del af samtalen",
+      "Du skal gemme samtalen og genåbne den — det nulstiller AI's hukommelse",
+      "Temperature er steget automatisk og gør svarene mere uforudsigelige"
+    ],
+    correct: 0,
+    explanation: "Når en samtale bliver meget lang, begynder AI at 'glemme' det tidligste indhold fordi kontekstvinduet har en grænse. Løsningen er at opsummere det vigtigste og starte en ny samtale med den opsummering."
+  },
+  {
+    section: 'c1',
+    // Rigtigt: C (index 2)
+    q: "En ven siger: 'Jeg faktatjekker aldrig AI — hvis det lyder rigtigt, er det nok rigtigt.' Hvilken situation er farligst at have denne tilgang i?",
+    options: [
+      "Når du beder AI lave en brainstorm over idéer til et projekt",
+      "Når du beder AI omformulere en tekst du selv har skrevet",
+      "Når du beder AI oplyse dig om medicindosering, lovgivning eller specifikke statistikker",
+      "Når du beder AI skrive en fødselsdagssang til en ven"
+    ],
+    correct: 2,
+    explanation: "AI hallucinerer overbevisende ved præcise facts: dosering, paragraffer, procentsatser. Fejl i kreativt indhold er harmløse — fejl i medicin eller jura kan have alvorlige konsekvenser."
+  },
+  {
+    section: 'c1',
+    // Rigtigt: B (index 1)
+    q: "Du har brugt iterativ forfining i 6 runder og er tæt på et godt resultat, men AI begynder at gentage tidligere versioner. Hvad er den bedste løsning?",
+    options: [
+      "Starte helt forfra i en ny samtale med en meget mere detaljeret første prompt",
+      "Opsummere det bedste fra de tidligere runder og starte en ny samtale med den opsummering som udgangspunkt",
+      "Sætte temperature højere for at tvinge AI til at generere mere varierede svar",
+      "Skifte til en anden AI-model der er bedre til kreativ iteration"
+    ],
+    correct: 1,
+    explanation: "Når iterativ forfining løber ind i gentagelser, er kontekstvinduet ved at være fyldt. Løsningen er at destillere det bedste indhold og starte frisk — ikke at starte helt fra nul."
+  },
+
+  // ── C2: EMAILS OG PRODUKTIVITET (5 spørgsmål) ────────────────────────────
+  {
+    section: 'c2',
+    // Rigtigt: C (index 2)
+    q: "Din chef beder dig skrive en email der afviser en samarbejdspartner uden at skade relationen. Du beder AI om hjælp. Hvilken prompt giver det bedste resultat?",
+    options: [
+      "'Skriv en afvisning til en samarbejdspartner. Professionel tone.'",
+      "'Du er PR-konsulent. Skriv en høflig afvisning der ikke fornærmer modtageren.'",
+      "'Du er erfaren forretningskommunikatør. Skriv en email der afviser [specifik henvendelse] på en måde der holder døren åben for fremtidigt samarbejde. Tone: varm men tydelig.'",
+      "'Skriv en venlig email der siger nej. Undgå at lyde negativ.'"
+    ],
+    correct: 2,
+    explanation: "Den bedste prompt kombinerer rolle, konkret opgave, specifikt mål ('holder døren åben') og præcis tone. De andre prompts mangler enten kontekst, mål eller er for vage til at AI kan ramme rigtigt."
+  },
+  {
+    section: 'c2',
+    // Rigtigt: A (index 0)
+    q: "Du har modtaget en 800 ord lang email fra en kunde med mange spørgsmål. Du har travlt og vil svare hurtigt og præcist. Hvad er den mest effektive fremgangsmåde med AI?",
+    options: [
+      "Indsæt emailen og skriv: 'Jeg vil svare at: [dine punkter i kortform]. Skriv et professionelt svar på maks 150 ord.'",
+      "Bed AI om at opsummere emailen, læs opsummeringen og skriv selv svaret",
+      "Bed AI skrive et fuldt svar baseret på emailen uden at give den dine egne svar",
+      "Brug 80/20-prompten til at identificere de vigtigste spørgsmål i emailen"
+    ],
+    correct: 0,
+    explanation: "Du giver AI din viden (hvad du vil svare) og lader den forme sproget. Det er den optimale arbejdsdeling — din kontekst kombineret med AI's formuleringsevne."
+  },
+  {
+    section: 'c2',
+    // Rigtigt: D (index 3)
+    q: "Du bruger AI's beslutningsanalyse til at vælge mellem to jobstilbud. AI anbefaler job A. Dagen efter viser det sig at AI ikke kendte til en vigtig fordel ved job B som du glemte at nævne. Hvad er læringen?",
+    options: [
+      "AI's beslutningsanalyser er upålidelige og bør ikke bruges til vigtige beslutninger",
+      "Du bør altid bruge to forskellige AI-modeller og sammenligne deres anbefalinger",
+      "AI bør altid spørge dig om flere oplysninger inden den giver en anbefaling",
+      "AI's analyse er kun så god som den information du giver den — garbage in, garbage out"
+    ],
+    correct: 3,
+    explanation: "AI analyserer kun det du fortæller den. Hvis du glemmer vigtig information, mangler analysen det fundament. Det er ikke en fejl i AI — det er en påmindelse om at du skal give AI al relevant kontekst."
+  },
+  {
+    section: 'c2',
+    // Rigtigt: B (index 1)
+    q: "Du beder AI om kritisk feedback på dit arbejde og skriver: 'Hvad synes du om denne tekst?' AI svarer roligt og positivt. Hvad bør du ændre i prompten næste gang?",
+    options: [
+      "'Gennemgå denne tekst som en streng professor og giv karakter fra 1-10'",
+      "'Læs denne tekst og peg på de tre største svagheder. Vær konkret og kritisk. Undgå generel ros.'",
+      "'Hvad er dårligt ved denne tekst?' — vend spørgsmålet fuldstændigt negativt",
+      "'Forestil dig at du er en konkurrent der vil finde fejl i dette — hvad vil du angribe?'"
+    ],
+    correct: 1,
+    explanation: "Specifik, struktureret kritik-prompt er mest effektiv: bed om et konkret antal svagheder, vær eksplicit om at undgå ros, og vær præcis om hvad 'kritisk' betyder. For vage negativt-vendinger giver stadig halvhjertede svar."
+  },
+  {
+    section: 'c2',
+    // Rigtigt: C (index 2)
+    q: "Du skal lære dig grundlaget for et nyt fagområde på 20 minutter inden et møde. Hvilken prompt er mest effektiv?",
+    options: [
+      "'Fortæl mig alt om [emne] på 20 minutter.'",
+      "'Lav en oversigt over [emne] med de vigtigste begreber og definitioner.'",
+      "'Giv mig en 80/20-gennemgang af [emne]: de 20% der giver mig 80% af forståelsen. Afslut med 3 spørgsmål jeg kan stille for at virke informeret.'",
+      "'Hvad er det vigtigste at vide om [emne] for en nybegynder?'"
+    ],
+    correct: 2,
+    explanation: "80/20-prompten er designet præcis til dette: hurtig dybde + konkret output (spørgsmålene) du kan bruge direkte i mødet. De andre prompts er for brede eller giver ikke det strategiske overblik."
+  },
+
+  // ── C3: RAPPORTER OG MØDER (5 spørgsmål) ─────────────────────────────────
+  {
+    section: 'c3',
+    // Rigtigt: D (index 3)
+    q: "Du skal skrive en 10-siders rapport. Du giver AI emnet og beder den skrive rapporten. Hvad er det største problem med denne tilgang?",
+    options: [
+      "AI kan ikke skrive tekster der er over 5 sider — der er en teknisk grænse",
+      "AI kender ikke dit layout og designkrav og vil bruge forkert formatering",
+      "Rapporten vil indeholde for mange tekniske fejl fordi AI ikke er specialiseret",
+      "AI mangler din ekspertviden, dine data og din organisations kontekst — resultatet bliver generisk og potentielt faktuelt forkert"
+    ],
+    correct: 3,
+    explanation: "AI kan skrive flydende tekst, men kender ikke din specifikke situation, data eller organisation. En rapport skrevet uden din kontekst som input vil lyde generisk og kan indeholde forkerte påstande. Korrekt tilgang: giv AI dine noter og lad den forme sproget — ikke omvendt."
+  },
+  {
+    section: 'c3',
+    // Rigtigt: A (index 0)
+    q: "Du sidder i et møde og tager korte rånoter på telefonen. Mødet slutter. Hvad er det smarteste næste skridt med AI?",
+    options: [
+      "Indsæt rånoterne og bed AI lave et struktureret referat med beslutninger, action items og åbne spørgsmål",
+      "Skriv referatet selv mens det er friskt i hukommelsen — AI kan ikke tolke korte rånoter",
+      "Bed AI om at udvide dine rånoter til et fuldt referat uden yderligere instruktioner",
+      "Send rånoterne til deltagerne — det er mere autentisk end et AI-genereret referat"
+    ],
+    correct: 0,
+    explanation: "Præcis denne situation er AI's stærkeste use case i møde-kontekst: du tager minimale noter, AI laver det strukturerede output. Strukturen (beslutninger / action items / åbne spørgsmål) er nøglen til et brugbart referat."
+  },
+  {
+    section: 'c3',
+    // Rigtigt: C (index 2)
+    q: "Du beder AI finpudse din rapport og skriver: 'Ret eventuelle fejl.' Svaret er skuffende — AI ændrer næsten ingenting. Hvad er problemet?",
+    options: [
+      "AI kan ikke redigere tekster den ikke selv har skrevet",
+      "Du skal uploade rapporten som PDF for at AI kan analysere den korrekt",
+      "Prompten er for vag — AI ved ikke om du vil have sproglige rettelser, strukturelle forbedringer eller indholdsmæssig feedback",
+      "Rapporten er sandsynligvis allerede god, og AI bekræfter det"
+    ],
+    correct: 2,
+    explanation: "En vag rediger-prompt giver et vagt output. Vær specifik: 'Forbedre flow og overgange mellem afsnit', 'Ret grammatik og tegnsætning', 'Identificér afsnit der er uklare for en læser udefra'. Hvert fokuspunkt giver et andet og bedre svar."
+  },
+  {
+    section: 'c3',
+    // Rigtigt: B (index 1)
+    q: "Din leder beder om en statusopdatering på et projekt. Du har 10 siders mødenoter og emails. Hvordan bruger du AI mest effektivt?",
+    options: [
+      "Bed AI læse alt materialet og skrive en statusopdatering på egen hånd",
+      "Opsummer selv de vigtigste punkter i 5-8 bullets, giv dem til AI og bed om en statusopdatering på maks 200 ord med fokus på fremskridt, næste skridt og risici",
+      "Kopier al teksten ind og bed AI finde det vigtigste — lad AI bestemme fokus",
+      "Skriv statusopdateringen selv — 10 siders materiale er for meget for AI at behandle"
+    ],
+    correct: 1,
+    explanation: "Du er eksperten der ved hvad der er vigtigt. Opsummer det selv i bullets og lad AI forme det til en poleret statusopdatering. Det er hurtigere og mere præcist end at bede AI finde vigtige punkter i 10 sider tekst den ikke kender konteksten på."
+  },
+  {
+    section: 'c3',
+    // Rigtigt: D (index 3)
+    q: "Du skal til et vigtigt møde om et emne du ikke kender godt. Du har 30 minutter til forberedelse. Hvad er den mest strategiske brug af AI?",
+    options: [
+      "Bed AI skrive et fuldt oplæg som du kan præsentere i mødet",
+      "Brug 80/20-prompten til at lære emnet og bed derefter om en dagsorden du kan foreslå",
+      "Bed AI simulere mødet så du kan øve dig i at svare på spørgsmål",
+      "Brug 80/20-prompten til at lære det vigtigste, og bed AI forberede 5 intelligente spørgsmål du kan stille for at bidrage konstruktivt"
+    ],
+    correct: 3,
+    explanation: "Kombinationen af hurtig indlæring (80/20) og forberedte spørgsmål er den mest strategiske forberedelse. Spørgsmål signalerer forståelse og engagement uden at kræve at du er ekspert — og de åbner samtalen for andre."
+  }
+];
+
+const PASS_SCORE = 12;
+const TOTAL = questions.length;
+let current = 0, score = 0, answered = false;
+let sectionScores = { c1: 0, c2: 0, c3: 0 };
+
+function getSectionLabel(s) {
+  if (s === 'c1') return { text: 'Del C1 — Prompt-teknik', cls: 'badge-c1' };
+  if (s === 'c2') return { text: 'Del C2 — Emails og produktivitet', cls: 'badge-c2' };
+  return { text: 'Del C3 — Rapporter og møder', cls: 'badge-c3' };
+}
+
+function render() {
+  const q = questions[current];
+
+  // section badge
+  const { text, cls } = getSectionLabel(q.section);
+  const badgeWrap = document.getElementById('section-badge-wrap');
+  badgeWrap.innerHTML = `<div class="section-badge ${cls}">${text}</div>`;
+
+  document.getElementById('q-number').textContent   = `Spørgsmål ${current + 1} af ${TOTAL}`;
+  document.getElementById('q-text').textContent     = q.q;
+  document.getElementById('prog-label').textContent = `Spørgsmål ${current + 1} af ${TOTAL}`;
+  document.getElementById('progress-fill').style.width = `${(current / TOTAL) * 100}%`;
+  updateScore();
+
+  const optEl = document.getElementById('options');
+  optEl.innerHTML = '';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letter}</span><span>${q.options[i]}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-next').className  = 'btn-next';
+  answered = false;
+}
+
+function updateScore() {
+  document.getElementById('prog-score').textContent = score === 1 ? '1 rigtig' : `${score} rigtige`;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const isRight = idx === q.correct;
+  if (isRight) {
+    score++;
+    sectionScores[q.section]++;
+  }
+
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct)            btn.classList.add('correct');
+    else if (i === idx && !isRight) btn.classList.add('wrong');
+    else                            btn.classList.add('dimmed');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback show ${isRight ? 'correct-fb' : 'wrong-fb'}`;
+  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = q.explanation;
+
+  const isLast = current === TOTAL - 1;
+  const btn = document.getElementById('btn-next');
+  btn.className = 'btn-next show';
+  btn.innerHTML = isLast ? 'Se resultat <span>→</span>' : 'Næste spørgsmål <span>→</span>';
+  updateScore();
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= TOTAL) showResult();
+  else render();
+}
+
+function showResult() {
+  ['section-badge-wrap','progress-bar-wrap','question-wrap','options','feedback','divider','next-wrap']
+    .forEach(id => {
+      const el = document.getElementById(id) || document.querySelector('.' + id);
+      if (el) el.style.display = 'none';
+    });
+  // hide divider by class
+  document.querySelector('.divider').style.display = 'none';
+
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-icon').textContent  = passed ? '🎉' : '💪';
+  document.getElementById('result-title').textContent = passed ? 'Flot klaret!' : 'Ikke helt endnu';
+  document.getElementById('result-sub').textContent   = passed
+    ? `Du svarede rigtigt på ${score} ud af ${TOTAL} spørgsmål og er klar til den praktiske del!`
+    : `Du fik ${score} ud af ${TOTAL} rigtige. Du skal have mindst ${PASS_SCORE} for at gå videre. Prøv igen!`;
+
+  const badge = document.getElementById('score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${score} / ${TOTAL} rigtige`;
+
+  // breakdown
+  const fmt = (n, tot) => `${n}/${tot}`;
+  const good = n => n >= Math.ceil(5 * 0.8);
+  document.getElementById('bd-c1').textContent = fmt(sectionScores.c1, 5);
+  document.getElementById('bd-c1').className   = `breakdown-score ${good(sectionScores.c1) ? 'good' : 'bad'}`;
+  document.getElementById('bd-c2').textContent = fmt(sectionScores.c2, 5);
+  document.getElementById('bd-c2').className   = `breakdown-score ${good(sectionScores.c2) ? 'good' : 'bad'}`;
+  document.getElementById('bd-c3').textContent = fmt(sectionScores.c3, 5);
+  document.getElementById('bd-c3').className   = `breakdown-score ${good(sectionScores.c3) ? 'good' : 'bad'}`;
+
+  document.getElementById('result-message').innerHTML = passed
+    ? `<strong>Godt arbejde!</strong> Du har vist at du kan anvende teknikkerne fra alle tre dele af Kursus C. Nu mangler kun den praktiske del — her skal du bevise at du KAN bruge AI, ikke bare svare rigtigt om det.`
+    : `<strong>Tip:</strong> Se på fordelingen ovenfor. Gå tilbage og genlæs de dele du scorede lavest i — brug kursusmaterialet som hjælp. Ingen grænse for antal forsøg.`;
+
+  if (passed) document.getElementById('btn-continue').classList.remove('hidden');
+  document.getElementById('result-screen').className = 'result-screen show';
+}
+
+function restartQuiz() {
+  current = 0; score = 0; answered = false;
+  sectionScores = { c1: 0, c2: 0, c3: 0 };
+
+  ['section-badge-wrap','progress-bar-wrap','question-wrap','options','next-wrap']
+    .forEach(id => { const el = document.getElementById(id); if(el) el.style.display = ''; });
+  document.querySelector('.divider').style.display = '';
+  document.getElementById('result-screen').className = 'result-screen';
+  document.getElementById('btn-continue').classList.add('hidden');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
