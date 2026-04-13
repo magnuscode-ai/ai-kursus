@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Mini-quiz C2</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --green-mid:   #c2e8d8;
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --red:         #C0392B;
+      --red-light:   #FDECEA;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --border:      #E2E8F0;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(15,110,86,0.10);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+    }
+
+    .logo-bar {
+      display: flex; align-items: center; gap: 9px;
+      margin-bottom: 2.5rem; text-decoration: none;
+    }
+    .logo-icon {
+      width: 32px; height: 32px; background: var(--blue);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 16px; height: 16px; fill: white; }
+    .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+
+    .card {
+      background: var(--white); border-radius: 20px;
+      box-shadow: var(--shadow); width: 100%; max-width: 640px; overflow: hidden;
+    }
+
+    .quiz-header {
+      background: var(--green); padding: 2rem 2rem 1.5rem; color: white;
+    }
+    .quiz-tag {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.75rem;
+    }
+    .quiz-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; font-weight: 400; line-height: 1.25; margin-bottom: 0.4rem;
+    }
+    .quiz-header p { font-size: 14px; opacity: 0.8; }
+
+    .progress-bar-wrap { padding: 1.25rem 2rem 0; }
+    .progress-meta {
+      display: flex; justify-content: space-between;
+      font-size: 13px; color: var(--muted); margin-bottom: 8px;
+    }
+    .progress-track {
+      height: 6px; background: var(--border); border-radius: 99px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease;
+    }
+
+    .question-wrap { padding: 1.75rem 2rem 0; }
+    .q-number {
+      font-size: 11px; font-weight: 700; color: var(--green);
+      letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem;
+    }
+    .q-text { font-size: 17px; font-weight: 600; line-height: 1.5; color: var(--text); }
+
+    .options { padding: 1.25rem 2rem 0; display: flex; flex-direction: column; gap: 10px; }
+
+    .option-btn {
+      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--bg); border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 13px 16px;
+      cursor: pointer; text-align: left;
+      transition: border-color 0.15s, background 0.15s, transform 0.1s;
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      color: var(--text); line-height: 1.5; width: 100%;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--green); background: var(--green-light); transform: translateY(-1px);
+    }
+    .option-letter {
+      flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+      background: var(--white); border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--muted);
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .option-btn:hover:not(:disabled) .option-letter {
+      background: var(--green); border-color: var(--green); color: white;
+    }
+    .option-btn.correct { border-color: var(--green); background: var(--green-light); }
+    .option-btn.correct .option-letter { background: var(--green); border-color: var(--green); color: white; }
+    .option-btn.wrong   { border-color: var(--red); background: var(--red-light); }
+    .option-btn.wrong .option-letter   { background: var(--red); border-color: var(--red); color: white; }
+    .option-btn.dimmed  { opacity: 0.4; }
+    .option-btn:disabled { cursor: default; transform: none; }
+
+    .feedback {
+      margin: 1rem 2rem 0; padding: 12px 16px; border-radius: var(--radius);
+      font-size: 14px; font-weight: 500; display: none;
+      align-items: flex-start; gap: 10px; line-height: 1.5;
+    }
+    .feedback.show { display: flex; }
+    .feedback.correct-fb { background: var(--green-light); color: var(--green); }
+    .feedback.wrong-fb   { background: var(--red-light);   color: var(--red); }
+    .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+    .next-wrap {
+      padding: 1.25rem 2rem 2rem; display: flex; justify-content: flex-end;
+    }
+    .btn-next {
+      background: var(--green); color: white; border: none;
+      padding: 12px 28px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; display: none; align-items: center; gap: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-next.show { display: flex; }
+    .btn-next:hover { background: #0a5640; transform: translateY(-1px); }
+
+    .divider { height: 1px; background: var(--border); margin: 0 2rem; }
+
+    /* ── RESULT ── */
+    .result-screen {
+      display: none; padding: 2.5rem 2rem;
+      text-align: center; flex-direction: column; align-items: center;
+    }
+    .result-screen.show { display: flex; }
+    .result-icon { font-size: 56px; margin-bottom: 1rem; animation: pop 0.5s cubic-bezier(.36,1.6,.6,1) both; }
+    @keyframes pop { 0%{transform:scale(0.4);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .result-title { font-family: 'DM Serif Display', serif; font-size: 28px; color: var(--text); margin-bottom: 0.5rem; }
+    .result-sub   { font-size: 15px; color: var(--muted); margin-bottom: 1.5rem; max-width: 360px; line-height: 1.6; }
+    .score-badge  {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 24px; border-radius: 99px; font-size: 20px; font-weight: 700; margin-bottom: 1.75rem;
+    }
+    .score-badge.pass { background: var(--green-light); color: var(--green); }
+    .score-badge.fail { background: var(--red-light);   color: var(--red); }
+    .result-message {
+      background: var(--bg); border-radius: var(--radius); padding: 1rem 1.25rem;
+      font-size: 14px; color: var(--muted); line-height: 1.6;
+      text-align: left; width: 100%; margin-bottom: 1.5rem;
+    }
+    .result-message strong { color: var(--text); }
+    .btn-retry {
+      background: white; border: 2px solid var(--border); color: var(--text);
+      padding: 12px 26px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-right: 10px; transition: border-color 0.15s;
+    }
+    .btn-retry:hover { border-color: var(--green); color: var(--green); }
+    .btn-continue {
+      background: var(--green); color: white; border: none;
+      padding: 12px 26px; border-radius: 10px;
+      font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700;
+      cursor: pointer; transition: background 0.15s; text-decoration: none;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn-continue:hover { background: #0a5640; }
+    .btn-continue.hidden { display: none; }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+    @media (max-width: 480px) {
+      .quiz-header { padding: 1.5rem 1.25rem 1.25rem; }
+      .progress-bar-wrap, .question-wrap, .options, .next-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .feedback { margin: 1rem 1.25rem 0; }
+      .divider { margin: 0 1.25rem; }
+      .result-screen { padding: 2rem 1.25rem; }
+      .q-text { font-size: 15px; }
+    }
+  </style>
+</head>
+<body>
+
+  <a href="kursus-c2.html" class="logo-bar">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    <span class="logo-text">LearnAI DK</span>
+  </a>
+
+  <div class="card">
+    <div class="quiz-header">
+      <div class="quiz-tag">Del C2 &nbsp;·&nbsp; Mini-quiz</div>
+      <h1>Tjek din forståelse</h1>
+      <p>6 spørgsmål &nbsp;·&nbsp; Minimum 5 rigtige for at gå videre</p>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="prog-label">Spørgsmål 1 af 6</span>
+        <span id="prog-score">0 rigtige</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-wrap">
+      <div class="q-number" id="q-number">Spørgsmål 1</div>
+      <div class="q-text"  id="q-text"></div>
+    </div>
+
+    <div class="options" id="options"></div>
+
+    <div class="feedback" id="feedback">
+      <span class="feedback-icon" id="fb-icon"></span>
+      <span id="fb-text"></span>
+    </div>
+
+    <div class="divider" style="margin-top:1.25rem;"></div>
+
+    <div class="next-wrap">
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        Næste spørgsmål <span>→</span>
+      </button>
+    </div>
+
+    <div class="result-screen" id="result-screen">
+      <div class="result-icon" id="result-icon"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p class="result-sub"   id="result-sub"></p>
+      <div class="score-badge" id="score-badge"></div>
+      <div class="result-message" id="result-message"></div>
+      <div class="btn-row">
+        <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
+        <a href="kursus-c3.html" class="btn-continue hidden" id="btn-continue">
+          Fortsæt til Del C3 →
+        </a>
+      </div>
+    </div>
+  </div>
+
+<script>
+const questions = [
+  {
+    // Rigtigt svar: A (index 0)
+    q: "Du skal skrive en email til en kunde der ikke har svaret i 10 dage. Hvilken tilgang er mest effektiv?",
+    options: [
+      "Brug AI med prompten: 'Skriv en venlig opfølgning — ikke pressende, men tydeligt at jeg har brug for svar'",
+      "Send en ny email med emnelinjen 'VIGTIGT: Manglende svar'",
+      "Vent yderligere 5 dage og send derefter en meget kortfattet email uden forklaring",
+      "Ring i stedet — AI kan ikke hjælpe med opfølgninger"
+    ],
+    correct: 0,
+    explanation: "Opfølgnings-prompten der specificerer tonen ('venlig men tydelig') giver AI præcis det den skal balancere. At markere emailen som 'VIGTIGT' kan virke aggressivt og skade relationen."
+  },
+  {
+    // Rigtigt svar: C (index 2)
+    q: "Du beder AI skrive en professionel email til en ny samarbejdspartner. Svaret starter med: 'Kære [navn], Jeg håber denne besked finder dig vel.' Hvad er det mest præcise problem?",
+    options: [
+      "AI har brugt forkert tone — det burde være uformelt i stedet",
+      "AI har ikke fulgt en instruktion om maks 100 ord",
+      "Du manglede negativ afgrænsning — du specificerede ikke hvad AI skulle undgå",
+      "Rolleprompt mangler — du burde have sat AI i en HR-rolle"
+    ],
+    correct: 2,
+    explanation: "Klichéindledninger som 'Jeg håber denne besked finder dig vel' er præcis hvad negativ afgrænsning løser. Uden at fortælle AI hvad det skal undgå, falder det tilbage på generiske formuleringer."
+  },
+  {
+    // Rigtigt svar: D (index 3)
+    q: "En kollega siger: 'Jeg bruger altid AI til at skrive hele emails fra bunden og sender dem direkte uden at læse dem.' Hvad er det største problem?",
+    options: [
+      "AI kan ikke skrive emails på dansk — det er ikke det den er designet til",
+      "Det er ulovligt at sende AI-genererede emails i erhvervssammenhæng",
+      "Tilgangen er faktisk optimal — det sparer mest tid og AI er præcis nok",
+      "Emailen mangler personlighed og kontekst som kun du kender, og man mister kontrol over tone og præcision"
+    ],
+    correct: 3,
+    explanation: "AI kender ikke din relation til modtageren, historikken eller nuancerne i situationen. Uden din kontekst og et iterativt tjek risikerer du emails der lyder generiske eller rammer forkert."
+  },
+  {
+    // Rigtigt svar: A (index 0)
+    q: "Du bruger 80/20-prompten til at lære om et nyt emne. AI giver dig et detaljeret og overbevisende svar. Hvad er det vigtigste næste skridt?",
+    options: [
+      "Faktatjekke de vigtigste påstande — 80/20-prompten optimerer for hurtighed, ikke præcision",
+      "Dele svaret direkte med kolleger — AI's svar er pædagogisk optimeret",
+      "Bede AI om endnu mere detalje så du dækker de resterende 80%",
+      "Starte forfra i en ny samtale for at bekræfte at svaret er konsistent"
+    ],
+    correct: 0,
+    explanation: "80/20-prompten er designet til hurtig overblik, ikke verificeret fakta. Det er særlig vigtigt at tjekke specifikke tal, navne og datoer — præcis de ting AI kan hallucere overbevisende."
+  },
+  {
+    // Rigtigt svar: D (index 3)
+    q: "Du beder AI om en beslutningsanalyse mellem to jobtilbud. AI anbefaler job A. Hvad bør du primært bruge analysen til?",
+    options: [
+      "Følge AI's anbefaling — den har overvejet alle faktorer objektivt",
+      "Bede AI lave analysen igen med modsat konklusion for at teste argumenterne",
+      "Ignorere anbefalingen men gemme pro/contra-listen til senere",
+      "Bruge den som struktureret input til din egen vurdering — ikke som en beslutning"
+    ],
+    correct: 3,
+    explanation: "AI kender ikke dine prioriteter, værdier eller livssituation. Analysen er et struktureret tænkeværktøj — ikke en beslutningstrager. Du bruger den til at se din situation klarere, ikke til at delegere valget."
+  },
+  {
+    // Rigtigt svar: B (index 1)  
+    q: "Du giver AI dit udkast til en rapport og beder om 'ærlig kritisk feedback'. AI svarer: 'Dette er et godt udkast. Her er et par småting du kan overveje...' Hvad er det mest sandsynlige problem?",
+    options: [
+      "AI har ikke adgang til at læse længere tekster i én prompt",
+      "Prompten mangler præcision — AI er tilbøjelig til at behage og kræver eksplicit besked om at undgå ros og pege på svagheder",
+      "Rapporten er faktisk god, og AI giver en præcis vurdering",
+      "Du bør bruge en anden AI-model til feedback-opgaver"
+    ],
+    correct: 1,
+    explanation: "AI har en tendens til at rose fremfor at kritisere — det er 'please the user'-bias. Løsningen er at være meget eksplicit: 'Vær særlig kritisk. Peg på svagheder. Undgå generelt ros.' Jo mere præcis du er, jo mere ærlig feedback får du."
+  }
+];
+
+const PASS_SCORE = 5;
+let current = 0, score = 0, answered = false;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('q-number').textContent   = `Spørgsmål ${current + 1}`;
+  document.getElementById('q-text').textContent     = q.q;
+  document.getElementById('prog-label').textContent = `Spørgsmål ${current + 1} af ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
+  updateScore();
+
+  const optEl = document.getElementById('options');
+  optEl.innerHTML = '';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letter}</span><span>${q.options[i]}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optEl.appendChild(btn);
+  });
+
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-next').className  = 'btn-next';
+  answered = false;
+}
+
+function updateScore() {
+  document.getElementById('prog-score').textContent = score === 1 ? '1 rigtig' : `${score} rigtige`;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const isRight = idx === q.correct;
+  if (isRight) score++;
+
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct)            btn.classList.add('correct');
+    else if (i === idx && !isRight) btn.classList.add('wrong');
+    else                            btn.classList.add('dimmed');
+  });
+
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback show ${isRight ? 'correct-fb' : 'wrong-fb'}`;
+  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = q.explanation;
+
+  const isLast = current === questions.length - 1;
+  const btn = document.getElementById('btn-next');
+  btn.className = 'btn-next show';
+  btn.innerHTML = isLast ? 'Se resultat <span>→</span>' : 'Næste spørgsmål <span>→</span>';
+  updateScore();
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showResult();
+  else render();
+}
+
+function showResult() {
+  ['progress-bar-wrap','question-wrap','options','feedback','divider','next-wrap']
+    .forEach(cls => { const el = document.querySelector('.' + cls); if(el) el.style.display = 'none'; });
+
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-icon').textContent  = passed ? '🎉' : '💪';
+  document.getElementById('result-title').textContent = passed ? 'Godt klaret!' : 'Ikke helt endnu';
+  document.getElementById('result-sub').textContent   = passed
+    ? `Du svarede rigtigt på ${score} ud af ${questions.length} — du er klar til Del C3!`
+    : `Du fik ${score} ud af ${questions.length} rigtige. Du skal have mindst ${PASS_SCORE} for at gå videre. Prøv igen!`;
+
+  const badge = document.getElementById('score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${score} / ${questions.length} rigtige`;
+
+  document.getElementById('result-message').innerHTML = passed
+    ? `<strong>Næste skridt:</strong> Du har styr på emails, tone-justering, 80/20-indlæring, beslutningsanalyse og kritisk selvevaluering. Nu er du klar til Del C3 — den sværeste og mest avancerede del af Kursus C.`
+    : `<strong>Tip:</strong> Gå tilbage til Del C2 og gennemgå de moduler du var usikker på. Du må gerne bruge kursusmaterialet som hjælp. Ubegrænsede forsøg — det er meningen at du skal lykkes.`;
+
+  if (passed) document.getElementById('btn-continue').classList.remove('hidden');
+  document.getElementById('result-screen').className = 'result-screen show';
+}
+
+function restartQuiz() {
+  current = 0; score = 0; answered = false;
+  ['progress-bar-wrap','question-wrap','options','divider','next-wrap']
+    .forEach(cls => { const el = document.querySelector('.' + cls); if(el) el.style.display = ''; });
+  document.getElementById('result-screen').className = 'result-screen';
+  document.getElementById('btn-continue').classList.add('hidden');
+  render();
+}
+
+render();
+</script>
+</body>
+</html>
