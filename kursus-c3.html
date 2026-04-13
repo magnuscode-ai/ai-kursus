@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Kursus C3</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --purple:        #6B3FA0;
+      --purple-light:  #F0EAFA;
+      --purple-mid:    #D9C8F0;
+      --blue:          #185FA5;
+      --blue-light:    #E6F1FB;
+      --green:         #0F6E56;
+      --green-light:   #E1F5EE;
+      --orange:        #C45000;
+      --orange-light:  #FFF0E6;
+      --yellow-bg:     #FFF3CD;
+      --yellow-txt:    #856404;
+      --grey:          #F5F5F5;
+      --border:        #E2E8F0;
+      --bg:            #F6F4FB;
+      --white:         #FFFFFF;
+      --text:          #1A1A1A;
+      --muted:         #6B7280;
+      --radius:        14px;
+      --shadow:        0 4px 24px rgba(107,63,160,0.09);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem; display: flex; align-items: center;
+      justify-content: space-between; height: 56px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none;
+    }
+    .logo-icon {
+      width: 30px; height: 30px; background: var(--blue);
+      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag {
+      font-size: 13px; color: var(--muted);
+      background: var(--grey); padding: 5px 12px; border-radius: 20px;
+    }
+
+    /* ── PROGRESS STEPS ── */
+    .steps-bar {
+      background: white; border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem; display: flex; justify-content: center;
+    }
+    .step-item { display: flex; align-items: center; }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.active { background: var(--purple); color: white; box-shadow: 0 0 0 3px var(--purple-light); }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.done   { color: var(--green); }
+    .step-label.active { color: var(--purple); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--purple); color: white;
+      padding: 3rem 1.5rem 2.5rem; text-align: center;
+    }
+    .hero-badge {
+      display: inline-block; background: rgba(255,255,255,0.18);
+      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(26px, 5vw, 38px); font-weight: 400;
+      line-height: 1.2; margin-bottom: 0.75rem;
+    }
+    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+    .hero-meta-item span { font-size: 18px; }
+
+    /* ── CONTENT ── */
+    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+
+    .section-label {
+      font-size: 11px; font-weight: 700; color: var(--purple);
+      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;
+    }
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem;
+    }
+    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+    /* ── MODULE ── */
+    .module {
+      background: white; border: 1px solid var(--border);
+      border-radius: 18px; margin-bottom: 1.5rem;
+      overflow: hidden; box-shadow: var(--shadow);
+    }
+    .module-header {
+      background: var(--purple-light); padding: 1.1rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      cursor: pointer; user-select: none;
+    }
+    .module-header:hover { background: var(--purple-mid); }
+    .module-letter {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--purple); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; flex-shrink: 0;
+    }
+    .module-title-wrap { flex: 1; }
+    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+    .module.open .module-body { display: block; }
+
+    /* ── CONTENT ELEMENTS ── */
+    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+
+    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-box p  { font-size: 14px; line-height: 1.6; }
+    .info-box ul { padding-left: 1.1rem; }
+    .info-box li { font-size: 14px; line-height: 1.7; }
+
+    .box-purple { background: var(--purple-light); }
+    .box-purple .info-box-title { color: var(--purple); }
+    .box-green  { background: var(--green-light); }
+    .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg); }
+    .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey); }
+    .box-grey .info-box-title   { color: #444; }
+
+    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+
+    .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+    .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    .prompt-label {
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem;
+    }
+    .prompt-template {
+      background: #1e2a3a; color: #e2f0fb; border-radius: 10px;
+      padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace;
+      line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap;
+    }
+
+    .technique-tag {
+      display: inline-block; background: var(--purple); color: white;
+      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
+      text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem;
+    }
+
+    .step-box {
+      display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start;
+    }
+    .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--purple); color: white; font-size: 14px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .step-content { flex: 1; }
+    .step-content strong { font-size: 15px; display: block; margin-bottom: 3px; }
+    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* practice */
+    .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .practice li { margin-bottom: 4px; }
+
+    /* summary */
+    .summary {
+      background: var(--purple); border-radius: 16px;
+      padding: 1.75rem; color: white; margin-bottom: 2rem;
+    }
+    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+    /* exam cta */
+    .exam-cta {
+      background: white; border: 2px solid var(--purple);
+      border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow);
+    }
+    .exam-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .exam-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .exam-cta p  { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+    .exam-cta .req {
+      display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt);
+      font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem;
+    }
+    .btn-exam {
+      display: inline-block; background: var(--purple); color: white;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
+      padding: 14px 36px; border-radius: 12px; text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-exam:hover { background: #5a2d90; transform: translateY(-1px); }
+
+    @media (max-width: 480px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.75rem 1rem 3rem; }
+      .module-body { padding: 1.1rem; }
+      .exam-cta { padding: 1.5rem 1rem; }
+      .step-label { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Kursus C — Del 3 af 3</span>
+</nav>
+
+<!-- PROGRESS STEPS -->
+<div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Prompt-teknik</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Emails</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">✓</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot active">C3</div>
+    <span class="step-label active">Rapporter</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">Kursus C &nbsp;·&nbsp; Del 3 af 3</div>
+  <h1>AI til rapporter og møder</h1>
+  <p>Den mest avancerede del af Kursus C. Lær at bruge AI til at strukturere, skrive og forbedre professionelle tekster og møder.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span>⏱</span> 1 time – 1 time 30 min</div>
+    <div class="hero-meta-item"><span>📋</span> 2 moduler</div>
+    <div class="hero-meta-item"><span>🏆</span> Afsluttes med eksamen</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">Del C3</div>
+  <div class="section-title">Næsten i mål</div>
+  <p class="section-body">Du har lært teknikkerne i C1 og brugt dem på emails og produktivitet i C2. Nu anvender vi dem på de tungere opgaver: rapporter, lange tekster og møder. Gennemfør begge moduler og tag derefter den afsluttende eksamen for at få dit Kursus C-bevis.</p>
+
+  <!-- ── MODULE C3.1: RAPPORTER ── -->
+  <div class="module open" id="mod1">
+    <div class="module-header" onclick="toggleModule('mod1')">
+      <div class="module-letter">1</div>
+      <div class="module-title-wrap">
+        <div class="module-title">AI til rapporter og lange tekster</div>
+        <div class="module-sub">Strukturer, skriv og forbedr</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Lange tekster er tidskrævende at skrive. AI kan hjælpe dig med struktur og formuleringer — så du bruger din tid på indholdet, ikke formen.</p>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Vigtig regel</div>
+        <p>Du er eksperten — AI er assistenten. Giv AI dine noter og lad den forme sproget. Tjek altid at fakta er korrekte. Lad aldrig AI opfinde tal og påstande i din rapport.</p>
+      </div>
+
+      <h3 class="subhead">Tre-trins workflow: Fra ideer til færdig tekst</h3>
+
+      <div class="step-box">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <strong>Lav en outline</strong>
+          <p>Start med at bede AI lave en disposition. Det tager under 2 minutter og giver dig et overblik over hele strukturen, inden du skriver et eneste afsnit.</p>
+        </div>
+      </div>
+
+      <div class="prompt-label">Skabelon — Trin 1</div>
+      <div class="prompt-template">"Jeg skal skrive en rapport om [emne] til [målgruppe].
+Længde: ca. [X] sider. Formål: [hvad skal den opnå].
+Lav en disposition med afsnitsoverskrifter og
+kort beskrivelse af indhold i hvert afsnit."</div>
+
+      <div class="step-box">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <strong>Skriv afsnit for afsnit</strong>
+          <p>Tag outlinefra trin 1. Vælg ét afsnit ad gangen. Giv AI dine egne rånoter og lad den skrive et udkast — ret det derefter.</p>
+        </div>
+      </div>
+
+      <div class="prompt-label">Skabelon — Trin 2</div>
+      <div class="prompt-template">"Skriv afsnittet '[overskrift]' baseret på disse noter: [dine punkter].
+Brug en [professionel / akademisk / letlæst] tone.
+Maks [X] ord."</div>
+
+      <div class="step-box">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <strong>Finpuds hele teksten</strong>
+          <p>Når alle afsnit er skrevet, giv AI den samlede tekst og bed den forbedre flow, overgange og konsistens.</p>
+        </div>
+      </div>
+
+      <div class="prompt-label">Skabelon — Trin 3</div>
+      <div class="prompt-template">"Læs følgende tekst og forbedre: flow, overgange
+mellem afsnit, konsistent tone og tydelighed.
+Marker dine ændringer.
+[Indsæt tekst]"</div>
+
+      <hr class="divider">
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Lav en outline på under 2 minutter</div>
+        <p>Vælg et emne du kender: en hobby, dit arbejde, en sport eller et fag fra skolen.</p>
+        <div class="prompt-label" style="margin-top:0.75rem;">Brug denne prompt</div>
+        <p><em>"Lav en disposition til en 2-siders rapport om [emne] til en læser der ikke kender emnet. Inkléér 4 afsnit med overskrifter og 2 bulletpoints pr. afsnit."</em></p>
+        <p style="margin-top:0.75rem;"><strong>Vurdér:</strong> Fik du en brugbar struktur? Hvad ville du ændre?</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Skriv et afsnit fra dine egne noter</div>
+        <ol>
+          <li>Tag outlinenfra forrige opgave. Vælg ét afsnit.</li>
+          <li>Skriv 3–5 korte punkter om hvad du VED om emnet (dit eget indhold).</li>
+          <li>Brug Trin 2-prompten med dine noter.</li>
+        </ol>
+        <p style="margin-top:0.75rem;"><strong>Ret:</strong> Hvad mangler? Hvad er upræcist? Brug iterativ forfining (C1 Teknik 4) til at forbedre det.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Tre typer tekster AI er særlig god til</h3>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">Sammenfatninger</div>
+        <p><em>"Lav en struktureret sammenfatning af følgende tekst. Format: 1) Hovedpointe (2 sætninger), 2) Vigtigste punkter (bullet-liste), 3) Hvad bør jeg gøre nu? [Indsæt tekst]"</em></p>
+      </div>
+
+      <div class="info-box box-grey">
+        <div class="info-box-title">Feedback på din tekst</div>
+        <p><em>"Læs følgende tekst og giv mig konstruktiv feedback. Fokus på: tydelighed, tone, struktur og logik. Vær ærlig og specifik — ikke generelt ros. [Indsæt tekst]"</em></p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">Omskriv til en anden målgruppe</div>
+        <p><em>"Omskriv følgende tekst så den passer til [ny målgruppe]. Behold det samme indhold men tilpas sprog, tone og detaljeniveau. [Indsæt tekst]"</em></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE C3.2: MØDER ── -->
+  <div class="module" id="mod2">
+    <div class="module-header" onclick="toggleModule('mod2')">
+      <div class="module-letter">2</div>
+      <div class="module-title-wrap">
+        <div class="module-title">AI til møder og projekter</div>
+        <div class="module-sub">Før, under og efter</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Møder er en af de største ressourcer i enhver organisation. AI kan hjælpe dig med at gøre dine møder skarpere, kortere og mere handlingsorienterede — både før og efter.</p>
+
+      <span class="technique-tag">Før mødet</span>
+      <h3 class="subhead">Forbered en dagsorden</h3>
+
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Lav en møde dagsorden til et [X]-minutters møde om [emne].
+Deltagere: [hvem]. Formål: [hvad skal vi beslutte].
+Inkléér tid pr. punkt og et punkt til action items til sidst."</div>
+
+      <h3 class="subhead">Forbered spørgsmål</h3>
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Jeg skal til møde om [emne].
+Hjælp mig med 5 gode spørgsmål der viser at
+jeg har forstået emnet og bidrager konstruktivt."</div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Lav en dagsorden til et fiktivt møde</div>
+        <p>Vælg et møde-scenarie:</p>
+        <ul style="padding-left:1.2rem; margin:0.5rem 0;">
+          <li>Nyt projekt skal planlægges</li>
+          <li>Ugentlig teamstatus</li>
+          <li>Planlægning af en event</li>
+          <li>Løsning af et konkret problem</li>
+        </ul>
+        <p style="margin-top:0.5rem;">Brug skabelonen. 5 deltagere. 30 minutter.</p>
+        <p style="margin-top:0.5rem;"><strong>Vurdér:</strong> Er den realistisk? Hvad ville du ændre?</p>
+      </div>
+
+      <hr class="divider">
+
+      <span class="technique-tag">Efter mødet</span>
+      <h3 class="subhead">Omdan rånoter til referat</h3>
+      <p class="prose">Det er her AI virkelig sparer dig for tid. Tag dine hurtige noter fra mødet og lad AI lave et struktureret referat.</p>
+
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Her er mine rånoter fra mødet: [indsæt noter].
+Lav et struktureret referat med:
+1) Vigtigste beslutninger
+2) Action items: hvem gør hvad inden hvornår
+3) Åbne spørgsmål der stadig mangler svar"</div>
+
+      <h3 class="subhead">Statusopdatering til leder</h3>
+      <div class="prompt-label">Skabelon</div>
+      <div class="prompt-template">"Lav en kort statusopdatering baseret på disse noter.
+Maks 200 ord. Fokus: fremskridt, næste skridt, risici.
+[Indsæt noter]"</div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Omdan rånoter til referat</div>
+        <p>Skriv 6–8 rånoter som om du tog dem til et møde (kan være opdigtede).</p>
+        <p style="margin-top:0.5rem;">Eksempel: <em>"Maria kontakter leverandør. Budget max 5.000 kr. Logo skal godkendes fredag. Jonas laver udkast til præsentation."</em></p>
+        <p style="margin-top:0.5rem;">Brug referat-skabelonen og se hvad AI laver ud af det.</p>
+        <p style="margin-top:0.75rem;"><strong>Reflektér:</strong> Hvor meget tid sparede det dig? Hvad manglede AI?</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Det fulde møde-workflow</h3>
+      <div class="info-box box-purple">
+        <div class="info-box-title">Brug AI i alle tre faser</div>
+        <ul>
+          <li><strong>Dag før:</strong> Lav dagsorden + forbered spørgsmål</li>
+          <li><strong>Under mødet:</strong> Tag korte rånoter — AI laver resten</li>
+          <li><strong>Efter mødet:</strong> Referat med action items + statusmail til leder</li>
+        </ul>
+        <p style="margin-top:0.75rem;">Et møde på 1 time kan resultere i et fuldt referat på under 5 minutter.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary">
+    <h3>Del C3 — Hvad du har lært</h3>
+    <ul>
+      <li>Tre-trins workflow: outline → afsnit for afsnit → finpudsning</li>
+      <li>Sammenfatninger, feedback og målgruppe-tilpasning</li>
+      <li>Forberedelse af dagsorden og spørgsmål til møder</li>
+      <li>Omdan rånoter til strukturerede referater med action items</li>
+      <li>Statusopdateringer til leder på under 5 minutter</li>
+    </ul>
+  </div>
+
+  <!-- EXAM CTA -->
+  <div class="exam-cta">
+    <div class="exam-cta-icon">🏆</div>
+    <h2>Klar til den afsluttende eksamen?</h2>
+    <p>Eksamenen tester at du kan anvende teknikkerne fra alle tre dele — ikke bare genkende dem. Du skal have mindst 7 ud af 10 rigtige for at bestå og få dit Kursus C-bevis.</p>
+    <div class="req">⚠ Eksamenen er markant sværere end mini-quizzerne</div><br>
+    <a href="eksamen-c.html" class="btn-exam">Start eksamen →</a>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(id) {
+  const mod = document.getElementById(id);
+  mod.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
