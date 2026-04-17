@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #111827;
+      color: white;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .card {
+      background: #1f2937;
+      padding: 15px;
+      border-radius: 15px;
+    }
+
+    .locked {
+      opacity: 0.4;
+    }
+
+    .level-active {
+      background: #16a34a;
+    }
+
+    .progress-bar {
+      width: 100%;
+      background: #374151;
+      border-radius: 10px;
+      height: 15px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #22c55e;
+      width: 0%;
+    }
+
+    button {
+      padding: 8px 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .btn-green {
+      background: #16a34a;
+      color: white;
+    }
+
+    .btn-blue {
+      background: #2563eb;
+      color: white;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>AI Learning Dashboard</h1>
+
+  <!-- Stats -->
+  <div class="grid grid-3">
+    <div class="card">
+      <p>XP</p>
+      <h2 id="xp">0</h2>
+    </div>
+    <div class="card">
+      <p>Level</p>
+      <h2 id="level">D</h2>
+    </div>
+    <div class="card">
+      <p>Streak 🔥</p>
+      <h2 id="streak">1</h2>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="card" style="margin-top:20px;">
+    <p>Progress to next level</p>
+    <div class="progress-bar">
+      <div id="progress" class="progress-fill"></div>
+    </div>
+  </div>
+
+  <!-- Levels -->
+  <h2 style="margin-top:30px;">Levels</h2>
+  <div class="grid grid-4">
+    <div id="level-D" class="card">Level D</div>
+    <div id="level-C" class="card">Level C</div>
+    <div id="level-B" class="card">Level B</div>
+    <div id="level-A" class="card">Level A</div>
+  </div>
+
+  <!-- Side Courses -->
+  <h2 style="margin-top:30px;">Side Courses</h2>
+  <div class="grid grid-2">
+
+    <div id="course1" class="card">
+      <h3>ChatGPT Basics</h3>
+      <p id="course1-status"></p>
+    </div>
+
+    <div id="course2" class="card">
+      <h3>Tjen penge med AI</h3>
+      <p id="course2-status"></p>
+    </div>
+
+    <div id="course3" class="card">
+      <h3>AI Automation</h3>
+      <p id="course3-status"></p>
+    </div>
+
+    <div id="course4" class="card">
+      <h3>Advanced AI</h3>
+      <p id="course4-status"></p>
+    </div>
+
+  </div>
+
+  <!-- Test button -->
+  <button class="btn-blue" onclick="addXP(50)">+50 XP (Test)</button>
+
+</div>
+
+<script>
+function getXP() {
+  return parseInt(localStorage.getItem("xp")) || 0;
+}
+
+function setXP(xp) {
+  localStorage.setItem("xp", xp);
+}
+
+function getLevel(xp) {
+  if (xp >= 1000) return "A";
+  if (xp >= 500) return "B";
+  if (xp >= 200) return "C";
+  return "D";
+}
+
+function addXP(amount) {
+  let xp = getXP();
+  xp += amount;
+  setXP(xp);
+  updateUI();
+}
+
+function updateUI() {
+  let xp = getXP();
+  let level = getLevel(xp);
+
+  document.getElementById("xp").innerText = xp;
+  document.getElementById("level").innerText = level;
+
+  // Progress bar
+  let progress = (xp % 200) / 2;
+  document.getElementById("progress").style.width = progress + "%";
+
+  // Levels UI
+  ["D","C","B","A"].forEach(l => {
+    document.getElementById("level-" + l).classList.remove("level-active");
+  });
+
+  document.getElementById("level-" + level).classList.add("level-active");
+
+  // Side courses unlock
+  unlockCourse("course1", "course1-status", 100, xp);
+  unlockCourse("course2", "course2-status", 250, xp);
+  unlockCourse("course3", "course3-status", 500, xp);
+  unlockCourse("course4", "course4-status", 1000, xp);
+}
+
+// Unlock logic
+function unlockCourse(id, statusId, requiredXP, xp) {
+  let el = document.getElementById(id);
+  let status = document.getElementById(statusId);
+
+  if (xp >= requiredXP) {
+    el.classList.remove("locked");
+    status.innerHTML = '<button class="btn-green">Start</button>';
+  } else {
+    el.classList.add("locked");
+    status.innerText = "🔒 " + requiredXP + " XP required";
+  }
+}
+
+// STREAK SYSTEM
+function checkStreak() {
+  let today = new Date().toDateString();
+  let lastLogin = localStorage.getItem("lastLogin");
+  let streak = parseInt(localStorage.getItem("streak")) || 1;
+
+  if (lastLogin !== today) {
+    let yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (lastLogin === yesterday.toDateString()) {
+      streak++;
+      addXP(10);
+    } else {
+      streak = 1;
+    }
+
+    localStorage.setItem("streak", streak);
+    localStorage.setItem("lastLogin", today);
+  }
+
+  document.getElementById("streak").innerText = streak;
+}
+
+checkStreak();
+updateUI();
+</script>
+
+</body>
+</html>
