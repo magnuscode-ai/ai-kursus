@@ -13,33 +13,42 @@ body {
   padding:20px;
 }
 
-.card {
+h1 {
+  margin-bottom:20px;
+}
+
+.answer {
   background:#1e293b;
   padding:15px;
-  border-radius:12px;
-  margin-bottom:10px;
+  border-radius:10px;
+  margin:8px 0;
   cursor:pointer;
 }
 
-.card:hover {
+.answer:hover {
   background:#334155;
 }
 
-.correct { background:green !important; }
-.wrong { background:red !important; }
+.correct {
+  background:green !important;
+}
+
+.wrong {
+  background:red !important;
+}
 
 button {
   padding:12px;
   border:none;
   border-radius:10px;
-  cursor:pointer;
   margin-top:20px;
+  background:#16a34a;
+  color:white;
+  cursor:pointer;
 }
 
 #finishBtn {
   display:none;
-  background:#16a34a;
-  color:white;
 }
 </style>
 </head>
@@ -50,19 +59,19 @@ button {
 
 <div id="quiz"></div>
 
-<button id="finishBtn" onclick="finishExam()">Afslut eksamen</button>
+<button id="finishBtn" onclick="completeExam()">Afslut eksamen</button>
 
 <script>
 
-/* SPØRGSMÅL */
+// DATA
 let questions = [
   {
-    q: "Hvad er AI?",
+    q: "Hvad er kunstig intelligens (AI)?",
     answers: [
-      "Computer der tænker som mennesker",
-      "Programmer der genkender mønstre",
-      "Internet forbindelse",
-      "Robotter"
+      "Computer der kan tænke ligesom mennesker",
+      "Computerprogrammer trænet til at løse opgaver ved at genkende mønstre",
+      "En ny type internet-forbindelse",
+      "Robotter der kan bevæge sig rundt"
     ],
     correct: 1
   },
@@ -85,83 +94,15 @@ let questions = [
       "En robot"
     ],
     correct: 1
-  },
-  {
-    q: "Hvad er data?",
-    answers: [
-      "Information",
-      "Mad",
-      "Videoer",
-      "Billeder kun"
-    ],
-    correct: 0
-  },
-  {
-    q: "AI lærer fra?",
-    answers: [
-      "Gæt",
-      "Data",
-      "Mennesker direkte",
-      "Ingenting"
-    ],
-    correct: 1
-  },
-  {
-    q: "Machine learning er?",
-    answers: [
-      "Maskiner der lærer",
-      "Robotter",
-      "Apps",
-      "Spil"
-    ],
-    correct: 0
-  },
-  {
-    q: "AI kan hjælpe med?",
-    answers: [
-      "Emails",
-      "Kode",
-      "Idéer",
-      "Alle ovenstående"
-    ],
-    correct: 3
-  },
-  {
-    q: "Hvad er en prompt?",
-    answers: [
-      "En kommando til AI",
-      "En app",
-      "Et spil",
-      "En fil"
-    ],
-    correct: 0
-  },
-  {
-    q: "AI kan være?",
-    answers: [
-      "Klog",
-      "Dum",
-      "Begge dele",
-      "Ingen"
-    ],
-    correct: 2
-  },
-  {
-    q: "AI fremtid?",
-    answers: [
-      "Vokser",
-      "Forsvinder",
-      "Stopper",
-      "Ingen idé"
-    ],
-    correct: 0
   }
 ];
 
+// VARIABLER
 let score = 0;
-let answered = 0;
+let answeredQuestions = 0;
+let totalQuestions = questions.length;
 
-/* LOAD QUIZ */
+// LOAD QUIZ
 function loadQuiz() {
   let html = "";
 
@@ -170,7 +111,7 @@ function loadQuiz() {
 
     q.answers.forEach((a, index) => {
       html += `
-      <div class="card" onclick="answer(${i}, ${index}, this)">
+      <div class="answer" onclick="answer(${i}, ${index}, this)">
         ${a}
       </div>`;
     });
@@ -179,66 +120,76 @@ function loadQuiz() {
   document.getElementById("quiz").innerHTML = html;
 }
 
-/* ANSWER */
+// SVAR
 function answer(qIndex, aIndex, el) {
 
   let question = questions[qIndex];
 
-  // stop dobbelt svar
+  // stop dobbelt klik
   if (el.parentElement.classList.contains("answered")) return;
 
   el.parentElement.classList.add("answered");
 
-  let cards = el.parentElement.querySelectorAll(".card");
+  let answers = el.parentElement.querySelectorAll(".answer");
 
-  cards.forEach((card, i) => {
-    if (i === question.correct) card.classList.add("correct");
-    else card.classList.add("wrong");
+  answers.forEach((a, i) => {
+    if (i === question.correct) {
+      a.classList.add("correct");
+    } else {
+      a.classList.add("wrong");
+    }
   });
 
   if (aIndex === question.correct) {
     score++;
   }
 
-  answered++;
+  answeredQuestions++;
 
-  // vis knap når færdig
-  if (answered === questions.length) {
+  // vis afslut knap når alle er besvaret
+  if (answeredQuestions === totalQuestions) {
     document.getElementById("finishBtn").style.display = "block";
   }
 }
 
-/* FINISH */
-function finishExam() {
+// AFSLUT EKSAMEN
+function completeExam() {
 
-  let total = questions.length;
-  let required = Math.ceil(total * 0.7);
+  // sikkerhed
+  if (answeredQuestions < totalQuestions) {
+    alert("Du skal svare på alle spørgsmål!");
+    return;
+  }
 
-  if (score < required) {
-    alert("Du bestod ikke (" + score + "/" + total + "). Prøv igen.");
+  let requiredCorrect = Math.ceil(totalQuestions * 0.7);
+
+  // ikke bestået
+  if (score < requiredCorrect) {
+    alert("Du bestod ikke (" + score + "/" + totalQuestions + "). Prøv igen.");
     location.reload();
     return;
   }
 
-  // Anti cheat
+  // anti cheat
   if (localStorage.getItem("d_exam_done") === "true") {
-    alert("Du har allerede gennemført");
+    alert("Du har allerede gennemført eksamen");
     window.location.href = "app.html";
     return;
   }
 
-  // Coins
+  // giv coins
   let coins = parseInt(localStorage.getItem("coins")) || 0;
   coins += 25;
   localStorage.setItem("coins", coins);
 
   localStorage.setItem("d_exam_done", "true");
 
-  alert("Tillykke! Du bestod (" + score + "/" + total + ") og fik 25 coins 🎉");
+  alert("Tillykke! Du bestod (" + score + "/" + totalQuestions + ") og fik 25 coins 🎉");
 
   window.location.href = "app.html";
 }
 
+// START
 loadQuiz();
 
 </script>
