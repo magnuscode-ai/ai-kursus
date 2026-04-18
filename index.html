@@ -491,3 +491,29 @@ document.getElementById('email').addEventListener('keydown',e=>{if(e.key==='Ente
 </script>
 </body>
 </html>
+<button onclick="completeDExam()">Afslut eksamen</button>
+
+<script>
+function completeDExam() {
+
+  // Undgå at få coins flere gange
+  if (localStorage.getItem("d_exam_done") === "true") {
+    alert("Du har allerede gennemført denne eksamen");
+    window.location.href = "app.html";
+    return;
+  }
+
+  // Giv coins
+  let coins = parseInt(localStorage.getItem("coins")) || 0;
+  coins += 25;
+  localStorage.setItem("coins", coins);
+
+  // Gem at den er gennemført
+  localStorage.setItem("d_exam_done", "true");
+
+  alert("Tillykke! Du fik 25 coins 🎉");
+
+  // Send tilbage til app
+  window.location.href = "app.html";
+}
+</script>
