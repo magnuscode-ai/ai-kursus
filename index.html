@@ -1,198 +1,292 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-<meta charset="UTF-8">
-<title>Kursus D – Eksamen</title>
-
-<style>
-body {
-  font-family: Arial;
-  background:#0f172a;
-  color:white;
-  margin:0;
-  padding:20px;
-}
-
-h1 {
-  margin-bottom:20px;
-}
-
-.answer {
-  background:#1e293b;
-  padding:15px;
-  border-radius:10px;
-  margin:8px 0;
-  cursor:pointer;
-}
-
-.answer:hover {
-  background:#334155;
-}
-
-.correct {
-  background:green !important;
-}
-
-.wrong {
-  background:red !important;
-}
-
-button {
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  margin-top:20px;
-  background:#16a34a;
-  color:white;
-  cursor:pointer;
-}
-
-#finishBtn {
-  display:none;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kursus D — Eksamen | LearnAI DK</title>
+  <meta name="description" content="Eksamen til Kursus D på LearnAI DK. Test din viden om AI, prompts og sikker brug.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; line-height: 1.6; }
+    nav { background: white; border-bottom: 1px solid #e8e8e5; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 600; color: #1a1a1a; text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: #185FA5; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
+    .nav-right { display: flex; align-items: center; gap: 12px; }
+    .nav-link { font-size: 14px; color: #666; text-decoration: none; }
+    .nav-btn, button, .btn { background: #185FA5; color: white; border: none; padding: 10px 18px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+    .nav-btn:hover, button:hover, .btn:hover { background: #124b84; }
+    button:disabled { background: #a8b4c0; cursor: not-allowed; }
+    .hero { background: white; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #e8e8e5; text-align: center; }
+    .badge { display: inline-block; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.15; margin-bottom: 1rem; }
+    .hero p { max-width: 660px; margin: 0 auto; color: #555; font-size: 17px; }
+    main { width: min(980px, calc(100% - 2rem)); margin: 2rem auto 4rem; }
+    .card { background: white; border: 1px solid #e8e8e5; border-radius: 18px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 12px 34px rgba(15, 23, 42, 0.05); }
+    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
+    .info-box { background: #f4f7fb; border: 1px solid #dce8f5; border-radius: 14px; padding: 1rem; }
+    .info-box strong { display: block; color: #185FA5; margin-bottom: 0.25rem; }
+    label { display: block; font-weight: 600; margin: 0.75rem 0 0.35rem; }
+    input, textarea { width: 100%; padding: 12px 13px; border: 1px solid #d8d8d4; border-radius: 10px; font: inherit; background: white; }
+    textarea { min-height: 120px; resize: vertical; }
+    .question-top { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1rem; color: #666; font-size: 14px; }
+    .progress-wrap { background: #e8e8e5; height: 8px; border-radius: 999px; overflow: hidden; margin-bottom: 1.25rem; }
+    .progress { height: 100%; width: 0; background: #185FA5; transition: width 0.25s ease; }
+    .question h2 { font-size: clamp(22px, 4vw, 28px); line-height: 1.25; margin-bottom: 1rem; }
+    .answers { display: grid; gap: 0.75rem; }
+    .answer { border: 1px solid #e1e1dc; background: #fbfbfa; border-radius: 13px; padding: 1rem; cursor: pointer; transition: border 0.15s ease, background 0.15s ease, transform 0.15s ease; }
+    .answer:hover { border-color: #185FA5; transform: translateY(-1px); }
+    .answer.correct { background: #eaf7f1; border-color: #0F6E56; color: #0d573f; }
+    .answer.wrong { background: #fff0ee; border-color: #c84435; color: #8b2c22; }
+    .answer.locked { cursor: default; }
+    .answer.locked:hover { transform: none; }
+    .feedback { display: none; margin-top: 1rem; padding: 1rem; border-radius: 13px; background: #f4f7fb; border: 1px solid #dce8f5; }
+    .feedback.show { display: block; }
+    .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
+    .secondary { background: #eef1f4; color: #1a1a1a; }
+    .secondary:hover { background: #dfe5ea; }
+    .hidden { display: none !important; }
+    .result-score { font-size: clamp(36px, 8vw, 64px); line-height: 1; font-weight: 800; color: #185FA5; margin: 0.75rem 0; }
+    .passed { color: #0F6E56; }
+    .failed { color: #c84435; }
+    .review-item { border-top: 1px solid #ecece8; padding: 1rem 0; }
+    .review-item:first-child { border-top: none; }
+    .review-item strong { display: block; margin-bottom: 0.4rem; }
+    .practical-box { background: #f4f7fb; border: 1px solid #dce8f5; border-radius: 14px; padding: 1rem; margin: 1rem 0; }
+    .certificate { border: 2px solid #185FA5; border-radius: 20px; padding: 2rem; text-align: center; background: linear-gradient(135deg, #ffffff, #f2f7fc); margin-top: 1rem; }
+    .certificate h2 { color: #185FA5; font-size: clamp(28px, 6vw, 44px); margin-bottom: 0.75rem; }
+    .certificate .name { font-size: 28px; font-weight: 800; margin: 1rem 0; }
+    .small { color: #666; font-size: 14px; }
+    @media (max-width: 760px) { nav { padding: 0 1rem; } .nav-link { display: none; } .grid { grid-template-columns: 1fr; } .card { padding: 1.1rem; border-radius: 15px; } main { width: min(100% - 1rem, 980px); margin-top: 1rem; } }
+    @media print { nav, .hero, .actions, #intro, #quizCard, #resultCard, #practicalCard { display: none !important; } body { background: white; } main { margin: 0; width: 100%; } .card { box-shadow: none; border: none; } .certificate { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; } }
+  </style>
 </head>
-
 <body>
+  <nav>
+    <a class="logo" href="platform.html">
+      <span class="logo-icon">AI</span>
+      LearnAI DK
+    </a>
+    <div class="nav-right">
+      <a class="nav-link" href="kursus-d.html">Tilbage til Kursus D</a>
+      <a class="nav-btn" href="platform.html">Alle kurser</a>
+    </div>
+  </nav>
 
-<h1>Kursus D – Eksamen</h1>
+  <section class="hero">
+    <span class="badge">Kursus D · Afsluttende eksamen</span>
+    <h1>Bevis at du forstår AI som nybegynder</h1>
+    <p>Eksamen tester det vigtigste fra Kursus D: hvad AI er, hvordan du starter en samtale, hvordan du skriver gode prompts, og hvordan du bruger AI sikkert.</p>
+  </section>
 
-<div id="quiz"></div>
+  <main>
+    <section id="intro" class="card">
+      <h2>Sådan fungerer eksamen</h2>
+      <div class="grid">
+        <div class="info-box"><strong>Del 1</strong>10 multiple choice-spørgsmål. Du skal have mindst 7 rigtige for at bestå.</div>
+        <div class="info-box"><strong>Del 2</strong>En praktisk prompt-opgave, hvor du viser at du kan skrive et godt prompt.</div>
+        <div class="info-box"><strong>Bevis</strong>Når du består, får du et simpelt kursusbevis, som du kan printe eller gemme.</div>
+      </div>
 
-<button id="finishBtn" onclick="completeExam()">Afslut eksamen</button>
+      <label for="studentName">Dit navn</label>
+      <input id="studentName" type="text" placeholder="Skriv dit navn">
 
-<script>
+      <label for="studentEmail">Din e-mail</label>
+      <input id="studentEmail" type="email" placeholder="Skriv din e-mail">
 
-// DATA
-let questions = [
-  {
-    q: "Hvad er kunstig intelligens (AI)?",
-    answers: [
-      "Computer der kan tænke ligesom mennesker",
-      "Computerprogrammer trænet til at løse opgaver ved at genkende mønstre",
-      "En ny type internet-forbindelse",
-      "Robotter der kan bevæge sig rundt"
-    ],
-    correct: 1
-  },
-  {
-    q: "Hvad bruges AI til?",
-    answers: [
-      "Lave mad",
-      "Løse opgaver automatisk",
-      "Kun spil",
-      "Kun robotter"
-    ],
-    correct: 1
-  },
-  {
-    q: "Hvad er ChatGPT?",
-    answers: [
-      "En bil",
-      "En AI chatbot",
-      "En app store",
-      "En robot"
-    ],
-    correct: 1
-  }
-];
+      <div class="actions">
+        <button onclick="startExam()">Start eksamen</button>
+        <a class="btn secondary" href="kursus-d.html">Læs Kursus D igen</a>
+      </div>
+    </section>
 
-// VARIABLER
-let score = 0;
-let answeredQuestions = 0;
-let totalQuestions = questions.length;
+    <section id="quizCard" class="card hidden">
+      <div class="question-top">
+        <span id="questionCounter">Spørgsmål 1 af 10</span>
+        <span id="scoreCounter">0 rigtige</span>
+      </div>
+      <div class="progress-wrap"><div id="progress" class="progress"></div></div>
+      <div id="questionArea"></div>
+    </section>
 
-// LOAD QUIZ
-function loadQuiz() {
-  let html = "";
+    <section id="resultCard" class="card hidden">
+      <span class="badge">Resultat</span>
+      <h2 id="resultTitle">Din score</h2>
+      <div id="resultScore" class="result-score">0/10</div>
+      <p id="resultText"></p>
+      <div class="actions" id="resultActions"></div>
+      <div id="review"></div>
+    </section>
 
-  questions.forEach((q, i) => {
-    html += `<h3>${i+1}. ${q.q}</h3>`;
+    <section id="practicalCard" class="card hidden">
+      <span class="badge">Praktisk opgave</span>
+      <h2>Lav dit eget gode prompt</h2>
+      <p>Nu skal du vise, at du kan bruge de 3 prompt-regler: vær specifik, giv kontekst og bed om et format.</p>
+      <div class="practical-box">
+        <strong>Din opgave:</strong>
+        <p>Skriv et prompt til en AI, der skal hjælpe dig med at lave en venlig og tydelig besked til en lærer om, at du har brug for ekstra tid til en aflevering.</p>
+      </div>
+      <label for="promptAnswer">Dit prompt</label>
+      <textarea id="promptAnswer" placeholder="Eksempel: Jeg er elev i 8. klasse, og jeg skal skrive til min lærer..."></textarea>
+      <div class="actions"><button onclick="checkPractical()">Tjek min opgave</button></div>
+      <div id="practicalFeedback" class="feedback"></div>
+    </section>
 
-    q.answers.forEach((a, index) => {
-      html += `
-      <div class="answer" onclick="answer(${i}, ${index}, this)">
-        ${a}
-      </div>`;
-    });
-  });
+    <section id="certificateCard" class="card hidden">
+      <div class="certificate">
+        <p class="small">LearnAI DK bekræfter hermed, at</p>
+        <div id="certificateName" class="name">Navn</div>
+        <h2>har bestået Kursus D</h2>
+        <p>Eleven har vist grundlæggende forståelse for AI, AI-chatbots, gode prompts og sikker brug af AI.</p>
+        <p class="small" id="certificateDate"></p>
+      </div>
+      <div class="actions">
+        <button onclick="window.print()">Print eller gem bevis</button>
+        <a class="btn" href="kursus-c1.html">Fortsæt til Kursus C1</a>
+        <button class="secondary" onclick="restartExam()">Tag eksamen igen</button>
+      </div>
+    </section>
+  </main>
 
-  document.getElementById("quiz").innerHTML = html;
-}
+  <script>
+    const questions = [
+      { question: "Hvad er kunstig intelligens i Kursus D forklaret som?", answers: ["Kun fysiske robotter, der kan gå rundt", "Programmer, der kan løse opgaver intelligent ved at genkende mønstre", "En normal hjemmeside uden funktioner", "En alarm, der ringer på et fast tidspunkt"], correct: 1, explanation: "AI handler ikke kun om robotter. I kurset lærer du, at AI er programmer, der kan løse opgaver intelligent, fx ved at genkende mønstre." },
+      { question: "Hvilket eksempel fra hverdagen er AI?", answers: ["Netflix anbefaler film til dig", "En simpel lommeregner", "Et stykke papir", "En lampe uden sensor"], correct: 0, explanation: "Netflix bruger AI til at anbefale film og serier baseret på mønstre i det, du og andre ser." },
+      { question: "Hvilken AI-assistent anbefaler Kursus D som udgangspunkt?", answers: ["Claude", "Excel", "PowerPoint", "En lommeregner"], correct: 0, explanation: "Kurset anbefaler Claude som udgangspunkt, men nævner også ChatGPT og Gemini som gode muligheder." },
+      { question: "Hvad er et prompt?", answers: ["Den besked du skriver til AI", "En adgangskode til din computer", "En type virus", "Et billede på en hjemmeside"], correct: 0, explanation: "Et prompt er den besked eller opgave, du giver til AI. Jo bedre prompt, jo bedre svar får du ofte." },
+      { question: "Hvilket prompt er bedst?", answers: ["Hjælp mig", "Skriv noget", "Skriv en venlig mail til min nabo og inviter ham til min fødselsdag næste lørdag kl. 15", "Mail nu"], correct: 2, explanation: "Det bedste prompt er specifikt, giver kontekst og fortæller tydeligt, hvad AI skal lave." },
+      { question: "Hvilke 3 regler lærer du om gode prompts?", answers: ["Skriv kort, skriv surt, skriv tilfældigt", "Vær specifik, giv kontekst, bed om et format", "Brug kun engelsk, brug tal, brug store bogstaver", "Del private oplysninger, skriv hurtigt, stol altid på AI"], correct: 1, explanation: "Kursus D lærer tre enkle prompt-regler: vær specifik, giv kontekst og bed om et format." },
+      { question: "Hvad betyder det, at AI kan hallucere?", answers: ["At AI kan sove", "At AI altid fortæller sandheden", "At AI kan finde på svar, der lyder rigtige, men er forkerte", "At AI kun virker om natten"], correct: 2, explanation: "AI kan nogle gange finde på fakta, der lyder troværdige, men ikke passer. Derfor skal vigtige oplysninger dobbelttjekkes." },
+      { question: "Hvad bør du aldrig dele med AI?", answers: ["En almindelig opskrift", "En tekst du vil have rettet", "Dit CPR-nummer, adgangskoder eller bankoplysninger", "Et generelt hverdagsspørgsmål"], correct: 2, explanation: "Du skal aldrig dele CPR-nummer, adgangskoder, bankoplysninger eller andre meget private oplysninger med AI." },
+      { question: "Hvordan fungerer en AI-samtale typisk?", answers: ["Du skriver, AI svarer, og du kan stille opfølgende spørgsmål", "AI læser automatisk alle dine filer uden at spørge", "AI husker altid alt om dig for evigt", "Du kan kun stille ét spørgsmål"], correct: 0, explanation: "Du skriver til AI, AI svarer, og du kan fortsætte samtalen med opfølgende spørgsmål i samme chat." },
+      { question: "Hvornår er det ekstra vigtigt at dobbelttjekke AI's svar?", answers: ["Når det handler om medicin, jura, tal, datoer eller vigtige beslutninger", "Når AI skriver en sjov historie", "Når du beder om en indkøbsliste", "Når AI forklarer et meget simpelt ord"], correct: 0, explanation: "Vigtige oplysninger, især om medicin, jura, tal, datoer og beslutninger, skal altid tjekkes med en pålidelig kilde." }
+    ];
 
-// SVAR
-function answer(qIndex, aIndex, el) {
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+    let userAnswers = [];
 
-  let question = questions[qIndex];
-
-  // stop dobbelt klik
-  if (el.parentElement.classList.contains("answered")) return;
-
-  el.parentElement.classList.add("answered");
-
-  let answers = el.parentElement.querySelectorAll(".answer");
-
-  answers.forEach((a, i) => {
-    if (i === question.correct) {
-      a.classList.add("correct");
-    } else {
-      a.classList.add("wrong");
+    function startExam() {
+      const name = document.getElementById('studentName').value.trim();
+      if (!name) { alert('Skriv dit navn før du starter.'); return; }
+      document.getElementById('intro').classList.add('hidden');
+      document.getElementById('quizCard').classList.remove('hidden');
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      userAnswers = [];
+      renderQuestion();
     }
-  });
 
-  if (aIndex === question.correct) {
-    score++;
-  }
+    function renderQuestion() {
+      const q = questions[currentQuestion];
+      answered = false;
+      document.getElementById('questionCounter').textContent = `Spørgsmål ${currentQuestion + 1} af ${questions.length}`;
+      document.getElementById('scoreCounter').textContent = `${score} rigtige`;
+      document.getElementById('progress').style.width = `${(currentQuestion / questions.length) * 100}%`;
+      document.getElementById('questionArea').innerHTML = `
+        <div class="question active">
+          <h2>${q.question}</h2>
+          <div class="answers">${q.answers.map((answer, index) => `<div class="answer" onclick="chooseAnswer(${index})">${answer}</div>`).join('')}</div>
+          <div id="feedback" class="feedback"></div>
+          <div class="actions"><button id="nextBtn" disabled onclick="nextQuestion()">${currentQuestion === questions.length - 1 ? 'Se resultat' : 'Næste spørgsmål'}</button></div>
+        </div>`;
+    }
 
-  answeredQuestions++;
+    function chooseAnswer(index) {
+      if (answered) return;
+      answered = true;
+      const q = questions[currentQuestion];
+      const answers = document.querySelectorAll('.answer');
+      answers.forEach((el, i) => {
+        el.classList.add('locked');
+        if (i === q.correct) el.classList.add('correct');
+        if (i === index && i !== q.correct) el.classList.add('wrong');
+      });
+      const isCorrect = index === q.correct;
+      if (isCorrect) score++;
+      userAnswers[currentQuestion] = index;
+      const feedback = document.getElementById('feedback');
+      feedback.classList.add('show');
+      feedback.innerHTML = `<strong>${isCorrect ? 'Rigtigt svar.' : 'Forkert svar.'}</strong><br>${q.explanation}`;
+      document.getElementById('scoreCounter').textContent = `${score} rigtige`;
+      document.getElementById('nextBtn').disabled = false;
+    }
 
-  // vis afslut knap når alle er besvaret
-  if (answeredQuestions === totalQuestions) {
-    document.getElementById("finishBtn").style.display = "block";
-  }
-}
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      } else {
+        showResult();
+      }
+    }
 
-// AFSLUT EKSAMEN
-function completeExam() {
+    function showResult() {
+      document.getElementById('quizCard').classList.add('hidden');
+      document.getElementById('resultCard').classList.remove('hidden');
+      const passed = score >= 7;
+      const resultScore = document.getElementById('resultScore');
+      resultScore.textContent = `${score}/${questions.length}`;
+      resultScore.className = `result-score ${passed ? 'passed' : 'failed'}`;
+      document.getElementById('resultTitle').textContent = passed ? 'Du bestod del 1' : 'Du bestod ikke endnu';
+      document.getElementById('resultText').textContent = passed ? 'Flot arbejde. Du har forstået det vigtigste fra Kursus D og kan fortsætte til den praktiske opgave.' : 'Du skal have mindst 7 rigtige. Læs gerne Kursus D igen og prøv eksamen en gang til.';
+      document.getElementById('resultActions').innerHTML = passed ? '<button onclick="openPractical()">Gå til praktisk opgave</button><button class="secondary" onclick="restartExam()">Tag eksamen igen</button>' : '<button onclick="restartExam()">Prøv igen</button><a class="btn secondary" href="kursus-d.html">Læs Kursus D igen</a>';
+      renderReview();
+    }
 
-  // sikkerhed
-  if (answeredQuestions < totalQuestions) {
-    alert("Du skal svare på alle spørgsmål!");
-    return;
-  }
+    function renderReview() {
+      const review = document.getElementById('review');
+      review.innerHTML = '<h3>Gennemgang af dine svar</h3>' + questions.map((q, i) => {
+        const chosen = userAnswers[i];
+        const correct = chosen === q.correct;
+        return `<div class="review-item"><strong>${i + 1}. ${q.question}</strong><p>Dit svar: ${q.answers[chosen] || 'Intet svar'}</p><p>Rigtigt svar: ${q.answers[q.correct]}</p><p class="${correct ? 'passed' : 'failed'}">${correct ? 'Rigtigt' : 'Forkert'}</p></div>`;
+      }).join('');
+    }
 
-  let requiredCorrect = Math.ceil(totalQuestions * 0.7);
+    function openPractical() {
+      document.getElementById('resultCard').classList.add('hidden');
+      document.getElementById('practicalCard').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-  // ikke bestået
-  if (score < requiredCorrect) {
-    alert("Du bestod ikke (" + score + "/" + totalQuestions + "). Prøv igen.");
-    location.reload();
-    return;
-  }
+    function checkPractical() {
+      const answer = document.getElementById('promptAnswer').value.trim();
+      const lower = answer.toLowerCase();
+      let points = 0;
+      if (answer.length >= 120) points++;
+      if (lower.includes('jeg er') || lower.includes('elev') || lower.includes('klasse')) points++;
+      if (lower.includes('lærer') || lower.includes('aflevering')) points++;
+      if (lower.includes('venlig') || lower.includes('tydelig') || lower.includes('kort')) points++;
+      if (lower.includes('besked') || lower.includes('mail') || lower.includes('format') || lower.includes('punkt')) points++;
+      const feedback = document.getElementById('practicalFeedback');
+      feedback.classList.add('show');
+      if (points >= 4) {
+        feedback.innerHTML = '<strong>Godkendt praktisk opgave.</strong><br>Dit prompt har både kontekst, en tydelig opgave og et ønsket resultat. Du har bestået Kursus D.';
+        setTimeout(showCertificate, 900);
+      } else {
+        feedback.innerHTML = '<strong>Ikke helt klar endnu.</strong><br>Prøv at gøre dit prompt mere specifikt. Husk at fortælle hvem du er, hvad situationen er, og hvilket format du vil have svaret i.';
+      }
+    }
 
-  // anti cheat
-  if (localStorage.getItem("d_exam_done") === "true") {
-    alert("Du har allerede gennemført eksamen");
-    window.location.href = "app.html";
-    return;
-  }
+    function showCertificate() {
+      const name = document.getElementById('studentName').value.trim();
+      document.getElementById('practicalCard').classList.add('hidden');
+      document.getElementById('certificateCard').classList.remove('hidden');
+      document.getElementById('certificateName').textContent = name;
+      document.getElementById('certificateDate').textContent = `Bestået den ${new Date().toLocaleDateString('da-DK')} · Score: ${score}/${questions.length}`;
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-  // giv coins
-  let coins = parseInt(localStorage.getItem("coins")) || 0;
-  coins += 25;
-  localStorage.setItem("coins", coins);
-
-  localStorage.setItem("d_exam_done", "true");
-
-  alert("Tillykke! Du bestod (" + score + "/" + totalQuestions + ") og fik 25 coins 🎉");
-
-  window.location.href = "app.html";
-}
-
-// START
-loadQuiz();
-
-</script>
-
+    function restartExam() {
+      document.getElementById('resultCard').classList.add('hidden');
+      document.getElementById('practicalCard').classList.add('hidden');
+      document.getElementById('certificateCard').classList.add('hidden');
+      document.getElementById('intro').classList.remove('hidden');
+      document.getElementById('promptAnswer').value = '';
+      document.getElementById('practicalFeedback').classList.remove('show');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
 </body>
 </html>
