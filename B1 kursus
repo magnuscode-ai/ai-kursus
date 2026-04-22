@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+  <html lang="da">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnAI DK — Kursus B1</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --blue:        #185FA5;
+        --blue-light:  #E6F1FB;
+        --blue-mid:    #c8dff5;
+        --green:       #0F6E56;
+        --green-light: #E1F5EE;
+        --orange:      #C45000;
+        --orange-light:#FFF0E6;
+        --yellow-bg:   #FFF3CD;
+        --yellow-txt:  #856404;
+        --purple:      #5B2A86;
+        --purple-light:#EFE5FA;
+        --red:         #B42318;
+        --red-light:   #FEE4E2;
+        --grey:        #F5F5F5;
+        --border:      #E2E8F0;
+        --bg:          #F4F7FB;
+        --white:       #FFFFFF;
+        --text:        #1A1A1A;
+        --muted:       #6B7280;
+        --radius:      14px;
+        --shadow:      0 4px 24px rgba(91,42,134,0.10);
+      }
+
+      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+      nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+      .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+      .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+      .logo-icon svg { width: 15px; height: 15px; fill: white; }
+      .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+      .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+      .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+      .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+      .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+      .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+      .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+      .hero-meta-item span { font-size: 18px; }
+
+      .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+      .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
+      .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+      .step-dot.active { background: var(--purple); color: white; }
+      .step-dot.done   { background: var(--green); color: white; }
+      .step-dot.next   { background: var(--border); color: var(--muted); }
+      .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+      .step-label.active { color: var(--purple); }
+      .step-label.done   { color: var(--green); }
+      .step-label.next   { color: var(--muted); }
+      .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+      .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+      .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+      .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+      .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+      .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+      .module-header:hover { background: #e3d2f5; }
+      .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+      .module-title-wrap { flex: 1; }
+      .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+      .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+      .module.open .module-toggle { transform: rotate(45deg); }
+      .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+      .module.open .module-body { display: block; }
+
+      .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+      .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+      .info-box p { font-size: 14px; line-height: 1.6; }
+      .info-box ul { padding-left: 1.1rem; }
+      .info-box li { font-size: 14px; line-height: 1.7; }
+      .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+      .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+      .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+      .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+      .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+      .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+      .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
+
+      h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+      .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+      .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+      .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+      .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+      .practice ol { padding-left: 1.2rem; }
+      .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+      .practice li { margin-bottom: 4px; }
+
+      .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+      .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+      .summary ul { padding-left: 1.2rem; }
+      .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+      .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+      .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+      .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+      .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+      .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+      .btn-quiz:hover { background: #46206a; transform: translateY(-1px); }
+
+      .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+      .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+      .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+      @media (max-width: 600px) {
+        .hero { padding: 2rem 1rem 1.75rem; }
+        .content { padding: 1.75rem 1rem 3rem; }
+        .module-body { padding: 1.1rem; }
+        .quiz-cta { padding: 1.5rem 1rem; }
+        .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+        .step-label { display: none; }
+        .step-arrow { margin: 0 2px; }
+      }
+    </style>
+  </head>
+  <body>
+
+  <nav>
+    <a href="platform.html" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+      </div>
+      LearnAI DK
+    </a>
+    <span class="nav-tag">Kursus B — Del 1 af 5</span>
+  </nav>
+
+  <div class="steps-bar">
+  <div class="step-item">
+      <div class="step-dot active">B1</div>
+      <span class="step-label active">Prompting</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q1</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B2</div>
+      <span class="step-label next">RAG</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q2</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B3</div>
+      <span class="step-label next">Tools</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q3</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B4</div>
+      <span class="step-label next">Agenter</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q4</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B5</div>
+      <span class="step-label next">Produktion</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">🏆</div>
+      <span class="step-label next">Eksamen</span>
+    </div>
+</div>
+
+  <div class="hero">
+    <div class="hero-badge">Kursus B &nbsp;·&nbsp; Del 1 af 5</div>
+    <h1>Avanceret prompting og struktureret output</h1>
+    <p>Tag springet fra hobbybruger til power-user. Few-shot, system-prompts, struktureret JSON-output og evaluering — på rigtig.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span>⏱</span> 1,5 – 2 timer</div>
+      <div class="hero-meta-item"><span>📋</span> 4 moduler</div>
+      <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="module open" id="mod1">
+      <div class="module-header" onclick="toggleModule('mod1')">
+        <div class="module-letter">1</div>
+        <div class="module-title-wrap">
+          <div class="module-title">System-prompts vs. user-prompts</div>
+          <div class="module-sub">Adskil rolle, regler og opgave — det første professionelle skridt</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Indtil nu har du kun skrevet "user-prompts" — almindelige beskeder i chatten. Bag kulisserne har modellen tre slags beskeder den læser: <strong>system</strong>, <strong>user</strong> og <strong>assistant</strong>. Forskellen er afgørende.</p>
+
+        <h3 class="subhead">De tre rolletyper</h3>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">System-prompt</div>
+          <p>Vedvarende regler, identitet og output-format. Læses af modellen <em>før</em> hver eneste user-besked. Bruges til at fastholde tone, rolle og restriktioner gennem hele samtalen.<br><br>
+          <strong>Eksempel:</strong> "Du er en juridisk research-assistent. Svar altid på dansk. Citér aldrig lovparagraffer uden at advare om at det skal verificeres."</p>
+        </div>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">User-prompt</div>
+          <p>Den konkrete opgave eller spørgsmål i den enkelte runde. Skiftende, situationsbestemt.</p>
+        </div>
+
+        <div class="info-box box-green">
+          <div class="info-box-title">Assistant-turn</div>
+          <p>Modellens svar — som du faktisk kan <em>redigere</em> i API-kald og bruge som "few-shot eksempel" til at vise modellen hvordan svar skal se ud (mere om det i Modul 2).</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Hvorfor system-prompts er stærkere end almindelige beskeder</h3>
+        <ul class="bullet-list">
+          <li>De "spises" ikke af kontekstvinduet på samme måde — de er altid med</li>
+          <li>De kan håndhæve regler modellen ellers ville glemme efter 10 beskeder</li>
+          <li>De separerer <em>hvordan</em> AI'en skal opføre sig fra <em>hvad</em> du beder om</li>
+        </ul>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Lav din første system-prompt</div>
+          <ol>
+            <li>Åbn Claude → Projects (eller ChatGPT → Custom Instructions)</li>
+            <li>Skriv som system-prompt:<br><em>"Du er en kritisk korrekturlæser. Når jeg sender en tekst: (1) ret stavefejl direkte, (2) marker uklare sætninger med [UKLAR], (3) foreslå én bedre formulering pr. afsnit. Aldrig generelle ros. Aldrig 'overordnet er teksten god'."</em></li>
+            <li>Test ved at sende 3 forskellige tekster i samme samtale.</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Bemærk hvor stabilt formatet holder over flere runder — sammenlign med hvis du havde skrevet samme regler som user-prompt én gang.</p>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod2">
+      <div class="module-header" onclick="toggleModule('mod2')">
+        <div class="module-letter">2</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Few-shot prompting</div>
+          <div class="module-sub">Lær AI'en formatet ved at vise — ikke ved at forklare</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">En af de største erkendelser i prompt-engineering: hvis du vil have AI til at producere noget i et bestemt format, er det næsten altid mere effektivt at <strong>vise 2-3 eksempler</strong> end at beskrive formatet i 200 ord.</p>
+
+        <span class="technique-tag">Teknik 1</span>
+        <h3 class="subhead">Zero-shot vs. one-shot vs. few-shot</h3>
+
+        <div class="info-box box-grey">
+          <div class="info-box-title">Begreber</div>
+          <ul>
+            <li><strong>Zero-shot:</strong> "Klassificér denne anmeldelse som positiv eller negativ."</li>
+            <li><strong>One-shot:</strong> Du giver ét eksempel før din rigtige opgave.</li>
+            <li><strong>Few-shot:</strong> Du giver 2-5 eksempler. Modellen mønstergenkender og imiterer.</li>
+          </ul>
+        </div>
+
+        <div class="code-label">Few-shot prompt — eksempel</div>
+        <div class="code-block">Klassificér kunde-feedback i: POSITIV, NEGATIV eller NEUTRAL.
+
+  Tekst: "Levering tog 8 dage, men produktet er fint."
+  Kategori: NEUTRAL
+
+  Tekst: "Den bedste support jeg har oplevet."
+  Kategori: POSITIV
+
+  Tekst: "Hjemmesiden gik ned tre gange under check-out."
+  Kategori: NEGATIV
+
+  Tekst: "Prisen er ok, men kvaliteten lever ikke op til den."
+  Kategori:</div>
+
+        <p class="prose">Modellen vil næsten garanteret svare med kun ét ord — fordi mønstret er åbenlyst. Det er few-shot's superkraft: du programmerer formatet ind via eksempler.</p>
+
+        <hr class="divider">
+
+        <span class="technique-tag">Teknik 2</span>
+        <h3 class="subhead">Diversitet i eksemplerne</h3>
+        <p class="prose">En klassisk fejl: alle dine few-shot eksempler ligner hinanden. Modellen mønstergenkender det forkerte mønster.</p>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Tommelfingerregel</div>
+          <p>Hvis du giver 3 eksempler, så lad mindst <strong>ét</strong> være en kant-case (kort tekst, tvetydigt indhold, eller en sjælden kategori). Det fortæller modellen at variation er forventet.</p>
+        </div>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Klassificér emails</div>
+          <ol>
+            <li>Skriv en few-shot prompt der klassificerer emails i: SPAM, NYHEDSBREV, ARBEJDE, PRIVAT.</li>
+            <li>Giv 4 eksempler — gør ét af dem bevidst tvetydigt (fx en arbejds-email der lyder privat).</li>
+            <li>Test med 5 nye emails.</li>
+            <li>Tæl rigtige svar. Lav derefter samme test <strong>uden</strong> few-shot — bare en beskrivelse af kategorierne.</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Notér forskellen i nøjagtighed. Det er typisk dramatisk.</p>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod3">
+      <div class="module-header" onclick="toggleModule('mod3')">
+        <div class="module-letter">3</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Struktureret output (JSON)</div>
+          <div class="module-sub">Få AI til at returnere data du faktisk kan bruge i kode</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Hvis du nogensinde vil bruge AI som en del af et program — en hjemmeside, en app, et regneark — så kan modellen <strong>ikke</strong> svare i flydende prosa. Den skal returnere data i et fast format. JSON er standarden.</p>
+
+        <h3 class="subhead">Det grundlæggende mønster</h3>
+
+        <div class="code-label">Prompt</div>
+        <div class="code-block">Udtræk navn, email og telefonnummer fra teksten herunder.
+  Returnér KUN gyldig JSON i dette skema:
+
+  {
+    "navn": string,
+    "email": string | null,
+    "telefon": string | null
+  }
+
+  Hvis et felt ikke findes, brug null. Ingen forklaring. Ingen markdown.
+
+  Tekst:
+  "Hej, jeg hedder Magnus Jensen. Du kan fange mig på 22334455."</div>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">Hvorfor det her er svært</div>
+          <p>Modellen vil <em>elske</em> at sige "Selvfølgelig! Her er JSON'en:" og pakke det ind i markdown-blokke. Det knækker enhver parser. Du skal være eksplicit om: <strong>kun gyldig JSON</strong>, <strong>ingen forklaring</strong>, <strong>ingen markdown-fences</strong>.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Brug "Structured Output" / "JSON mode" hvis du har det</h3>
+        <p class="prose">Både OpenAI og Anthropic tilbyder en API-funktion hvor du afleverer et <strong>JSON-schema</strong>, og modellen er <em>tvunget</em> til at returnere noget der validerer mod det. Det er mere robust end at håbe på at modellen følger reglerne i prompten.</p>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">I praksis</div>
+          <ul>
+            <li><strong>OpenAI:</strong> <code>response_format: { type: "json_schema", schema: ... }</code></li>
+            <li><strong>Anthropic Claude:</strong> brug <code>tool_use</code> med en tool der definerer det skema du vil have</li>
+            <li><strong>I chat-vinduet:</strong> du kan ikke bruge schema-tvang — du må stole på prompt-disciplin</li>
+          </ul>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Almindelige fælder</h3>
+        <ul class="bullet-list">
+          <li>Modellen tilføjer trailing commas (gyldig JS, ugyldig JSON)</li>
+          <li>Den svarer på dansk inde i string-felterne selv om dit schema er engelsk — det er fint, men vær konsekvent</li>
+          <li>Den finder på ekstra felter du ikke har bedt om — sig eksplicit "ingen ekstra felter"</li>
+          <li>Den returnerer en liste når du bad om ét objekt — vis et eksempel-objekt i prompten</li>
+        </ul>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Byg en mini-extractor</div>
+          <ol>
+            <li>Definér et JSON-skema for en kalender-aftale: <code>titel, dato, starttid, varighed_minutter, deltagere[]</code></li>
+            <li>Bed AI om at udtrække det fra: <em>"Frokost med Sara og Jonas på torsdag den 24. kl. 12.30 — varer en time"</em></li>
+            <li>Stress-test med en vag tekst: <em>"Måske noget med Mark i næste uge?"</em> — hvad gør modellen ved manglende felter?</li>
+          </ol>
+          <p style="margin-top:0.75rem;">En god prompt på B-niveau gør modellen <em>forsigtig</em> ved manglende info i stedet for at gætte.</p>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod4">
+      <div class="module-header" onclick="toggleModule('mod4')">
+        <div class="module-letter">4</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Evaluering: hvordan ved du om din prompt er god?</div>
+          <div class="module-sub">Hold op med at "føle" — mål det</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">På C-niveau forfinede du prompts ved at læse svaret og tænke "ja, fint nok". På B-niveau gør du det ikke længere. Du laver et lille <strong>test-sæt</strong> og scorer.</p>
+
+        <h3 class="subhead">Den enkleste evaluerings-loop</h3>
+        <ol class="numbered-list">
+          <li>Skriv 10 realistiske input-eksempler (variér sværhedsgrad).</li>
+          <li>Skriv selv det "perfekte" output for hver — det er din facit-liste.</li>
+          <li>Kør prompten på alle 10. Tæl rigtige.</li>
+          <li>Ændr ét element i prompten ad gangen. Kør igen. Sammenlign score.</li>
+        </ol>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Hvorfor "ét element ad gangen"?</div>
+          <p>Hvis du ændrer rolle, format og eksempler samtidig og scoren falder — du aner ikke <em>hvad</em> der gjorde det værre. Det her er den vigtigste vane på B-niveau.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Sværere: LLM-as-a-judge</h3>
+        <p class="prose">Når output ikke kan tjekkes med en enkel regel (fx "er en oversættelse god?"), kan du bruge AI til at bedømme AI. Lad én model lave svaret, og en anden (eller samme med en streng system-prompt) score det fra 1-5.</p>
+
+        <div class="code-label">Judge-prompt — eksempel</div>
+        <div class="code-block">Du er en streng evaluator. Her er en opgave og et svar.
+  Score svaret 1-5 på:
+  - Faktuel korrekthed
+  - Følger formatet
+  - Svarer på det der blev spurgt om
+
+  Returnér KUN: {"korrekthed": n, "format": n, "relevans": n, "kommentar": "..."}
+
+  Opgave: ...
+  Svar: ...</div>
+
+        <div class="info-box box-green">
+          <div class="info-box-title">Tip — undgå "ja-sigeri"</div>
+          <p>Modeller har en stærk tendens til at give høje scores hvis du spørger blødt. Brug ord som "kritisk", "streng", "find fejl". Bed eksplicit om at score under 3 hvis der er <em>nogen</em> fejl.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Token- og omkostningsbevidsthed</h3>
+        <p class="prose">På B-niveau begynder du at tænke på pris. Et kald til GPT-4-class koster typisk 0,01-0,10 kr afhængigt af længde. Hvis din prompt løber 1000 gange om dagen, betyder det noget.</p>
+
+        <ul class="bullet-list">
+          <li>Lange system-prompts og few-shot eksempler tæller med <em>hver</em> gang</li>
+          <li>Kortere modeller (GPT-4o-mini, Claude Haiku) er 10-30× billigere — test om de kan klare opgaven først</li>
+          <li>Cache identiske system-prompts hvis API'et understøtter det (Claude og OpenAI gør)</li>
+        </ul>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Byg dit første eval-sæt</div>
+          <ol>
+            <li>Vælg en prompt du har skrevet i en af de tidligere øvelser.</li>
+            <li>Lav 5 input-cases + 5 facit-svar.</li>
+            <li>Kør prompten og giv den en score (X / 5).</li>
+            <li>Lav <strong>én</strong> ændring (fx tilføj eksempel, eller stram system-prompt).</li>
+            <li>Kør igen. Blev scoren højere eller lavere?</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Velkommen til prompt-engineering med tal i stedet for fornemmelser.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>Del B1 — Hvad du har lært</h3>
+      <ul>
+        <li>Forskellen på system-, user- og assistant-prompts — og hvornår hvilken bruges</li>
+      <li>Few-shot prompting og hvorfor 3 eksempler slår 200 ords forklaring</li>
+      <li>Diversitet i few-shot eksempler (kant-cases tæller dobbelt)</li>
+      <li>Struktureret JSON-output og de typiske fælder</li>
+      <li>Schema-tvang via API'ets structured output / tool use</li>
+      <li>Evaluerings-loops: test-sæt, ét-element-ad-gangen, LLM-as-judge</li>
+      <li>Token-økonomi og hvornår du bør skifte til en mindre model</li>
+      </ul>
+    </div>
+
+    <div class="quiz-cta">
+      <div class="quiz-cta-icon">📝</div>
+      <h2>Klar til mini-quizzen?</h2>
+      <p>Quizzen for B1 er sværere end på C-niveau — der er færre "gimme"-spørgsmål og flere praktiske scenarier. Du skal have mindst 7 ud af 8 rigtige.</p>
+      <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+      <a href="quiz-b1.html" class="btn-quiz">Start mini-quiz B1 →</a>
+    </div>
+
+  </div>
+
+  <script>
+  function toggleModule(id) {
+    const mod = document.getElementById(id);
+    mod.classList.toggle('open');
+  }
+  </script>
+
+  </body>
+  </html>
+  
