@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+  <html lang="da">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnAI DK — Kursus B4</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --blue:        #185FA5;
+        --blue-light:  #E6F1FB;
+        --blue-mid:    #c8dff5;
+        --green:       #0F6E56;
+        --green-light: #E1F5EE;
+        --orange:      #C45000;
+        --orange-light:#FFF0E6;
+        --yellow-bg:   #FFF3CD;
+        --yellow-txt:  #856404;
+        --purple:      #5B2A86;
+        --purple-light:#EFE5FA;
+        --red:         #B42318;
+        --red-light:   #FEE4E2;
+        --grey:        #F5F5F5;
+        --border:      #E2E8F0;
+        --bg:          #F4F7FB;
+        --white:       #FFFFFF;
+        --text:        #1A1A1A;
+        --muted:       #6B7280;
+        --radius:      14px;
+        --shadow:      0 4px 24px rgba(91,42,134,0.10);
+      }
+
+      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+      nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+      .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+      .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+      .logo-icon svg { width: 15px; height: 15px; fill: white; }
+      .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+      .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+      .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+      .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+      .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+      .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+      .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+      .hero-meta-item span { font-size: 18px; }
+
+      .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+      .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
+      .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+      .step-dot.active { background: var(--purple); color: white; }
+      .step-dot.done   { background: var(--green); color: white; }
+      .step-dot.next   { background: var(--border); color: var(--muted); }
+      .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+      .step-label.active { color: var(--purple); }
+      .step-label.done   { color: var(--green); }
+      .step-label.next   { color: var(--muted); }
+      .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+      .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+      .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+      .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+      .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+      .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+      .module-header:hover { background: #e3d2f5; }
+      .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+      .module-title-wrap { flex: 1; }
+      .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+      .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+      .module.open .module-toggle { transform: rotate(45deg); }
+      .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+      .module.open .module-body { display: block; }
+
+      .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+      .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+      .info-box p { font-size: 14px; line-height: 1.6; }
+      .info-box ul { padding-left: 1.1rem; }
+      .info-box li { font-size: 14px; line-height: 1.7; }
+      .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+      .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+      .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+      .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+      .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+      .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+      .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
+
+      h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+      .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+      .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+      .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+      .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+      .practice ol { padding-left: 1.2rem; }
+      .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+      .practice li { margin-bottom: 4px; }
+
+      .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+      .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+      .summary ul { padding-left: 1.2rem; }
+      .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+      .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+      .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+      .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+      .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+      .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+      .btn-quiz:hover { background: #46206a; transform: translateY(-1px); }
+
+      .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+      .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+      .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+      @media (max-width: 600px) {
+        .hero { padding: 2rem 1rem 1.75rem; }
+        .content { padding: 1.75rem 1rem 3rem; }
+        .module-body { padding: 1.1rem; }
+        .quiz-cta { padding: 1.5rem 1rem; }
+        .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+        .step-label { display: none; }
+        .step-arrow { margin: 0 2px; }
+      }
+    </style>
+  </head>
+  <body>
+
+  <nav>
+    <a href="platform.html" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+      </div>
+      LearnAI DK
+    </a>
+    <span class="nav-tag">Kursus B — Del 4 af 5</span>
+  </nav>
+
+  <div class="steps-bar">
+  <div class="step-item">
+      <div class="step-dot done">B1</div>
+      <span class="step-label done">Prompting</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q1</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">B2</div>
+      <span class="step-label done">RAG</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q2</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">B3</div>
+      <span class="step-label done">Tools</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q3</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot active">B4</div>
+      <span class="step-label active">Agenter</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q4</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B5</div>
+      <span class="step-label next">Produktion</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q5</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">🏆</div>
+      <span class="step-label next">Eksamen</span>
+    </div>
+</div>
+
+  <div class="hero">
+    <div class="hero-badge">Kursus B &nbsp;·&nbsp; Del 4 af 5</div>
+    <h1>Multi-step agenter og workflows</h1>
+    <p>Når én tool-loop ikke er nok. Planning, ReAct, reflection, multi-agent samarbejde — og hvornår man skal lade være.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span>⏱</span> 2 – 2,5 timer</div>
+      <div class="hero-meta-item"><span>📋</span> 5 moduler</div>
+      <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="module open" id="mod1">
+      <div class="module-header" onclick="toggleModule('mod1')">
+        <div class="module-letter">1</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Workflow vs. agent: den vigtigste skelnen</div>
+          <div class="module-sub">De fleste "agenter" burde have været workflows</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Anthropic har gjort en pointe ud af denne forskel — og den er værd at internalisere på B-niveau.</p>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">Workflow</div>
+          <p>Du bestemmer rækkefølgen. LLM'en udfører faste skridt: <em>"Først opsummér, så oversæt, så formater"</em>. Forudsigeligt, billigt, nemt at debugge.</p>
+        </div>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">Agent</div>
+          <p>LLM'en bestemmer rækkefølgen og hvornår den er færdig. Den vælger selv hvilke tools den vil bruge og i hvilken rækkefølge. Fleksibelt, dyrt, svært at debugge.</p>
+        </div>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Den brutale regel</div>
+          <p>Hvis du <em>kan</em> beskrive opgaven som en fast pipeline — så <strong>byg en workflow</strong>. Brug kun en agent når opgaven kræver dynamisk planlægning du ikke kan forudse på forhånd.</p>
+        </div>
+
+        <h3 class="subhead">Eksempler</h3>
+        <ul class="bullet-list">
+          <li><strong>Workflow:</strong> "Klassificér support-mail → ruter til rette afdeling → generér udkast til svar"</li>
+          <li><strong>Workflow:</strong> "Læs PDF → udtræk fakta → udfyld template"</li>
+          <li><strong>Agent:</strong> "Find ud af hvorfor vores webshop konverterer dårligere denne uge" (kræver dynamisk udforskning)</li>
+          <li><strong>Agent:</strong> "Hjælp en bruger med at refactore denne kodebase" (åbent rum)</li>
+        </ul>
+      </div>
+    </div>
+
+  <div class="module" id="mod2">
+      <div class="module-header" onclick="toggleModule('mod2')">
+        <div class="module-letter">2</div>
+        <div class="module-title-wrap">
+          <div class="module-title">De fem grundmønstre i workflows</div>
+          <div class="module-sub">Lego-klodser du kan bygge alt med</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Anthropic identificerer fem mønstre der dækker næsten alle reelle use-cases. Du kan kombinere dem.</p>
+
+        <span class="technique-tag">Mønster 1</span>
+        <h3 class="subhead">Prompt chaining</h3>
+        <p class="prose">Output fra ét LLM-kald bliver input til det næste. <em>"Skriv outline → skriv første draft → skriv finpudset version"</em>. Hver step kan have sin egen prompt og model.</p>
+
+        <span class="technique-tag">Mønster 2</span>
+        <h3 class="subhead">Routing</h3>
+        <p class="prose">Et LLM-kald klassificerer input og dirigerer til forskellige downstream-prompts. <em>"Er det en teknisk fejl, en faktura-spørgsmål eller en klage?"</em> → forskellig pipeline for hver.</p>
+
+        <span class="technique-tag">Mønster 3</span>
+        <h3 class="subhead">Parallelization</h3>
+        <p class="prose">Kør samme prompt med forskellige inputs samtidigt — eller forskellige prompts på samme input — og saml resultaterne. <em>"Lad 3 modeller svare og tag majority vote"</em>.</p>
+
+        <span class="technique-tag">Mønster 4</span>
+        <h3 class="subhead">Orchestrator-workers</h3>
+        <p class="prose">En "orchestrator"-LLM nedbryder en opgave til subtasks, fordeler dem til "worker"-LLM'er, og samler resultaterne. Bruges når antallet af subtasks afhænger af input.</p>
+
+        <span class="technique-tag">Mønster 5</span>
+        <h3 class="subhead">Evaluator-optimizer</h3>
+        <p class="prose">En LLM producerer noget, en anden kritiserer det, den første prøver igen baseret på kritikken. Loop indtil "godkendt". Vinder ofte til oversættelse, kreativ skrivning og kode.</p>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">Det vigtigste råd</div>
+          <p>Start altid med det enkleste mønster der virker. Tilføj kompleksitet kun når du har bevist (med målinger!) at det forbedrer resultatet — ikke fordi det "føles smart".</p>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod3">
+      <div class="module-header" onclick="toggleModule('mod3')">
+        <div class="module-letter">3</div>
+        <div class="module-title-wrap">
+          <div class="module-title">ReAct: tænk, handl, observer, gentag</div>
+          <div class="module-sub">Den klassiske agent-arkitektur</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose"><strong>ReAct</strong> (Reasoning + Acting) er det mest brugte agent-mønster. Modellen veksler mellem at tænke i ord og at kalde tools.</p>
+
+        <div class="code-label">ReAct-loop — sådan ser et turforløb ud</div>
+        <div class="code-block">Spørgsmål: Hvad var temperaturen i København i går?
+
+  Tanke: Jeg har ikke realtidsdata. Jeg bør slå det op via vejr-API'et.
+  Handling: get_weather(by="København", dato="i går")
+  Observation: {"min": 4.2, "max": 11.8, "enhed": "°C"}
+
+  Tanke: Jeg har dataen. Jeg formulerer svaret.
+  Svar: I går var temperaturen i København mellem 4 og 12 grader.</div>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">Hvorfor "Tanke" er afgørende</div>
+          <p>At tvinge modellen til at <em>skrive sin tankegang</em> før hver handling reducerer fejl drastisk. Det er kædetænkning, men anvendt på tool-brug. Modeller der "skyder fra hoften" laver flere forkerte kald.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Plan-and-execute — variant for komplekse opgaver</h3>
+        <p class="prose">Et udvidet mønster: lav <em>først</em> en hel plan (5-7 skridt), derefter eksekver den. En separat "replanner" tjekker efter hvert skridt om planen stadig giver mening.</p>
+
+        <ul class="bullet-list">
+          <li><strong>Fordel:</strong> mere strategisk — fanger fejl tidligere end ren ReAct</li>
+          <li><strong>Ulempe:</strong> overengineered til simple opgaver. En plan på 3 skridt = bare ReAct.</li>
+        </ul>
+      </div>
+    </div>
+
+  <div class="module" id="mod4">
+      <div class="module-header" onclick="toggleModule('mod4')">
+        <div class="module-letter">4</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Reflection: lad agenten kritisere sig selv</div>
+          <div class="module-sub">Den simpleste teknik der konsistent forbedrer kvalitet</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Efter en agent har produceret et svar, lader du <strong>samme model</strong> (eller en anden) kritisere det med en streng prompt. Hvis kritikken peger på problemer, kører den igen.</p>
+
+        <div class="code-label">Reflection-prompt — eksempel</div>
+        <div class="code-block">Du har lige produceret nedenstående svar.
+
+  Du er nu en kritisk reviewer. Tjek for:
+  1. Faktuelle fejl
+  2. Manglende citater
+  3. Logiske huller
+  4. Om svaret faktisk besvarer det der blev spurgt om
+
+  Returnér: {"approved": true|false, "issues": [...], "suggested_revision": "..."}
+
+  Svar:
+  {previous_answer}</div>
+
+        <div class="info-box box-green">
+          <div class="info-box-title">Hvorfor virker det</div>
+          <p>Modeller er meget bedre til at <em>kritisere</em> end at <em>producere</em> noget perfekt i første forsøg. At give dem et eksplicit kritikker-trin udnytter den asymmetri.</p>
+        </div>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Konvergens-problemet</div>
+          <p>Sæt altid en grænse: <code>max_revisions = 2</code>. Ellers kan en perfektionist-agent revidere et perfekt svar 10 gange og kun gøre det værre.</p>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod5">
+      <div class="module-header" onclick="toggleModule('mod5')">
+        <div class="module-letter">5</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Multi-agent: hvornår det giver mening (og hvornår det ikke gør)</div>
+          <div class="module-sub">Den dyreste arkitektur — kræv at den tjener ind</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Multi-agent betyder flere LLM-instanser med <em>forskellige roller</em>, der samarbejder. Et populært mønster er "Researcher + Writer + Editor", hvor hver agent har sin egen system-prompt.</p>
+
+        <h3 class="subhead">Hvor det vinder</h3>
+        <ul class="bullet-list">
+          <li><strong>Genuinely parallel arbejde:</strong> 5 researcher-agenter undersøger 5 emner samtidigt</li>
+          <li><strong>Specialisering:</strong> en agent har adgang til kode-tools, en anden til skrive-tools — og deres kontekst forurener ikke hinanden</li>
+          <li><strong>Adversarial setup:</strong> én agent argumenterer for, en anden imod, en dommer afgør</li>
+        </ul>
+
+        <h3 class="subhead">Hvor det taber</h3>
+        <ul class="bullet-list">
+          <li><strong>Sekventielle opgaver</strong> — bare brug prompt chaining, det er billigere</li>
+          <li><strong>"Det føles avanceret":</strong> 3 agenter der snakker sammen er ikke automatisk klogere end 1 agent med god prompt</li>
+          <li><strong>Latens:</strong> hver runde er endnu et LLM-kald — multi-agent systemer er typisk 5-10× langsommere end single-agent</li>
+        </ul>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">Anthropics konkrete råd</div>
+          <p>Multi-agent giver mening når subtasks er <em>uafhængige</em> og kan køre <em>parallelt</em>. Hvis subtasks afhænger af hinandens output i en kæde — bare brug en pipeline.</p>
+        </div>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Vælg arkitektur til 4 cases</div>
+          <ol>
+            <li>"Generér en månedsrapport ud fra vores salgs-database" — workflow eller agent?</li>
+            <li>"Find den bedste rejserute fra Aalborg til Bukarest under 2000 kr" — workflow eller agent?</li>
+            <li>"Klassificér disse 1000 kunder ind i 5 segmenter" — single-agent eller parallel multi-agent?</li>
+            <li>"Skriv en blog-artikel om kvanteberegning, faktatjekket og redigeret" — orchestrator-workers eller multi-agent?</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Tip: 1=workflow, 2=agent (åben søgning), 3=parallel (uafhængige subtasks), 4=evaluator-optimizer er nok bedre end multi-agent.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>Del B4 — Hvad du har lært</h3>
+      <ul>
+        <li>Forskellen workflow vs. agent — og at de fleste "agenter" burde være workflows</li>
+      <li>De fem workflow-mønstre: chaining, routing, parallelization, orchestrator-workers, evaluator-optimizer</li>
+      <li>ReAct-loopen: tænk, handl, observér — hvorfor "tanke"-trinnet halverer fejl</li>
+      <li>Plan-and-execute som variant til komplekse opgaver</li>
+      <li>Reflection: at lade modellen kritisere sit eget output</li>
+      <li>Hvornår multi-agent vinder (parallelt, uafhængigt) og hvornår det taber</li>
+      <li>Anthropics regel: start enkelt — tilføj kompleksitet kun med målinger</li>
+      </ul>
+    </div>
+
+    <div class="quiz-cta">
+      <div class="quiz-cta-icon">📝</div>
+      <h2>Klar til mini-quizzen?</h2>
+      <p>B4-quizzen tester om du kan vælge mellem workflow og agent, designe en plan-execute pipeline, og spotte hvornår multi-agent er overkill. Mindst 7 ud af 8 rigtige.</p>
+      <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+      <a href="quiz-b4.html" class="btn-quiz">Start mini-quiz B4 →</a>
+    </div>
+
+  </div>
+
+  <script>
+  function toggleModule(id) {
+    const mod = document.getElementById(id);
+    mod.classList.toggle('open');
+  }
+  </script>
+
+  </body>
+  </html>
+  
