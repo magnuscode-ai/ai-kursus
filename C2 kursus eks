@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eksamen C — Del 2 | LearnAI DK</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3250;
+      --accent: #4f6ef7;
+      --accent-light: #6f8bff;
+      --accent-glow: rgba(79,110,247,0.18);
+      --gold: #f5c842;
+      --gold-glow: rgba(245,200,66,0.15);
+      --green: #3ecf8e;
+      --green-glow: rgba(62,207,142,0.15);
+      --red: #f76f6f;
+      --red-glow: rgba(247,111,111,0.13);
+      --text: #e8eaf6;
+      --muted: #7c82a8;
+      --radius: 14px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .nav-logo {
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--accent-light);
+      text-decoration: none;
+      letter-spacing: -0.3px;
+    }
+    .nav-breadcrumb {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar-wrap {
+      background: var(--border);
+      height: 4px;
+    }
+    .progress-bar-fill {
+      height: 4px;
+      width: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+      transition: width 0.5s ease;
+    }
+
+    /* LAYOUT */
+    .container {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* BADGE */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 5px 14px;
+      font-size: 0.75rem;
+      color: var(--muted);
+      margin-bottom: 24px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
+      box-shadow: 0 0 6px var(--gold);
+    }
+
+    /* HEADING */
+    h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, var(--accent-light), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 1rem;
+      margin-bottom: 36px;
+      max-width: 560px;
+    }
+
+    /* MISSION BOX */
+    .mission-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+    .mission-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--accent), var(--gold));
+    }
+    .mission-box h2 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .mission-box p {
+      font-size: 0.95rem;
+      color: var(--text);
+      margin-bottom: 16px;
+      line-height: 1.7;
+    }
+    .mission-box ul {
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mission-box ul li {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .mission-box ul li::before {
+      content: '→';
+      color: var(--accent-light);
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* CRITERIA GRID */
+    .criteria-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 560px) { .criteria-grid { grid-template-columns: 1fr; } }
+    .criteria-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 18px;
+      transition: border-color 0.2s;
+    }
+    .criteria-card:hover { border-color: var(--accent); }
+    .criteria-card .ck-num {
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .criteria-card .ck-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .criteria-card .ck-desc {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* SCENARIO */
+    .scenario-box {
+      background: linear-gradient(135deg, var(--surface2), var(--surface));
+      border: 1px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 0 24px var(--accent-glow);
+    }
+    .scenario-box .sc-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--accent-light);
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .scenario-box p {
+      font-size: 0.98rem;
+      line-height: 1.75;
+      color: var(--text);
+    }
+    .scenario-box strong { color: var(--gold); }
+
+    /* TEXTAREA */
+    .textarea-wrap {
+      margin-bottom: 20px;
+    }
+    .textarea-label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    textarea {
+      width: 100%;
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      line-height: 1.65;
+      padding: 18px 20px;
+      resize: vertical;
+      min-height: 180px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    textarea::placeholder { color: var(--muted); opacity: 0.7; }
+
+    .char-count {
+      text-align: right;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .char-count.warn { color: var(--gold); }
+    .char-count.ok { color: var(--green); }
+
+    /* SUBMIT BTN */
+    .btn-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 17px 24px;
+      background: linear-gradient(135deg, var(--accent), #7b5fff);
+      border: none;
+      border-radius: var(--radius);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      letter-spacing: 0.2px;
+    }
+    .btn-primary:hover:not(:disabled) {
+      opacity: 0.93;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(79,110,247,0.35);
+    }
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* LOADING */
+    .loading-wrap {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 40px 0 20px;
+      text-align: center;
+    }
+    .loading-wrap.show { display: flex; }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-text {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.4s steps(3, end) infinite;
+    }
+    @keyframes dots {
+      0%   { content: ''; }
+      33%  { content: '.'; }
+      66%  { content: '..'; }
+      100% { content: '...'; }
+    }
+
+    /* RESULT CARD */
+    .result-card {
+      display: none;
+      border-radius: var(--radius);
+      padding: 32px 30px;
+      margin-top: 28px;
+      border: 1.5px solid;
+      position: relative;
+      overflow: hidden;
+      animation: fadeUp 0.4s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .result-card.show { display: block; }
+    .result-card.passed {
+      background: var(--green-glow);
+      border-color: var(--green);
+      box-shadow: 0 0 32px rgba(62,207,142,0.1);
+    }
+    .result-card.failed {
+      background: var(--red-glow);
+      border-color: var(--red);
+      box-shadow: 0 0 32px rgba(247,111,111,0.08);
+    }
+
+    .result-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+    .result-icon {
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+    .result-title {
+      font-size: 1.3rem;
+      font-weight: 900;
+      letter-spacing: -0.3px;
+    }
+    .result-card.passed .result-title { color: var(--green); }
+    .result-card.failed .result-title { color: var(--red); }
+
+    /* SCORE CHIPS */
+    .score-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .score-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .chip-pass { background: rgba(62,207,142,0.1); border-color: var(--green); color: var(--green); }
+    .chip-fail { background: rgba(247,111,111,0.1); border-color: var(--red); color: var(--red); }
+    .chip-neutral { background: var(--surface2); border-color: var(--border); color: var(--muted); }
+
+    /* FEEDBACK */
+    .feedback-section {
+      background: rgba(0,0,0,0.2);
+      border-radius: 10px;
+      padding: 20px 22px;
+      margin-bottom: 20px;
+    }
+    .feedback-section h3 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .feedback-section p, .feedback-section li {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .feedback-section ul {
+      padding-left: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .feedback-section ul li { padding-left: 18px; position: relative; }
+    .feedback-section ul li::before { content: '•'; position: absolute; left: 0; color: var(--muted); }
+
+    /* CRITERIA RESULT */
+    .criteria-result-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+    .crit-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.88rem;
+      padding: 10px 14px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 8px;
+    }
+    .crit-item .crit-icon { font-size: 1rem; flex-shrink: 0; }
+    .crit-item .crit-name { font-weight: 600; color: var(--text); flex: 1; }
+    .crit-item .crit-status { font-size: 0.78rem; font-weight: 600; }
+    .crit-item.ok .crit-status { color: var(--green); }
+    .crit-item.missing .crit-status { color: var(--red); }
+    .crit-item.partial .crit-status { color: var(--gold); }
+
+    /* BEVIS / CTA */
+    .bevis-box {
+      background: linear-gradient(135deg, var(--surface2), var(--surface));
+      border: 1px solid var(--gold);
+      border-radius: var(--radius);
+      padding: 28px 30px;
+      text-align: center;
+      box-shadow: 0 0 28px var(--gold-glow);
+      margin-top: 10px;
+    }
+    .bevis-box .bevis-emoji { font-size: 2.8rem; margin-bottom: 12px; }
+    .bevis-box h3 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--gold);
+      margin-bottom: 6px;
+    }
+    .bevis-box p {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: linear-gradient(135deg, var(--gold), #e8a800);
+      border: none;
+      border-radius: var(--radius);
+      color: #1a1400;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-gold:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .btn-retry {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 14px;
+      padding: 14px;
+      background: transparent;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-retry:hover { border-color: var(--accent); color: var(--accent-light); }
+
+    /* BEVIS PRINT */
+    .bevis-print {
+      display: none;
+      background: white;
+      color: #111;
+      border-radius: 12px;
+      padding: 40px;
+      text-align: center;
+      margin-top: 20px;
+      border: 2px solid var(--gold);
+    }
+    .bevis-print.show { display: block; }
+    .bevis-print h2 { font-size: 1.4rem; margin-bottom: 6px; color: #1a1a2e; }
+    .bevis-print .bevis-name { font-size: 1.8rem; font-weight: 900; color: #4f6ef7; margin: 12px 0; }
+    .bevis-print p { color: #555; font-size: 0.9rem; line-height: 1.6; }
+    .bevis-print .bevis-seal {
+      font-size: 3rem;
+      margin: 16px 0 8px;
+    }
+    .btn-print {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 11px 22px;
+      background: #4f6ef7;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* NAME INPUT */
+    .name-section {
+      display: none;
+      margin-top: 20px;
+      padding: 22px 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+    .name-section.show { display: block; }
+    .name-section label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .name-section input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 12px 16px;
+      outline: none;
+      margin-bottom: 12px;
+      transition: border-color 0.2s;
+    }
+    .name-section input:focus { border-color: var(--accent); }
+
+    /* TIP box */
+    .tip-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 18px;
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+    .tip-box strong { color: var(--accent-light); }
+
+    @media print {
+      body * { visibility: hidden; }
+      .bevis-print, .bevis-print * { visibility: visible; }
+      .bevis-print { position: fixed; top: 0; left: 0; width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">LearnAI DK</a>
+  <span class="nav-breadcrumb">Kursus C · Afsluttende eksamen · Del 2 af 2</span>
+</nav>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill"></div>
+</div>
+
+<div class="container">
+
+  <div class="badge"><span class="badge-dot"></span> Kursus C &nbsp;·&nbsp; Del 2 af 2</div>
+
+  <h1>Den praktiske <span>prompt-opgave</span></h1>
+  <p class="subtitle">Du har bestået del 1. Nu skal du bevise at du kan bruge det du har lært — ikke bare genkende det.</p>
+
+  <!-- SCENARIO -->
+  <div class="scenario-box">
+    <div class="sc-label">📋 Din opgave</div>
+    <p>
+      Du er ansat i en <strong>dansk virksomhed</strong> der overvejer at implementere AI i den daglige arbejdsgang.
+      Din chef har bedt dig om at skrive ét professionelt prompt til en AI-assistent, der skal hjælpe med at
+      <strong>analysere fordele og ulemper ved AI-implementering</strong> i en mellemstor virksomhed.<br><br>
+      Promptet skal afspejle det du har lært i hele Kursus C. Det betyder at du skal bruge
+      <strong>mindst 3 af de 4 teknikker</strong> fra C1 naturligt og korrekt — og
+      at sproget og strukturen skal være <strong>professionelt og velovervejet</strong>.
+    </p>
+  </div>
+
+  <!-- CRITERIA -->
+  <div class="criteria-grid">
+    <div class="criteria-card">
+      <div class="ck-num">Teknik 1</div>
+      <div class="ck-title">Rolleprompt</div>
+      <div class="ck-desc">Giv AI en klar ekspertrolle der passer til opgaven.</div>
+    </div>
+    <div class="criteria-card">
+      <div class="ck-num">Teknik 2</div>
+      <div class="ck-title">Kædetænkning</div>
+      <div class="ck-desc">Bed AI tænke skridt-for-skridt eller forklare sin tankegang.</div>
+    </div>
+    <div class="criteria-card">
+      <div class="ck-num">Teknik 3</div>
+      <div class="ck-title">Negativ afgrænsning</div>
+      <div class="ck-desc">Fortæl eksplicit hvad AI <em>ikke</em> skal gøre eller inkludere.</div>
+    </div>
+    <div class="criteria-card">
+      <div class="ck-num">Teknik 4</div>
+      <div class="ck-title">Format og kontekst</div>
+      <div class="ck-desc">Angiv et klart format og relevant kontekst til opgaven.</div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <strong>💡 Tip:</strong> Et godt prompt er ikke langt — det er <em>præcist</em>. Fokuser på at bruge teknikkerne rigtigt, ikke på at skrive mest muligt.
+  </div>
+
+  <!-- TEXTAREA -->
+  <div class="textarea-wrap">
+    <label class="textarea-label" for="prompt-input">Skriv dit prompt her:</label>
+    <textarea
+      id="prompt-input"
+      placeholder="Du er en erfaren konsulent med speciale i..."
+      oninput="updateCharCount()"
+    ></textarea>
+    <div class="char-count" id="char-count">0 tegn</div>
+  </div>
+
+  <button class="btn-primary" id="submit-btn" onclick="submitPrompt()" disabled>
+    <span>🔍</span> Send til bedømmelse
+  </button>
+
+  <!-- LOADING -->
+  <div class="loading-wrap" id="loading">
+    <div class="spinner"></div>
+    <p class="loading-text">AI bedømmer dit prompt<span class="loading-dots"></span></p>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result-card" id="result-card">
+
+    <div class="result-header">
+      <div class="result-icon" id="result-icon"></div>
+      <div>
+        <div class="result-title" id="result-title"></div>
+        <div style="font-size:0.82rem;color:var(--muted);margin-top:3px;" id="result-subtitle"></div>
+      </div>
+    </div>
+
+    <div class="score-row" id="score-row"></div>
+
+    <div class="criteria-result-list" id="criteria-list"></div>
+
+    <div class="feedback-section" id="feedback-section">
+      <h3>Bedømmelse</h3>
+      <div id="feedback-text"></div>
+    </div>
+
+    <!-- PASSED: bevis -->
+    <div class="bevis-box" id="bevis-box" style="display:none">
+      <div class="bevis-emoji">🏆</div>
+      <h3>Du har bestået Kursus C!</h3>
+      <p>Skriv dit navn og hent dit kursusbevis</p>
+    </div>
+
+    <div class="name-section" id="name-section">
+      <label for="name-input">Dit fulde navn til beviset:</label>
+      <input type="text" id="name-input" placeholder="Fx: Maria Hansen" />
+      <button class="btn-gold" onclick="showBevis()">🎓 Generér kursusbevis</button>
+    </div>
+
+    <div class="bevis-print" id="bevis-print">
+      <div class="bevis-seal">🏆</div>
+      <h2>LearnAI DK bekræfter hermed, at</h2>
+      <div class="bevis-name" id="bevis-name"></div>
+      <p>
+        har bestået <strong>Kursus C — Komplet</strong><br>
+        og demonstreret avanceret forståelse for prompt-teknik, professionel AI-kommunikation,<br>
+        kritisk tænkning og selvstændig brug af AI i arbejdssammenhæng.
+      </p>
+      <br>
+      <p style="color:#888;font-size:0.8rem;">LearnAI DK · <span id="bevis-dato"></span></p>
+      <button class="btn-print" onclick="window.print()">🖨️ Print eller gem som PDF</button>
+    </div>
+
+    <button class="btn-retry" id="retry-btn" onclick="retry()" style="display:none">
+      ↺ Prøv igen med nyt prompt
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+  // ── Char counter ──────────────────────────────────────────────
+  function updateCharCount() {
+    const ta = document.getElementById('prompt-input');
+    const cc = document.getElementById('char-count');
+    const btn = document.getElementById('submit-btn');
+    const len = ta.value.trim().length;
+    cc.textContent = len + ' tegn';
+    cc.className = 'char-count';
+    if (len >= 80) { cc.classList.add('ok'); btn.disabled = false; }
+    else if (len >= 40) { cc.classList.add('warn'); btn.disabled = true; }
+    else { btn.disabled = true; }
+    if (len < 80) cc.textContent += ' (mindst 80 tegn krævet)';
+  }
+
+  // ── Submit ────────────────────────────────────────────────────
+  async function submitPrompt() {
+    const prompt = document.getElementById('prompt-input').value.trim();
+    if (prompt.length < 80) return;
+
+    document.getElementById('submit-btn').disabled = true;
+    document.getElementById('loading').classList.add('show');
+    document.getElementById('result-card').classList.remove('show','passed','failed');
+
+    const systemPrompt = `Du er en streng men fair eksaminator for et dansk AI-kursus på niveau C (mellemniveau). 
+Du skal bedømme om en elevs prompt opfylder følgende 4 kriterier fra kurset:
+
+1. ROLLEPROMPT: Eleven giver AI en klar ekspertrolle (fx "Du er en erfaren konsulent...")
+2. KÆDETÆNKNING: Eleven beder AI tænke skridt-for-skridt eller forklare sin tankegang (fx "tænk skridt for skridt", "forklar din tankegang")
+3. NEGATIV AFGRÆNSNING: Eleven angiver eksplicit hvad AI ikke skal gøre/inkludere (fx "undgå...", "skriv ikke...", "ingen...")
+4. FORMAT OG KONTEKST: Eleven angiver et klart output-format og relevant kontekst til opgaven
+
+KRAV FOR BESTÅELSE: Mindst 3 af 4 kriterier skal opfyldes tydeligt. Promptet skal desuden handle om en professionel/forretningsmæssig kontekst.
+
+Svar KUN i følgende JSON-format — ingen tekst udenfor JSON:
+{
+  "bestaaet": true/false,
+  "score": 0-4,
+  "kriterier": {
+    "rolleprompt": { "opfyldt": true/false, "kommentar": "kort dansk kommentar" },
+    "kaedtaenkning": { "opfyldt": true/false, "kommentar": "kort dansk kommentar" },
+    "negativ_afgransning": { "opfyldt": true/false, "kommentar": "kort dansk kommentar" },
+    "format_kontekst": { "opfyldt": true/false, "kommentar": "kort dansk kommentar" }
+  },
+  "samlet_feedback": "2-4 sætninger på dansk med konkret, konstruktiv feedback om promptets styrker og svagheder. Vær specifik.",
+  "forbedring": "Hvis ikke bestået: én konkret ting eleven kan ændre/tilføje. Hvis bestået: skriv en tom streng."
+}`;
+
+    try {
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          system: systemPrompt,
+          messages: [{ role: "user", content: `Bedøm dette prompt fra en elev:\n\n"${prompt}"` }]
+        })
+      });
+
+      const data = await response.json();
+      const raw = data.content.map(b => b.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const result = JSON.parse(clean);
+      showResult(result);
+    } catch (e) {
+      showError();
+    } finally {
+      document.getElementById('loading').classList.remove('show');
+    }
+  }
+
+  // ── Show result ───────────────────────────────────────────────
+  function showResult(r) {
+    const card = document.getElementById('result-card');
+    card.classList.add('show');
+    card.classList.add(r.bestaaet ? 'passed' : 'failed');
+
+    document.getElementById('result-icon').textContent = r.bestaaet ? '✅' : '❌';
+    document.getElementById('result-title').textContent = r.bestaaet ? 'Bestået!' : 'Ikke bestået';
+    document.getElementById('result-subtitle').textContent =
+      r.bestaaet
+        ? `Du opfyldte ${r.score} af 4 kriterier — godt klaret!`
+        : `Du opfyldte ${r.score} af 4 kriterier — du skal have mindst 3.`;
+
+    // Score chips
+    const chips = document.getElementById('score-row');
+    chips.innerHTML = '';
+    const labels = ['Rolleprompt','Kædetænkning','Neg. afgrænsning','Format & kontekst'];
+    const keys = ['rolleprompt','kaedtaenkning','negativ_afgransning','format_kontekst'];
+    keys.forEach((k,i) => {
+      const ok = r.kriterier[k].opfyldt;
+      chips.innerHTML += `<span class="score-chip ${ok?'chip-pass':'chip-fail'}">${ok?'✓':'✗'} ${labels[i]}</span>`;
+    });
+
+    // Criteria list
+    const list = document.getElementById('criteria-list');
+    list.innerHTML = '';
+    keys.forEach((k,i) => {
+      const item = r.kriterier[k];
+      const cls = item.opfyldt ? 'ok' : 'missing';
+      list.innerHTML += `
+        <div class="crit-item ${cls}">
+          <span class="crit-icon">${item.opfyldt ? '✅' : '❌'}</span>
+          <span class="crit-name">${labels[i]}</span>
+          <span class="crit-status">${item.kommentar}</span>
+        </div>`;
+    });
+
+    // Feedback
+    let feedbackHTML = `<p>${r.samlet_feedback}</p>`;
+    if (r.forbedring) feedbackHTML += `<br><p><strong style="color:var(--gold)">💡 Næste skridt:</strong> ${r.forbedring}</p>`;
+    document.getElementById('feedback-text').innerHTML = feedbackHTML;
+
+    if (r.bestaaet) {
+      document.getElementById('bevis-box').style.display = 'block';
+      document.getElementById('name-section').classList.add('show');
+      document.getElementById('retry-btn').style.display = 'none';
+    } else {
+      document.getElementById('retry-btn').style.display = 'flex';
+      document.getElementById('bevis-box').style.display = 'none';
+    }
+
+    card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Show bevis ────────────────────────────────────────────────
+  function showBevis() {
+    const name = document.getElementById('name-input').value.trim();
+    if (!name) { document.getElementById('name-input').focus(); return; }
+    document.getElementById('bevis-name').textContent = name;
+    const now = new Date();
+    document.getElementById('bevis-dato').textContent =
+      now.toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+    document.getElementById('bevis-print').classList.add('show');
+    document.getElementById('bevis-print').scrollIntoView({ behavior:'smooth' });
+  }
+
+  // ── Error ─────────────────────────────────────────────────────
+  function showError() {
+    const card = document.getElementById('result-card');
+    card.classList.add('show','failed');
+    document.getElementById('result-icon').textContent = '⚠️';
+    document.getElementById('result-title').textContent = 'Noget gik galt';
+    document.getElementById('result-subtitle').textContent = 'Prøv igen om et øjeblik.';
+    document.getElementById('feedback-text').innerHTML = '<p>Der opstod en fejl ved kontakt til AI-bedømmeren. Tjek din internetforbindelse og prøv igen.</p>';
+    document.getElementById('retry-btn').style.display = 'flex';
+    document.getElementById('submit-btn').disabled = false;
+  }
+
+  // ── Retry ─────────────────────────────────────────────────────
+  function retry() {
+    document.getElementById('result-card').classList.remove('show','passed','failed');
+    document.getElementById('bevis-print').classList.remove('show');
+    document.getElementById('prompt-input').focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
