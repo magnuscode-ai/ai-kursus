@@ -349,6 +349,11 @@
     </div>
   <span class="step-arrow">›</span>
   <div class="step-item">
+      <div class="step-dot next">Q5</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
       <div class="step-dot next">🏆</div>
       <span class="step-label next">Eksamen</span>
     </div>
@@ -375,22 +380,22 @@
           <label class="option" data-q="0" data-opt="0">
             <input type="radio" name="q0" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">System-prompts kan være længere end user-prompts</div>
+            <div class="option-text">System-prompts skal skrives på engelsk for at fungere pålideligt</div>
           </label>
         <label class="option" data-q="0" data-opt="1">
             <input type="radio" name="q0" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">System-prompten gælder gennem hele samtalen og bruges til vedvarende regler, mens user-prompten er den enkelte besked</div>
+            <div class="option-text">User-prompten har højere prioritet og kan tilsidesætte system-reglerne</div>
           </label>
         <label class="option" data-q="0" data-opt="2">
             <input type="radio" name="q0" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">User-prompts koster flere tokens</div>
+            <div class="option-text">System-prompten gælder hele samtalen og sætter regler; user er enkeltbeskeden</div>
           </label>
         <label class="option" data-q="0" data-opt="3">
             <input type="radio" name="q0" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">System-prompten kan kun skrives på engelsk</div>
+            <div class="option-text">De er teknisk identiske — modellen ser ingen forskel på de to roller</div>
           </label>
         </div>
         <div class="feedback" id="fb0"></div>
@@ -403,22 +408,22 @@
           <label class="option" data-q="1" data-opt="0">
             <input type="radio" name="q1" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">Du har for få eksempler — der skal mindst 6</div>
+            <div class="option-text">For få eksempler — der skal mindst 6-8 før mønstret bliver tydeligt</div>
           </label>
         <label class="option" data-q="1" data-opt="1">
             <input type="radio" name="q1" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">Few-shot virker ikke når alle eksempler er positive</div>
+            <div class="option-text">Manglende diversitet — modellen mønstergenkender forkert og fejler på kant-cases</div>
           </label>
         <label class="option" data-q="1" data-opt="2">
             <input type="radio" name="q1" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">Manglende diversitet — modellen mønstergenkender det forkerte mønster og klarer ikke kant-cases</div>
+            <div class="option-text">Few-shot kræver altid både positive og negative labels for at fungere</div>
           </label>
         <label class="option" data-q="1" data-opt="3">
             <input type="radio" name="q1" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">Eksemplerne skal stå i tilfældig rækkefølge</div>
+            <div class="option-text">Modellen ignorerer eksempler der er kortere end selve user-prompten</div>
           </label>
         </div>
         <div class="feedback" id="fb1"></div>
@@ -426,27 +431,27 @@
 
   <div class="question" id="q2">
         <span class="q-num">Spørgsmål 3 af 6</span>
-        <div class="q-text">Du beder modellen returnere JSON, men får dette tilbage:<br><br><code style="background:#1e2a3a;color:#e2f0fb;padding:2px 6px;border-radius:4px;">Selvfølgelig! Her er din JSON:<br>```json<br>{"navn": "Magnus"}<br>```</code><br><br>Hvad er det <em>bedste</em> svar på problemet?</div>
+        <div class="q-text">Du beder modellen returnere JSON, men får dette tilbage: "Selvfølgelig! Her er din JSON: ```json{\"navn\": \"Magnus\"}```". Hvad er det bedste svar på problemet?</div>
         <div class="options">
           <label class="option" data-q="2" data-opt="0">
             <input type="radio" name="q2" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">Skifte til en større model</div>
+            <div class="option-text">Skift til en større model — den følger format-instruktioner mere præcist</div>
           </label>
         <label class="option" data-q="2" data-opt="1">
             <input type="radio" name="q2" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">Bruge regex til at fjerne markdown-fences efter modellens svar</div>
+            <div class="option-text">Kør regex på outputtet bagefter for at strippe markdown-fences væk</div>
           </label>
         <label class="option" data-q="2" data-opt="2">
             <input type="radio" name="q2" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">Vær eksplicit i prompten: "Returnér KUN gyldig JSON. Ingen forklaring. Ingen markdown" — og brug API'ets schema-tvang hvis muligt</div>
+            <div class="option-text">Eksplicit "kun JSON, ingen markdown" i prompten + API'ets schema-tvang</div>
           </label>
         <label class="option" data-q="2" data-opt="3">
             <input type="radio" name="q2" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">Bede modellen om at undskylde og prøve igen</div>
+            <div class="option-text">Bed modellen undskylde og prøve igen i en opfølgende besked til samme samtale</div>
           </label>
         </div>
         <div class="feedback" id="fb2"></div>
@@ -459,22 +464,22 @@
           <label class="option" data-q="3" data-opt="0">
             <input type="radio" name="q3" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">Du har sandsynligvis ramt en bug i modellen</div>
+            <div class="option-text">Du har sandsynligvis ramt en kendt bug i den underliggende model</div>
           </label>
         <label class="option" data-q="3" data-opt="1">
             <input type="radio" name="q3" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">Du kan ikke vide hvilken ændring der gjorde det værre — du skal ændre ét element ad gangen</div>
+            <div class="option-text">Eval-sættet er for lille — du skal bruge mindst 100 cases for stabilitet</div>
           </label>
         <label class="option" data-q="3" data-opt="2">
             <input type="radio" name="q3" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">Eval-sættet er for lille</div>
+            <div class="option-text">Du kan ikke vide hvilken ændring der gjorde det værre — ændr ét ad gangen</div>
           </label>
         <label class="option" data-q="3" data-opt="3">
             <input type="radio" name="q3" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">Det er normalt at score svinger 30% mellem kørsler</div>
+            <div class="option-text">Det er helt normalt at scoren svinger 30% mellem to identiske kørsler</div>
           </label>
         </div>
         <div class="feedback" id="fb3"></div>
@@ -487,22 +492,22 @@
           <label class="option" data-q="4" data-opt="0">
             <input type="radio" name="q4" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">Dine svar er virkelig så gode</div>
+            <div class="option-text">Dine svar er virkelig så gode — høje scores er bare et tegn på kvalitet</div>
           </label>
         <label class="option" data-q="4" data-opt="1">
             <input type="radio" name="q4" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">Judge-prompten er for blød — modeller har en stærk bias mod at give høje scores hvis ikke du eksplicit beder dem være kritiske</div>
+            <div class="option-text">Judge-modellen er for lille og overser fejl — brug en større og dyrere</div>
           </label>
         <label class="option" data-q="4" data-opt="2">
             <input type="radio" name="q4" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">Du burde bruge en større judge-model</div>
+            <div class="option-text">Skalaen 1-5 er for kort — udvid til 1-100 for finere granularitet i scores</div>
           </label>
         <label class="option" data-q="4" data-opt="3">
             <input type="radio" name="q4" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">Skalaen 1-5 er for kort — brug 1-100</div>
+            <div class="option-text">Judge-prompten er for blød — modeller har bias mod at give høje scores</div>
           </label>
         </div>
         <div class="feedback" id="fb4"></div>
@@ -515,22 +520,22 @@
           <label class="option" data-q="5" data-opt="0">
             <input type="radio" name="q5" value="0">
             <div class="option-letter">A</div>
-            <div class="option-text">Forkort din system-prompt med 50%</div>
+            <div class="option-text">Sæt temperature til 0 — det reducerer både cost og output-varians</div>
           </label>
         <label class="option" data-q="5" data-opt="1">
             <input type="radio" name="q5" value="1">
             <div class="option-letter">B</div>
-            <div class="option-text">Skift til en lille billig model (fx Haiku/4o-mini) og test om den faktisk klarer opgaven — kombinér evt. med caching af system-prompten</div>
+            <div class="option-text">Skift til en lille billig model (fx Haiku/4o-mini) + prompt caching</div>
           </label>
         <label class="option" data-q="5" data-opt="2">
             <input type="radio" name="q5" value="2">
             <div class="option-letter">C</div>
-            <div class="option-text">Sæt temperature til 0</div>
+            <div class="option-text">Forkort din system-prompt med 50% ved at fjerne forklaringer og kontekst</div>
           </label>
         <label class="option" data-q="5" data-opt="3">
             <input type="radio" name="q5" value="3">
             <div class="option-letter">D</div>
-            <div class="option-text">Gem alle svar i en database og genbrug dem</div>
+            <div class="option-text">Cache alle svar i en database og genbrug dem ved gentagne spørgsmål</div>
           </label>
         </div>
         <div class="feedback" id="fb5"></div>
@@ -554,7 +559,7 @@
   </div>
 
   <script>
-  const CORRECT = [1,2,2,1,1,1];
+  const CORRECT = [2,1,2,2,3,1];
   const EXPLAIN = ["System-prompten læses før hver user-besked og bruges til rolle, regler og format. User-prompten er den konkrete opgave i hver runde.","Hvis alle dine eksempler ligner hinanden, lærer modellen at \"alt er positivt\" eller at kun korte sætninger tæller. Mindst ét eksempel bør være en kant-case.","Prompt-disciplin (eksplicit \"ingen forklaring/markdown\") plus structured output / tool_use på API'et er den robuste løsning. Regex-fix bagefter er sidste udvej.","\"Ét element ad gangen\" er hele pointen med systematisk eval. Ellers kan du ikke korrelere ændringer med resultater.","Sycophancy-bias er reel. Brug ord som \"kritisk\", \"streng\", \"find fejl\" og bed eksplicit om at score under 3 ved nogen fejl.","Mindre modeller er 10-30× billigere og kan ofte løse opgaven. Prompt caching giver yderligere ~10× på de gentagne dele. Det er den klassiske kombination."];
   const NEXT_HREF = "kursus-b2.html";
   const NEXT_LABEL = "Gå til Kursus B2";
