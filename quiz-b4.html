@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+  <html lang="da">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnAI DK — Mini-quiz B4</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --blue:        #185FA5;
+        --blue-light:  #E6F1FB;
+        --green:       #0F6E56;
+        --green-light: #E1F5EE;
+        --orange:      #C45000;
+        --orange-light:#FFF0E6;
+        --yellow-bg:   #FFF3CD;
+        --yellow-txt:  #856404;
+        --purple:      #5B2A86;
+        --purple-light:#EFE5FA;
+        --red:         #B42318;
+        --red-light:   #FEE4E2;
+        --grey:        #F5F5F5;
+        --border:      #E2E8F0;
+        --bg:          #F4F7FB;
+        --white:       #FFFFFF;
+        --text:        #1A1A1A;
+        --muted:       #6B7280;
+        --shadow:      0 4px 24px rgba(91,42,134,0.10);
+      }
+
+      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+      nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+      .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+      .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+      .logo-icon svg { width: 15px; height: 15px; fill: white; }
+      .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+      .hero { background: var(--purple); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+      .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+      .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(24px, 5vw, 34px); font-weight: 400; line-height: 1.2; margin-bottom: 0.6rem; }
+      .hero p { font-size: 15px; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+
+      .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+      .step-item { display: flex; align-items: center; }
+      .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+      .step-dot.active { background: var(--purple); color: white; }
+      .step-dot.done   { background: var(--green); color: white; }
+      .step-dot.next   { background: var(--border); color: var(--muted); }
+      .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+      .step-label.active { color: var(--purple); }
+      .step-label.done   { color: var(--green); }
+      .step-label.next   { color: var(--muted); }
+      .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+      .content { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+      .progress-info {
+        background: var(--purple-light);
+        border-radius: 12px;
+        padding: 0.9rem 1.1rem;
+        margin-bottom: 1.75rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        color: var(--purple);
+        font-weight: 600;
+      }
+      .progress-bar-wrap {
+        flex: 1;
+        height: 6px;
+        background: white;
+        border-radius: 3px;
+        margin: 0 1rem;
+        overflow: hidden;
+      }
+      .progress-bar-fill {
+        height: 100%;
+        background: var(--purple);
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      .question {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 1.5rem;
+        margin-bottom: 1.25rem;
+        box-shadow: var(--shadow);
+      }
+      .q-num {
+        display: inline-block;
+        background: var(--purple);
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 6px;
+        margin-bottom: 0.75rem;
+        letter-spacing: 0.05em;
+      }
+      .q-text {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text);
+        margin-bottom: 1rem;
+        line-height: 1.5;
+      }
+      .q-context {
+        font-size: 14px;
+        color: var(--muted);
+        margin-bottom: 1rem;
+        padding: 0.75rem 1rem;
+        background: var(--grey);
+        border-radius: 8px;
+        font-style: italic;
+      }
+      .q-code {
+        background: #1e2a3a;
+        color: #e2f0fb;
+        border-radius: 8px;
+        padding: 0.85rem 1rem;
+        font-size: 13px;
+        font-family: 'Courier New', monospace;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        white-space: pre-wrap;
+        overflow-x: auto;
+      }
+      .options { display: flex; flex-direction: column; gap: 0.5rem; }
+      .option {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.75rem;
+        padding: 0.85rem 1rem;
+        border: 2px solid var(--border);
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.15s;
+        background: white;
+      }
+      .option:hover { border-color: var(--purple); background: var(--purple-light); }
+      .option.selected {
+        border-color: var(--purple);
+        background: var(--purple-light);
+      }
+      .option input { display: none; }
+      .option-letter {
+        width: 26px; height: 26px;
+        border-radius: 50%;
+        background: var(--grey);
+        color: var(--text);
+        font-size: 12px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center;
+        flex-shrink: 0;
+        margin-top: 1px;
+      }
+      .option.selected .option-letter {
+        background: var(--purple);
+        color: white;
+      }
+      .option-text {
+        font-size: 14px;
+        color: var(--text);
+        line-height: 1.5;
+        flex: 1;
+      }
+
+      /* Result states (post-submit) */
+      .option.correct {
+        border-color: var(--green);
+        background: var(--green-light);
+      }
+      .option.correct .option-letter {
+        background: var(--green);
+        color: white;
+      }
+      .option.wrong {
+        border-color: var(--red);
+        background: var(--red-light);
+      }
+      .option.wrong .option-letter {
+        background: var(--red);
+        color: white;
+      }
+      .feedback {
+        margin-top: 1rem;
+        padding: 0.85rem 1rem;
+        border-radius: 8px;
+        font-size: 14px;
+        line-height: 1.6;
+        display: none;
+      }
+      .feedback.show { display: block; }
+      .feedback.correct { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
+      .feedback.wrong { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); }
+      .feedback strong { display: block; margin-bottom: 0.25rem; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+      .submit-bar {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        border-top: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        margin: 0 -1.5rem -4rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+      }
+      .answered-count { font-size: 14px; color: var(--muted); font-weight: 500; }
+      .btn-submit {
+        background: var(--purple);
+        color: white;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 12px 28px;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+      }
+      .btn-submit:hover:not(:disabled) { background: #46206a; transform: translateY(-1px); }
+      .btn-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+      /* Result screen */
+      .result {
+        background: white;
+        border-radius: 18px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        box-shadow: var(--shadow);
+        margin-bottom: 2rem;
+        border: 2px solid var(--purple);
+      }
+      .result.fail { border-color: var(--red); }
+      .result-icon { font-size: 56px; margin-bottom: 1rem; }
+      .result h2 {
+        font-family: 'DM Serif Display', serif;
+        font-size: 28px; font-weight: 400;
+        color: var(--text); margin-bottom: 0.5rem;
+      }
+      .result-score {
+        font-size: 48px;
+        font-weight: 700;
+        color: var(--purple);
+        margin: 1rem 0;
+        font-family: 'DM Serif Display', serif;
+      }
+      .result.fail .result-score { color: var(--red); }
+      .result-msg {
+        font-size: 15px; color: var(--muted);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+      .btn-result {
+        display: inline-block;
+        background: var(--purple); color: white;
+        font-family: 'DM Sans', sans-serif;
+        font-size: 16px; font-weight: 700;
+        padding: 14px 32px; border-radius: 12px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+        margin: 0 0.5rem;
+      }
+      .btn-result:hover { background: #46206a; transform: translateY(-1px); }
+      .btn-result.secondary {
+        background: white; color: var(--purple);
+        border: 2px solid var(--purple);
+      }
+      .btn-result.secondary:hover { background: var(--purple-light); }
+
+      @media (max-width: 600px) {
+        .hero { padding: 2rem 1rem 1.5rem; }
+        .content { padding: 1.5rem 1rem 5rem; }
+        .question { padding: 1.1rem; }
+        .steps-bar { padding: 0.75rem 0.5rem; }
+        .step-label { display: none; }
+        .step-arrow { margin: 0 2px; }
+        .submit-bar { padding: 0.85rem 1rem; margin: 0 -1rem -4rem; }
+        .result { padding: 2rem 1.25rem; }
+        .result-score { font-size: 38px; }
+      }
+    </style>
+  </head>
+  <body>
+
+  <nav>
+    <a href="platform.html" class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+      </div>
+      LearnAI DK
+    </a>
+    <span class="nav-tag">Mini-quiz B4</span>
+  </nav>
+
+  <div class="steps-bar">
+  <div class="step-item">
+      <div class="step-dot done">B1</div>
+      <span class="step-label done">Prompting</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q1</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">B2</div>
+      <span class="step-label done">RAG</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q2</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">B3</div>
+      <span class="step-label done">Tools</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">Q3</div>
+      <span class="step-label done">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot done">B4</div>
+      <span class="step-label done">Agenter</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot active">Q4</div>
+      <span class="step-label active">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">B5</div>
+      <span class="step-label next">Produktion</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">Q5</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+      <div class="step-dot next">🏆</div>
+      <span class="step-label next">Eksamen</span>
+    </div>
+</div>
+
+  <div class="hero">
+    <div class="hero-badge">Mini-quiz B4</div>
+    <h1>Mini-quiz: Multi-step agenter og workflows</h1>
+    <p>6 spørgsmål om workflow vs. agent, ReAct, reflection og multi-agent. 5 rigtige for at låse B5 op.</p>
+  </div>
+
+  <div class="content" id="quiz-content">
+
+    <div class="progress-info">
+      <span id="answered-text">0 / 6 besvaret</span>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+      <span>Krav: 5 / 6</span>
+    </div>
+
+    <div class="question" id="q0">
+        <span class="q-num">Spørgsmål 1 af 6</span>
+        <div class="q-text">Hvad er den væsentlige forskel på en workflow og en agent?</div>
+        <div class="options">
+          <label class="option" data-q="0" data-opt="0">
+            <input type="radio" name="q0" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Agenter bruger altid større og dyrere modeller end workflows typisk gør</div>
+          </label>
+        <label class="option" data-q="0" data-opt="1">
+            <input type="radio" name="q0" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Workflow: du styrer rækkefølgen af kald. Agent: LLM'en vælger dynamisk</div>
+          </label>
+        <label class="option" data-q="0" data-opt="2">
+            <input type="radio" name="q0" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Workflows kan ikke kalde tools — kun agenter har den slags tool-adgang</div>
+          </label>
+        <label class="option" data-q="0" data-opt="3">
+            <input type="radio" name="q0" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Agenter kører altid hurtigere fordi de eksekverer steps parallelt fra start</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb0"></div>
+      </div>
+
+  <div class="question" id="q1">
+        <span class="q-num">Spørgsmål 2 af 6</span>
+        <div class="q-text">Du skal automatisere: "Klassificér support-mail → ruter til rette afdeling → generér svarudkast". Hvad bør du bygge?</div>
+        <div class="options">
+          <label class="option" data-q="1" data-opt="0">
+            <input type="radio" name="q1" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">En multi-agent med 3 agenter der koordinerer indbyrdes via beskeder</div>
+          </label>
+        <label class="option" data-q="1" data-opt="1">
+            <input type="radio" name="q1" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">En ReAct-agent med adgang til alle relevante mail- og CRM-tools</div>
+          </label>
+        <label class="option" data-q="1" data-opt="2">
+            <input type="radio" name="q1" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">En workflow (chaining + routing) — pipelinen er kendt og forudsigelig</div>
+          </label>
+        <label class="option" data-q="1" data-opt="3">
+            <input type="radio" name="q1" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">En reflection-loop der genererer udkast og selv kritiserer outputtet</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+  <div class="question" id="q2">
+        <span class="q-num">Spørgsmål 3 af 6</span>
+        <div class="q-text">Hvorfor tvinger ReAct modellen til at skrive en "Tanke" før hver "Handling"?</div>
+        <div class="options">
+          <label class="option" data-q="2" data-opt="0">
+            <input type="radio" name="q2" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Det er et obligatorisk krav fra modellens egen API-specifikation</div>
+          </label>
+        <label class="option" data-q="2" data-opt="1">
+            <input type="radio" name="q2" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Tænkning før handling reducerer fejlrate — kædetænkning på tool-brug</div>
+          </label>
+        <label class="option" data-q="2" data-opt="2">
+            <input type="radio" name="q2" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Det giver længere svar som brugere typisk synes virker mere troværdige</div>
+          </label>
+        <label class="option" data-q="2" data-opt="3">
+            <input type="radio" name="q2" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Det er kun nødvendigt under debugging i development, ikke i produktion</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+  <div class="question" id="q3">
+        <span class="q-num">Spørgsmål 4 af 6</span>
+        <div class="q-text">Du implementerer reflection: efter modellen producerer et svar, kritiserer en anden prompt det — og hvis problemer findes, kører den igen. Hvad SKAL du tilføje?</div>
+        <div class="options">
+          <label class="option" data-q="3" data-opt="0">
+            <input type="radio" name="q3" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Brug en helt anden model i kritik-rollen end den der skriver svaret</div>
+          </label>
+        <label class="option" data-q="3" data-opt="1">
+            <input type="radio" name="q3" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">En hård max_revisions-grænse (typisk 2-3) — ellers løber loopen løbsk</div>
+          </label>
+        <label class="option" data-q="3" data-opt="2">
+            <input type="radio" name="q3" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Logging af hver iteration til en database for senere analyse og audit</div>
+          </label>
+        <label class="option" data-q="3" data-opt="3">
+            <input type="radio" name="q3" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">En menneskelig reviewer der godkender hver iteration manuelt før næste</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+  <div class="question" id="q4">
+        <span class="q-num">Spørgsmål 5 af 6</span>
+        <div class="q-text">Hvornår vinder multi-agent over en single-agent / workflow?</div>
+        <div class="options">
+          <label class="option" data-q="4" data-opt="0">
+            <input type="radio" name="q4" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Altid — flere agenter er per definition klogere end én enkelt agent</div>
+          </label>
+        <label class="option" data-q="4" data-opt="1">
+            <input type="radio" name="q4" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Når du vil imponere stakeholders eller demonstrere teknisk kompleksitet</div>
+          </label>
+        <label class="option" data-q="4" data-opt="2">
+            <input type="radio" name="q4" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Når subtasks er uafhængige og parallelle — eller kræver specialisering</div>
+          </label>
+        <label class="option" data-q="4" data-opt="3">
+            <input type="radio" name="q4" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Når du har ubegrænset budget og ikke skal skalere systemet senere op</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+  <div class="question" id="q5">
+        <span class="q-num">Spørgsmål 6 af 6</span>
+        <div class="q-text">Hvilket workflow-mønster passer bedst til: "Skriv et svar → få det kritiseret → omskriv → gentag indtil godkendt"?</div>
+        <div class="options">
+          <label class="option" data-q="5" data-opt="0">
+            <input type="radio" name="q5" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Routing — vælg automatisk den rette specialist til den givne opgave</div>
+          </label>
+        <label class="option" data-q="5" data-opt="1">
+            <input type="radio" name="q5" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Parallelization — kør samme opgave flere gange samtidig for diversitet</div>
+          </label>
+        <label class="option" data-q="5" data-opt="2">
+            <input type="radio" name="q5" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Orchestrator-workers — én leder uddelegerer subtasks til specialister</div>
+          </label>
+        <label class="option" data-q="5" data-opt="3">
+            <input type="radio" name="q5" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Evaluator-optimizer — én producerer, en anden kritiserer og giver feedback</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+    <div class="submit-bar">
+      <span class="answered-count" id="answered-count">Besvar alle 6 spørgsmål</span>
+      <button class="btn-submit" id="submit-btn" disabled>Indsend svar</button>
+    </div>
+
+  </div>
+
+  <div class="content" id="result-content" style="display:none;">
+    <div class="result" id="result-box">
+      <div class="result-icon" id="result-icon"></div>
+      <h2 id="result-title"></h2>
+      <div class="result-score" id="result-score"></div>
+      <p class="result-msg" id="result-msg"></p>
+      <div id="result-actions"></div>
+    </div>
+  </div>
+
+  <script>
+  const CORRECT = [1,2,1,1,2,3];
+  const EXPLAIN = ["Workflow = forudsigelig pipeline du kontrollerer. Agent = LLM'en navigerer dynamisk. Begge har deres plads — men de fleste opgaver løses billigere/mere robust med en workflow.","Reglen: kan opgaven beskrives som en fast pipeline, så byg en workflow. Den er billigere, hurtigere og nemmere at debugge end en dynamisk agent.","Modeller der \"skyder fra hoften\" laver flere forkerte tool-kald. At skrive resonnement først er en af de mest robuste teknikker vi kender.","Konvergens-problemet er reelt. Reflection-loops uden grænse kan løbe løbsk og forværre output. Sæt altid en hård grænse.","Multi-agent er typisk 5-10× dyrere og langsommere. Det vinder kun ved ægte parallelt arbejde eller stærk specialisering. Sekventielle opgaver = brug pipeline.","Evaluator-optimizer er præcis det mønster: én LLM producerer, en anden kritiserer, første prøver igen baseret på kritikken. Vinder ofte til oversættelse, kreativ skrivning og kode."];
+  const NEXT_HREF = "kursus-b5.html";
+  const NEXT_LABEL = "Gå til Kursus B5";
+  const RETRY_HREF = "kursus-b4.html";
+  const RETRY_LABEL = "Kursus B4";
+  const PASS_SCORE = 5;
+  const TOTAL = 6;
+
+  const answers = new Array(TOTAL).fill(null);
+
+  document.querySelectorAll('.option').forEach(opt => {
+    opt.addEventListener('click', (e) => {
+      const q = parseInt(opt.dataset.q);
+      const o = parseInt(opt.dataset.opt);
+      answers[q] = o;
+      document.querySelectorAll(`.option[data-q="${q}"]`).forEach(x => x.classList.remove('selected'));
+      opt.classList.add('selected');
+      updateProgress();
+    });
+  });
+
+  function updateProgress() {
+    const answered = answers.filter(a => a !== null).length;
+    document.getElementById('answered-text').textContent = answered + ' / 6 besvaret';
+    document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
+    const btn = document.getElementById('submit-btn');
+    const lbl = document.getElementById('answered-count');
+    if (answered === TOTAL) {
+      btn.disabled = false;
+      lbl.textContent = 'Klar til at indsende';
+    } else {
+      btn.disabled = true;
+      lbl.textContent = 'Besvar alle ' + TOTAL + ' spørgsmål (' + answered + '/' + TOTAL + ')';
+    }
+  }
+
+  document.getElementById('submit-btn').addEventListener('click', () => {
+    let score = 0;
+    for (let i = 0; i < TOTAL; i++) {
+      const opts = document.querySelectorAll(`.option[data-q="${i}"]`);
+      opts.forEach(o => o.style.pointerEvents = 'none');
+      const userAns = answers[i];
+      const correct = CORRECT[i];
+      if (userAns === correct) {
+        score++;
+        opts[userAns].classList.add('correct');
+        opts[userAns].classList.remove('selected');
+      } else {
+        opts[userAns].classList.add('wrong');
+        opts[userAns].classList.remove('selected');
+        opts[correct].classList.add('correct');
+      }
+      const fb = document.getElementById('fb' + i);
+      if (userAns === correct) {
+        fb.className = 'feedback correct show';
+        fb.innerHTML = '<strong>Rigtigt</strong>' + EXPLAIN[i];
+      } else {
+        fb.className = 'feedback wrong show';
+        fb.innerHTML = '<strong>Forkert — det rigtige svar er ' + String.fromCharCode(65+correct) + '</strong>' + EXPLAIN[i];
+      }
+    }
+
+    // Show result
+    document.querySelector('.submit-bar').style.display = 'none';
+    const result = document.getElementById('result-content');
+    result.style.display = 'block';
+    result.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+    const passed = score >= PASS_SCORE;
+    const box = document.getElementById('result-box');
+    document.getElementById('result-score').textContent = score + ' / ' + TOTAL;
+
+    if (passed) {
+      box.classList.remove('fail');
+      document.getElementById('result-icon').textContent = '🎉';
+      document.getElementById('result-title').textContent = 'Bestået!';
+      document.getElementById('result-msg').textContent = 'Du har vist du forstår stoffet. Næste niveau er låst op.';
+      document.getElementById('result-actions').innerHTML =
+        '<a href="' + NEXT_HREF + '" class="btn-result">' + NEXT_LABEL + ' →</a>' +
+        '<a href="' + RETRY_HREF + '" class="btn-result secondary">Læs ' + RETRY_LABEL + ' igen</a>';
+    } else {
+      box.classList.add('fail');
+      document.getElementById('result-icon').textContent = '📚';
+      document.getElementById('result-title').textContent = 'Ikke bestået endnu';
+      document.getElementById('result-msg').textContent =
+        'Du fik ' + score + ' rigtige — du skal bruge mindst ' + PASS_SCORE + ' for at gå videre. Læs kurset igennem igen og prøv quizzen forfra.';
+      document.getElementById('result-actions').innerHTML =
+        '<a href="' + RETRY_HREF + '" class="btn-result">Tilbage til ' + RETRY_LABEL + '</a>' +
+        '<button onclick="location.reload()" class="btn-result secondary">Prøv quizzen igen</button>';
+    }
+  });
+  </script>
+
+  </body>
+  </html>
+  
