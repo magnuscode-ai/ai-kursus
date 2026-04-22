@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
   <html lang="da">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnAI DK — Mini-quiz B1</title>
+    <title>LearnAI DK — Kursus B2</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -11,6 +12,7 @@
       :root {
         --blue:        #185FA5;
         --blue-light:  #E6F1FB;
+        --blue-mid:    #c8dff5;
         --green:       #0F6E56;
         --green-light: #E1F5EE;
         --orange:      #C45000;
@@ -27,6 +29,7 @@
         --white:       #FFFFFF;
         --text:        #1A1A1A;
         --muted:       #6B7280;
+        --radius:      14px;
         --shadow:      0 4px 24px rgba(91,42,134,0.10);
       }
 
@@ -38,13 +41,16 @@
       .logo-icon svg { width: 15px; height: 15px; fill: white; }
       .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
 
-      .hero { background: var(--purple); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+      .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
       .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
-      .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(24px, 5vw, 34px); font-weight: 400; line-height: 1.2; margin-bottom: 0.6rem; }
-      .hero p { font-size: 15px; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+      .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+      .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+      .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+      .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+      .hero-meta-item span { font-size: 18px; }
 
       .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
-      .step-item { display: flex; align-items: center; }
+      .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
       .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
       .step-dot.active { background: var(--purple); color: white; }
       .step-dot.done   { background: var(--green); color: white; }
@@ -55,238 +61,74 @@
       .step-label.next   { color: var(--muted); }
       .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
 
-      .content { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+      .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+      .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+      .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
 
-      .progress-info {
-        background: var(--purple-light);
-        border-radius: 12px;
-        padding: 0.9rem 1.1rem;
-        margin-bottom: 1.75rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        font-size: 14px;
-        color: var(--purple);
-        font-weight: 600;
-      }
-      .progress-bar-wrap {
-        flex: 1;
-        height: 6px;
-        background: white;
-        border-radius: 3px;
-        margin: 0 1rem;
-        overflow: hidden;
-      }
-      .progress-bar-fill {
-        height: 100%;
-        background: var(--purple);
-        width: 0%;
-        transition: width 0.3s;
-      }
+      .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+      .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+      .module-header:hover { background: #e3d2f5; }
+      .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+      .module-title-wrap { flex: 1; }
+      .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+      .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+      .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+      .module.open .module-toggle { transform: rotate(45deg); }
+      .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+      .module.open .module-body { display: block; }
 
-      .question {
-        background: white;
-        border: 1px solid var(--border);
-        border-radius: 18px;
-        padding: 1.5rem;
-        margin-bottom: 1.25rem;
-        box-shadow: var(--shadow);
-      }
-      .q-num {
-        display: inline-block;
-        background: var(--purple);
-        color: white;
-        font-size: 12px;
-        font-weight: 700;
-        padding: 3px 10px;
-        border-radius: 6px;
-        margin-bottom: 0.75rem;
-        letter-spacing: 0.05em;
-      }
-      .q-text {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--text);
-        margin-bottom: 1rem;
-        line-height: 1.5;
-      }
-      .q-context {
-        font-size: 14px;
-        color: var(--muted);
-        margin-bottom: 1rem;
-        padding: 0.75rem 1rem;
-        background: var(--grey);
-        border-radius: 8px;
-        font-style: italic;
-      }
-      .q-code {
-        background: #1e2a3a;
-        color: #e2f0fb;
-        border-radius: 8px;
-        padding: 0.85rem 1rem;
-        font-size: 13px;
-        font-family: 'Courier New', monospace;
-        line-height: 1.6;
-        margin-bottom: 1rem;
-        white-space: pre-wrap;
-        overflow-x: auto;
-      }
-      .options { display: flex; flex-direction: column; gap: 0.5rem; }
-      .option {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75rem;
-        padding: 0.85rem 1rem;
-        border: 2px solid var(--border);
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.15s;
-        background: white;
-      }
-      .option:hover { border-color: var(--purple); background: var(--purple-light); }
-      .option.selected {
-        border-color: var(--purple);
-        background: var(--purple-light);
-      }
-      .option input { display: none; }
-      .option-letter {
-        width: 26px; height: 26px;
-        border-radius: 50%;
-        background: var(--grey);
-        color: var(--text);
-        font-size: 12px; font-weight: 700;
-        display: flex; align-items: center; justify-content: center;
-        flex-shrink: 0;
-        margin-top: 1px;
-      }
-      .option.selected .option-letter {
-        background: var(--purple);
-        color: white;
-      }
-      .option-text {
-        font-size: 14px;
-        color: var(--text);
-        line-height: 1.5;
-        flex: 1;
-      }
+      .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+      .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+      .info-box p { font-size: 14px; line-height: 1.6; }
+      .info-box ul { padding-left: 1.1rem; }
+      .info-box li { font-size: 14px; line-height: 1.7; }
+      .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+      .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+      .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+      .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+      .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+      .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+      .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
 
-      /* Result states (post-submit) */
-      .option.correct {
-        border-color: var(--green);
-        background: var(--green-light);
-      }
-      .option.correct .option-letter {
-        background: var(--green);
-        color: white;
-      }
-      .option.wrong {
-        border-color: var(--red);
-        background: var(--red-light);
-      }
-      .option.wrong .option-letter {
-        background: var(--red);
-        color: white;
-      }
-      .feedback {
-        margin-top: 1rem;
-        padding: 0.85rem 1rem;
-        border-radius: 8px;
-        font-size: 14px;
-        line-height: 1.6;
-        display: none;
-      }
-      .feedback.show { display: block; }
-      .feedback.correct { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
-      .feedback.wrong { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); }
-      .feedback strong { display: block; margin-bottom: 0.25rem; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+      h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+      .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+      .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+      .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
 
-      .submit-bar {
-        position: sticky;
-        bottom: 0;
-        background: white;
-        border-top: 1px solid var(--border);
-        padding: 1rem 1.5rem;
-        margin: 0 -1.5rem -4rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
-      }
-      .answered-count { font-size: 14px; color: var(--muted); font-weight: 500; }
-      .btn-submit {
-        background: var(--purple);
-        color: white;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 15px;
-        font-weight: 700;
-        padding: 12px 28px;
-        border-radius: 10px;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s, transform 0.1s;
-      }
-      .btn-submit:hover:not(:disabled) { background: #46206a; transform: translateY(-1px); }
-      .btn-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+      .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+      .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+      .practice ol { padding-left: 1.2rem; }
+      .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+      .practice li { margin-bottom: 4px; }
 
-      /* Result screen */
-      .result {
-        background: white;
-        border-radius: 18px;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        box-shadow: var(--shadow);
-        margin-bottom: 2rem;
-        border: 2px solid var(--purple);
-      }
-      .result.fail { border-color: var(--red); }
-      .result-icon { font-size: 56px; margin-bottom: 1rem; }
-      .result h2 {
-        font-family: 'DM Serif Display', serif;
-        font-size: 28px; font-weight: 400;
-        color: var(--text); margin-bottom: 0.5rem;
-      }
-      .result-score {
-        font-size: 48px;
-        font-weight: 700;
-        color: var(--purple);
-        margin: 1rem 0;
-        font-family: 'DM Serif Display', serif;
-      }
-      .result.fail .result-score { color: var(--red); }
-      .result-msg {
-        font-size: 15px; color: var(--muted);
-        margin-bottom: 1.5rem;
-        line-height: 1.6;
-      }
-      .btn-result {
-        display: inline-block;
-        background: var(--purple); color: white;
-        font-family: 'DM Sans', sans-serif;
-        font-size: 16px; font-weight: 700;
-        padding: 14px 32px; border-radius: 12px;
-        text-decoration: none;
-        border: none;
-        cursor: pointer;
-        transition: background 0.15s, transform 0.1s;
-        margin: 0 0.5rem;
-      }
-      .btn-result:hover { background: #46206a; transform: translateY(-1px); }
-      .btn-result.secondary {
-        background: white; color: var(--purple);
-        border: 2px solid var(--purple);
-      }
-      .btn-result.secondary:hover { background: var(--purple-light); }
+      .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+      .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+      .summary ul { padding-left: 1.2rem; }
+      .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+      .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+      .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+      .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+      .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+      .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+      .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+      .btn-quiz:hover { background: #46206a; transform: translateY(-1px); }
+
+      .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+      .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+      .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
 
       @media (max-width: 600px) {
-        .hero { padding: 2rem 1rem 1.5rem; }
-        .content { padding: 1.5rem 1rem 5rem; }
-        .question { padding: 1.1rem; }
-        .steps-bar { padding: 0.75rem 0.5rem; }
+        .hero { padding: 2rem 1rem 1.75rem; }
+        .content { padding: 1.75rem 1rem 3rem; }
+        .module-body { padding: 1.1rem; }
+        .quiz-cta { padding: 1.5rem 1rem; }
+        .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
         .step-label { display: none; }
         .step-arrow { margin: 0 2px; }
-        .submit-bar { padding: 0.85rem 1rem; margin: 0 -1rem -4rem; }
-        .result { padding: 2rem 1.25rem; }
-        .result-score { font-size: 38px; }
       }
     </style>
   </head>
@@ -299,7 +141,7 @@
       </div>
       LearnAI DK
     </a>
-    <span class="nav-tag">Mini-quiz B1</span>
+    <span class="nav-tag">Kursus B — Del 2 af 5</span>
   </nav>
 
   <div class="steps-bar">
@@ -309,13 +151,13 @@
     </div>
   <span class="step-arrow">›</span>
   <div class="step-item">
-      <div class="step-dot active">Q1</div>
-      <span class="step-label active">Mini-quiz</span>
+      <div class="step-dot done">Q1</div>
+      <span class="step-label done">Mini-quiz</span>
     </div>
   <span class="step-arrow">›</span>
   <div class="step-item">
-      <div class="step-dot next">B2</div>
-      <span class="step-label next">RAG</span>
+      <div class="step-dot active">B2</div>
+      <span class="step-label active">RAG</span>
     </div>
   <span class="step-arrow">›</span>
   <div class="step-item">
@@ -349,303 +191,278 @@
     </div>
   <span class="step-arrow">›</span>
   <div class="step-item">
+      <div class="step-dot next">Q5</div>
+      <span class="step-label next">Mini-quiz</span>
+    </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
       <div class="step-dot next">🏆</div>
       <span class="step-label next">Eksamen</span>
     </div>
 </div>
 
   <div class="hero">
-    <div class="hero-badge">Mini-quiz B1</div>
-    <h1>Mini-quiz: Avanceret prompting</h1>
-    <p>6 spørgsmål om system-prompts, few-shot, JSON-output og evaluering. 5 rigtige for at låse B2 op.</p>
+    <div class="hero-badge">Kursus B &nbsp;·&nbsp; Del 2 af 5</div>
+    <h1>RAG og vidensbaserede AI'er</h1>
+    <p>Giv AI'en adgang til dine egne dokumenter på en måde der ikke hallucinerer. Embeddings, chunking, vector-søgning og citater.</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><span>⏱</span> 2 timer</div>
+      <div class="hero-meta-item"><span>📋</span> 5 moduler</div>
+      <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+    </div>
   </div>
 
-  <div class="content" id="quiz-content">
+  <div class="content">
 
-    <div class="progress-info">
-      <span id="answered-text">0 / 6 besvaret</span>
-      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
-      <span>Krav: 5 / 6</span>
+    <div class="module open" id="mod1">
+      <div class="module-header" onclick="toggleModule('mod1')">
+        <div class="module-letter">1</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Hvorfor RAG eksisterer</div>
+          <div class="module-sub">Modeller ved ikke noget om dine dokumenter — endnu</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">En sprogmodel er trænet på et øjebliksbillede af internettet. Den kender ikke jeres interne wiki, jeres kundedatabase eller den PDF du fik tilsendt i går. <strong>RAG</strong> (Retrieval-Augmented Generation) løser det: vi finder de relevante stumper først, og giver dem til modellen sammen med spørgsmålet.</p>
+
+        <h3 class="subhead">Den simple definition</h3>
+        <div class="info-box box-purple">
+          <div class="info-box-title">RAG i én sætning</div>
+          <p>"Slå op i mine dokumenter → læg de relevante uddrag ind i prompten → lad modellen svare baseret på dem."</p>
+        </div>
+
+        <h3 class="subhead">Hvorfor ikke bare paste hele dokumentet ind?</h3>
+        <ul class="bullet-list">
+          <li><strong>Kontekstvinduet er endeligt.</strong> Selv 200k-tokens grænser dur ikke til 10.000-siders manualer.</li>
+          <li><strong>Pris.</strong> Du betaler for hver token — også de 95% af dokumentet der er irrelevant.</li>
+          <li><strong>Kvalitet falder.</strong> Modeller bliver målbart værre når kontekst er overfyldt med støj ("lost in the middle"-problemet).</li>
+        </ul>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Hvornår RAG IKKE er svaret</div>
+          <p>Hvis dit "dokument" er én A4-side, så bare paste den ind. RAG har overhead — kun værd det når du har mere end ca. 20 sider af materiale.</p>
+        </div>
+      </div>
     </div>
 
-    <div class="question" id="q0">
-        <span class="q-num">Spørgsmål 1 af 6</span>
-        <div class="q-text">Hvad er den vigtigste forskel på en system-prompt og en user-prompt?</div>
-        <div class="options">
-          <label class="option" data-q="0" data-opt="0">
-            <input type="radio" name="q0" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">System-prompts kan være længere end user-prompts</div>
-          </label>
-        <label class="option" data-q="0" data-opt="1">
-            <input type="radio" name="q0" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">System-prompten gælder gennem hele samtalen og bruges til vedvarende regler, mens user-prompten er den enkelte besked</div>
-          </label>
-        <label class="option" data-q="0" data-opt="2">
-            <input type="radio" name="q0" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">User-prompts koster flere tokens</div>
-          </label>
-        <label class="option" data-q="0" data-opt="3">
-            <input type="radio" name="q0" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">System-prompten kan kun skrives på engelsk</div>
-          </label>
+  <div class="module" id="mod2">
+      <div class="module-header" onclick="toggleModule('mod2')">
+        <div class="module-letter">2</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Embeddings: hvordan computeren forstår mening</div>
+          <div class="module-sub">Tekst som tal — og hvorfor "konge" og "dronning" ligger tæt på hinanden</div>
         </div>
-        <div class="feedback" id="fb0"></div>
+        <div class="module-toggle">+</div>
       </div>
+      <div class="module-body">
+        <p class="prose">En <strong>embedding</strong> er en lang liste af tal (typisk 768 eller 1536) der repræsenterer betydningen af et stykke tekst. To tekster der betyder noget tilsvarende får tal-vektorer der ligger tæt på hinanden geometrisk.</p>
 
-  <div class="question" id="q1">
-        <span class="q-num">Spørgsmål 2 af 6</span>
-        <div class="q-text">Du har skrevet en few-shot prompt med 4 eksempler — alle er korte, simple sætninger der klart hører til kategori "POSITIV". Hvad er problemet?</div>
-        <div class="options">
-          <label class="option" data-q="1" data-opt="0">
-            <input type="radio" name="q1" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Du har for få eksempler — der skal mindst 6</div>
-          </label>
-        <label class="option" data-q="1" data-opt="1">
-            <input type="radio" name="q1" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Few-shot virker ikke når alle eksempler er positive</div>
-          </label>
-        <label class="option" data-q="1" data-opt="2">
-            <input type="radio" name="q1" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Manglende diversitet — modellen mønstergenkender det forkerte mønster og klarer ikke kant-cases</div>
-          </label>
-        <label class="option" data-q="1" data-opt="3">
-            <input type="radio" name="q1" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Eksemplerne skal stå i tilfældig rækkefølge</div>
-          </label>
+        <div class="info-box box-blue">
+          <div class="info-box-title">Konkret eksempel</div>
+          <ul>
+            <li>"Hvordan ændrer jeg min adgangskode?" → [0.21, -0.83, 0.04, ...]</li>
+            <li>"Jeg har glemt mit password" → [0.19, -0.81, 0.07, ...]  ← <strong>tæt på</strong></li>
+            <li>"Hvad koster levering til Spanien?" → [0.74, 0.12, -0.55, ...]  ← langt væk</li>
+          </ul>
+          <p style="margin-top:0.5rem;">Modellen ser ikke ord — den ser geometri. Den finder de tal-vektorer der ligner spørgsmålet mest.</p>
         </div>
-        <div class="feedback" id="fb1"></div>
-      </div>
 
-  <div class="question" id="q2">
-        <span class="q-num">Spørgsmål 3 af 6</span>
-        <div class="q-text">Du beder modellen returnere JSON, men får dette tilbage:<br><br><code style="background:#1e2a3a;color:#e2f0fb;padding:2px 6px;border-radius:4px;">Selvfølgelig! Her er din JSON:<br>```json<br>{"navn": "Magnus"}<br>```</code><br><br>Hvad er det <em>bedste</em> svar på problemet?</div>
-        <div class="options">
-          <label class="option" data-q="2" data-opt="0">
-            <input type="radio" name="q2" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Skifte til en større model</div>
-          </label>
-        <label class="option" data-q="2" data-opt="1">
-            <input type="radio" name="q2" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Bruge regex til at fjerne markdown-fences efter modellens svar</div>
-          </label>
-        <label class="option" data-q="2" data-opt="2">
-            <input type="radio" name="q2" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Vær eksplicit i prompten: "Returnér KUN gyldig JSON. Ingen forklaring. Ingen markdown" — og brug API'ets schema-tvang hvis muligt</div>
-          </label>
-        <label class="option" data-q="2" data-opt="3">
-            <input type="radio" name="q2" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Bede modellen om at undskylde og prøve igen</div>
-          </label>
+        <h3 class="subhead">Cosine similarity</h3>
+        <p class="prose">Standard-målet er <em>cosinus-lighed</em> mellem to vektorer: et tal mellem -1 og 1, hvor 1 = identisk betydning, 0 = uafhængig, -1 = modsat. I praksis er alt over ~0.75 "relateret".</p>
+
+        <div class="code-label">Sådan ser et API-kald ud</div>
+        <div class="code-block">// OpenAI embedding API
+  const res = await openai.embeddings.create({
+    model: "text-embedding-3-small",
+    input: "Hvordan ændrer jeg min adgangskode?"
+  });
+  const vector = res.data[0].embedding;  // [1536 tal]</div>
+
+        <div class="info-box box-grey">
+          <div class="info-box-title">Pris</div>
+          <p>Embedding-modeller er <strong>billige</strong> — text-embedding-3-small koster ca. 0,0001 kr pr. 1000 tokens. Du kan embedde en hel bog for under 1 krone.</p>
         </div>
-        <div class="feedback" id="fb2"></div>
       </div>
-
-  <div class="question" id="q3">
-        <span class="q-num">Spørgsmål 4 af 6</span>
-        <div class="q-text">Du laver en eval-loop og ændrer 3 ting i prompten samtidig: ny rolle, nyt format, nye eksempler. Scoren falder fra 8/10 til 5/10. Hvad er problemet?</div>
-        <div class="options">
-          <label class="option" data-q="3" data-opt="0">
-            <input type="radio" name="q3" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Du har sandsynligvis ramt en bug i modellen</div>
-          </label>
-        <label class="option" data-q="3" data-opt="1">
-            <input type="radio" name="q3" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Du kan ikke vide hvilken ændring der gjorde det værre — du skal ændre ét element ad gangen</div>
-          </label>
-        <label class="option" data-q="3" data-opt="2">
-            <input type="radio" name="q3" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Eval-sættet er for lille</div>
-          </label>
-        <label class="option" data-q="3" data-opt="3">
-            <input type="radio" name="q3" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Det er normalt at score svinger 30% mellem kørsler</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb3"></div>
-      </div>
-
-  <div class="question" id="q4">
-        <span class="q-num">Spørgsmål 5 af 6</span>
-        <div class="q-text">Du bruger LLM-as-a-judge til at score svar fra 1-5, men næsten alt får 4 eller 5. Hvad er den mest sandsynlige årsag?</div>
-        <div class="options">
-          <label class="option" data-q="4" data-opt="0">
-            <input type="radio" name="q4" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Dine svar er virkelig så gode</div>
-          </label>
-        <label class="option" data-q="4" data-opt="1">
-            <input type="radio" name="q4" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Judge-prompten er for blød — modeller har en stærk bias mod at give høje scores hvis ikke du eksplicit beder dem være kritiske</div>
-          </label>
-        <label class="option" data-q="4" data-opt="2">
-            <input type="radio" name="q4" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Du burde bruge en større judge-model</div>
-          </label>
-        <label class="option" data-q="4" data-opt="3">
-            <input type="radio" name="q4" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Skalaen 1-5 er for kort — brug 1-100</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb4"></div>
-      </div>
-
-  <div class="question" id="q5">
-        <span class="q-num">Spørgsmål 6 af 6</span>
-        <div class="q-text">Din prompt kører 5.000 gange om dagen. Hvilken optimering giver typisk størst besparelse uden kvalitetstab?</div>
-        <div class="options">
-          <label class="option" data-q="5" data-opt="0">
-            <input type="radio" name="q5" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Forkort din system-prompt med 50%</div>
-          </label>
-        <label class="option" data-q="5" data-opt="1">
-            <input type="radio" name="q5" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Skift til en lille billig model (fx Haiku/4o-mini) og test om den faktisk klarer opgaven — kombinér evt. med caching af system-prompten</div>
-          </label>
-        <label class="option" data-q="5" data-opt="2">
-            <input type="radio" name="q5" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Sæt temperature til 0</div>
-          </label>
-        <label class="option" data-q="5" data-opt="3">
-            <input type="radio" name="q5" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Gem alle svar i en database og genbrug dem</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb5"></div>
-      </div>
-
-    <div class="submit-bar">
-      <span class="answered-count" id="answered-count">Besvar alle 6 spørgsmål</span>
-      <button class="btn-submit" id="submit-btn" disabled>Indsend svar</button>
     </div>
 
-  </div>
+  <div class="module" id="mod3">
+      <div class="module-header" onclick="toggleModule('mod3')">
+        <div class="module-letter">3</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Chunking: hvordan du deler dokumenter op</div>
+          <div class="module-sub">Den vigtigste — og mest oversete — kunst i RAG</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Du embedder ikke et helt dokument som én vektor (det ville udvande betydningen). Du deler det op i mindre <strong>chunks</strong> — typisk 200-800 tokens — og embedder hver for sig.</p>
 
-  <div class="content" id="result-content" style="display:none;">
-    <div class="result" id="result-box">
-      <div class="result-icon" id="result-icon"></div>
-      <h2 id="result-title"></h2>
-      <div class="result-score" id="result-score"></div>
-      <p class="result-msg" id="result-msg"></p>
-      <div id="result-actions"></div>
+        <h3 class="subhead">De fire chunk-strategier</h3>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">1. Fixed-size (fast længde)</div>
+          <p>Skær hver 500 tokens. Simpelt. Skærer nådesløst igennem sætninger og afsnit. <strong>Brug:</strong> aldrig som førstevalg.</p>
+        </div>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">2. Recursive (rekursiv)</div>
+          <p>Del først på dobbelt-newline (afsnit), ellers single-newline, ellers punktum, ellers ord. Holder semantik intakt. <strong>Brug:</strong> default for de fleste use-cases.</p>
+        </div>
+
+        <div class="info-box box-green">
+          <div class="info-box-title">3. Semantic (semantisk)</div>
+          <p>Embed sætninger enkeltvis, og slå dem sammen så længe naboerne ligner hinanden. Dyrere, men klart bedst til lange essays / artikler.</p>
+        </div>
+
+        <div class="info-box box-orange">
+          <div class="info-box-title">4. Document-aware (struktureret)</div>
+          <p>Brug dokumentets faktiske struktur: én chunk pr. afsnit i en wiki, én pr. række i et regneark, én pr. funktion i en kodebase. <strong>Brug:</strong> når data har naturlig struktur — det her vinder næsten altid.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Overlap — det lille trick der redder dig</h3>
+        <p class="prose">Lad chunks <em>overlappe</em> med 10-20%. Hvis svaret falder lige på en chunk-grænse, fanger overlappet det stadig.</p>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Den klassiske fejl</div>
+          <p>Du chunker på 1000 tokens uden overlap. Brugeren spørger om noget der står lige rundt om en chunk-grænse. Hverken chunk A eller B indeholder hele konteksten. Modellen siger "jeg kan ikke finde information om det" — selv om svaret <em>står</em> i dokumentet.</p>
+        </div>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Tænk over chunking til 3 cases</div>
+          <ol>
+            <li>En jura-bog med paragraffer (§1, §2, ...)</li>
+            <li>Et CSV med 10.000 produkter (navn, beskrivelse, pris)</li>
+            <li>En blog med 200 artikler i markdown</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Hvilken chunk-strategi passer til hver? (Hint: jura → document-aware pr. paragraf, CSV → én række pr. chunk, blog → recursive med overlap.)</p>
+        </div>
+      </div>
     </div>
+
+  <div class="module" id="mod4">
+      <div class="module-header" onclick="toggleModule('mod4')">
+        <div class="module-letter">4</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Vector-søgning og hybrid retrieval</div>
+          <div class="module-sub">Find de rigtige chunks — også når brugeren staver forkert</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Når en bruger stiller et spørgsmål, embedder vi det, og finder de chunks med den højeste cosinus-lighed. Det er <strong>vector search</strong>. Det fungerer godt — men ikke altid.</p>
+
+        <h3 class="subhead">Hvor vector search fejler</h3>
+        <ul class="bullet-list">
+          <li><strong>Eksakte match:</strong> "fakturanummer 458291" — semantisk søgning er dårlig til præcise tokens og tal.</li>
+          <li><strong>Sjældne navne:</strong> "Henriette Skovgaard-Jensen" har sjældent en god embedding.</li>
+          <li><strong>Akronymer:</strong> "Hvad er CPR?" — embedding ved måske ikke om du mener person-id eller cardiopulmonary resuscitation.</li>
+        </ul>
+
+        <div class="info-box box-purple">
+          <div class="info-box-title">Løsningen: hybrid search</div>
+          <p>Kør <strong>både</strong> en vector-søgning og en klassisk keyword-søgning (BM25). Smelt resultaterne sammen med <em>Reciprocal Rank Fusion</em>. Du får det bedste fra begge verdener.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Re-ranking — det andet trin</h3>
+        <p class="prose">Vector search returnerer typisk top-20 kandidater. Men dem er ikke alle lige relevante. Et <strong>cross-encoder re-ranker</strong> (fx Cohere Rerank) læser spørgsmålet og hver chunk sammen og scorer dem mere præcist.</p>
+
+        <div class="info-box box-blue">
+          <div class="info-box-title">Pipeline i praksis</div>
+          <ol>
+            <li>Embed spørgsmål → vector search → top-20 chunks</li>
+            <li>Re-rank de 20 → top-5</li>
+            <li>Send de 5 + spørgsmål til LLM'en</li>
+            <li>Få svar med citater</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+  <div class="module" id="mod5">
+      <div class="module-header" onclick="toggleModule('mod5')">
+        <div class="module-letter">5</div>
+        <div class="module-title-wrap">
+          <div class="module-title">Prompt-design til RAG: tvunget grundlag og citater</div>
+          <div class="module-sub">Stop modellen i at lyve — kræv at den citerer</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        <p class="prose">Selv med perfekt retrieval kan modellen finde på at flette egne meninger ind. På B-niveau bygger vi prompten så det er <em>umuligt</em> at undgå at citere.</p>
+
+        <div class="code-label">RAG system-prompt — eksempel</div>
+        <div class="code-block">Du er en assistent der KUN svarer baseret på de uddrag jeg giver dig.
+
+  REGLER:
+  - Brug aldrig viden uden for uddragene.
+  - Hvis svaret ikke står i uddragene, svar: "Det kan jeg ikke finde i kilderne."
+  - Hvert faktuelt udsagn skal følges af [kilde: N] hvor N er nummer på uddraget.
+  - Citatformat: opfind aldrig kilder.
+
+  UDDRAG:
+  [1] {chunk_1_text}
+  [2] {chunk_2_text}
+  [3] {chunk_3_text}
+
+  SPØRGSMÅL: {user_question}</div>
+
+        <div class="info-box box-yellow">
+          <div class="info-box-title">⚠ Test "I don't know"-adfærden</div>
+          <p>Stil bevidst spørgsmål svaret IKKE er i kilderne for. Hvis modellen alligevel finder på et svar — så har din prompt et hul. Stram den indtil "Det kan jeg ikke finde" virker pålideligt.</p>
+        </div>
+
+        <hr class="divider">
+
+        <h3 class="subhead">Avanceret: HyDE — Hypothetical Document Embeddings</h3>
+        <p class="prose">Et nyere trick: i stedet for at embedde brugerens spørgsmål, beder du modellen om at <em>opfinde</em> et hypothetisk svar — og embedder dét. Det matcher ofte chunks bedre, fordi svar ligner svar mere end de ligner spørgsmål.</p>
+
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU — Lav en mini-RAG i ChatGPT</div>
+          <ol>
+            <li>Find 3-5 wikipedia-afsnit om et emne (fx solenergi).</li>
+            <li>Paste dem ind med [1], [2], [3]-prefix.</li>
+            <li>Brug system-prompten ovenfor.</li>
+            <li>Stil et spørgsmål svaret står i — tjek at modellen citerer korrekt.</li>
+            <li>Stil derefter et spørgsmål svaret IKKE står i — siger den "ved ikke", eller hallucinerer den?</li>
+          </ol>
+          <p style="margin-top:0.75rem;">Det her er kernen i alle RAG-produkter: NotebookLM, Perplexity, ChatGPT med vedhæftninger.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>Del B2 — Hvad du har lært</h3>
+      <ul>
+        <li>Hvad RAG er, og hvornår det giver mening (vs. bare at paste alt ind)</li>
+      <li>Embeddings: tekst som vektorer, cosine similarity, prisbillede</li>
+      <li>De fire chunk-strategier: fixed, recursive, semantic, document-aware</li>
+      <li>Hvorfor overlap mellem chunks redder dig fra usynlige fejl</li>
+      <li>Vector search vs. hybrid search (vector + BM25 + re-ranking)</li>
+      <li>RAG-prompt der tvinger citater og siger "ved ikke" når den bør</li>
+      <li>HyDE — at embedde et opfundet svar i stedet for spørgsmålet</li>
+      </ul>
+    </div>
+
+    <div class="quiz-cta">
+      <div class="quiz-cta-icon">📝</div>
+      <h2>Klar til mini-quizzen?</h2>
+      <p>B2-quizzen tester om du kan vælge den rigtige chunk-strategi, forklare hvad embeddings er, og spotte når en RAG-pipeline lyver. Mindst 7 ud af 8 rigtige.</p>
+      <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+      <a href="quiz-b2.html" class="btn-quiz">Start mini-quiz B2 →</a>
+    </div>
+
   </div>
 
   <script>
-  const CORRECT = [1,2,2,1,1,1];
-  const EXPLAIN = ["System-prompten læses før hver user-besked og bruges til rolle, regler og format. User-prompten er den konkrete opgave i hver runde.","Hvis alle dine eksempler ligner hinanden, lærer modellen at \"alt er positivt\" eller at kun korte sætninger tæller. Mindst ét eksempel bør være en kant-case.","Prompt-disciplin (eksplicit \"ingen forklaring/markdown\") plus structured output / tool_use på API'et er den robuste løsning. Regex-fix bagefter er sidste udvej.","\"Ét element ad gangen\" er hele pointen med systematisk eval. Ellers kan du ikke korrelere ændringer med resultater.","Sycophancy-bias er reel. Brug ord som \"kritisk\", \"streng\", \"find fejl\" og bed eksplicit om at score under 3 ved nogen fejl.","Mindre modeller er 10-30× billigere og kan ofte løse opgaven. Prompt caching giver yderligere ~10× på de gentagne dele. Det er den klassiske kombination."];
-  const NEXT_HREF = "kursus-b2.html";
-  const NEXT_LABEL = "Gå til Kursus B2";
-  const RETRY_HREF = "kursus-b1.html";
-  const RETRY_LABEL = "Kursus B1";
-  const PASS_SCORE = 5;
-  const TOTAL = 6;
-
-  const answers = new Array(TOTAL).fill(null);
-
-  document.querySelectorAll('.option').forEach(opt => {
-    opt.addEventListener('click', (e) => {
-      const q = parseInt(opt.dataset.q);
-      const o = parseInt(opt.dataset.opt);
-      answers[q] = o;
-      document.querySelectorAll(`.option[data-q="${q}"]`).forEach(x => x.classList.remove('selected'));
-      opt.classList.add('selected');
-      updateProgress();
-    });
-  });
-
-  function updateProgress() {
-    const answered = answers.filter(a => a !== null).length;
-    document.getElementById('answered-text').textContent = answered + ' / 6 besvaret';
-    document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
-    const btn = document.getElementById('submit-btn');
-    const lbl = document.getElementById('answered-count');
-    if (answered === TOTAL) {
-      btn.disabled = false;
-      lbl.textContent = 'Klar til at indsende';
-    } else {
-      btn.disabled = true;
-      lbl.textContent = 'Besvar alle ' + TOTAL + ' spørgsmål (' + answered + '/' + TOTAL + ')';
-    }
+  function toggleModule(id) {
+    const mod = document.getElementById(id);
+    mod.classList.toggle('open');
   }
-
-  document.getElementById('submit-btn').addEventListener('click', () => {
-    let score = 0;
-    for (let i = 0; i < TOTAL; i++) {
-      const opts = document.querySelectorAll(`.option[data-q="${i}"]`);
-      opts.forEach(o => o.style.pointerEvents = 'none');
-      const userAns = answers[i];
-      const correct = CORRECT[i];
-      if (userAns === correct) {
-        score++;
-        opts[userAns].classList.add('correct');
-        opts[userAns].classList.remove('selected');
-      } else {
-        opts[userAns].classList.add('wrong');
-        opts[userAns].classList.remove('selected');
-        opts[correct].classList.add('correct');
-      }
-      const fb = document.getElementById('fb' + i);
-      if (userAns === correct) {
-        fb.className = 'feedback correct show';
-        fb.innerHTML = '<strong>Rigtigt</strong>' + EXPLAIN[i];
-      } else {
-        fb.className = 'feedback wrong show';
-        fb.innerHTML = '<strong>Forkert — det rigtige svar er ' + String.fromCharCode(65+correct) + '</strong>' + EXPLAIN[i];
-      }
-    }
-
-    // Show result
-    document.querySelector('.submit-bar').style.display = 'none';
-    const result = document.getElementById('result-content');
-    result.style.display = 'block';
-    result.scrollIntoView({behavior: 'smooth', block: 'start'});
-
-    const passed = score >= PASS_SCORE;
-    const box = document.getElementById('result-box');
-    document.getElementById('result-score').textContent = score + ' / ' + TOTAL;
-
-    if (passed) {
-      box.classList.remove('fail');
-      document.getElementById('result-icon').textContent = '🎉';
-      document.getElementById('result-title').textContent = 'Bestået!';
-      document.getElementById('result-msg').textContent = 'Du har vist du forstår stoffet. Næste niveau er låst op.';
-      document.getElementById('result-actions').innerHTML =
-        '<a href="' + NEXT_HREF + '" class="btn-result">' + NEXT_LABEL + ' →</a>' +
-        '<a href="' + RETRY_HREF + '" class="btn-result secondary">Læs ' + RETRY_LABEL + ' igen</a>';
-    } else {
-      box.classList.add('fail');
-      document.getElementById('result-icon').textContent = '📚';
-      document.getElementById('result-title').textContent = 'Ikke bestået endnu';
-      document.getElementById('result-msg').textContent =
-        'Du fik ' + score + ' rigtige — du skal bruge mindst ' + PASS_SCORE + ' for at gå videre. Læs kurset igennem igen og prøv quizzen forfra.';
-      document.getElementById('result-actions').innerHTML =
-        '<a href="' + RETRY_HREF + '" class="btn-result">Tilbage til ' + RETRY_LABEL + '</a>' +
-        '<button onclick="location.reload()" class="btn-result secondary">Prøv quizzen igen</button>';
-    }
-  });
   </script>
 
   </body>
