@@ -1,114 +1,242 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LearnAI.dk</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LearnAI.dk</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+<style>
+/* RESET */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', sans-serif;
+}
 
-    body {
-      background: black;
-      color: white;
-      overflow: hidden;
-    }
+body {
+  background: black;
+  color: white;
+  overflow-x: hidden;
+}
 
-    .container {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+/* MATRIX BACKGROUND */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
 
-    /* LOGO */
-    .logo {
-      width: 300px;
-      animation: float 4s ease-in-out infinite;
-      filter: drop-shadow(0 0 20px #00eaff);
-    }
+/* NAVBAR */
+nav {
+  position: fixed;
+  width: 100%;
+  padding: 20px 50px;
+  display: flex;
+  justify-content: space-between;
+  backdrop-filter: blur(10px);
+}
 
-    /* GLOW BACKGROUND */
-    .glow {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(0,234,255,0.2), transparent);
-      animation: pulse 3s infinite;
-    }
+nav h2 {
+  color: #00eaff;
+}
 
-    /* TEXT */
-    h1 {
-      margin-top: 20px;
-      font-size: 2.5rem;
-      letter-spacing: 2px;
-      opacity: 0;
-      animation: fadeIn 2s ease forwards;
-      animation-delay: 0.5s;
-    }
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: white;
+  transition: 0.3s;
+}
 
-    p {
-      margin-top: 10px;
-      opacity: 0;
-      animation: fadeIn 2s ease forwards;
-      animation-delay: 1s;
-      color: #aaa;
-    }
+nav a:hover {
+  color: #00eaff;
+}
 
-    /* BUTTON */
-    .btn {
-      margin-top: 30px;
-      padding: 12px 25px;
-      border: 1px solid #00eaff;
-      color: #00eaff;
-      text-decoration: none;
-      transition: 0.3s;
-    }
+/* HERO */
+.hero {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-    .btn:hover {
-      background: #00eaff;
-      color: black;
-      box-shadow: 0 0 20px #00eaff;
-    }
+/* LOGO */
+.logo {
+  width: 250px;
+  filter: drop-shadow(0 0 30px #00eaff);
+  animation: float 4s infinite ease-in-out;
+}
 
-    /* ANIMATIONS */
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-20px); }
-    }
+/* TYPEWRITER */
+.type {
+  margin-top: 30px;
+  font-size: 3rem;
+  border-right: 2px solid #00eaff;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 3s steps(20) forwards, blink 0.7s infinite;
+}
 
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 0.5; }
-      50% { transform: scale(1.2); opacity: 0.2; }
-      100% { transform: scale(1); opacity: 0.5; }
-    }
+/* SUBTEXT */
+.sub {
+  margin-top: 15px;
+  color: #aaa;
+  opacity: 0;
+  animation: fade 2s forwards;
+  animation-delay: 3s;
+}
 
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
+/* BUTTON */
+.btn {
+  margin-top: 30px;
+  padding: 12px 30px;
+  border: 1px solid #00eaff;
+  color: #00eaff;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+}
 
-  </style>
+.btn::before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 100%;
+  background: #00eaff;
+  left: 0;
+  top: 0;
+  transition: 0.4s;
+}
+
+.btn:hover::before {
+  width: 100%;
+}
+
+.btn:hover {
+  color: black;
+}
+
+/* ANIMATIONS */
+@keyframes typing {
+  to { width: 13ch; }
+}
+
+@keyframes blink {
+  50% { border-color: transparent; }
+}
+
+@keyframes fade {
+  to { opacity: 1; }
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0);}
+  50% { transform: translateY(-15px);}
+}
+
+/* SECTION */
+.section {
+  padding: 100px 50px;
+  text-align: center;
+}
+
+.card {
+  margin-top: 40px;
+  padding: 30px;
+  border: 1px solid #00eaff33;
+  transition: 0.4s;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 0 30px #00eaff55;
+}
+
+/* GLOW EFFECT */
+.glow {
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, #00eaff22, transparent);
+  animation: pulse 4s infinite;
+}
+
+@keyframes pulse {
+  0%,100% { transform: scale(1);}
+  50% { transform: scale(1.3);}
+}
+</style>
 </head>
 
 <body>
 
-  <div class="container">
-    <div class="glow"></div>
+<canvas id="matrix"></canvas>
 
-    <!-- SÆT DIT LOGO HER -->
-    <img src="logo.png" alt="LearnAI logo" class="logo">
-
-    <h1>LearnAI.dk</h1>
-    <p>AI kurser • praksis • fremtid</p>
-
-    <a href="#" class="btn">Kom i gang</a>
+<nav>
+  <h2>LearnAI</h2>
+  <div>
+    <a href="#">Home</a>
+    <a href="#">Kurser</a>
+    <a href="#">Om</a>
   </div>
+</nav>
+
+<section class="hero">
+  <div class="glow"></div>
+
+  <img src="logo.png" class="logo">
+
+  <div class="type">LearnAI.dk</div>
+  <div class="sub">AI kurser • praksis • fremtid</div>
+
+  <a href="#" class="btn">Kom i gang</a>
+</section>
+
+<section class="section">
+  <h2>Hvad vi tilbyder</h2>
+
+  <div class="card">🔥 AI Kurser</div>
+  <div class="card">⚡ Hands-on læring</div>
+  <div class="card">🚀 Fremtidens skills</div>
+</section>
+
+<script>
+// MATRIX EFFECT
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+const letters = "01";
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+
+const drops = Array(Math.floor(columns)).fill(1);
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  ctx.fillStyle = "#00eaff";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    const text = letters[Math.floor(Math.random() * letters.length)];
+    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+      drops[i] = 0;
+
+    drops[i]++;
+  }
+}
+
+setInterval(draw, 33);
+</script>
 
 </body>
 </html>
