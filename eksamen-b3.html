@@ -1,0 +1,745 @@
+<!doctype html>
+  <html lang="da">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>LearnAI DK — Eksamen B3</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --exam: #047857;
+        --exam-light: #D1FAE5;
+        --ink: #1F1F23;
+        --muted: #5C5C66;
+        --bg: #FAF9F6;
+        --card: #FFFFFF;
+        --border: #E5E2DA;
+        --green: #15803D;
+        --green-light: #DCFCE7;
+        --red: #B91C1C;
+        --red-light: #FEE2E2;
+        --gold: #B45309;
+        --gold-light: #FEF3C7;
+        --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
+        --radius: 14px;
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
+      h1, h2, h3 { font-family: 'Source Serif 4', serif; font-weight: 600; }
+      nav { background: white; border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+      .nav-left { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
+      .logo-icon { width: 30px; height: 30px; background: var(--exam); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+      .logo-icon::after { content: ""; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; }
+      .nav-tag { background: var(--gold-light); color: var(--gold); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
+      .steps-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; padding: 0.9rem 1.5rem; background: white; border-bottom: 1px solid var(--border); justify-content: center; font-size: 12px; }
+      .step-item { display: flex; align-items: center; gap: 6px; }
+      .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+      .step-dot.done { background: var(--green); color: white; }
+      .step-dot.active { background: var(--exam); color: white; box-shadow: 0 0 0 4px var(--exam-light); }
+      .step-dot.next { background: var(--border); color: var(--muted); }
+      .step-label.done { color: var(--green); font-weight: 600; }
+      .step-label.active { color: var(--exam); font-weight: 700; }
+      .step-label.next { color: var(--muted); }
+      .step-arrow { color: var(--border); font-weight: 700; }
+      .hero { background: var(--exam); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+      .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 0.7rem; }
+      .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+      .hero p { max-width: 700px; margin: 0 auto; opacity: 0.9; font-size: 1rem; }
+      main { max-width: 850px; margin: 0 auto; padding: 2rem 1rem; }
+      section.test, section.practical, section.final { background: var(--card); border-radius: var(--radius); padding: 2rem 1.75rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
+      section.locked { opacity: 0.5; pointer-events: none; }
+      section.locked::before { content: "🔒 Bestå forrige del for at låse op"; display: block; background: var(--gold-light); color: var(--gold); padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; text-align: center; font-weight: 700; font-size: 13px; }
+      .section-label { font-size: 11px; font-weight: 700; color: var(--exam); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+      section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+      section > p.intro { color: var(--muted); margin-bottom: 1.5rem; }
+      .question { padding: 1.25rem 0; border-top: 1px solid var(--border); }
+      .question:first-of-type { border-top: none; padding-top: 0.5rem; }
+      .q-num { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
+      .q-text { font-size: 1rem; font-weight: 500; margin-bottom: 0.85rem; line-height: 1.5; }
+      .options { display: flex; flex-direction: column; gap: 0.5rem; }
+      .option { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.7rem 0.9rem; background: white; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
+      .option input { display: none; }
+      .option:hover { border-color: var(--exam); background: var(--exam-light); }
+      .option-letter { width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--bg); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
+      .option-text { font-size: 0.95rem; line-height: 1.4; }
+      .option.selected { border-color: var(--exam); background: var(--exam-light); }
+      .option.selected .option-letter { background: var(--exam); color: white; }
+      .option.correct { border-color: var(--green); background: var(--green-light); }
+      .option.correct .option-letter { background: var(--green); color: white; }
+      .option.wrong { border-color: var(--red); background: var(--red-light); }
+      .option.wrong .option-letter { background: var(--red); color: white; }
+      .feedback { display: none; margin-top: 0.6rem; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.45; }
+      .feedback.ok { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); display: block; }
+      .feedback.bad { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); display: block; }
+      .btn { display: inline-block; background: var(--exam); color: white; font-family: inherit; font-size: 15px; font-weight: 700; padding: 12px 24px; border-radius: 10px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.15s; }
+      .btn:hover { transform: translateY(-1px); }
+      .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+      .btn-secondary { background: white; color: var(--exam); border: 2px solid var(--exam); padding: 10px 22px; }
+      .btn-secondary:hover { background: var(--exam-light); }
+      .action-row { display: flex; gap: 0.75rem; margin-top: 0.85rem; flex-wrap: wrap; }
+      .test-actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+      .test-result { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 10px; font-weight: 600; display: none; }
+      .test-result.pass { background: var(--green-light); color: var(--green); display: block; }
+      .test-result.fail { background: var(--red-light); color: var(--red); display: block; }
+      .practical-header { margin-bottom: 1.25rem; }
+      .practical-badge { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
+      .task { background: var(--bg); padding: 1rem 1.1rem; border-left: 3px solid var(--exam); border-radius: 6px; font-size: 0.97rem; line-height: 1.55; white-space: pre-line; }
+      textarea { width: 100%; min-height: 200px; padding: 0.85rem 1rem; font-family: inherit; font-size: 14px; line-height: 1.5; border: 1.5px solid var(--border); border-radius: 10px; margin-top: 0.5rem; resize: vertical; background: white; }
+      textarea:focus { outline: none; border-color: var(--exam); }
+      .ai-loading { display: flex; align-items: center; gap: 0.7rem; margin-top: 1.25rem; padding: 1rem 1.2rem; background: var(--exam-light); border-radius: 10px; color: var(--exam); font-weight: 600; font-size: 14px; }
+      .spinner { width: 18px; height: 18px; border: 2.5px solid var(--exam); border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+      @keyframes spin { to { transform: rotate(360deg); } }
+      .ai-error { margin-top: 1rem; padding: 1rem 1.2rem; background: var(--red-light); color: var(--red); border-radius: 10px; font-size: 14px; font-weight: 600; border-left: 3px solid var(--red); }
+      .ai-result { margin-top: 1.25rem; }
+      .ai-overall { padding: 1rem 1.25rem; border-radius: 10px; font-weight: 600; margin-bottom: 1rem; line-height: 1.5; font-size: 0.95rem; }
+      .ai-overall.pass { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
+      .ai-overall.fail { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); }
+      .ai-overall .verdict-tag { display: inline-block; background: white; padding: 2px 10px; border-radius: 999px; font-size: 12px; margin-right: 0.5rem; font-weight: 700; }
+      .ai-criteria { display: flex; flex-direction: column; gap: 0.5rem; }
+      .crit { padding: 0.7rem 0.9rem; border-radius: 8px; border: 1px solid var(--border); background: white; font-size: 0.92rem; }
+      .crit.ok { border-color: var(--green); background: var(--green-light); }
+      .crit.bad { border-color: var(--red); background: var(--red-light); }
+      .crit-head { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 0.3rem; }
+      .crit-icon { font-weight: 700; flex-shrink: 0; }
+      .crit.ok .crit-icon { color: var(--green); }
+      .crit.bad .crit-icon { color: var(--red); }
+      .crit-title { font-weight: 600; line-height: 1.4; }
+      .crit-feedback { margin-left: 1.7rem; font-size: 0.88rem; line-height: 1.45; }
+      .crit.ok .crit-feedback { color: var(--green); opacity: 0.85; }
+      .crit.bad .crit-feedback { color: var(--red); opacity: 0.85; }
+      .solution { background: var(--gold-light); border: 1px solid #FCD34D; border-radius: 12px; padding: 1.25rem 1.4rem; margin-top: 1.25rem; }
+      .solution-header { font-weight: 700; color: var(--gold); margin-bottom: 0.6rem; }
+      .solution-body { font-size: 0.95rem; line-height: 1.55; color: #1F1F23; white-space: pre-line; }
+      .final-card { text-align: center; padding: 2rem; }
+      .final-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
+      .final-card h2 { margin-bottom: 0.6rem; }
+      .final-card p { color: var(--muted); margin-bottom: 1.25rem; max-width: 520px; margin-left: auto; margin-right: auto; }
+      .progress-summary { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+      .progress-pill { background: var(--bg); padding: 0.6rem 1rem; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); border: 1.5px solid var(--border); }
+      .progress-pill.done { background: var(--green-light); color: var(--green); border-color: var(--green); }
+      @media (max-width: 600px) {
+        .hero h1 { font-size: 1.6rem; }
+        section { padding: 1.5rem 1.1rem; }
+        .steps-bar { font-size: 11px; }
+        .step-dot { width: 22px; height: 22px; font-size: 10px; }
+        .action-row { flex-direction: column; }
+        .action-row .btn { width: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="nav-left">
+        <span class="logo-icon"></span>
+        <span>LearnAI DK</span>
+        <span class="nav-tag">Eksamen B3</span>
+      </div>
+    </nav>
+
+    <div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot done">B1</div>
+    <span class="step-label done">Prompting</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q1</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">B2</div>
+    <span class="step-label done">RAG</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q2</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">B3</div>
+    <span class="step-label done">Tools</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q3</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">B4</div>
+    <span class="step-label done">Agenter</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q4</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">B5</div>
+    <span class="step-label done">Produktion</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">🏆</div>
+    <span class="step-label done">Eksamen 1</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">🏆</div>
+    <span class="step-label done">Eksamen 2</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot active">🏆</div>
+    <span class="step-label active">Eksamen 3</span>
+  </div>
+</div>
+
+    <div class="hero">
+      <div class="hero-badge">Eksamen B3 af 3</div>
+      <h1>Produktion og sikkerhed</h1>
+      <p>Eksamen 3 af 3 dækker B5 — prompt injection, guardrails, observability, eval i skala og omkostnings-optimering. Bestå denne for at låse Niveau A op.</p>
+    </div>
+
+    <main>
+      <section class="test" id="test">
+        <div class="section-label">Del 1 af 3 — Test</div>
+        <h2>Test — 8 spørgsmål</h2>
+        <p class="intro">Spørgsmålene dækker hele B5 og kræver at du tænker som en der står med ansvaret for et AI-system i produktion. Du skal have mindst <strong>6 ud af 8</strong> rigtige for at bestå.</p>
+
+    <div class="question" id="q0">
+        <span class="q-num">Spørgsmål 1 af 8</span>
+        <div class="q-text">Hvad er forskellen på direct og indirect prompt injection?</div>
+        <div class="options">
+          <label class="option" data-q="0" data-opt="0">
+            <input type="radio" name="q0" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Direct sker via voice, indirect via tekst</div>
+          </label>
+        <label class="option" data-q="0" data-opt="1">
+            <input type="radio" name="q0" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Direct fra eksterne brugere, indirect fra interne udviklere</div>
+          </label>
+        <label class="option" data-q="0" data-opt="2">
+            <input type="radio" name="q0" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Direct: angriberen prompter selv. Indirect: instruktioner gemmes i data systemet senere behandler</div>
+          </label>
+        <label class="option" data-q="0" data-opt="3">
+            <input type="radio" name="q0" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Direct rammer system-prompten, indirect rammer kun user-prompten</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb0"></div>
+      </div>
+
+  <div class="question" id="q1">
+        <span class="q-num">Spørgsmål 2 af 8</span>
+        <div class="q-text">Hvilken guardrail er mest robust mod uønsket output?</div>
+        <div class="options">
+          <label class="option" data-q="1" data-opt="0">
+            <input type="radio" name="q1" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Streng system-prompt der forbyder visse emner</div>
+          </label>
+        <label class="option" data-q="1" data-opt="1">
+            <input type="radio" name="q1" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Skema-validering på output (JSON, regex, enum) — uafhængigt af hvad prompten siger</div>
+          </label>
+        <label class="option" data-q="1" data-opt="2">
+            <input type="radio" name="q1" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">En anden LLM der gennemlæser outputtet og godkender det</div>
+          </label>
+        <label class="option" data-q="1" data-opt="3">
+            <input type="radio" name="q1" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">En blocklist over forbudte ord der filtreres ud</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb1"></div>
+      </div>
+
+  <div class="question" id="q2">
+        <span class="q-num">Spørgsmål 3 af 8</span>
+        <div class="q-text">Hvad er forskellen på tracing og metrics i AI-observability?</div>
+        <div class="options">
+          <label class="option" data-q="2" data-opt="0">
+            <input type="radio" name="q2" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Tracing er gratis, metrics koster ekstra hos leverandøren</div>
+          </label>
+        <label class="option" data-q="2" data-opt="1">
+            <input type="radio" name="q2" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Tracing er kun til udvikling, metrics kun til produktion</div>
+          </label>
+        <label class="option" data-q="2" data-opt="2">
+            <input type="radio" name="q2" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Tracing er for sikkerhedsovervågning, metrics er for performance</div>
+          </label>
+        <label class="option" data-q="2" data-opt="3">
+            <input type="radio" name="q2" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Tracing viser ét request på tværs af steps; metrics aggregerer mange requests over tid</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb2"></div>
+      </div>
+
+  <div class="question" id="q3">
+        <span class="q-num">Spørgsmål 4 af 8</span>
+        <div class="q-text">Du driver en AI-feature i produktion med 50.000 brugere. Hvad er minimum for din eval-pipeline?</div>
+        <div class="options">
+          <label class="option" data-q="3" data-opt="0">
+            <input type="radio" name="q3" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Golden dataset på 200-2000 cases + automated grading + production sampling + CI-blokering ved regression</div>
+          </label>
+        <label class="option" data-q="3" data-opt="1">
+            <input type="radio" name="q3" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">En manuel test af 5-10 cases før hver prompt-ændring — det er hurtigst</div>
+          </label>
+        <label class="option" data-q="3" data-opt="2">
+            <input type="radio" name="q3" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">10 håndlavede test-cases — det er nok når man har mange brugere til at fange fejl organisk</div>
+          </label>
+        <label class="option" data-q="3" data-opt="3">
+            <input type="radio" name="q3" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Bare overvåge antal klager fra brugerne — det fanger reelle problemer</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb3"></div>
+      </div>
+
+  <div class="question" id="q4">
+        <span class="q-num">Spørgsmål 5 af 8</span>
+        <div class="q-text">Din pipeline koster 8.000 kr/dag i model-kald. Hvilken enkelt-optimering har typisk størst effekt?</div>
+        <div class="options">
+          <label class="option" data-q="4" data-opt="0">
+            <input type="radio" name="q4" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Sætte temperature til 0 i alle kald</div>
+          </label>
+        <label class="option" data-q="4" data-opt="1">
+            <input type="radio" name="q4" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Skifte til en billigere udbyder med samme kvalitetsmodel</div>
+          </label>
+        <label class="option" data-q="4" data-opt="2">
+            <input type="radio" name="q4" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Model cascading: lille billig model klarer 80%, eskalerer kun til dyr model ved guardrail-fail (sparer typisk 70-80%)</div>
+          </label>
+        <label class="option" data-q="4" data-opt="3">
+            <input type="radio" name="q4" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Forkorte alle prompts med 30% ved at fjerne forklaringer</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb4"></div>
+      </div>
+
+  <div class="question" id="q5">
+        <span class="q-num">Spørgsmål 6 af 8</span>
+        <div class="q-text">Hvordan håndterer du PII i dine produktions-logs?</div>
+        <div class="options">
+          <label class="option" data-q="5" data-opt="0">
+            <input type="radio" name="q5" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Log alt — du har brug for det til debugging og kan rense det senere</div>
+          </label>
+        <label class="option" data-q="5" data-opt="1">
+            <input type="radio" name="q5" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Hash eller tokenize PII før logging — aldrig log rå personlige data</div>
+          </label>
+        <label class="option" data-q="5" data-opt="2">
+            <input type="radio" name="q5" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Slet logs efter 24 timer — så er PII væk automatisk</div>
+          </label>
+        <label class="option" data-q="5" data-opt="3">
+            <input type="radio" name="q5" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Log på engelsk så GDPR ikke gælder — det er en juridisk gråzone</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb5"></div>
+      </div>
+
+  <div class="question" id="q6">
+        <span class="q-num">Spørgsmål 7 af 8</span>
+        <div class="q-text">Du A/B-tester to prompt-varianter i produktion. Hvilken faldgrube skal du være OBS på?</div>
+        <div class="options">
+          <label class="option" data-q="6" data-opt="0">
+            <input type="radio" name="q6" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">A/B-test af prompts er ulovligt under GDPR uden samtykke</div>
+          </label>
+        <label class="option" data-q="6" data-opt="1">
+            <input type="radio" name="q6" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Modellerne returnerer altid samme svar — du kan ikke se forskel</div>
+          </label>
+        <label class="option" data-q="6" data-opt="2">
+            <input type="radio" name="q6" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Samme bruger kan ramme begge varianter — brug konsistent hashing pr. bruger til at sikre ægte segmentering</div>
+          </label>
+        <label class="option" data-q="6" data-opt="3">
+            <input type="radio" name="q6" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Resultaterne er først pålidelige efter 6 måneders data</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb6"></div>
+      </div>
+
+  <div class="question" id="q7">
+        <span class="q-num">Spørgsmål 8 af 8</span>
+        <div class="q-text">Hvilken cost-metrik er VIGTIGST at overvåge?</div>
+        <div class="options">
+          <label class="option" data-q="7" data-opt="0">
+            <input type="radio" name="q7" value="0">
+            <div class="option-letter">A</div>
+            <div class="option-text">Cost per token — den styrer dit månedlige API-budget</div>
+          </label>
+        <label class="option" data-q="7" data-opt="1">
+            <input type="radio" name="q7" value="1">
+            <div class="option-letter">B</div>
+            <div class="option-text">Cost per request — så ved du hvad ét bruger-kald koster</div>
+          </label>
+        <label class="option" data-q="7" data-opt="2">
+            <input type="radio" name="q7" value="2">
+            <div class="option-letter">C</div>
+            <div class="option-text">Total daglig cost — så fanger du udsving</div>
+          </label>
+        <label class="option" data-q="7" data-opt="3">
+            <input type="radio" name="q7" value="3">
+            <div class="option-letter">D</div>
+            <div class="option-text">Cost per successful task — billig model med 50% fejlrate er dyrere end dyr model med 95% success</div>
+          </label>
+        </div>
+        <div class="feedback" id="fb7"></div>
+      </div>
+
+        <div class="test-actions">
+          <button class="btn" id="submit-test">Indlevér test</button>
+          <span id="progress-text" style="color: var(--muted); font-size: 14px;">0 / 8 besvaret</span>
+        </div>
+        <div class="test-result" id="test-result"></div>
+      </section>
+
+      
+    <section class="practical" id="practical1">
+      <div class="practical-header">
+        <div class="practical-badge">Praktisk opgave 1 af 2</div>
+        <h2>Beskriv 5 guardrails du vil implementere i en kundeservice-AI</h2>
+        <p class="task">Du er ansvarlig for en kundeservice-AI hos en bank, der har adgang til kundens kontooplysninger og kan tale om transaktioner og produkter. Beskriv 5 konkrete guardrails du vil implementere, fordelt over input, processing og output. For hver guardrail: hvad den gør, hvor i pipelinen den sidder, og hvad den BLOKERER for.</p>
+      </div>
+
+      <div class="practical-body">
+        <label for="answer1"><strong>Dit svar:</strong></label>
+        <textarea id="answer1" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. AI'en vurderer dit svar mod 5 faglige kriterier."></textarea>
+
+        <div class="action-row">
+          <button class="btn btn-grade" data-num="1">🤖 Lad AI vurdere mit svar</button>
+          <button class="btn btn-secondary btn-reveal" data-num="1">Vis eksempel-løsning</button>
+        </div>
+
+        <div class="ai-loading" id="loading1" style="display:none;">
+          <div class="spinner"></div>
+          <span>AI vurderer dit svar... (kan tage 5-15 sekunder)</span>
+        </div>
+
+        <div class="ai-error" id="error1" style="display:none;"></div>
+
+        <div class="ai-result" id="airesult1" style="display:none;">
+          <div class="ai-overall" id="overall1"></div>
+          <div class="ai-criteria" id="criteria1"></div>
+        </div>
+
+        <div class="solution" id="solution1" style="display:none;">
+          <div class="solution-header">📖 Eksempel-løsning</div>
+          <div class="solution-body">1. INPUT — PII REDAKTION OG INJECTION-DETEKTION:
+  Scanner brugerens besked + alle vedhæftede dokumenter for skjulte instruktioner ("Ignorér tidligere", "System:", base64-kodede prompts, usynlige Unicode-tegn). Hvis flagget, log + send til menneske eller afvis. Blokerer indirect prompt injection via dokument-uploads.
+
+  2. INPUT — AUTH OG SCOPE-CHECK (før tools kaldes):
+  Verificér at brugerens session matcher den konto der spørges om. AI'en må aldrig kunne kalde get_account_details(account_id=X) hvor X ikke er brugerens egen. Blokerer kontooverskridelser selv hvis brugeren prompt-injecter med en andens kontonummer.
+
+  3. PROCESSING — TOOL-ALLOWLIST OG HUMAN-IN-THE-LOOP:
+  AI'en har KUN read-only tools. Alle skrive-handlinger (overførsel, kortspærring, profil-ændring) kræver at AI'en formulerer forslaget, og brugeren bekræfter det manuelt i UI'et før det udføres. Blokerer destruktive eller dyre handlinger uden eksplicit godkendelse.
+
+  4. OUTPUT — SKEMA-VALIDERING + INDHOLDS-REGLER:
+  Output valideres mod et schema (svar-tekst + ingen tilstedeværelse af kontonumre længere end 4 cifre uden maskering). En anden lille LLM scanner outputtet for: (a) finansielle råd, (b) PII fra andre kunder, (c) admin-jargon. Blokerer compliance-brud.
+
+  5. OUTPUT — RATE-LIMITING OG SUSPICIOUS PATTERN DETECTION:
+  Hvis samme bruger på 10 minutter beder AI'en om kontooplysninger på 5 forskellige konti — pause samtalen og log til security-teamet. Blokerer scripted scraping eller account takeover-forsøg.</div>
+        </div>
+      </div>
+    </section>
+
+      
+    <section class="practical" id="practical2">
+      <div class="practical-header">
+        <div class="practical-badge">Praktisk opgave 2 af 2</div>
+        <h2>Lav en eval-strategi til en AI-feature med 50.000 brugere</h2>
+        <p class="task">Din virksomhed kører en AI-feature i produktion: en email-klassifikation der ruterer 200.000 indkommende emails om dagen til 12 mulige kategorier. Beskriv din komplette eval-strategi: hvad er dit golden dataset, hvilke metrikker måler du, hvordan integrerer det med CI/CD, hvordan håndterer du model-drift over tid, og hvordan ved du om en prompt-ændring faktisk er en forbedring?</p>
+      </div>
+
+      <div class="practical-body">
+        <label for="answer2"><strong>Dit svar:</strong></label>
+        <textarea id="answer2" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. AI'en vurderer dit svar mod 5 faglige kriterier."></textarea>
+
+        <div class="action-row">
+          <button class="btn btn-grade" data-num="2">🤖 Lad AI vurdere mit svar</button>
+          <button class="btn btn-secondary btn-reveal" data-num="2">Vis eksempel-løsning</button>
+        </div>
+
+        <div class="ai-loading" id="loading2" style="display:none;">
+          <div class="spinner"></div>
+          <span>AI vurderer dit svar... (kan tage 5-15 sekunder)</span>
+        </div>
+
+        <div class="ai-error" id="error2" style="display:none;"></div>
+
+        <div class="ai-result" id="airesult2" style="display:none;">
+          <div class="ai-overall" id="overall2"></div>
+          <div class="ai-criteria" id="criteria2"></div>
+        </div>
+
+        <div class="solution" id="solution2" style="display:none;">
+          <div class="solution-header">📖 Eksempel-løsning</div>
+          <div class="solution-body">1. GOLDEN DATASET:
+  Start med 500 håndlabelede emails fordelt på alle 12 kategorier (mindst 30 pr. kategori). Inkludér 50 "hard cases" — emails der i produktion er blevet rerouted manuelt. Vokser månedligt med 100 nye cases plukket fra produktion (specifikt fejlene).
+
+  2. METRIKKER:
+  - Per-kategori precision og recall (ikke bare overall accuracy)
+  - Confusion matrix månedligt — hvilke kategorier forveksles?
+  - Latency P50 og P99 (skal under 2 sek)
+  - Cost per classification (overvåg model cascading-effekten)
+
+  3. CI/CD-INTEGRATION:
+  Hver prompt- eller model-ændring kører hele golden dataset via en GitHub Action. Pull request blokeres automatisk hvis:
+  - Overall accuracy falder over 1 procentpoint, ELLER
+  - Nogen enkelt-kategori falder over 3 procentpoint, ELLER
+  - P99-latency stiger over 30%
+
+  4. MODEL-DRIFT OVER TID:
+  - Sample 1% af alle produktions-classifications dagligt og send til lightweight LLM-as-judge
+  - Track judge-score over uger — falder den, er det enten model-drift eller domain-drift
+  - Re-label månedligt 50 nye produktions-eksempler manuelt og tilføj til golden dataset
+
+  5. ER EN ÆNDRING EN FORBEDRING?
+  - Golden dataset op + judge-score op = ægte forbedring (ship)
+  - Golden dataset op men judge-score ned = overfit på golden — udvid datasettet
+  - A/B-test i produktion på 5% trafik i 1 uge før fuld rollout</div>
+        </div>
+      </div>
+    </section>
+
+      <section class="final locked" id="final">
+        <div class="final-card">
+          <div class="final-icon">🏆</div>
+          <h2>Eksamen B3 bestået!</h2>
+          <p>Flot arbejde. Du har bestået både testen og begge praktiske opgaver — vurderet af AI.</p>
+          <div class="progress-summary">
+            <span class="progress-pill" id="pp-test">Test: —</span>
+            <span class="progress-pill" id="pp-p1">Praktisk 1: —</span>
+            <span class="progress-pill" id="pp-p2">Praktisk 2: —</span>
+          </div>
+          <a href="index.html" class="btn">Tilbage til forsiden — Niveau A låst op →</a>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // === KONFIGURATION === Erstat URL'en herunder med din deployede api-server URL.
+      // Du kan også overstyre via browser-console: localStorage.setItem('learnai_api_base', 'https://din-app.replit.app')
+      const API_BASE = (typeof window !== 'undefined' && window.LEARNAI_API)
+        || localStorage.getItem('learnai_api_base')
+        || 'https://02f75640-3b6c-4de8-92e8-028431f4ca94-00-3d74nuvitx2x6.riker.replit.dev';
+
+      const CORRECT = [2,1,3,0,2,1,2,3];
+      const EXPLAIN = ["Direct: angriberen sender prompten direkte. Indirect: instruktioner gemmes i data systemet senere behandler — typisk langt sværere at forsvare sig mod.","Skema-validering på output (JSON schema, regex, enum) er den enkleste, mest robuste guardrail. Den er uafhængig af hvad prompten siger — fejler outputtet, gør du fallback.","Tracing viser ÉT request på tværs af steps (debug). Metrics aggregerer på tværs af mange requests over tid (overvågning). Begge er nødvendige.","Et golden dataset (200-2000 cases) + automated grading + production sampling + CI-blokering ved regression. Manuel test eller 10 cases er for spinkelt til produktion.","Model cascading sparer typisk 70-80%: lille billig model klarer 80%, eskalerer kun til dyr model når guardrail fejler. Det er den enkelte vigtigste cost-optimering.","Hash + tokenize PII før logging. Aldrig log rå PII — ikke fordi modellen ikke vil se det, men fordi dine logs lækker, eksporteres og analyseres af mange folk.","En faldgrube ved A/B-test af prompts: brugersegmenter er ikke ægte uafhængige — samme bruger kan ramme begge varianter via deres kontekst. Brug konsistent hashing pr. bruger.","Cost per successful task er den vigtigste — ikke cost per request. En billig model med 50% fejlrate er dyrere end en dyr model med 95% success, fordi du betaler for retries og menneske-eskalering."];
+      const NEXT_HREF = "index.html";
+      const RETRY_HREF = "kursus-b5.html";
+      const PRACTICALS = {"1":{"task":"Du er ansvarlig for en kundeservice-AI hos en bank, der har adgang til kundens kontooplysninger og kan tale om transaktioner og produkter. Beskriv 5 konkrete guardrails du vil implementere, fordelt over input, processing og output. For hver guardrail: hvad den gør, hvor i pipelinen den sidder, og hvad den BLOKERER for.","solution":"1. INPUT — PII REDAKTION OG INJECTION-DETEKTION:\n  Scanner brugerens besked + alle vedhæftede dokumenter for skjulte instruktioner (\"Ignorér tidligere\", \"System:\", base64-kodede prompts, usynlige Unicode-tegn). Hvis flagget, log + send til menneske eller afvis. Blokerer indirect prompt injection via dokument-uploads.\n\n  2. INPUT — AUTH OG SCOPE-CHECK (før tools kaldes):\n  Verificér at brugerens session matcher den konto der spørges om. AI'en må aldrig kunne kalde get_account_details(account_id=X) hvor X ikke er brugerens egen. Blokerer kontooverskridelser selv hvis brugeren prompt-injecter med en andens kontonummer.\n\n  3. PROCESSING — TOOL-ALLOWLIST OG HUMAN-IN-THE-LOOP:\n  AI'en har KUN read-only tools. Alle skrive-handlinger (overførsel, kortspærring, profil-ændring) kræver at AI'en formulerer forslaget, og brugeren bekræfter det manuelt i UI'et før det udføres. Blokerer destruktive eller dyre handlinger uden eksplicit godkendelse.\n\n  4. OUTPUT — SKEMA-VALIDERING + INDHOLDS-REGLER:\n  Output valideres mod et schema (svar-tekst + ingen tilstedeværelse af kontonumre længere end 4 cifre uden maskering). En anden lille LLM scanner outputtet for: (a) finansielle råd, (b) PII fra andre kunder, (c) admin-jargon. Blokerer compliance-brud.\n\n  5. OUTPUT — RATE-LIMITING OG SUSPICIOUS PATTERN DETECTION:\n  Hvis samme bruger på 10 minutter beder AI'en om kontooplysninger på 5 forskellige konti — pause samtalen og log til security-teamet. Blokerer scripted scraping eller account takeover-forsøg.","criteria":["Mindst én input-guardrail (fx PII-redaktion, injection-detektion eller auth-check)","Mindst én processing/tool-guardrail (fx allowlist, scope-check eller human-in-the-loop)","Mindst én output-guardrail (fx skema-validering, indholds-scan eller redaktion)","For hver guardrail: hvad den BLOKERER for konkret (ikke bare \"fejl\")","Mindst én guardrail nævner overvågning/logging/eskalering ved mistænkelige mønstre"]},"2":{"task":"Din virksomhed kører en AI-feature i produktion: en email-klassifikation der ruterer 200.000 indkommende emails om dagen til 12 mulige kategorier. Beskriv din komplette eval-strategi: hvad er dit golden dataset, hvilke metrikker måler du, hvordan integrerer det med CI/CD, hvordan håndterer du model-drift over tid, og hvordan ved du om en prompt-ændring faktisk er en forbedring?","solution":"1. GOLDEN DATASET:\n  Start med 500 håndlabelede emails fordelt på alle 12 kategorier (mindst 30 pr. kategori). Inkludér 50 \"hard cases\" — emails der i produktion er blevet rerouted manuelt. Vokser månedligt med 100 nye cases plukket fra produktion (specifikt fejlene).\n\n  2. METRIKKER:\n  - Per-kategori precision og recall (ikke bare overall accuracy)\n  - Confusion matrix månedligt — hvilke kategorier forveksles?\n  - Latency P50 og P99 (skal under 2 sek)\n  - Cost per classification (overvåg model cascading-effekten)\n\n  3. CI/CD-INTEGRATION:\n  Hver prompt- eller model-ændring kører hele golden dataset via en GitHub Action. Pull request blokeres automatisk hvis:\n  - Overall accuracy falder over 1 procentpoint, ELLER\n  - Nogen enkelt-kategori falder over 3 procentpoint, ELLER\n  - P99-latency stiger over 30%\n\n  4. MODEL-DRIFT OVER TID:\n  - Sample 1% af alle produktions-classifications dagligt og send til lightweight LLM-as-judge\n  - Track judge-score over uger — falder den, er det enten model-drift eller domain-drift\n  - Re-label månedligt 50 nye produktions-eksempler manuelt og tilføj til golden dataset\n\n  5. ER EN ÆNDRING EN FORBEDRING?\n  - Golden dataset op + judge-score op = ægte forbedring (ship)\n  - Golden dataset op men judge-score ned = overfit på golden — udvid datasettet\n  - A/B-test i produktion på 5% trafik i 1 uge før fuld rollout","criteria":["Specificeret konkret golden dataset størrelse + hvordan det er sammensat (per-kategori coverage, hard cases)","Mindst per-kategori precision/recall (ikke bare overall accuracy) + latency + cost-metrikker","CI/CD-integration der automatisk blokerer regression — med konkrete tærskler","Strategi mod model-drift over tid (production sampling, periodisk re-labeling, eller judge-overvågning)","Konkret beslutningsproces for \"er ændringen en forbedring\" (fx A/B-test eller dual-metric: golden + judge)"]}};
+
+      let testPassed = false;
+      let p1Passed = false;
+      let p2Passed = false;
+      let testSubmitted = false;
+
+      function updateProgress() {
+        let answered = 0;
+        for (let i = 0; i < 8; i++) {
+          if (document.querySelector('input[name="q'+i+'"]:checked')) answered++;
+        }
+        document.getElementById('progress-text').textContent = answered + ' / 8 besvaret';
+      }
+
+      document.querySelectorAll('.option').forEach(opt => {
+        opt.addEventListener('click', () => {
+          if (testSubmitted) return;
+          const q = opt.dataset.q;
+          document.querySelectorAll('.option[data-q="'+q+'"]').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          opt.querySelector('input').checked = true;
+          updateProgress();
+        });
+      });
+
+      document.getElementById('submit-test').addEventListener('click', () => {
+        let correct = 0;
+        for (let i = 0; i < 8; i++) {
+          const sel = document.querySelector('input[name="q'+i+'"]:checked');
+          const opts = document.querySelectorAll('.option[data-q="'+i+'"]');
+          opts.forEach(o => o.classList.remove('selected'));
+          const fb = document.getElementById('fb'+i);
+          if (sel && parseInt(sel.value) === CORRECT[i]) {
+            correct++;
+            opts[CORRECT[i]].classList.add('correct');
+            fb.className = 'feedback ok';
+            fb.textContent = '✓ Rigtigt. ' + EXPLAIN[i];
+          } else {
+            if (sel) opts[parseInt(sel.value)].classList.add('wrong');
+            opts[CORRECT[i]].classList.add('correct');
+            fb.className = 'feedback bad';
+            fb.textContent = '✗ Det rigtige svar er ' + ['A','B','C','D'][CORRECT[i]] + '. ' + EXPLAIN[i];
+          }
+        }
+        testSubmitted = true;
+        const result = document.getElementById('test-result');
+        const tr = document.getElementById('pp-test');
+        if (correct >= 6) {
+          testPassed = true;
+          result.className = 'test-result pass';
+          result.innerHTML = '✓ Bestået: <strong>' + correct + ' / 8</strong> rigtige. Praktisk opgave 1 er nu låst op.';
+          document.getElementById('practical1').classList.remove('locked');
+          tr.textContent = 'Test: ' + correct + '/8 ✓';
+          tr.classList.add('done');
+        } else {
+          result.className = 'test-result fail';
+          result.innerHTML = '✗ Ikke bestået: <strong>' + correct + ' / 8</strong> rigtige. Du skal have mindst 6. <a href="' + RETRY_HREF + '" style="color:inherit;text-decoration:underline;font-weight:700;">Genlæs B-kurserne</a> og prøv igen.';
+          tr.textContent = 'Test: ' + correct + '/8 ✗';
+        }
+        document.getElementById('submit-test').disabled = true;
+        document.getElementById('submit-test').textContent = 'Test indleveret';
+      });
+
+      document.querySelectorAll('.btn-reveal').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const num = btn.dataset.num;
+          document.getElementById('solution'+num).style.display = 'block';
+          btn.textContent = '✓ Eksempel-løsning vist';
+          btn.disabled = true;
+        });
+      });
+
+      async function gradeAnswer(num) {
+        const answer = document.getElementById('answer'+num).value.trim();
+        const loadingEl = document.getElementById('loading'+num);
+        const errorEl = document.getElementById('error'+num);
+        const resultEl = document.getElementById('airesult'+num);
+        const btn = document.querySelector('.btn-grade[data-num="'+num+'"]');
+
+        if (answer.length < 30) {
+          errorEl.style.display = 'block';
+          errorEl.textContent = 'Skriv et fagligt svar på minimum nogle sætninger før AI kan vurdere.';
+          return;
+        }
+
+        errorEl.style.display = 'none';
+        resultEl.style.display = 'none';
+        loadingEl.style.display = 'flex';
+        btn.disabled = true;
+        btn.textContent = '🤖 AI vurderer...';
+
+        try {
+          const p = PRACTICALS[num];
+          const res = await fetch(API_BASE + '/api/grade', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ task: p.task, solution: p.solution, answer, criteria: p.criteria }),
+          });
+
+          if (!res.ok) {
+            const errBody = await res.json().catch(() => ({}));
+            throw new Error(errBody.error || ('Fejl ' + res.status + ' fra serveren'));
+          }
+
+          const data = await res.json();
+          loadingEl.style.display = 'none';
+
+          const overallEl = document.getElementById('overall'+num);
+          const critEl = document.getElementById('criteria'+num);
+          overallEl.className = 'ai-overall ' + (data.passed ? 'pass' : 'fail');
+          const verdict = data.passed ? '✓ BESTÅET' : '✗ IKKE BESTÅET';
+          overallEl.innerHTML = '<span class="verdict-tag">' + verdict + ' &nbsp;·&nbsp; ' + data.score + '/5</span> ' + data.overall;
+
+          critEl.innerHTML = '';
+          const p2 = PRACTICALS[num];
+          for (let i = 0; i < 5; i++) {
+            const ok = data.scores[i];
+            const div = document.createElement('div');
+            div.className = 'crit ' + (ok ? 'ok' : 'bad');
+            div.innerHTML = '<div class="crit-head"><span class="crit-icon">' + (ok ? '✓' : '✗') + '</span><span class="crit-title">' + p2.criteria[i] + '</span></div><div class="crit-feedback">' + (data.feedback[i] || '') + '</div>';
+            critEl.appendChild(div);
+          }
+          resultEl.style.display = 'block';
+
+          const pp = document.getElementById('pp-p'+num);
+          if (data.passed) {
+            if (num === '1') {
+              p1Passed = true;
+              document.getElementById('practical2').classList.remove('locked');
+              pp.textContent = 'Praktisk 1: ✓';
+            } else {
+              p2Passed = true;
+              pp.textContent = 'Praktisk 2: ✓';
+            }
+            pp.classList.add('done');
+            btn.textContent = '✓ Bestået — vurder igen hvis du vil forbedre';
+            btn.disabled = false;
+            checkFinal();
+          } else {
+            if (num === '1') { p1Passed = false; pp.textContent = 'Praktisk 1: ' + data.score + '/5'; }
+            else { p2Passed = false; pp.textContent = 'Praktisk 2: ' + data.score + '/5'; }
+            pp.classList.remove('done');
+            btn.textContent = '🤖 Forbedr svar og prøv igen';
+            btn.disabled = false;
+          }
+        } catch (err) {
+          loadingEl.style.display = 'none';
+          errorEl.style.display = 'block';
+          errorEl.innerHTML = '⚠ ' + (err.message || 'Kunne ikke nå AI-serveren') + '.<br><span style="font-weight:400;font-size:13px;">Tjek at api-serveren kører og at API-URL er korrekt sat øverst i scriptet (eller via localStorage.setItem).</span>';
+          btn.textContent = '🤖 Lad AI vurdere mit svar';
+          btn.disabled = false;
+        }
+      }
+
+      document.querySelectorAll('.btn-grade').forEach(btn => {
+        btn.addEventListener('click', () => gradeAnswer(btn.dataset.num));
+      });
+
+      function checkFinal() {
+        if (testPassed && p1Passed && p2Passed) {
+          document.getElementById('final').classList.remove('locked');
+          document.getElementById('final').scrollIntoView({behavior:'smooth', block:'start'});
+        }
+      }
+    </script>
+  </body>
+  </html>
