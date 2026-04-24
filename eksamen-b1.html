@@ -1,650 +1,658 @@
-<!doctype html>
-  <html lang="da">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>LearnAI DK — Eksamen B1</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B Eksamen 1 | Bronze | LearnAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-      :root {
-        --exam:       #B45309;
-        --exam-light: #FEF3C7;
-        --ink:        #1F1F23;
-        --muted:      #5C5C66;
-        --bg:         #FAF9F6;
-        --card:       #FFFFFF;
-        --border:     #E5E2DA;
-        --green:      #15803D;
-        --green-light:#DCFCE7;
-        --red:        #B91C1C;
-        --red-light:  #FEE2E2;
-        --gold:       #B45309;
-        --gold-light: #FEF3C7;
-        --shadow:     0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
-        --radius:     14px;
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
-      h1, h2, h3 { font-family: 'Source Serif 4', serif; font-weight: 600; }
-      nav { background: white; border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-      .nav-left { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
-      .logo-icon { width: 30px; height: 30px; background: var(--exam); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-      .logo-icon::after { content: ""; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; }
-      .nav-tag { background: var(--gold-light); color: var(--gold); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
-      .steps-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; padding: 0.9rem 1.5rem; background: white; border-bottom: 1px solid var(--border); justify-content: center; font-size: 12px; }
-      .step-item { display: flex; align-items: center; gap: 6px; }
-      .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
-      .step-dot.done { background: var(--green); color: white; }
-      .step-dot.active { background: var(--exam); color: white; box-shadow: 0 0 0 4px var(--exam-light); }
-      .step-dot.next { background: var(--border); color: var(--muted); }
-      .step-label.done { color: var(--green); font-weight: 600; }
-      .step-label.active { color: var(--exam); font-weight: 700; }
-      .step-label.next { color: var(--muted); }
-      .step-arrow { color: var(--border); font-weight: 700; }
-      .hero { background: var(--exam); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
-      .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 0.7rem; }
-      .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-      .hero p { max-width: 700px; margin: 0 auto; opacity: 0.9; font-size: 1rem; }
+        :root {
+            --bronze: #cd7f32;
+            --bronze-light: #f5e6d3;
+            --bronze-dark: #8b5a2b;
+            --bg: #1a1a2e;
+            --card: #ffffff;
+            --text: #2c2c44;
+            --muted: #6c6c8a;
+            --success: #2e7d32;
+            --error: #c62828;
+            --correct: #e8f5e9;
+            --wrong: #ffebee;
+        }
 
-      main { max-width: 850px; margin: 0 auto; padding: 2rem 1rem; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      section.test, section.practical, section.final { background: var(--card); border-radius: var(--radius); padding: 2rem 1.75rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
-      section.locked { opacity: 0.5; pointer-events: none; }
-      section.locked::before { content: "🔒 Bestå forrige del for at låse op"; display: block; background: var(--gold-light); color: var(--gold); padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; text-align: center; font-weight: 700; font-size: 13px; }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-      .section-label { font-size: 11px; font-weight: 700; color: var(--exam); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-      section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-      section > p.intro { color: var(--muted); margin-bottom: 1.5rem; }
+        .exam-container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border: 3px solid var(--bronze);
+            position: relative;
+            overflow: hidden;
+        }
 
-      .question { padding: 1.25rem 0; border-top: 1px solid var(--border); }
-      .question:first-of-type { border-top: none; padding-top: 0.5rem; }
-      .q-num { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
-      .q-text { font-size: 1rem; font-weight: 500; margin-bottom: 0.85rem; line-height: 1.5; }
-      .options { display: flex; flex-direction: column; gap: 0.5rem; }
-      .option { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.7rem 0.9rem; background: white; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
-      .option input { display: none; }
-      .option:hover { border-color: var(--exam); background: var(--exam-light); }
-      .option-letter { width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--bg); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
-      .option-text { font-size: 0.95rem; line-height: 1.4; }
-      .option.selected { border-color: var(--exam); background: var(--exam-light); }
-      .option.selected .option-letter { background: var(--exam); color: white; }
-      .option.correct { border-color: var(--green); background: var(--green-light); }
-      .option.correct .option-letter { background: var(--green); color: white; }
-      .option.wrong { border-color: var(--red); background: var(--red-light); }
-      .option.wrong .option-letter { background: var(--red); color: white; }
-      .feedback { display: none; margin-top: 0.6rem; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.45; }
-      .feedback.ok { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); display: block; }
-      .feedback.bad { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); display: block; }
+        /* Bronze glow */
+        .exam-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(205, 127, 50, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
 
-      .btn { display: inline-block; background: var(--exam); color: white; font-family: inherit; font-size: 15px; font-weight: 700; padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.15s; }
-      .btn:hover { transform: translateY(-1px); }
-      .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-      .btn-reveal { background: var(--gold); color: white; padding: 10px 22px; border-radius: 10px; border: none; font-family: inherit; font-weight: 700; cursor: pointer; margin-top: 0.85rem; font-size: 14px; }
-      .btn-reveal:hover { background: #92400E; }
+        .exam-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-      .test-actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-      .test-result { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 10px; font-weight: 600; display: none; }
-      .test-result.pass { background: var(--green-light); color: var(--green); display: block; }
-      .test-result.fail { background: var(--red-light); color: var(--red); display: block; }
+        .exam-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #cd7f32, #b8860b);
+            padding: 0.6rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            color: white;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+        }
 
-      .practical-header { margin-bottom: 1.25rem; }
-      .practical-badge { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
-      .task { background: var(--bg); padding: 1rem 1.1rem; border-left: 3px solid var(--exam); border-radius: 6px; font-size: 0.97rem; line-height: 1.55; }
-      textarea { width: 100%; min-height: 180px; padding: 0.85rem 1rem; font-family: inherit; font-size: 14px; line-height: 1.5; border: 1.5px solid var(--border); border-radius: 10px; margin-top: 0.5rem; margin-bottom: 0.5rem; resize: vertical; background: white; }
-      textarea:focus { outline: none; border-color: var(--exam); }
+        .exam-header h1 {
+            font-size: 2rem;
+            color: var(--bronze-dark);
+            margin-bottom: 0.3rem;
+        }
 
-      .solution { background: var(--gold-light); border: 1px solid #FCD34D; border-radius: 12px; padding: 1.25rem 1.4rem; margin-top: 1rem; }
-      .solution-header { font-weight: 700; color: var(--gold); margin-bottom: 0.6rem; }
-      .solution-body { font-size: 0.95rem; line-height: 1.55; color: #1F1F23; white-space: pre-line; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px dashed #FCD34D; }
-      .checklist-header { font-weight: 700; margin-bottom: 0.4rem; color: var(--ink); }
-      .checklist-instr { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.7rem; }
-      .checklist { list-style: none; padding: 0; }
-      .checklist li { margin-bottom: 0.5rem; }
-      .checklist label { display: flex; align-items: flex-start; gap: 0.55rem; cursor: pointer; font-size: 0.93rem; line-height: 1.45; }
-      .checklist input { margin-top: 4px; flex-shrink: 0; transform: scale(1.15); cursor: pointer; }
-      .practical-result { margin-top: 0.85rem; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.92rem; font-weight: 600; background: var(--bg); color: var(--muted); }
-      .practical-result.pass { background: var(--green-light); color: var(--green); }
-      .practical-result.fail { background: var(--red-light); color: var(--red); }
+        .exam-header p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
 
-      .final-card { text-align: center; padding: 2rem; }
-      .final-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
-      .final-card h2 { margin-bottom: 0.6rem; }
-      .final-card p { color: var(--muted); margin-bottom: 1.25rem; max-width: 520px; margin-left: auto; margin-right: auto; }
-      .progress-summary { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
-      .progress-pill { background: var(--bg); padding: 0.6rem 1rem; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); border: 1.5px solid var(--border); }
-      .progress-pill.done { background: var(--green-light); color: var(--green); border-color: var(--green); }
-      .btn-secondary { background: white; color: var(--exam); border: 2px solid var(--exam); }
-      .btn-secondary:hover { background: var(--exam-light); }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
 
-      @media (max-width: 600px) {
-        .hero h1 { font-size: 1.6rem; }
-        section { padding: 1.5rem 1.1rem; }
-        .steps-bar { font-size: 11px; }
-        .step-dot { width: 22px; height: 22px; font-size: 10px; }
-      }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #cd7f32, #b8860b);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .question-counter {
+            text-align: center;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .question-card {
+            background: #fafbff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e8e8f0;
+        }
+
+        .question-card h3 {
+            color: var(--text);
+            margin-bottom: 1.2rem;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 1.2rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .option:hover {
+            border-color: var(--bronze);
+            background: var(--bronze-light);
+        }
+
+        .option.selected {
+            border-color: #1976d2;
+            background: #e3f2fd;
+            font-weight: 600;
+        }
+
+        .option.correct {
+            border-color: var(--success);
+            background: var(--correct);
+            color: var(--success);
+        }
+
+        .option.wrong {
+            border-color: var(--error);
+            background: var(--wrong);
+            color: var(--error);
+        }
+
+        .option input[type="radio"] {
+            accent-color: var(--bronze);
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-prev {
+            background: #e0e0e0;
+            color: #555;
+        }
+
+        .btn-prev:hover {
+            background: #ccc;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, #cd7f32, #b8860b);
+            color: white;
+            box-shadow: 0 6px 18px rgba(205, 127, 50, 0.35);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(205, 127, 50, 0.5);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.5);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Resultat overlay */
+        .result-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-overlay.show {
+            display: flex;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-card h2 {
+            margin-bottom: 0.8rem;
+        }
+
+        .result-score {
+            font-size: 3rem;
+            font-weight: 900;
+            margin: 1rem 0;
+        }
+
+        .passed {
+            color: #2e7d32;
+        }
+        .failed {
+            color: #c62828;
+        }
+
+        .btn-retry {
+            background: linear-gradient(135deg, #cd7f32, #b8860b);
+            color: white;
+            padding: 0.9rem 2.5rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            margin-top: 1rem;
+            box-shadow: 0 6px 18px rgba(205, 127, 50, 0.35);
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            padding: 0.9rem 2.5rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            margin-top: 1rem;
+            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+        }
+
+        @media (max-width: 600px) {
+            .exam-container {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+            .exam-header h1 {
+                font-size: 1.5rem;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <nav>
-      <div class="nav-left">
-        <span class="logo-icon"></span>
-        <span>LearnAI DK</span>
-        <span class="nav-tag">Eksamen B1</span>
-      </div>
-    </nav>
+</head>
+<body>
 
-    <div class="steps-bar">
-  <div class="step-item">
-    <div class="step-dot done">B1</div>
-    <span class="step-label done">Prompting</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q1</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B2</div>
-    <span class="step-label done">RAG</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q2</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B3</div>
-    <span class="step-label done">Tools</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q3</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B4</div>
-    <span class="step-label done">Agenter</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q4</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B5</div>
-    <span class="step-label done">Produktion</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot active">🏆</div>
-    <span class="step-label active">Eksamen 1</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen 2</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen 3</span>
-  </div>
-</div>
+    <div class="exam-container" id="examContainer">
+        <!-- Header -->
+        <div class="exam-header">
+            <span class="exam-badge"><i class="fas fa-medal"></i> BRONZE</span>
+            <h1>Eksamen B1</h1>
+            <p>Teoretisk prøve · 12 spørgsmål · Skal have 11/12 rigtige for at bestå</p>
+        </div>
 
-    <div class="hero">
-      <div class="hero-badge">Eksamen B1 af 3</div>
-      <h1>Prompting og RAG</h1>
-      <p>Eksamen 1 af 3 dækker B1 (avanceret prompting) og B2 (retrieval-augmented generation). Du skal igennem en test og to praktiske opgaver.</p>
+        <!-- Progress bar -->
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+        </div>
+        <div class="question-counter" id="questionCounter">Spørgsmål 1 af 12</div>
+
+        <!-- Spørgsmål -->
+        <div class="question-card" id="questionCard">
+            <h3 id="questionText"></h3>
+            <div class="options" id="optionsContainer"></div>
+        </div>
+
+        <!-- Knapper -->
+        <div class="btn-group">
+            <button class="btn btn-prev" id="btnPrev" onclick="prevQuestion()" disabled>
+                <i class="fas fa-arrow-left"></i> Forrige
+            </button>
+            <button class="btn btn-next" id="btnNext" onclick="nextQuestion()">
+                Næste <i class="fas fa-arrow-right"></i>
+            </button>
+            <button class="btn btn-submit" id="btnSubmit" onclick="submitExam()" style="display: none;">
+                <i class="fas fa-check-circle"></i> Afslut eksamen
+            </button>
+        </div>
     </div>
 
-    <main>
-      <section class="test" id="test">
-        <div class="section-label">Del 1 af 3 — Test</div>
-        <h2>Test — 8 spørgsmål</h2>
-        <p class="intro">Spørgsmålene blander stof fra B1 og B2. Du skal have mindst <strong>6 ud af 8</strong> rigtige for at bestå.</p>
-
-    <div class="question" id="q0">
-        <span class="q-num">Spørgsmål 1 af 8</span>
-        <div class="q-text">Du laver LLM-as-judge på en skala 1-5. Næsten alt får 4-5. Hvad fixer du først?</div>
-        <div class="options">
-          <label class="option" data-q="0" data-opt="0">
-            <input type="radio" name="q0" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Skifter til en større judge-model — den er mere nuanceret</div>
-          </label>
-        <label class="option" data-q="0" data-opt="1">
-            <input type="radio" name="q0" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Udvider skalaen til 1-100 for finere granularitet i scores</div>
-          </label>
-        <label class="option" data-q="0" data-opt="2">
-            <input type="radio" name="q0" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Strammer judge-prompten — bed eksplicit om at være kritisk og kun give høj score ved klar kvalitet</div>
-          </label>
-        <label class="option" data-q="0" data-opt="3">
-            <input type="radio" name="q0" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Accepterer at dine svar bare er gode — det er ikke et reelt problem</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb0"></div>
-      </div>
-
-  <div class="question" id="q1">
-        <span class="q-num">Spørgsmål 2 af 8</span>
-        <div class="q-text">Du har sat chunk_size = 50 tokens i din RAG. Hvorfor er det et problem?</div>
-        <div class="options">
-          <label class="option" data-q="1" data-opt="0">
-            <input type="radio" name="q1" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Så små chunks koster for meget at embedde — det belaster API-budgettet</div>
-          </label>
-        <label class="option" data-q="1" data-opt="1">
-            <input type="radio" name="q1" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Chunks fragmenterer kontekst — modellen får sætnings-stumper uden mening</div>
-          </label>
-        <label class="option" data-q="1" data-opt="2">
-            <input type="radio" name="q1" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Vector-databasen kan ikke håndtere så små vektorer</div>
-          </label>
-        <label class="option" data-q="1" data-opt="3">
-            <input type="radio" name="q1" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Cosine similarity bliver upålidelig under 100 tokens pr. chunk</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb1"></div>
-      </div>
-
-  <div class="question" id="q2">
-        <span class="q-num">Spørgsmål 3 af 8</span>
-        <div class="q-text">Din retrieval har 100% recall men 30% precision. Hvad fixer du først?</div>
-        <div class="options">
-          <label class="option" data-q="2" data-opt="0">
-            <input type="radio" name="q2" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Tilføj en reranker der trimmer top-50 ned til de mest relevante top-5 chunks</div>
-          </label>
-        <label class="option" data-q="2" data-opt="1">
-            <input type="radio" name="q2" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Skifter til en større embedding-model — den er mere præcis</div>
-          </label>
-        <label class="option" data-q="2" data-opt="2">
-            <input type="radio" name="q2" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Mindsker chunk_size så hver chunk er mere fokuseret</div>
-          </label>
-        <label class="option" data-q="2" data-opt="3">
-            <input type="radio" name="q2" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Hæver top_k fra 5 til 20 så modellen får mere materiale</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb2"></div>
-      </div>
-
-  <div class="question" id="q3">
-        <span class="q-num">Spørgsmål 4 af 8</span>
-        <div class="q-text">Hvilken rækkefølge i prompt-stack er bedst praksis?</div>
-        <div class="options">
-          <label class="option" data-q="3" data-opt="0">
-            <input type="radio" name="q3" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">User-spørgsmål → System-prompt → Few-shot → Kontekst (data)</div>
-          </label>
-        <label class="option" data-q="3" data-opt="1">
-            <input type="radio" name="q3" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Few-shot → User-spørgsmål → System-prompt → Kontekst</div>
-          </label>
-        <label class="option" data-q="3" data-opt="2">
-            <input type="radio" name="q3" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Kontekst → User-spørgsmål → System-prompt → Few-shot</div>
-          </label>
-        <label class="option" data-q="3" data-opt="3">
-            <input type="radio" name="q3" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">System (rolle/regler) → Few-shot eksempler → Kontekst/data → User-spørgsmål</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb3"></div>
-      </div>
-
-  <div class="question" id="q4">
-        <span class="q-num">Spørgsmål 5 af 8</span>
-        <div class="q-text">Hvorfor placerer man en reranker EFTER retrieval frem for som erstatning?</div>
-        <div class="options">
-          <label class="option" data-q="4" data-opt="0">
-            <input type="radio" name="q4" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Reranker kan ikke selv søge — den kræver kandidater fra et andet system</div>
-          </label>
-        <label class="option" data-q="4" data-opt="1">
-            <input type="radio" name="q4" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Retrieval er hurtigere men upræcis; reranker er præcis men langsom</div>
-          </label>
-        <label class="option" data-q="4" data-opt="2">
-            <input type="radio" name="q4" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Cross-encoder reranking er for dyr at køre på hele basen — du henter top-50 hurtigt og reranker dem</div>
-          </label>
-        <label class="option" data-q="4" data-opt="3">
-            <input type="radio" name="q4" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Reranker virker kun på max 5 dokumenter ad gangen</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb4"></div>
-      </div>
-
-  <div class="question" id="q5">
-        <span class="q-num">Spørgsmål 6 af 8</span>
-        <div class="q-text">Du embedder spørgsmål med text-embedding-3-large men chunks med text-embedding-3-small. Hvad sker der?</div>
-        <div class="options">
-          <label class="option" data-q="5" data-opt="0">
-            <input type="radio" name="q5" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Det fungerer, men er bare langsommere end at bruge samme model</div>
-          </label>
-        <label class="option" data-q="5" data-opt="1">
-            <input type="radio" name="q5" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Vektorerne ligger i forskellige rum og kan ikke sammenlignes meningsfuldt</div>
-          </label>
-        <label class="option" data-q="5" data-opt="2">
-            <input type="radio" name="q5" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Cosine similarity bliver bare lidt mindre præcis end normalt</div>
-          </label>
-        <label class="option" data-q="5" data-opt="3">
-            <input type="radio" name="q5" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Det er den anbefalede best practice — store modeller på query-siden</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb5"></div>
-      </div>
-
-  <div class="question" id="q6">
-        <span class="q-num">Spørgsmål 7 af 8</span>
-        <div class="q-text">Hvad er "context window stuffing", og hvad er den rigtige fix?</div>
-        <div class="options">
-          <label class="option" data-q="6" data-opt="0">
-            <input type="radio" name="q6" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Når kontekstvinduet løber over — fixen er at skifte til en model med større vindue</div>
-          </label>
-        <label class="option" data-q="6" data-opt="1">
-            <input type="radio" name="q6" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Når API'et returnerer for store outputs — fixen er at sætte max_tokens lavere</div>
-          </label>
-        <label class="option" data-q="6" data-opt="2">
-            <input type="radio" name="q6" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Når man fjerner system-prompten ved en fejl — fixen er at tilføje den igen</div>
-          </label>
-        <label class="option" data-q="6" data-opt="3">
-            <input type="radio" name="q6" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Når du proppe alt materiale ind "for en sikkerheds skyld" — fixen er retrieval + relevans-ranking</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb6"></div>
-      </div>
-
-  <div class="question" id="q7">
-        <span class="q-num">Spørgsmål 8 af 8</span>
-        <div class="q-text">Output er fri tekst (et svar). Hvilken eval-metrik giver mest mening?</div>
-        <div class="options">
-          <label class="option" data-q="7" data-opt="0">
-            <input type="radio" name="q7" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">BLEU score — sammenlign med et reference-svar token-for-token</div>
-          </label>
-        <label class="option" data-q="7" data-opt="1">
-            <input type="radio" name="q7" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Eksakt string match mod et facit i dit golden dataset</div>
-          </label>
-        <label class="option" data-q="7" data-opt="2">
-            <input type="radio" name="q7" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">LLM-as-judge med streng dommer-prompt og konkrete kriterier</div>
-          </label>
-        <label class="option" data-q="7" data-opt="3">
-            <input type="radio" name="q7" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Antal tokens i outputtet — kortere svar er typisk bedre</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb7"></div>
-      </div>
-
-        <div class="test-actions">
-          <button class="btn" id="submit-test">Indlevér test</button>
-          <span id="progress-text" style="color: var(--muted); font-size: 14px;">0 / 8 besvaret</span>
-        </div>
-        <div class="test-result" id="test-result"></div>
-      </section>
-
-      
-    <section class="practical" id="practical1">
-      <div class="practical-header">
-        <div class="practical-badge">Praktisk opgave 1 af 2</div>
-        <h2>Skriv en system-prompt til en kundeservice-chatbot</h2>
-        <p class="task">En e-handelsvirksomhed (LearnAI Shop) skal have en kundeservice-chatbot der kan svare på spørgsmål om ordrer, returnering og produktanbefalinger. Skriv en komplet system-prompt der dækker rolle, tone, regler og fallback. Antag at chatten har RAG-adgang til kundens ordrehistorik.</p>
-      </div>
-
-      <div class="practical-body">
-        <label for="answer1"><strong>Dit svar:</strong></label>
-        <textarea id="answer1" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. Når du er færdig, klik 'Vis eksempel-løsning' nedenfor for at sammenligne."></textarea>
-
-        <button class="btn-reveal" data-num="1">Vis eksempel-løsning &amp; selv-evaluering</button>
-
-        <div class="solution" id="solution1" style="display:none;">
-          <div class="solution-header">📖 Eksempel-løsning</div>
-          <div class="solution-body">Du er en hjælpsom kundeservice-medarbejder for LearnAI Shop, en dansk e-handel med fokus på AI-bøger og kurser. Du svarer på dansk i en venlig og direkte tone — som en kollega, ikke som en formel skrivelse.
-
-  REGLER (i prioriteret rækkefølge):
-  1. Hvis spørgsmålet handler om en specifik ordre, brug ALTID den vedhæftede ordrehistorik. Citer ordrenummer og dato.
-  2. Du må KUN refundere eller annullere hvis ordren er under 14 dage gammel og endnu ikke afsendt.
-  3. Ved produktanbefalinger, henvis til faktiske produkter fra kataloget — opfind aldrig titler eller priser.
-  4. Hvis kunden er vred eller utilfreds, anerkend deres frustration ÉN gang i dit svar, og foreslå en konkret næste handling.
-  5. Hvis svaret kræver information du ikke har (intern fakturering, klage over leverandør, juridiske spørgsmål), svar: "Det skal jeg overlade til en kollega. Jeg sender dig videre til vores team — du hører fra os inden for 24 timer."
-
-  OUTPUT-FORMAT: Almindelig prosa, max 4 sætninger pr. svar, ingen markdown.
-
-  ESKALER ALTID til menneske ved: refusion over 1.000 kr., klage over personale, juridiske trusler, eller hvis kunden eksplicit beder om at tale med en person.</div>
-
-          <div class="checklist-header">✅ Selv-evaluering — sæt kryds ved hvert punkt dit svar dækker</div>
-          <p class="checklist-instr">Du skal have mindst <strong>4 ud af 5</strong> for at bestå denne opgave. Vær ærlig — det er din egen læring.</p>
-          <ul class="checklist">
-            <li><label><input type="checkbox" data-num="1" data-ci="0"> Defineret en konkret rolle (ikke bare "hjælpsom assistent") og tone (fx venlig/direkte)</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="1"> Klare regler for hvad chatten må og IKKE må (fx grænser for refusion, brug af RAG-data)</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="2"> Eksplicit instruks om at bruge kontekst/RAG-data og ikke opfinde fakta</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="3"> Defineret en eskaleringssti til menneske for sager den ikke kan håndtere</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="4"> Specificeret output-format (sprog, længde, fx ingen markdown)</label></li>
-          </ul>
-
-          <div class="practical-result" id="presult1">Sæt kryds ved minimum 4 punkter for at bestå.</div>
-        </div>
-      </div>
-    </section>
-
-      
-    <section class="practical" id="practical2">
-      <div class="practical-header">
-        <div class="practical-badge">Praktisk opgave 2 af 2</div>
-        <h2>Design en RAG-pipeline til et juridisk firma</h2>
-        <p class="task">Et lille jurafirma vil bygge en intern AI-assistent der kan slå op i deres samling af 800 PDF-domsafsigelser (gennemsnitlig 30 sider). Advokaterne stiller spørgsmål som "Hvad har domstolene typisk afgjort i sager om §4-konkurrenceklausuler?". Beskriv hele din RAG-pipeline: dokumentforbehandling, chunking-strategi, embedding-model, retrieval, reranking, og hvordan du forhindrer hallucinationer.</p>
-      </div>
-
-      <div class="practical-body">
-        <label for="answer2"><strong>Dit svar:</strong></label>
-        <textarea id="answer2" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. Når du er færdig, klik 'Vis eksempel-løsning' nedenfor for at sammenligne."></textarea>
-
-        <button class="btn-reveal" data-num="2">Vis eksempel-løsning &amp; selv-evaluering</button>
-
-        <div class="solution" id="solution2" style="display:none;">
-          <div class="solution-header">📖 Eksempel-løsning</div>
-          <div class="solution-body">1. DOKUMENTFORBEHANDLING: Brug et PDF-OCR-bibliotek (fx unstructured.io eller pdfplumber) til at udtrække ren tekst + metadata (sagsnummer, dato, instans, parter). Strip footers, sidetal og advokat-stempler.
-
-  2. CHUNKING: Document-aware chunking baseret på naturlig struktur — én chunk pr. afsnit/præmis (typisk 200-600 tokens), aldrig brydt midt i en præmis. Hver chunk får metadata: {sagsnummer, dato, instans, præmis-nummer}. Det giver præcis citation senere.
-
-  3. EMBEDDING: text-embedding-3-large eller en dansk-finetunet model (fx nb-bert eller similar). Brug SAMME model til både chunks og queries. Gem i en vector database (Qdrant, Weaviate eller pgvector).
-
-  4. RETRIEVAL: Hybrid search — vector search (semantik) + BM25 keyword (fanger specifikke paragraffer som "§4"). Hent top-30 kandidater. Filtrér på metadata hvis brugeren har specificeret instans eller årstal.
-
-  5. RERANKING: Cross-encoder reranker (fx Cohere Rerank eller bge-reranker) trimmer top-30 ned til top-5 mest relevante. Det er billigt nok til 5-30 chunks, for dyrt til 800 dokumenter.
-
-  6. PROMPT MOD HALLUCINATION: System-prompt: "Du er en juridisk research-assistent. Brug KUN de vedhæftede uddrag. Citer altid sagsnummer + præmis-nummer for hver påstand. Hvis svaret ikke står i uddragene, svar: 'Det fremgår ikke af de tilgængelige domme'." Test eksplicit at den siger "ved ikke" på spørgsmål uden for korpuset.
-
-  7. EVAL: Et golden dataset på 100 advokat-formulerede spørgsmål med kendte rigtige citater, evaluer recall@5 (har vi den rigtige dom i top-5?) og judge-prompt for korrekt citation.</div>
-
-          <div class="checklist-header">✅ Selv-evaluering — sæt kryds ved hvert punkt dit svar dækker</div>
-          <p class="checklist-instr">Du skal have mindst <strong>4 ud af 5</strong> for at bestå denne opgave. Vær ærlig — det er din egen læring.</p>
-          <ul class="checklist">
-            <li><label><input type="checkbox" data-num="2" data-ci="0"> Beskrevet konkret chunking-strategi der respekterer dokumentets struktur (præmisser/paragraffer)</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="1"> Valgt embedding-model og specificeret at SAMME model bruges på begge sider</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="2"> Inkluderet hybrid search (vector + BM25) — vigtigt for paragraf-numre som §4</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="3"> Inkluderet reranking efter retrieval (top-N → top-5)</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="4"> Konkret strategi mod hallucination: prompt der kræver citation + "ved ikke"-fallback + test af denne</label></li>
-          </ul>
-
-          <div class="practical-result" id="presult2">Sæt kryds ved minimum 4 punkter for at bestå.</div>
-        </div>
-      </div>
-    </section>
-
-      <section class="final locked" id="final">
-        <div class="final-card">
-          <div class="final-icon">🏆</div>
-          <h2 id="final-title">Eksamen B1 bestået!</h2>
-          <p id="final-text">Flot arbejde. Du har bestået både testen og begge praktiske opgaver.</p>
-          <div class="progress-summary">
-            <span class="progress-pill" id="pp-test">Test: —</span>
-            <span class="progress-pill" id="pp-p1">Praktisk 1: —</span>
-            <span class="progress-pill" id="pp-p2">Praktisk 2: —</span>
-          </div>
-          <a href="eksamen-b2.html" class="btn">Gå til Eksamen 2 →</a>
-        </div>
-      </section>
-    </main>
+    <!-- Resultat overlay -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-card" id="resultCard"></div>
+    </div>
 
     <script>
-      const CORRECT = [2,1,0,3,2,1,3,2];
-      const EXPLAIN = ["Sycophancy-bias fixes ved at bede dommeren eksplicit om at være kritisk og kun give høje scores ved klar perfektion. En \"blød\" judge-prompt giver altid 4-5.","For små chunks fragmenterer kontekst — modellen mister sammenhæng. 50 tokens svarer til 1-2 sætninger, ikke nok til meningsfuld retrieval.","Lav precision = du henter for meget irrelevant. Reranker er præcis det værktøj der trimmer top-50 ned til top-5 relevante. Recall holder du, precision går op.","Best practice er: System (rolle/regler) → Few-shot eksempler → Kontekst/data → User-spørgsmål. Eksemplerne skal komme før den konkrete opgave for at sætte mønsteret.","Reranker er dyr (cross-encoder, ~1 sek/par). Brug retrieval (hurtig vector search) til at finde top-50, og rerank kun dem til top-5. Bedste af to verdener.","Embedding-modeller producerer vektorer i forskellige rum — du kan IKKE sammenligne en small-vektor med en large-vektor meningsfuldt. Brug samme model til både query og chunks.","Stuffing = du proppe alt materiale i prompten \"for en sikkerheds skyld\". Modellen mister fokus og henviser til irrelevant info. Fixen er retrieval + relevans-ranking.","LLM-as-judge er det mest robuste til fri tekst — eksakte metrikker som BLEU/ROUGE er for stive. Men dommer-prompten skal være streng og bruge konkrete kriterier."];
-      const NEXT_HREF = "eksamen-b2.html";
-      const RETRY_HREF = "kursus-b1.html";
+        // ==================== SPØRGSMÅL (Baseret på kursus B indhold) ====================
+        const questions = [
+            {
+                q: "Hvad er det primære formål med prompt engineering?",
+                options: [
+                    "At skrive så korte prompts som muligt",
+                    "At designe præcise instruktioner, der får AI til at give de ønskede outputs",
+                    "At programmere AI-modeller fra bunden",
+                    "At oversætte tekst mellem sprog"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvilken teknik bruger man, når man giver AI'en et eksempel på det ønskede output først?",
+                options: [
+                    "Zero-shot prompting",
+                    "Chain-of-thought prompting",
+                    "Few-shot prompting",
+                    "Negative prompting"
+                ],
+                correct: 2
+            },
+            {
+                q: "Hvad er chain-of-thought (CoT) prompting?",
+                options: [
+                    "At bede AI'en om at svare uden forklaring",
+                    "At bede AI'en om at tænke trin-for-trin og vise sin ræsonnering",
+                    "At give AI'en en kæde af links",
+                    "At skrive prompts i en bestemt rækkefølge"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad er en 'hallucination' i AI-sammenhæng?",
+                options: [
+                    "Når AI'en bliver træt og lukker ned",
+                    "Når AI'en genererer fakta, der lyder rigtige, men som er forkerte eller opdigtede",
+                    "Når AI'en ser billeder, der ikke findes",
+                    "Når brugeren forestiller sig ting"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvilken af følgende er en bedste praksis for prompt engineering?",
+                options: [
+                    "Bruge så få ord som overhovedet muligt",
+                    "Være specifik, give kontekst og definere det ønskede format",
+                    "Aldrig stille opfølgende spørgsmål",
+                    "Kun bruge ét ord ad gangen"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad betyder 'temperature' i forbindelse med AI-modeller?",
+                options: [
+                    "Hvor varm computeren bliver under brug",
+                    "Hvor kreativ eller forudsigelig modellens output er – højere temperatur = mere kreativt",
+                    "Hvor hurtigt modellen svarer",
+                    "Hvor mange brugere der er på samtidigt"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad er formålet med en 'system prompt'?",
+                options: [
+                    "At tænde og slukke for AI'en",
+                    "At sætte rammerne og reglerne for, hvordan AI'en skal opføre sig i samtalen",
+                    "At opdatere softwaren",
+                    "At logge brugerens aktivitet"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad er RAG (Retrieval-Augmented Generation)?",
+                options: [
+                    "En metode til at tegne billeder",
+                    "En teknik der kombinerer informationssøgning med tekstgenerering for mere præcise svar",
+                    "Et spil om AI",
+                    "En type hardware til AI"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvorfor er det vigtigt at faktatjekke AI-genereret indhold?",
+                options: [
+                    "Fordi AI altid lyver",
+                    "Fordi AI kan hallucinere og generere overbevisende, men forkert information",
+                    "Fordi det er lovpligtigt i alle lande",
+                    "Fordi AI ikke kan læse tekst"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad er en 'token' i AI-sammenhæng?",
+                options: [
+                    "En sikkerhedsnøgle til login",
+                    "En enhed af tekst (ord eller dele af ord), som AI-modellen behandler",
+                    "Et point man optjener ved brug",
+                    "En type filformat"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvilken rolle spiller 'context window' for en AI-model?",
+                options: [
+                    "Det er vinduet på computerens skærm",
+                    "Det er mængden af tekst (tokens) som AI'en kan 'huske' og forholde sig til i én samtale",
+                    "Det er et sikkerhedsvindue",
+                    "Det er tidsrummet hvor AI'en er tilgængelig"
+                ],
+                correct: 1
+            },
+            {
+                q: "Hvad er forskellen på supervised og unsupervised learning?",
+                options: [
+                    "Der er ingen forskel",
+                    "Supervised bruger mærkede data med facit, unsupervised finder selv mønstre i umærkede data",
+                    "Supervised er hurtigere end unsupervised",
+                    "Unsupervised kræver mere strøm"
+                ],
+                correct: 1
+            }
+        ];
 
-      let testPassed = false;
-      let p1Passed = false;
-      let p2Passed = false;
-      let testSubmitted = false;
+        let currentQuestion = 0;
+        let answers = new Array(questions.length).fill(null);
+        let examSubmitted = false;
 
-      function updateProgress() {
-        let answered = 0;
-        for (let i = 0; i < 8; i++) {
-          if (document.querySelector('input[name="q'+i+'"]:checked')) answered++;
+        // DOM elementer
+        const questionText = document.getElementById('questionText');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const questionCounter = document.getElementById('questionCounter');
+        const progressFill = document.getElementById('progressFill');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const resultOverlay = document.getElementById('resultOverlay');
+        const resultCard = document.getElementById('resultCard');
+
+        function loadQuestion(index) {
+            if (examSubmitted) return;
+            
+            const q = questions[index];
+            questionText.textContent = q.q;
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, i) => {
+                const label = document.createElement('label');
+                label.className = 'option';
+                if (answers[index] === i) label.classList.add('selected');
+
+                const radio = document.createElement('input');
+                radio.type = 'radio';
+                radio.name = 'question';
+                radio.value = i;
+                radio.checked = (answers[index] === i);
+                radio.addEventListener('change', () => selectAnswer(index, i, label));
+
+                const span = document.createElement('span');
+                span.textContent = opt;
+
+                label.appendChild(radio);
+                label.appendChild(span);
+                optionsContainer.appendChild(label);
+            });
+
+            questionCounter.textContent = `Spørgsmål ${index + 1} af ${questions.length}`;
+            progressFill.style.width = ((index + 1) / questions.length) * 100 + '%';
+
+            // Knapper
+            btnPrev.disabled = (index === 0);
+            if (index === questions.length - 1) {
+                btnNext.style.display = 'none';
+                btnSubmit.style.display = 'inline-block';
+            } else {
+                btnNext.style.display = 'inline-block';
+                btnSubmit.style.display = 'none';
+            }
         }
-        document.getElementById('progress-text').textContent = answered + ' / 8 besvaret';
-      }
 
-      document.querySelectorAll('.option').forEach(opt => {
-        opt.addEventListener('click', e => {
-          if (testSubmitted) return;
-          const q = opt.dataset.q;
-          document.querySelectorAll('.option[data-q="'+q+'"]').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          opt.querySelector('input').checked = true;
-          updateProgress();
-        });
-      });
+        function selectAnswer(questionIndex, answerIndex, labelElement) {
+            if (examSubmitted) return;
+            
+            answers[questionIndex] = answerIndex;
 
-      document.getElementById('submit-test').addEventListener('click', () => {
-        let correct = 0;
-        for (let i = 0; i < 8; i++) {
-          const sel = document.querySelector('input[name="q'+i+'"]:checked');
-          const opts = document.querySelectorAll('.option[data-q="'+i+'"]');
-          opts.forEach(o => o.classList.remove('selected'));
-          const fb = document.getElementById('fb'+i);
-          if (sel && parseInt(sel.value) === CORRECT[i]) {
-            correct++;
-            opts[CORRECT[i]].classList.add('correct');
-            fb.className = 'feedback ok';
-            fb.textContent = '✓ Rigtigt. ' + EXPLAIN[i];
-          } else {
-            if (sel) opts[parseInt(sel.value)].classList.add('wrong');
-            opts[CORRECT[i]].classList.add('correct');
-            fb.className = 'feedback bad';
-            fb.textContent = '✗ Det rigtige svar er ' + ['A','B','C','D'][CORRECT[i]] + '. ' + EXPLAIN[i];
-          }
+            // Fjern selected fra alle option labels i dette spørgsmål
+            const allOptions = optionsContainer.querySelectorAll('.option');
+            allOptions.forEach(opt => opt.classList.remove('selected'));
+            labelElement.classList.add('selected');
         }
-        testSubmitted = true;
-        const result = document.getElementById('test-result');
-        const tr = document.getElementById('pp-test');
-        if (correct >= 6) {
-          testPassed = true;
-          result.className = 'test-result pass';
-          result.innerHTML = '✓ Bestået: <strong>' + correct + ' / 8</strong> rigtige. Praktisk opgave 1 er nu låst op.';
-          document.getElementById('practical1').classList.remove('locked');
-          tr.textContent = 'Test: ' + correct + '/8 ✓';
-          tr.classList.add('done');
-        } else {
-          result.className = 'test-result fail';
-          result.innerHTML = '✗ Ikke bestået: <strong>' + correct + ' / 8</strong> rigtige. Du skal have mindst 6. <a href="' + RETRY_HREF + '" style="color:inherit;text-decoration:underline;font-weight:700;">Genlæs B-kurserne</a> og prøv igen.';
-          tr.textContent = 'Test: ' + correct + '/8 ✗';
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                loadQuestion(currentQuestion);
+            }
         }
-        document.getElementById('submit-test').disabled = true;
-        document.getElementById('submit-test').textContent = 'Test indleveret';
-        checkFinal();
-      });
 
-      document.querySelectorAll('.btn-reveal').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const num = btn.dataset.num;
-          document.getElementById('solution'+num).style.display = 'block';
-          btn.style.display = 'none';
-        });
-      });
-
-      document.querySelectorAll('.checklist input').forEach(cb => {
-        cb.addEventListener('change', () => {
-          const num = cb.dataset.num;
-          const checked = document.querySelectorAll('.checklist input[data-num="'+num+'"]:checked').length;
-          const result = document.getElementById('presult'+num);
-          if (checked >= 4) {
-            result.className = 'practical-result pass';
-            result.textContent = '✓ Bestået: ' + checked + ' / 5 punkter dækket' + (num === '1' ? '. Praktisk opgave 2 er nu låst op.' : '. Eksamen er klar til at gå videre.');
-            if (num === '1') { p1Passed = true; document.getElementById('practical2').classList.remove('locked'); document.getElementById('pp-p1').textContent = 'Praktisk 1: ✓'; document.getElementById('pp-p1').classList.add('done'); }
-            else { p2Passed = true; document.getElementById('pp-p2').textContent = 'Praktisk 2: ✓'; document.getElementById('pp-p2').classList.add('done'); }
-          } else {
-            result.className = 'practical-result' + (checked > 0 ? ' fail' : '');
-            result.textContent = checked + ' / 5 punkter — du skal have mindst 4 for at bestå.';
-            if (num === '1') { p1Passed = false; document.getElementById('pp-p1').textContent = 'Praktisk 1: ' + checked + '/5'; document.getElementById('pp-p1').classList.remove('done'); }
-            else { p2Passed = false; document.getElementById('pp-p2').textContent = 'Praktisk 2: ' + checked + '/5'; document.getElementById('pp-p2').classList.remove('done'); }
-          }
-          checkFinal();
-        });
-      });
-
-      function checkFinal() {
-        if (testPassed && p1Passed && p2Passed) {
-          document.getElementById('final').classList.remove('locked');
-          document.getElementById('final').scrollIntoView({behavior:'smooth', block:'start'});
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                loadQuestion(currentQuestion);
+            }
         }
-      }
+
+        function submitExam() {
+            if (examSubmitted) return;
+            
+            // Tjek om alle spørgsmål er besvaret
+            const unanswered = answers.filter(a => a === null).length;
+            if (unanswered > 0) {
+                alert(`Du har ${unanswered} ubesvarede spørgsmål. Besvar alle før du afslutter.`);
+                return;
+            }
+
+            examSubmitted = true;
+
+            // Beregn score
+            let correctCount = 0;
+            answers.forEach((ans, i) => {
+                if (ans === questions[i].correct) correctCount++;
+            });
+
+            const passed = correctCount >= 11;
+            const percentage = Math.round((correctCount / questions.length) * 100);
+
+            // Vis resultater på spørgsmålene
+            showCorrectAnswers();
+
+            // Vis resultat overlay
+            resultCard.innerHTML = `
+                <div class="result-icon">${passed ? '🏆' : '😔'}</div>
+                <h2>${passed ? 'Tillykke! Du bestod!' : 'Desværre - ikke bestået'}</h2>
+                <p>Du skal have mindst 11 ud af 12 rigtige for at bestå.</p>
+                <div class="result-score ${passed ? 'passed' : 'failed'}">${correctCount} / 12</div>
+                <p style="color: var(--muted);">${percentage}% rigtige</p>
+                ${passed ? `
+                    <p style="margin-top: 0.5rem; color: var(--success); font-weight: 600;">
+                        <i class="fas fa-unlock"></i> Du kan nu gå videre til Eksamen B2 (Sølv)
+                    </p>
+                    <p style="margin-top: 0.5rem; color: var(--bronze-dark);">
+                        <i class="fas fa-medal"></i> Bronze badge optjent! 🥉
+                    </p>
+                    <button class="btn-continue" onclick="window.location.href='eksamen-b2.html'">
+                        <i class="fas fa-arrow-right"></i> Fortsæt til Eksamen B2
+                    </button>
+                ` : `
+                    <button class="btn-retry" onclick="retryExam()">
+                        <i class="fas fa-redo"></i> Prøv igen
+                    </button>
+                `}
+            `;
+            resultOverlay.classList.add('show');
+
+            // Deaktiver alle radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+            btnPrev.disabled = true;
+            btnNext.disabled = true;
+            btnSubmit.disabled = true;
+        }
+
+        function showCorrectAnswers() {
+            const allOptionLabels = optionsContainer.querySelectorAll('.option');
+            const correctIndex = questions[currentQuestion].correct;
+            const userAnswer = answers[currentQuestion];
+
+            allOptionLabels.forEach((label, i) => {
+                if (i === correctIndex) {
+                    label.classList.add('correct');
+                }
+                if (i === userAnswer && userAnswer !== correctIndex) {
+                    label.classList.add('wrong');
+                }
+            });
+        }
+
+        function retryExam() {
+            examSubmitted = false;
+            answers = new Array(questions.length).fill(null);
+            currentQuestion = 0;
+            resultOverlay.classList.remove('show');
+            document.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = false);
+            btnPrev.disabled = false;
+            btnNext.disabled = false;
+            btnSubmit.disabled = false;
+            loadQuestion(0);
+        }
+
+        // Start
+        loadQuestion(0);
     </script>
-  </body>
-  </html>
+</body>
+</html>
