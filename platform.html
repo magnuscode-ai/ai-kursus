@@ -1,3 +1,4 @@
+=== FILE: package.json ===
 {
   "name": "learnai",
   "version": "1.0.0",
@@ -85,7 +86,10 @@
     "vitest": "^2.1.4"
   },
   "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af"
-}<!doctype html>
+}
+
+=== FILE: client/index.html ===
+<!doctype html>
 <html lang="da">
   <head>
     <meta charset="UTF-8" />
@@ -100,16 +104,22 @@
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
-</html>import React from "react";
+</html>
+
+=== FILE: client/src/main.tsx ===
+import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root" )!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-);import { Toaster } from "@/components/ui/sonner";
+);
+
+=== FILE: client/src/App.tsx ===
+import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/NotFound";
 import { Route, Switch } from "wouter";
@@ -142,7 +152,10 @@ function App() {
   );
 }
 
-export default App;@import "tailwindcss";
+export default App;
+
+=== FILE: client/src/index.css ===
+@import "tailwindcss";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -289,7 +302,10 @@ export default App;@import "tailwindcss";
 
   .stagger-1 { animation-delay: 0.1s; opacity: 0; }
   .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-}import React, { createContext, useContext, useEffect, useState } from "react";
+}
+
+=== FILE: client/src/contexts/ThemeContext.tsx ===
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
@@ -339,7 +355,10 @@ export function useTheme() {
     throw new Error("useTheme must be used within a ThemeProvider");
   }
   return context;
-}import React from "react";
+}
+
+=== FILE: client/src/components/ErrorBoundary.tsx ===
+import React from "react";
 
 interface Props {
   children: React.ReactNode;
@@ -388,11 +407,9 @@ export default class ErrorBoundary extends React.Component<Props, State> {
 
     return this.props.children;
   }
-}/* ============================================================
-   AI-KURSER – Home Page
-   Design: Nordisk Teknologi-Akademi
-   ============================================================ */
+}
 
+=== FILE: client/src/pages/Home.tsx ===
 import { useState } from "react";
 import { ExternalLink, BookOpen, Trophy, ChevronDown, ChevronUp, Brain, Star, ArrowRight } from "lucide-react";
 import { useLocation } from "wouter";
@@ -510,7 +527,7 @@ const levels: Level[] = [
   },
 ];
 
-function TypeIcon({ type }: { type: CourseItem["type"] } ) {
+function TypeIcon({ type }: { type: CourseItem["type"] }) {
   if (type === "kursus") return <BookOpen className="w-4 h-4" />;
   if (type === "quiz") return <Brain className="w-4 h-4" />;
   return <Trophy className="w-4 h-4" />;
@@ -611,7 +628,6 @@ export default function Home() {
   const [, setLocation] = useLocation();
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8F5F0" }}>
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(248,245,240,0.92)" }}>
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
@@ -639,7 +655,6 @@ export default function Home() {
         </div>
       </nav>
 
-      {/* Hero */}
       <section className="relative overflow-hidden">
         <div className="container py-16 md:py-24">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -649,10 +664,8 @@ export default function Home() {
                 Gratis startkursus – ingen forkundskaber nødvendige
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-                Lær kunstig  
-
-                <span style={{ color: "#E8A020" }}>intelligens</span>  
-
+                Lær kunstig<br />
+                <span style={{ color: "#E8A020" }}>intelligens</span><br />
                 trin for trin
               </h1>
               <p className="text-lg leading-relaxed text-muted-foreground mb-8 max-w-lg">
@@ -672,7 +685,7 @@ export default function Home() {
                   { value: "4", label: "Niveauer" },
                   { value: "16+", label: "Moduler" },
                   { value: "10+", label: "Quizzer & Eksamener" },
-                ].map((stat ) => (
+                ].map((stat) => (
                   <div key={stat.label}>
                     <p className="text-2xl font-extrabold" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
                       {stat.value}
@@ -703,7 +716,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Progression */}
       <section id="hvordan" className="py-16 border-y border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
         <div className="container">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -742,7 +754,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Kurser */}
       <section id="kurser" className="py-16 md:py-24">
         <div className="container">
           <div className="text-center mb-12">
@@ -762,7 +773,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Om os */}
       <section id="om-os" className="py-16 md:py-20 border-t border-border/50" style={{ backgroundColor: "#F0EDE8" }}>
         <div className="container">
           <div className="max-w-3xl mx-auto">
@@ -796,7 +806,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="py-16" style={{ backgroundColor: "#E8A020" }}>
         <div className="container text-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4" style={{ fontFamily: "'Sora', sans-serif" }}>
@@ -811,7 +820,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-8 border-t border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -823,7 +831,7 @@ export default function Home() {
             </span>
           </div>
           <p className="text-blue-300 text-sm text-center">
-            Bygget med passion i Værløse, Danmark · {new Date( ).getFullYear()}
+            Bygget med passion i Værløse, Danmark · {new Date().getFullYear()}
           </p>
           <div className="flex items-center gap-4">
             <button onClick={() => setLocation("/sidekurser")} className="text-blue-300 hover:text-white text-sm transition-colors font-medium">
@@ -836,12 +844,10 @@ export default function Home() {
         </div>
       </footer>
     </div>
-   );
-}/* ============================================================
-   SIDEKURSER – LearnAI Side Courses Page
-   Design: Nordisk Teknologi-Akademi
-   ============================================================ */
+  );
+}
 
+=== FILE: client/src/pages/Sidekurser.tsx ===
 import { ArrowLeft, Star } from "lucide-react";
 import { useLocation } from "wouter";
 
@@ -919,7 +925,6 @@ export default function Sidekurser() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#F8F5F0" }}>
-      {/* Navigation */}
       <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(248,245,240,0.92)" }}>
         <div className="container flex items-center justify-between h-16">
           <div className="flex items-center gap-2">
@@ -944,7 +949,6 @@ export default function Sidekurser() {
         </div>
       </nav>
 
-      {/* Header */}
       <section className="py-16 md:py-24 border-b border-border/50">
         <div className="container">
           <div className="text-center mb-8">
@@ -962,7 +966,6 @@ export default function Sidekurser() {
         </div>
       </section>
 
-      {/* Course Grid */}
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -998,7 +1001,6 @@ export default function Sidekurser() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-8 border-t border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
         <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
@@ -1019,7 +1021,10 @@ export default function Sidekurser() {
       </footer>
     </div>
   );
-}import { useLocation } from "wouter";
+}
+
+=== FILE: client/src/pages/NotFound.tsx ===
+import { useLocation } from "wouter";
 
 export default function NotFound() {
   const [, setLocation] = useLocation();
@@ -1041,12 +1046,15 @@ export default function NotFound() {
       </div>
     </div>
   );
-}import express from "express";
+}
+
+=== FILE: server/index.ts ===
+import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url );
+const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 async function startServer() {
@@ -1067,12 +1075,18 @@ async function startServer() {
   const port = process.env.PORT || 3000;
 
   server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/` );
+    console.log(`Server running on http://localhost:${port}/`);
   });
 }
 
-startServer().catch(console.error);export const APP_NAME = "LearnAI";
-export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til ekspert";{
+startServer().catch(console.error);
+
+=== FILE: shared/const.ts ===
+export const APP_NAME = "LearnAI";
+export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til ekspert";
+
+=== FILE: tsconfig.json ===
+{
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
@@ -1099,7 +1113,10 @@ export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til eksp
   },
   "include": ["client/src", "server"],
   "references": [{ "path": "./tsconfig.node.json" }]
-}{
+}
+
+=== FILE: tsconfig.node.json ===
+{
   "compilerOptions": {
     "composite": true,
     "skipLibCheck": true,
@@ -1108,7 +1125,10 @@ export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til eksp
     "allowSyntheticDefaultImports": true
   },
   "include": ["vite.config.ts"]
-}import { defineConfig } from "vite";
+}
+
+=== FILE: vite.config.ts ===
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import jsconfigPaths from "vite-jsconfig-paths";
@@ -1129,7 +1149,10 @@ export default defineConfig({
       },
     },
   },
-} );import type { Config } from "tailwindcss";
+});
+
+=== FILE: tailwind.config.ts ===
+import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: ["./client/index.html", "./client/src/**/*.{js,ts,jsx,tsx}"],
@@ -1180,7 +1203,9 @@ const config: Config = {
   plugins: [],
 };
 
-export default config;# Logs
+export default config;
+
+=== FILE: .gitignore ===
 logs
 *.log
 npm-debug.log*
@@ -1194,7 +1219,6 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
@@ -1205,7 +1229,45 @@ dist-ssr
 *.sln
 *.sw?
 
-# Environment
 .env
 .env.local
 .env.*.local
+
+=== FILE: README.md ===
+# LearnAI – Kunstig Intelligens Kurser
+
+En dansk platform for at lære kunstig intelligens fra nybegynder til ekspert.
+
+## 🚀 Hurtig start
+
+### Krav
+- Node.js 18+
+- pnpm (eller npm/yarn)
+
+### Installation
+
+```bash
+git clone https://github.com/dit-brugernavn/learnai.git
+cd learnai
+pnpm install
+pnpm dev
+```
+
+Åbn `http://localhost:5173` i din browser.
+
+## 📦 Build & Deploy
+
+```bash
+pnpm build
+pnpm preview
+pnpm start
+```
+
+## 🎨 Design
+
+- Nordisk teknologi-akademi æstetik
+- Sora (headlines) + Source Serif 4 (body)
+- React 19 + Tailwind CSS 4
+- Wouter routing
+
+## 📝 Licens
