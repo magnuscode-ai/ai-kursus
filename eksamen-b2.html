@@ -1,675 +1,456 @@
-<!doctype html>
-  <html lang="da">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>LearnAI DK — Eksamen B2</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B Eksamen 2 | Sølv | LearnAI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-      :root {
-        --exam:       #BE123C;
-        --exam-light: #FFE4E6;
-        --ink:        #1F1F23;
-        --muted:      #5C5C66;
-        --bg:         #FAF9F6;
-        --card:       #FFFFFF;
-        --border:     #E5E2DA;
-        --green:      #15803D;
-        --green-light:#DCFCE7;
-        --red:        #B91C1C;
-        --red-light:  #FEE2E2;
-        --gold:       #B45309;
-        --gold-light: #FEF3C7;
-        --shadow:     0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
-        --radius:     14px;
-      }
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.55; }
-      h1, h2, h3 { font-family: 'Source Serif 4', serif; font-weight: 600; }
-      nav { background: white; border-bottom: 1px solid var(--border); padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
-      .nav-left { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
-      .logo-icon { width: 30px; height: 30px; background: var(--exam); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-      .logo-icon::after { content: ""; width: 14px; height: 14px; border: 2px solid white; border-radius: 50%; }
-      .nav-tag { background: var(--gold-light); color: var(--gold); font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; }
-      .steps-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; padding: 0.9rem 1.5rem; background: white; border-bottom: 1px solid var(--border); justify-content: center; font-size: 12px; }
-      .step-item { display: flex; align-items: center; gap: 6px; }
-      .step-dot { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
-      .step-dot.done { background: var(--green); color: white; }
-      .step-dot.active { background: var(--exam); color: white; box-shadow: 0 0 0 4px var(--exam-light); }
-      .step-dot.next { background: var(--border); color: var(--muted); }
-      .step-label.done { color: var(--green); font-weight: 600; }
-      .step-label.active { color: var(--exam); font-weight: 700; }
-      .step-label.next { color: var(--muted); }
-      .step-arrow { color: var(--border); font-weight: 700; }
-      .hero { background: var(--exam); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
-      .hero-badge { display: inline-block; background: rgba(255,255,255,0.2); color: white; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 0.7rem; }
-      .hero h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-      .hero p { max-width: 700px; margin: 0 auto; opacity: 0.9; font-size: 1rem; }
+        :root {
+            --silver: #a8a8a8;
+            --silver-light: #e8e8e8;
+            --silver-dark: #6a6a6a;
+            --bg: #1a1a2e;
+            --card: #ffffff;
+            --text: #2c2c44;
+            --muted: #6c6c8a;
+            --success: #2e7d32;
+            --error: #c62828;
+        }
 
-      main { max-width: 850px; margin: 0 auto; padding: 2rem 1rem; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-      section.test, section.practical, section.final { background: var(--card); border-radius: var(--radius); padding: 2rem 1.75rem; margin-bottom: 1.5rem; box-shadow: var(--shadow); border: 1px solid var(--border); }
-      section.locked { opacity: 0.5; pointer-events: none; }
-      section.locked::before { content: "🔒 Bestå forrige del for at låse op"; display: block; background: var(--gold-light); color: var(--gold); padding: 0.7rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; text-align: center; font-weight: 700; font-size: 13px; }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
 
-      .section-label { font-size: 11px; font-weight: 700; color: var(--exam); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
-      section h2 { font-size: 1.5rem; margin-bottom: 0.5rem; }
-      section > p.intro { color: var(--muted); margin-bottom: 1.5rem; }
+        .exam-container {
+            max-width: 850px;
+            width: 100%;
+            background: var(--card);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            border: 3px solid var(--silver);
+            position: relative;
+        }
 
-      .question { padding: 1.25rem 0; border-top: 1px solid var(--border); }
-      .question:first-of-type { border-top: none; padding-top: 0.5rem; }
-      .q-num { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
-      .q-text { font-size: 1rem; font-weight: 500; margin-bottom: 0.85rem; line-height: 1.5; }
-      .options { display: flex; flex-direction: column; gap: 0.5rem; }
-      .option { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.7rem 0.9rem; background: white; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; transition: border-color 0.1s, background 0.1s; }
-      .option input { display: none; }
-      .option:hover { border-color: var(--exam); background: var(--exam-light); }
-      .option-letter { width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; background: var(--bg); color: var(--muted); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
-      .option-text { font-size: 0.95rem; line-height: 1.4; }
-      .option.selected { border-color: var(--exam); background: var(--exam-light); }
-      .option.selected .option-letter { background: var(--exam); color: white; }
-      .option.correct { border-color: var(--green); background: var(--green-light); }
-      .option.correct .option-letter { background: var(--green); color: white; }
-      .option.wrong { border-color: var(--red); background: var(--red-light); }
-      .option.wrong .option-letter { background: var(--red); color: white; }
-      .feedback { display: none; margin-top: 0.6rem; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.9rem; line-height: 1.45; }
-      .feedback.ok { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); display: block; }
-      .feedback.bad { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); display: block; }
+        .exam-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(168, 168, 168, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
 
-      .btn { display: inline-block; background: var(--exam); color: white; font-family: inherit; font-size: 15px; font-weight: 700; padding: 12px 28px; border-radius: 10px; border: none; cursor: pointer; transition: transform 0.1s, opacity 0.15s; }
-      .btn:hover { transform: translateY(-1px); }
-      .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-      .btn-reveal { background: var(--gold); color: white; padding: 10px 22px; border-radius: 10px; border: none; font-family: inherit; font-weight: 700; cursor: pointer; margin-top: 0.85rem; font-size: 14px; }
-      .btn-reveal:hover { background: #92400E; }
+        .exam-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
 
-      .test-actions { margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
-      .test-result { margin-top: 1rem; padding: 1rem 1.25rem; border-radius: 10px; font-weight: 600; display: none; }
-      .test-result.pass { background: var(--green-light); color: var(--green); display: block; }
-      .test-result.fail { background: var(--red-light); color: var(--red); display: block; }
+        .exam-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #b0b0b0, #8a8a8a);
+            padding: 0.6rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            color: white;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
+            box-shadow: 0 4px 15px rgba(168, 168, 168, 0.4);
+        }
 
-      .practical-header { margin-bottom: 1.25rem; }
-      .practical-badge { display: inline-block; background: var(--exam-light); color: var(--exam); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 4px 10px; border-radius: 999px; margin-bottom: 0.6rem; }
-      .task { background: var(--bg); padding: 1rem 1.1rem; border-left: 3px solid var(--exam); border-radius: 6px; font-size: 0.97rem; line-height: 1.55; }
-      textarea { width: 100%; min-height: 180px; padding: 0.85rem 1rem; font-family: inherit; font-size: 14px; line-height: 1.5; border: 1.5px solid var(--border); border-radius: 10px; margin-top: 0.5rem; margin-bottom: 0.5rem; resize: vertical; background: white; }
-      textarea:focus { outline: none; border-color: var(--exam); }
+        .exam-header h1 {
+            font-size: 2rem;
+            color: var(--silver-dark);
+            margin-bottom: 0.3rem;
+        }
 
-      .solution { background: var(--gold-light); border: 1px solid #FCD34D; border-radius: 12px; padding: 1.25rem 1.4rem; margin-top: 1rem; }
-      .solution-header { font-weight: 700; color: var(--gold); margin-bottom: 0.6rem; }
-      .solution-body { font-size: 0.95rem; line-height: 1.55; color: #1F1F23; white-space: pre-line; margin-bottom: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1px dashed #FCD34D; }
-      .checklist-header { font-weight: 700; margin-bottom: 0.4rem; color: var(--ink); }
-      .checklist-instr { font-size: 0.88rem; color: var(--muted); margin-bottom: 0.7rem; }
-      .checklist { list-style: none; padding: 0; }
-      .checklist li { margin-bottom: 0.5rem; }
-      .checklist label { display: flex; align-items: flex-start; gap: 0.55rem; cursor: pointer; font-size: 0.93rem; line-height: 1.45; }
-      .checklist input { margin-top: 4px; flex-shrink: 0; transform: scale(1.15); cursor: pointer; }
-      .practical-result { margin-top: 0.85rem; padding: 0.7rem 0.9rem; border-radius: 8px; font-size: 0.92rem; font-weight: 600; background: var(--bg); color: var(--muted); }
-      .practical-result.pass { background: var(--green-light); color: var(--green); }
-      .practical-result.fail { background: var(--red-light); color: var(--red); }
+        .exam-header p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
 
-      .final-card { text-align: center; padding: 2rem; }
-      .final-icon { font-size: 3.5rem; margin-bottom: 0.5rem; }
-      .final-card h2 { margin-bottom: 0.6rem; }
-      .final-card p { color: var(--muted); margin-bottom: 1.25rem; max-width: 520px; margin-left: auto; margin-right: auto; }
-      .progress-summary { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
-      .progress-pill { background: var(--bg); padding: 0.6rem 1rem; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--muted); border: 1.5px solid var(--border); }
-      .progress-pill.done { background: var(--green-light); color: var(--green); border-color: var(--green); }
-      .btn-secondary { background: white; color: var(--exam); border: 2px solid var(--exam); }
-      .btn-secondary:hover { background: var(--exam-light); }
+        .task-card {
+            background: #fafbff;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border: 2px solid #e8e8f0;
+        }
 
-      @media (max-width: 600px) {
-        .hero h1 { font-size: 1.6rem; }
-        section { padding: 1.5rem 1.1rem; }
-        .steps-bar { font-size: 11px; }
-        .step-dot { width: 22px; height: 22px; font-size: 10px; }
-      }
+        .task-card h3 {
+            color: var(--text);
+            margin-bottom: 0.8rem;
+            font-size: 1.2rem;
+        }
+
+        .task-card .task-desc {
+            color: var(--muted);
+            margin-bottom: 1.2rem;
+            line-height: 1.7;
+        }
+
+        .task-card textarea {
+            width: 100%;
+            min-height: 150px;
+            border: 2px solid #e0e0e0;
+            border-radius: 1rem;
+            padding: 1rem;
+            font-family: inherit;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        .task-card textarea:focus {
+            outline: none;
+            border-color: var(--silver-dark);
+        }
+
+        .ai-review {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 1rem;
+            display: none;
+        }
+
+        .ai-review.show {
+            display: block;
+        }
+
+        .ai-review.approved {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+            color: #2e7d32;
+        }
+
+        .ai-review.rejected {
+            background: #ffebee;
+            border: 2px solid #f44336;
+            color: #c62828;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.9rem 2rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .btn-review {
+            background: linear-gradient(135deg, #b0b0b0, #8a8a8a);
+            color: white;
+            box-shadow: 0 6px 18px rgba(168, 168, 168, 0.35);
+        }
+
+        .btn-review:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(168, 168, 168, 0.5);
+        }
+
+        .btn-submit-final {
+            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            color: white;
+            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+            display: none;
+        }
+
+        .btn-submit-final:hover {
+            transform: translateY(-2px);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.3rem 1rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .status-pending {
+            background: #fff3e0;
+            color: #e65100;
+        }
+
+        .status-approved {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #c62828;
+        }
+
+        .result-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 100;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .result-overlay.show {
+            display: flex;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 2rem;
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .result-icon {
+            font-size: 5rem;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 600px) {
+            .exam-container {
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+        }
     </style>
-  </head>
-  <body>
-    <nav>
-      <div class="nav-left">
-        <span class="logo-icon"></span>
-        <span>LearnAI DK</span>
-        <span class="nav-tag">Eksamen B2</span>
-      </div>
-    </nav>
+</head>
+<body>
 
-    <div class="steps-bar">
-  <div class="step-item">
-    <div class="step-dot done">B1</div>
-    <span class="step-label done">Prompting</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q1</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B2</div>
-    <span class="step-label done">RAG</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q2</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B3</div>
-    <span class="step-label done">Tools</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q3</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B4</div>
-    <span class="step-label done">Agenter</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">Q4</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">B5</div>
-    <span class="step-label done">Produktion</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">🏆</div>
-    <span class="step-label done">Eksamen 1</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot active">🏆</div>
-    <span class="step-label active">Eksamen 2</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen 3</span>
-  </div>
-</div>
+    <div class="exam-container">
+        <div class="exam-header">
+            <span class="exam-badge"><i class="fas fa-medal"></i> SØLV</span>
+            <h1>Eksamen B2</h1>
+            <p>To praktiske opgaver · AI-gennemgang · Begge skal godkendes</p>
+        </div>
 
-    <div class="hero">
-      <div class="hero-badge">Eksamen B2 af 3</div>
-      <h1>Tools og Agenter</h1>
-      <p>Eksamen 2 af 3 dækker B3 (tool use og MCP) og B4 (workflows og agenter). Du skal igennem en test og to praktiske opgaver.</p>
+        <!-- Opgave 1 -->
+        <div class="task-card" id="task1Card">
+            <h3><i class="fas fa-tasks"></i> Opgave 1: Avanceret Prompt Design</h3>
+            <p class="task-desc">
+                <strong>Opgave:</strong> Du skal skrive en avanceret prompt, der får en AI til at fungere som en professionel business coach. 
+                Prompten skal indeholde:<br><br>
+                • En tydelig <strong>system prompt</strong> der definerer AI'ens rolle<br>
+                • Brug af <strong>few-shot prompting</strong> med mindst ét eksempel<br>
+                • En specifik <strong>opgave</strong> for AI'en at løse (fx analysere en forretningsidé)<br>
+                • Instruktion om <strong>output-format</strong><br><br>
+                <em>Skriv hele prompten nedenfor. Den skal være klar til at kopiere ind i en AI som ChatGPT eller Claude.</em>
+            </p>
+            <textarea id="task1Answer" placeholder="Skriv din avancerede prompt her..."></textarea>
+            <div style="margin-top: 0.8rem;">
+                <span class="status-badge status-pending" id="task1Status">
+                    <i class="fas fa-clock"></i> Afventer gennemgang
+                </span>
+            </div>
+            <div class="ai-review" id="task1Review"></div>
+            <button class="btn btn-review" onclick="reviewTask(1)" id="btnReview1">
+                <i class="fas fa-robot"></i> Få AI-godkendelse
+            </button>
+        </div>
+
+        <!-- Opgave 2 -->
+        <div class="task-card" id="task2Card">
+            <h3><i class="fas fa-tasks"></i> Opgave 2: AI-drevet Problemløsning</h3>
+            <p class="task-desc">
+                <strong>Opgave:</strong> Forestil dig, at du skal bruge AI til at løse et komplekst problem for en virksomhed. 
+                Beskriv:<br><br>
+                • <strong>Problemet</strong> virksomheden står overfor<br>
+                • <strong>Hvordan</strong> du vil bruge AI til at løse det (hvilke prompts, teknikker, værktøjer)<br>
+                • <strong>En eksempel-prompt</strong> du ville sende til AI'en<br>
+                • Hvordan du vil <strong>validere</strong> AI'ens svar og undgå hallucinationer<br><br>
+                <em>Skriv din komplette løsningsbeskrivelse nedenfor (minimum 200 ord).</em>
+            </p>
+            <textarea id="task2Answer" placeholder="Skriv din løsningsbeskrivelse her..."></textarea>
+            <div style="margin-top: 0.8rem;">
+                <span class="status-badge status-pending" id="task2Status">
+                    <i class="fas fa-clock"></i> Afventer gennemgang
+                </span>
+            </div>
+            <div class="ai-review" id="task2Review"></div>
+            <button class="btn btn-review" onclick="reviewTask(2)" id="btnReview2">
+                <i class="fas fa-robot"></i> Få AI-godkendelse
+            </button>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-submit-final" id="btnFinalSubmit" onclick="finalSubmit()">
+                <i class="fas fa-trophy"></i> Afslut og få sølv badge
+            </button>
+        </div>
     </div>
 
-    <main>
-      <section class="test" id="test">
-        <div class="section-label">Del 1 af 3 — Test</div>
-        <h2>Test — 8 spørgsmål</h2>
-        <p class="intro">Spørgsmålene blander stof fra B3 og B4. Du skal have mindst <strong>6 ud af 8</strong> rigtige for at bestå.</p>
-
-    <div class="question" id="q0">
-        <span class="q-num">Spørgsmål 1 af 8</span>
-        <div class="q-text">Hvad er forskellen på tool_choice="auto" og tool_choice="required"?</div>
-        <div class="options">
-          <label class="option" data-q="0" data-opt="0">
-            <input type="radio" name="q0" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">"auto" kalder altid mindst ét tool, "required" må gerne springe over</div>
-          </label>
-        <label class="option" data-q="0" data-opt="1">
-            <input type="radio" name="q0" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">"auto" lader modellen frit vælge (også intet tool); "required" tvinger den til mindst ét tool-kald</div>
-          </label>
-        <label class="option" data-q="0" data-opt="2">
-            <input type="radio" name="q0" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">"required" virker kun med JSON-mode aktiveret samtidig</div>
-          </label>
-        <label class="option" data-q="0" data-opt="3">
-            <input type="radio" name="q0" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Der er ingen forskel — det er kun en hint til modellen</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb0"></div>
-      </div>
-
-  <div class="question" id="q1">
-        <span class="q-num">Spørgsmål 2 af 8</span>
-        <div class="q-text">Hvorfor er tool description vigtigere end tool name?</div>
-        <div class="options">
-          <label class="option" data-q="1" data-opt="0">
-            <input type="radio" name="q1" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Description gemmes i en database; name er kun til logging i din kode</div>
-          </label>
-        <label class="option" data-q="1" data-opt="1">
-            <input type="radio" name="q1" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Name kan ikke være længere end 64 tegn, så description bærer al kontekst</div>
-          </label>
-        <label class="option" data-q="1" data-opt="2">
-            <input type="radio" name="q1" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Modellen ser kun name + description + parametre — description er prompten der bestemmer hvornår tool'et vælges</div>
-          </label>
-        <label class="option" data-q="1" data-opt="3">
-            <input type="radio" name="q1" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Name er case-sensitive og fejler ofte; description er mere robust</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb1"></div>
-      </div>
-
-  <div class="question" id="q2">
-        <span class="q-num">Spørgsmål 3 af 8</span>
-        <div class="q-text">Du skal automatisere: "Klassificér support-mail → ruter til rette afdeling → generér svarudkast". Hvad bør du bygge?</div>
-        <div class="options">
-          <label class="option" data-q="2" data-opt="0">
-            <input type="radio" name="q2" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">En multi-agent med 3 agenter der koordinerer indbyrdes via beskeder</div>
-          </label>
-        <label class="option" data-q="2" data-opt="1">
-            <input type="radio" name="q2" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">En workflow (chaining + routing) — pipelinen er kendt og forudsigelig</div>
-          </label>
-        <label class="option" data-q="2" data-opt="2">
-            <input type="radio" name="q2" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">En ReAct-agent med adgang til alle relevante mail- og CRM-tools</div>
-          </label>
-        <label class="option" data-q="2" data-opt="3">
-            <input type="radio" name="q2" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">En reflection-loop der genererer udkast og selv kritiserer outputtet</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb2"></div>
-      </div>
-
-  <div class="question" id="q3">
-        <span class="q-num">Spørgsmål 4 af 8</span>
-        <div class="q-text">Hvad er forskellen på en MCP server og en MCP client?</div>
-        <div class="options">
-          <label class="option" data-q="3" data-opt="0">
-            <input type="radio" name="q3" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Server eksponerer tools/resources; client (fx Claude Desktop, din app) bruger dem</div>
-          </label>
-        <label class="option" data-q="3" data-opt="1">
-            <input type="radio" name="q3" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Server kører på Anthropic; client kører lokalt på din maskine</div>
-          </label>
-        <label class="option" data-q="3" data-opt="2">
-            <input type="radio" name="q3" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Server er gratis; client kræver et abonnement hos Anthropic</div>
-          </label>
-        <label class="option" data-q="3" data-opt="3">
-            <input type="radio" name="q3" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Der er ingen forskel — MCP bruger ikke client/server-arkitektur</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb3"></div>
-      </div>
-
-  <div class="question" id="q4">
-        <span class="q-num">Spørgsmål 5 af 8</span>
-        <div class="q-text">Hvornår vinder Plan-and-Execute over ReAct?</div>
-        <div class="options">
-          <label class="option" data-q="4" data-opt="0">
-            <input type="radio" name="q4" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Altid — Plan-and-Execute er en nyere og bedre teknik end ReAct</div>
-          </label>
-        <label class="option" data-q="4" data-opt="1">
-            <input type="radio" name="q4" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Når du har under 5 tools — så er planlægning unødvendig</div>
-          </label>
-        <label class="option" data-q="4" data-opt="2">
-            <input type="radio" name="q4" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Når næste skridt afhænger stærkt af forrige resultat — fx multi-step research</div>
-          </label>
-        <label class="option" data-q="4" data-opt="3">
-            <input type="radio" name="q4" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Når du på forhånd kan lægge en god plan og bare skal eksekvere — fx en kendt pipeline med variation</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb4"></div>
-      </div>
-
-  <div class="question" id="q5">
-        <span class="q-num">Spørgsmål 6 af 8</span>
-        <div class="q-text">Hvorfor SKAL en reflection-loop have en max_revisions-grænse?</div>
-        <div class="options">
-          <label class="option" data-q="5" data-opt="0">
-            <input type="radio" name="q5" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">API'et nægter at acceptere mere end 3 kald i træk uden grænse</div>
-          </label>
-        <label class="option" data-q="5" data-opt="1">
-            <input type="radio" name="q5" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Det er et formelt krav fra LangChain/OpenAI når du bruger reflection</div>
-          </label>
-        <label class="option" data-q="5" data-opt="2">
-            <input type="radio" name="q5" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Uden grænse kan en perfektionist-loop forværre et godt svar — empirisk vinder 2-3 revisioner</div>
-          </label>
-        <label class="option" data-q="5" data-opt="3">
-            <input type="radio" name="q5" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Det er kun nødvendigt under debugging, ikke i produktion</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb5"></div>
-      </div>
-
-  <div class="question" id="q6">
-        <span class="q-num">Spørgsmål 7 af 8</span>
-        <div class="q-text">Hvad er det vigtigste trade-off ved multi-agent vs single-agent?</div>
-        <div class="options">
-          <label class="option" data-q="6" data-opt="0">
-            <input type="radio" name="q6" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">Multi-agent er altid bedre når man har mere end ét tool tilgængeligt</div>
-          </label>
-        <label class="option" data-q="6" data-opt="1">
-            <input type="radio" name="q6" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Multi-agent koster typisk 5-10x mere og er langsommere — vinder kun ved ægte parallelt arbejde eller stærk specialisering</div>
-          </label>
-        <label class="option" data-q="6" data-opt="2">
-            <input type="radio" name="q6" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Single-agent kan ikke kalde tools — det kan kun multi-agent</div>
-          </label>
-        <label class="option" data-q="6" data-opt="3">
-            <input type="radio" name="q6" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Single-agent er kun til prototyper; produktion kræver altid multi-agent</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb6"></div>
-      </div>
-
-  <div class="question" id="q7">
-        <span class="q-num">Spørgsmål 8 af 8</span>
-        <div class="q-text">Hvilken fejl er hyppigst når en agent får for mange tools (fx 30+)?</div>
-        <div class="options">
-          <label class="option" data-q="7" data-opt="0">
-            <input type="radio" name="q7" value="0">
-            <div class="option-letter">A</div>
-            <div class="option-text">API'et returnerer en hård grænsefejl over 20 tools</div>
-          </label>
-        <label class="option" data-q="7" data-opt="1">
-            <input type="radio" name="q7" value="1">
-            <div class="option-letter">B</div>
-            <div class="option-text">Tool-skemaerne fylder hele kontekstvinduet og crasher modellen</div>
-          </label>
-        <label class="option" data-q="7" data-opt="2">
-            <input type="radio" name="q7" value="2">
-            <div class="option-letter">C</div>
-            <div class="option-text">Modellen bliver langsom — hvert kald tager flere sekunder</div>
-          </label>
-        <label class="option" data-q="7" data-opt="3">
-            <input type="radio" name="q7" value="3">
-            <div class="option-letter">D</div>
-            <div class="option-text">Paralyse-valg: modellen vælger ofte forkert tool eller kalder unødvendige — hold typisk under 10-15</div>
-          </label>
-        </div>
-        <div class="feedback" id="fb7"></div>
-      </div>
-
-        <div class="test-actions">
-          <button class="btn" id="submit-test">Indlevér test</button>
-          <span id="progress-text" style="color: var(--muted); font-size: 14px;">0 / 8 besvaret</span>
-        </div>
-        <div class="test-result" id="test-result"></div>
-      </section>
-
-      
-    <section class="practical" id="practical1">
-      <div class="practical-header">
-        <div class="practical-badge">Praktisk opgave 1 af 2</div>
-        <h2>Definer JSON-schema og description for et send_email tool</h2>
-        <p class="task">Du bygger en AI-assistent der kan sende emails på vegne af brugeren. Definer det komplette tool: navn, description (der får modellen til at vælge det rigtigt), JSON-schema for parametre (med typer, beskrivelser og required-felter), samt minimum 3 sikkerhedsovervejelser om hvornår tool'et IKKE skal kunne bruges.</p>
-      </div>
-
-      <div class="practical-body">
-        <label for="answer1"><strong>Dit svar:</strong></label>
-        <textarea id="answer1" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. Når du er færdig, klik 'Vis eksempel-løsning' nedenfor for at sammenligne."></textarea>
-
-        <button class="btn-reveal" data-num="1">Vis eksempel-løsning &amp; selv-evaluering</button>
-
-        <div class="solution" id="solution1" style="display:none;">
-          <div class="solution-header">📖 Eksempel-løsning</div>
-          <div class="solution-body">TOOL-DEFINITION:
-
-  {
-    "name": "send_email",
-    "description": "Sender en email på vegne af brugeren via deres egen email-konto. Brug KUN dette når brugeren eksplicit har bedt om at sende en specifik email — aldrig som en bekræftelse, opsummering eller proaktiv handling. Forudsætter at modtager-adresse, emnelinje og brødtekst er fuldt afklaret med brugeren først.",
-    "input_schema": {
-      "type": "object",
-      "properties": {
-        "to": {
-          "type": "array",
-          "items": { "type": "string", "format": "email" },
-          "description": "Liste af modtager-emails. Maksimum 10 modtagere pr. kald."
-        },
-        "subject": {
-          "type": "string",
-          "description": "Emnelinje, max 200 tegn. Skal være konkret og beskrivende — undgå Hej eller FYI."
-        },
-        "body": {
-          "type": "string",
-          "description": "Email-brødteksten i ren tekst eller markdown. Skal indeholde en hilsen og en afslutning."
-        },
-        "cc": {
-          "type": "array",
-          "items": { "type": "string", "format": "email" },
-          "description": "Valgfri CC-modtagere."
-        }
-      },
-      "required": ["to", "subject", "body"]
-    }
-  }
-
-  SIKKERHEDSOVERVEJELSER:
-  1. Human-in-the-loop ALTID: Vis brugeren modtager + emne + brødtekst og kræv eksplicit "Send" før det reelle SMTP-kald. AI'en må aldrig sende uden friction.
-  2. Allowlist på modtagere: I produktion bør første version kun tillade send til adresser i brugerens egne kontakter eller domæne. Eksterne modtagere kræver ekstra bekræftelse.
-  3. Rate-limit + audit-log: Maksimum 20 emails/dag pr. bruger. Hver email logges med timestamp, modtager, emne og hvilken AI-session der initierede det — for debugging og misbrugs-detektion.
-  4. Indirect prompt injection-forsvar: Hvis brugeren har uploadet et dokument der får AI'en til at foreslå at sende email til en uventet adresse, skal en guardrail flagge det som mistænkeligt.</div>
-
-          <div class="checklist-header">✅ Selv-evaluering — sæt kryds ved hvert punkt dit svar dækker</div>
-          <p class="checklist-instr">Du skal have mindst <strong>4 ud af 5</strong> for at bestå denne opgave. Vær ærlig — det er din egen læring.</p>
-          <ul class="checklist">
-            <li><label><input type="checkbox" data-num="1" data-ci="0"> Description er konkret om HVORNÅR tool'et skal bruges (ikke bare hvad det gør)</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="1"> JSON-schema har korrekte typer (string, array osv.) og required-felt</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="2"> Hver parameter har en description-streng der hjælper modellen</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="3"> Inkluderet konkret human-in-the-loop / bekræftelses-trin før reel afsendelse</label></li>
-          <li><label><input type="checkbox" data-num="1" data-ci="4"> Mindst én sikkerhedsovervejelse mod misbrug (rate-limit, allowlist, audit-log eller injection-forsvar)</label></li>
-          </ul>
-
-          <div class="practical-result" id="presult1">Sæt kryds ved minimum 4 punkter for at bestå.</div>
-        </div>
-      </div>
-    </section>
-
-      
-    <section class="practical" id="practical2">
-      <div class="practical-header">
-        <div class="practical-badge">Praktisk opgave 2 af 2</div>
-        <h2>Workflow eller agent? Argumentér for tre cases</h2>
-        <p class="task">For hver af de tre cases nedenfor: beslut om du vil bygge en workflow eller en agent, og forklar hvorfor i 2-3 sætninger pr. case.
-
-  Case A: "Hver morgen kl 8: træk gårsdagens salgstal fra databasen, beregn vækst vs. forrige uge, generér en kort daglig rapport på dansk, send via email til ledelsen."
-
-  Case B: "En bruger uploader et CV og spørger: Hvilke jobs på vores karriereside passer bedst til denne person? AI skal læse CV'et, søge i jobdatabasen, og returnere top 3 matches med begrundelse."
-
-  Case C: "Customer success: en kunde skriver ind med et åbent problem. AI skal undersøge deres kontohistorik, læse deres tidligere supportsager, evt. søge i dokumentationen, og foreslå en konkret løsning. Hver case er forskellig."</p>
-      </div>
-
-      <div class="practical-body">
-        <label for="answer2"><strong>Dit svar:</strong></label>
-        <textarea id="answer2" placeholder="Skriv dit svar her... Tag dig god tid og vær konkret. Når du er færdig, klik 'Vis eksempel-løsning' nedenfor for at sammenligne."></textarea>
-
-        <button class="btn-reveal" data-num="2">Vis eksempel-løsning &amp; selv-evaluering</button>
-
-        <div class="solution" id="solution2" style="display:none;">
-          <div class="solution-header">📖 Eksempel-løsning</div>
-          <div class="solution-body">CASE A: WORKFLOW.
-  Det er en deterministisk pipeline med kendte trin (træk data → beregn → generér rapport → send). Ingen forgreninger, ingen dynamiske valg — bare en cron-job-kæde af LLM- og data-kald. En workflow er billigere, hurtigere og nemmere at debugge end en agent her. En agent ville være overkill og introducere unødvendig variabilitet.
-
-  CASE B: WORKFLOW (med 2 LLM-kald).
-  Selvom inputtet (CV) er åbent, er pipelinen kendt og fast: parse CV → embedding-search i jobdatabase → rerank top kandidater → generér forklaring. Det kan løses som en chaining-workflow med to LLM-kald (extraction + reasoning) og et search-step. Ingen grund til at LLM'en skal have agency — du ved hvad alle stepsene er.
-
-  CASE C: AGENT.
-  Her er pipelinen IKKE kendt på forhånd: hvor langt skal den grave i historikken? Skal den læse 2 eller 7 supportsager? Skal den slå op i dokumentationen, eller er svaret allerede klart fra historikken? Hver case er unik. En ReAct-agent med tools (lookup_account, read_tickets, search_docs, draft_response) kan dynamisk beslutte næste skridt. Husk dog: max_iterations + human-in-the-loop før den sender svar til kunde.</div>
-
-          <div class="checklist-header">✅ Selv-evaluering — sæt kryds ved hvert punkt dit svar dækker</div>
-          <p class="checklist-instr">Du skal have mindst <strong>4 ud af 5</strong> for at bestå denne opgave. Vær ærlig — det er din egen læring.</p>
-          <ul class="checklist">
-            <li><label><input type="checkbox" data-num="2" data-ci="0"> Case A korrekt identificeret som workflow med argument om kendt deterministisk pipeline</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="1"> Case B korrekt identificeret som workflow (selvom inputtet er åbent, er stepsene kendte)</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="2"> Case C korrekt identificeret som agent med argument om dynamisk/uforudsigelig pipeline</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="3"> Argumenterne nævner konkrete kriterier (kendt vs. dynamisk pipeline, ikke bare "den er sværere")</label></li>
-          <li><label><input type="checkbox" data-num="2" data-ci="4"> Mindst én case nævner produktions-overvejelser (cost, debug, max_iterations, eller human-in-the-loop)</label></li>
-          </ul>
-
-          <div class="practical-result" id="presult2">Sæt kryds ved minimum 4 punkter for at bestå.</div>
-        </div>
-      </div>
-    </section>
-
-      <section class="final locked" id="final">
-        <div class="final-card">
-          <div class="final-icon">🏆</div>
-          <h2 id="final-title">Eksamen B2 bestået!</h2>
-          <p id="final-text">Flot arbejde. Du har bestået både testen og begge praktiske opgaver.</p>
-          <div class="progress-summary">
-            <span class="progress-pill" id="pp-test">Test: —</span>
-            <span class="progress-pill" id="pp-p1">Praktisk 1: —</span>
-            <span class="progress-pill" id="pp-p2">Praktisk 2: —</span>
-          </div>
-          <a href="eksamen-b3.html" class="btn">Gå til Eksamen 3 →</a>
-        </div>
-      </section>
-    </main>
+    <!-- Resultat overlay -->
+    <div class="result-overlay" id="resultOverlay">
+        <div class="result-card" id="resultCard"></div>
+    </div>
 
     <script>
-      const CORRECT = [1,2,1,0,3,2,1,3];
-      const EXPLAIN = ["tool_choice=\"auto\" lader modellen vælge frit (inkl. ingen tool-kald). \"required\" tvinger den til at kalde mindst ét tool — brug det når du ved opgaven kræver et kald.","Description ER prompten for tool-valg. Modellen kan ikke se din kode — kun navn, beskrivelse og parametre. Et godt navn hjælper, men en god beskrivelse er afgørende.","Klassificér → ruter → svar er en deterministisk pipeline med kendte trin og forgreninger. Det er en klassisk routing-workflow, ikke en agent.","MCP server eksponerer tools/resources; MCP client (din app eller Claude Desktop) bruger dem. Standarden separerer tool-leverandør fra AI-app, så du kan genbruge.","ReAct vinder ved opgaver hvor næste skridt afhænger stærkt af forrige resultat. Plan-and-Execute vinder når du på forhånd kan lægge en god plan og bare skal eksekvere.","Uden grænse kan en perfektionist-loop blive ved med at finde fejl og forværre et godt svar. Empirisk viser 2-3 revisioner det bedste resultat for langt de fleste opgaver.","Multi-agent koster typisk 5-10x mere og er langsommere — du betaler for koordination. Men ved ægte parallelt arbejde eller stærk specialisering vinder det.","For mange tools = paralysisk valg. Modellen ved ikke hvilket den skal vælge og bruger ofte det forkerte. Hold typisk under 10-15 tools, ellers split i sub-agenter."];
-      const NEXT_HREF = "eksamen-b3.html";
-      const RETRY_HREF = "kursus-b3.html";
+        let task1Approved = false;
+        let task2Approved = false;
 
-      let testPassed = false;
-      let p1Passed = false;
-      let p2Passed = false;
-      let testSubmitted = false;
+        // ==================== AI-GODKENDELSE SIMULERING ====================
+        // I en rigtig implementering ville dette kalde en AI-API
+        // Her simulerer vi en intelligent gennemgang baseret på indholdet
+        
+        function reviewTask(taskNumber) {
+            const answer = document.getElementById(`task${taskNumber}Answer`).value.trim();
+            const reviewDiv = document.getElementById(`task${taskNumber}Review`);
+            const statusBadge = document.getElementById(`task${taskNumber}Status`);
+            const btnReview = document.getElementById(`btnReview${taskNumber}`);
 
-      function updateProgress() {
-        let answered = 0;
-        for (let i = 0; i < 8; i++) {
-          if (document.querySelector('input[name="q'+i+'"]:checked')) answered++;
+            if (answer.length < 50) {
+                alert('Din besvarelse er for kort. Skriv mindst 50 tegn før du får den gennemgået.');
+                return;
+            }
+
+            btnReview.disabled = true;
+            btnReview.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyserer...';
+
+            // Simuler AI-gennemgang (1.5 sekunders delay)
+            setTimeout(() => {
+                // Kriterier for godkendelse baseret på indholdslængde og nøgleord
+                let approved = false;
+                let feedback = '';
+
+                if (taskNumber === 1) {
+                    // Tjek for prompt engineering elementer
+                    const hasSystemPrompt = answer.toLowerCase().includes('system') || 
+                                           answer.toLowerCase().includes('rolle') ||
+                                           answer.toLowerCase().includes('du er');
+                    const hasFewShot = answer.toLowerCase().includes('eksempel') || 
+                                      answer.toLowerCase().includes('example') ||
+                                      answer.includes('"') && answer.split('"').length > 3;
+                    const hasFormat = answer.toLowerCase().includes('format') || 
+                                     answer.toLowerCase().includes('json') ||
+                                     answer.toLowerCase().includes('tabel') ||
+                                     answer.toLowerCase().includes('struktur');
+                    const hasTask = answer.length > 200;
+
+                    const criteria = [hasSystemPrompt, hasFewShot, hasFormat, hasTask];
+                    const passedCriteria = criteria.filter(c => c).length;
+
+                    approved = passedCriteria >= 3;
+
+                    feedback = approved 
+                        ? `✅ <strong>Godkendt!</strong> Din prompt demonstrerer god forståelse for prompt engineering. Du har inkluderet ${passedCriteria} ud af 4 nøgleelementer (system prompt, few-shot, output-format, detaljeret opgave).`
+                        : `❌ <strong>Mangler forbedring.</strong> Din prompt mangler vigtige elementer. Sørg for at inkludere: en system prompt (rolle), et eksempel (few-shot), output-format specifikation, og en detaljeret opgave. Prøv igen.`;
+
+                } else if (taskNumber === 2) {
+                    // Tjek for problemløsnings-elementer
+                    const hasProblem = answer.toLowerCase().includes('problem') || answer.length > 100;
+                    const hasApproach = answer.toLowerCase().includes('prompt') || 
+                                       answer.toLowerCase().includes('teknik') ||
+                                       answer.toLowerCase().includes('metode');
+                    const hasExample = answer.includes('"') || answer.toLowerCase().includes('eksempel');
+                    const hasValidation = answer.toLowerCase().includes('valid') || 
+                                         answer.toLowerCase().includes('faktatjek') ||
+                                         answer.toLowerCase().includes('hallucin') ||
+                                         answer.toLowerCase().includes('kontroll');
+                    const longEnough = answer.length > 300;
+
+                    const criteria = [hasProblem, hasApproach, hasExample, hasValidation, longEnough];
+                    const passedCriteria = criteria.filter(c => c).length;
+
+                    approved = passedCriteria >= 3;
+
+                    feedback = approved
+                        ? `✅ <strong>Godkendt!</strong> Din løsningsbeskrivelse viser god forståelse for AI-drevet problemløsning. Du har inkluderet ${passedCriteria} ud af 5 nøgleelementer (problembeskrivelse, AI-metode, eksempel-prompt, validering, tilstrækkelig længde).`
+                        : `❌ <strong>Mangler forbedring.</strong> Uddyb din besvarelse. Sørg for at beskrive: problemet, din AI-metode, en konkret eksempel-prompt, hvordan du validerer svaret, og skriv mindst 300 tegn.`;
+                }
+
+                // Opdater UI
+                reviewDiv.className = `ai-review show ${approved ? 'approved' : 'rejected'}`;
+                reviewDiv.innerHTML = feedback;
+
+                statusBadge.className = `status-badge ${approved ? 'status-approved' : 'status-rejected'}`;
+                statusBadge.innerHTML = approved 
+                    ? '<i class="fas fa-check-circle"></i> Godkendt' 
+                    : '<i class="fas fa-times-circle"></i> Skal forbedres';
+
+                btnReview.innerHTML = approved 
+                    ? '<i class="fas fa-check"></i> Godkendt' 
+                    : '<i class="fas fa-redo"></i> Prøv igen';
+                
+                if (!approved) {
+                    btnReview.disabled = false;
+                }
+
+                // Opdater globale variabler
+                if (taskNumber === 1) task1Approved = approved;
+                if (taskNumber === 2) task2Approved = approved;
+
+                // Vis final submit knap hvis begge er godkendt
+                checkBothApproved();
+            }, 1500);
         }
-        document.getElementById('progress-text').textContent = answered + ' / 8 besvaret';
-      }
 
-      document.querySelectorAll('.option').forEach(opt => {
-        opt.addEventListener('click', e => {
-          if (testSubmitted) return;
-          const q = opt.dataset.q;
-          document.querySelectorAll('.option[data-q="'+q+'"]').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          opt.querySelector('input').checked = true;
-          updateProgress();
-        });
-      });
-
-      document.getElementById('submit-test').addEventListener('click', () => {
-        let correct = 0;
-        for (let i = 0; i < 8; i++) {
-          const sel = document.querySelector('input[name="q'+i+'"]:checked');
-          const opts = document.querySelectorAll('.option[data-q="'+i+'"]');
-          opts.forEach(o => o.classList.remove('selected'));
-          const fb = document.getElementById('fb'+i);
-          if (sel && parseInt(sel.value) === CORRECT[i]) {
-            correct++;
-            opts[CORRECT[i]].classList.add('correct');
-            fb.className = 'feedback ok';
-            fb.textContent = '✓ Rigtigt. ' + EXPLAIN[i];
-          } else {
-            if (sel) opts[parseInt(sel.value)].classList.add('wrong');
-            opts[CORRECT[i]].classList.add('correct');
-            fb.className = 'feedback bad';
-            fb.textContent = '✗ Det rigtige svar er ' + ['A','B','C','D'][CORRECT[i]] + '. ' + EXPLAIN[i];
-          }
+        function checkBothApproved() {
+            const finalBtn = document.getElementById('btnFinalSubmit');
+            if (task1Approved && task2Approved) {
+                finalBtn.style.display = 'inline-block';
+            } else {
+                finalBtn.style.display = 'none';
+            }
         }
-        testSubmitted = true;
-        const result = document.getElementById('test-result');
-        const tr = document.getElementById('pp-test');
-        if (correct >= 6) {
-          testPassed = true;
-          result.className = 'test-result pass';
-          result.innerHTML = '✓ Bestået: <strong>' + correct + ' / 8</strong> rigtige. Praktisk opgave 1 er nu låst op.';
-          document.getElementById('practical1').classList.remove('locked');
-          tr.textContent = 'Test: ' + correct + '/8 ✓';
-          tr.classList.add('done');
-        } else {
-          result.className = 'test-result fail';
-          result.innerHTML = '✗ Ikke bestået: <strong>' + correct + ' / 8</strong> rigtige. Du skal have mindst 6. <a href="' + RETRY_HREF + '" style="color:inherit;text-decoration:underline;font-weight:700;">Genlæs B-kurserne</a> og prøv igen.';
-          tr.textContent = 'Test: ' + correct + '/8 ✗';
+
+        function finalSubmit() {
+            const resultOverlay = document.getElementById('resultOverlay');
+            const resultCard = document.getElementById('resultCard');
+
+            resultCard.innerHTML = `
+                <div class="result-icon">🏆</div>
+                <h2>Tillykke! Begge opgaver godkendt!</h2>
+                <p style="color: var(--silver-dark); font-weight: 700; font-size: 1.1rem;">
+                    <i class="fas fa-medal"></i> Sølv badge optjent! 🥈
+                </p>
+                <p style="color: var(--muted); margin-top: 0.8rem;">
+                    Du har demonstreret praktiske færdigheder i prompt engineering og AI-drevet problemløsning.
+                </p>
+                <p style="color: var(--success); font-weight: 600; margin-top: 0.8rem;">
+                    <i class="fas fa-unlock"></i> Du kan nu gå videre til Eksamen B3 (Guld)
+                </p>
+                <button class="btn-continue" onclick="window.location.href='eksamen-b3.html'" 
+                        style="background: linear-gradient(135deg, #ffd700, #ffaa00); color: #333; padding: 0.9rem 2.5rem; border-radius: 3rem; font-weight: 700; font-size: 1rem; cursor: pointer; border: none; margin-top: 1.5rem; box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);">
+                    <i class="fas fa-arrow-right"></i> Fortsæt til Eksamen B3 (Guld)
+                </button>
+            `;
+            resultOverlay.classList.add('show');
         }
-        document.getElementById('submit-test').disabled = true;
-        document.getElementById('submit-test').textContent = 'Test indleveret';
-        checkFinal();
-      });
-
-      document.querySelectorAll('.btn-reveal').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const num = btn.dataset.num;
-          document.getElementById('solution'+num).style.display = 'block';
-          btn.style.display = 'none';
-        });
-      });
-
-      document.querySelectorAll('.checklist input').forEach(cb => {
-        cb.addEventListener('change', () => {
-          const num = cb.dataset.num;
-          const checked = document.querySelectorAll('.checklist input[data-num="'+num+'"]:checked').length;
-          const result = document.getElementById('presult'+num);
-          if (checked >= 4) {
-            result.className = 'practical-result pass';
-            result.textContent = '✓ Bestået: ' + checked + ' / 5 punkter dækket' + (num === '1' ? '. Praktisk opgave 2 er nu låst op.' : '. Eksamen er klar til at gå videre.');
-            if (num === '1') { p1Passed = true; document.getElementById('practical2').classList.remove('locked'); document.getElementById('pp-p1').textContent = 'Praktisk 1: ✓'; document.getElementById('pp-p1').classList.add('done'); }
-            else { p2Passed = true; document.getElementById('pp-p2').textContent = 'Praktisk 2: ✓'; document.getElementById('pp-p2').classList.add('done'); }
-          } else {
-            result.className = 'practical-result' + (checked > 0 ? ' fail' : '');
-            result.textContent = checked + ' / 5 punkter — du skal have mindst 4 for at bestå.';
-            if (num === '1') { p1Passed = false; document.getElementById('pp-p1').textContent = 'Praktisk 1: ' + checked + '/5'; document.getElementById('pp-p1').classList.remove('done'); }
-            else { p2Passed = false; document.getElementById('pp-p2').textContent = 'Praktisk 2: ' + checked + '/5'; document.getElementById('pp-p2').classList.remove('done'); }
-          }
-          checkFinal();
-        });
-      });
-
-      function checkFinal() {
-        if (testPassed && p1Passed && p2Passed) {
-          document.getElementById('final').classList.remove('locked');
-          document.getElementById('final').scrollIntoView({behavior:'smooth', block:'start'});
-        }
-      }
     </script>
-  </body>
-  </html>
+</body>
+</html>
