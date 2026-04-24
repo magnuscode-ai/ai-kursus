@@ -3,656 +3,1147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>B Eksamen 1 | Bronze | LearnAI</title>
+    <title>Eksamen B1 | Bronze | LearnAI</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
-            --bronze: #cd7f32;
-            --bronze-light: #f5e6d3;
+            --bronze-primary: #cd7f32;
             --bronze-dark: #8b5a2b;
-            --bg: #1a1a2e;
-            --card: #ffffff;
-            --text: #2c2c44;
-            --muted: #6c6c8a;
-            --success: #2e7d32;
-            --error: #c62828;
-            --correct: #e8f5e9;
-            --wrong: #ffebee;
+            --bronze-light: #faf0e6;
+            --bronze-gradient: linear-gradient(135deg, #cd7f32 0%, #a0522d 50%, #8b4513 100%);
+            --bg-dark: #1a1a2e;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-muted: #6b7280;
+            --success: #059669;
+            --error: #dc2626;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1);
+            --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.25);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #1a1a2e 100%);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0a0a14;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
-        }
-
-        .exam-container {
-            max-width: 800px;
-            width: 100%;
-            background: var(--card);
-            border-radius: 2rem;
-            padding: 2.5rem;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-            border: 3px solid var(--bronze);
+            padding: 2rem;
             position: relative;
-            overflow: hidden;
         }
 
-        /* Bronze glow */
-        .exam-container::before {
+        /* Bronze atmosfære baggrund */
+        body::before {
             content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(205, 127, 50, 0.08) 0%, transparent 70%);
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(ellipse at 15% 50%, rgba(205,127,50,0.10) 0%, transparent 55%),
+                radial-gradient(ellipse at 85% 25%, rgba(160,82,45,0.07) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 85%, rgba(139,69,19,0.05) 0%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, rgba(205,127,50,0.03) 0%, transparent 70%);
             pointer-events: none;
+            z-index: 0;
+            animation: bronzeShimmer 20s ease-in-out infinite;
         }
 
-        .exam-header {
-            text-align: center;
-            margin-bottom: 2rem;
+        @keyframes bronzeShimmer {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .exam-wrapper {
             position: relative;
+            z-index: 1;
+            max-width: 960px;
+            width: 100%;
         }
 
-        .exam-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #cd7f32, #b8860b);
-            padding: 0.6rem 1.8rem;
-            border-radius: 3rem;
-            font-weight: 700;
+        /* === TOP BAR === */
+        .exam-topbar {
+            background: var(--card-bg);
+            border-radius: 1.5rem 1.5rem 0 0;
+            padding: 1.5rem 2rem;
+            border: 2px solid var(--bronze-primary);
+            border-bottom: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: linear-gradient(to bottom, #fffdf7, #ffffff);
+        }
+
+        .badge-bronze {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: var(--bronze-gradient);
             color: white;
+            padding: 0.6rem 1.8rem;
+            border-radius: 2.5rem;
+            font-weight: 700;
             font-size: 0.9rem;
-            letter-spacing: 1px;
-            margin-bottom: 0.8rem;
-            box-shadow: 0 4px 15px rgba(205, 127, 50, 0.4);
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 6px 20px rgba(205, 127, 50, 0.45);
+            animation: badgeGlow 3s ease-in-out infinite;
         }
 
-        .exam-header h1 {
-            font-size: 2rem;
-            color: var(--bronze-dark);
-            margin-bottom: 0.3rem;
+        @keyframes badgeGlow {
+            0%, 100% { box-shadow: 0 6px 20px rgba(205, 127, 50, 0.45); }
+            50% { box-shadow: 0 6px 30px rgba(205, 127, 50, 0.7); }
         }
 
-        .exam-header p {
-            color: var(--muted);
-            font-size: 0.95rem;
+        .badge-bronze i { font-size: 1.1rem; }
+
+        .exam-meta {
+            display: flex;
+            gap: 1.8rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+        }
+
+        .exam-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+
+        .exam-meta i { color: var(--bronze-primary); font-size: 1rem; }
+
+        .countdown {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 2px solid #fbbf24;
+            transition: all 0.3s;
+        }
+
+        .countdown.warning {
+            background: #fee2e2;
+            color: #991b1b;
+            border-color: #f87171;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* === HOVED CONTAINER === */
+        .exam-container {
+            background: var(--card-bg);
+            border-radius: 0 0 1.5rem 1.5rem;
+            padding: 2.5rem;
+            border: 2px solid var(--bronze-primary);
+            border-top: 2px solid var(--bronze-primary);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        /* === PROGRESS === */
+        .progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9rem;
         }
 
         .progress-bar {
             width: 100%;
-            height: 8px;
-            background: #e0e0e0;
+            height: 10px;
+            background: #e5e7eb;
             border-radius: 10px;
-            margin-bottom: 1.5rem;
             overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.06);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #cd7f32, #b8860b);
+            background: var(--bronze-gradient);
             border-radius: 10px;
-            transition: width 0.4s ease;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(205, 127, 50, 0.4);
+            position: relative;
         }
 
-        .question-counter {
-            text-align: center;
-            color: var(--muted);
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0;
+            width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4));
+            border-radius: 0 10px 10px 0;
         }
 
-        .question-card {
-            background: #fafbff;
-            border-radius: 1.5rem;
+        /* === SPØRGSMÅL === */
+        .question-area {
+            background: #fafbfc;
+            border: 2px solid var(--border);
+            border-radius: 1.2rem;
             padding: 2rem;
             margin-bottom: 1.5rem;
-            border: 2px solid #e8e8f0;
+            transition: all 0.3s;
+            position: relative;
         }
 
-        .question-card h3 {
-            color: var(--text);
-            margin-bottom: 1.2rem;
-            font-size: 1.1rem;
-            line-height: 1.6;
+        .question-difficulty {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: #1a1a2e;
+            color: #fbbf24;
+            padding: 0.3rem 1rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
         }
 
-        .options {
+        .question-number {
+            display: inline-block;
+            background: var(--bronze-light);
+            color: var(--bronze-dark);
+            padding: 0.4rem 1.2rem;
+            border-radius: 1rem;
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(205, 127, 50, 0.3);
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            letter-spacing: -0.1px;
+        }
+
+        .options-list {
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
         }
 
-        .option {
+        .option-item {
             display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            padding: 1rem 1.2rem;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.1rem 1.3rem;
             background: white;
-            border: 2px solid #e0e0e0;
+            border: 2px solid #e5e7eb;
             border-radius: 1rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.25s ease;
             font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
         }
 
-        .option:hover {
-            border-color: var(--bronze);
-            background: var(--bronze-light);
+        .option-item:hover {
+            border-color: var(--bronze-primary);
+            background: #fdf8f3;
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(205, 127, 50, 0.1);
         }
 
-        .option.selected {
-            border-color: #1976d2;
-            background: #e3f2fd;
+        .option-item.selected {
+            border-color: #2563eb;
+            background: #eff6ff;
             font-weight: 600;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
         }
 
-        .option.correct {
-            border-color: var(--success);
-            background: var(--correct);
-            color: var(--success);
-        }
-
-        .option.wrong {
-            border-color: var(--error);
-            background: var(--wrong);
-            color: var(--error);
-        }
-
-        .option input[type="radio"] {
-            accent-color: var(--bronze);
-            width: 18px;
-            height: 18px;
+        .option-item input[type="radio"] {
+            accent-color: var(--bronze-primary);
+            width: 22px;
+            height: 22px;
+            margin-top: 2px;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
-        .btn-group {
+        .option-item label {
+            cursor: pointer;
+            flex: 1;
+            user-select: none;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            font-weight: 700;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .option-item.selected .option-letter {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* === NAVIGATION === */
+        .nav-section {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .question-dots {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        .question-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid #d1d5db;
+            background: white;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 700;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .question-dot:hover { 
+            border-color: var(--bronze-primary); 
+            transform: scale(1.1);
+        }
+        .question-dot.active { 
+            background: var(--bronze-primary); 
+            color: white; 
+            border-color: var(--bronze-primary);
+            box-shadow: 0 0 0 4px rgba(205, 127, 50, 0.2);
+        }
+        .question-dot.answered { 
+            background: var(--bronze-light); 
+            border-color: var(--bronze-primary); 
+            color: var(--bronze-dark);
+        }
+        .question-dot.answered::after {
+            content: '●';
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            font-size: 0.6rem;
+            color: var(--bronze-primary);
+        }
+
+        .nav-buttons {
             display: flex;
             gap: 1rem;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 0.9rem 2rem;
-            border-radius: 3rem;
+            padding: 0.9rem 2.2rem;
+            border-radius: 2.5rem;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
             border: none;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn-prev {
-            background: #e0e0e0;
-            color: #555;
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 50%;
+            width: 0; height: 0;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.3);
+            transition: all 0.5s;
+            transform: translate(-50%, -50%);
         }
 
-        .btn-prev:hover {
-            background: #ccc;
+        .btn:active::after {
+            width: 300px;
+            height: 300px;
         }
 
-        .btn-next {
-            background: linear-gradient(135deg, #cd7f32, #b8860b);
+        .btn-outline {
+            background: white;
+            border: 2px solid #d1d5db;
+            color: var(--text-primary);
+        }
+
+        .btn-outline:hover:not(:disabled) { 
+            border-color: var(--bronze-primary); 
+            background: #fdf8f3; 
+        }
+        .btn-outline:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .btn-primary {
+            background: var(--bronze-gradient);
             color: white;
-            box-shadow: 0 6px 18px rgba(205, 127, 50, 0.35);
+            box-shadow: 0 6px 20px rgba(205, 127, 50, 0.4);
         }
 
-        .btn-next:hover {
+        .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(205, 127, 50, 0.5);
+            box-shadow: 0 10px 30px rgba(205, 127, 50, 0.55);
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+            background: linear-gradient(135deg, #059669, #047857);
             color: white;
-            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+            box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
+            display: none;
         }
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(46, 125, 50, 0.5);
+            box-shadow: 0 10px 30px rgba(5, 150, 105, 0.55);
         }
 
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
+        .warning-text {
+            color: #f59e0b;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        /* Resultat overlay */
-        .result-overlay {
+        /* === RESULT OVERLAY === */
+        .overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 100;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
             align-items: center;
             justify-content: center;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease;
         }
 
-        .result-overlay.show {
-            display: flex;
-        }
+        .overlay.active { display: flex; }
 
-        .result-card {
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        .result-modal {
             background: white;
             border-radius: 2rem;
             padding: 3rem;
-            text-align: center;
-            max-width: 500px;
+            max-width: 580px;
             width: 90%;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 3px solid var(--bronze-primary);
         }
 
-        .result-icon {
-            font-size: 5rem;
-            margin-bottom: 1rem;
+        @keyframes slideUp { 
+            from { transform: translateY(40px); opacity: 0; } 
+            to { transform: translateY(0); opacity: 1; } 
         }
 
-        .result-card h2 {
-            margin-bottom: 0.8rem;
+        .result-icon { font-size: 5rem; margin-bottom: 1rem; }
+        .result-score { font-size: 4rem; font-weight: 900; margin: 0.5rem 0; letter-spacing: -2px; }
+        .score-pass { color: #059669; }
+        .score-fail { color: #dc2626; }
+
+        .result-detail { 
+            color: var(--text-muted); 
+            margin: 1rem 0; 
+            line-height: 1.8;
+            font-size: 0.95rem;
         }
 
-        .result-score {
-            font-size: 3rem;
-            font-weight: 900;
-            margin: 1rem 0;
+        .certificate-preview {
+            background: linear-gradient(135deg, #fdf8f3, #faf0e6);
+            border: 2px solid var(--bronze-primary);
+            border-radius: 1rem;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            text-align: left;
         }
 
-        .passed {
-            color: #2e7d32;
-        }
-        .failed {
-            color: #c62828;
+        .certificate-preview h4 {
+            color: var(--bronze-dark);
+            margin-bottom: 0.5rem;
         }
 
         .btn-retry {
-            background: linear-gradient(135deg, #cd7f32, #b8860b);
+            background: var(--bronze-gradient);
             color: white;
             padding: 0.9rem 2.5rem;
-            border-radius: 3rem;
+            border-radius: 2.5rem;
             font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
             border: none;
+            cursor: pointer;
             margin-top: 1rem;
-            box-shadow: 0 6px 18px rgba(205, 127, 50, 0.35);
+            font-size: 1rem;
+            box-shadow: 0 6px 20px rgba(205, 127, 50, 0.4);
         }
 
-        .btn-continue {
-            background: linear-gradient(135deg, #2e7d32, #1b5e20);
+        .btn-next-level {
+            background: linear-gradient(135deg, #b8b8b8, #7a7a7a);
             color: white;
             padding: 0.9rem 2.5rem;
-            border-radius: 3rem;
+            border-radius: 2.5rem;
             font-weight: 700;
-            font-size: 1rem;
-            cursor: pointer;
             border: none;
+            cursor: pointer;
             margin-top: 1rem;
-            box-shadow: 0 6px 18px rgba(46, 125, 50, 0.35);
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-block;
+            box-shadow: 0 6px 20px rgba(168, 168, 168, 0.4);
         }
 
-        @media (max-width: 600px) {
-            .exam-container {
-                padding: 1.5rem;
-                border-radius: 1.5rem;
-            }
-            .exam-header h1 {
-                font-size: 1.5rem;
-            }
+        .btn-next-level:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(168, 168, 168, 0.6);
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 0.5rem; }
+            .exam-container { padding: 1.5rem; }
+            .exam-topbar { padding: 1rem 1.5rem; }
+            .question-text { font-size: 1rem; }
+            .nav-buttons { flex-direction: column; }
+            .btn { width: 100%; justify-content: center; }
+            .question-dot { width: 30px; height: 30px; font-size: 0.7rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="exam-container" id="examContainer">
-        <!-- Header -->
-        <div class="exam-header">
-            <span class="exam-badge"><i class="fas fa-medal"></i> BRONZE</span>
-            <h1>Eksamen B1</h1>
-            <p>Teoretisk prøve · 12 spørgsmål · Skal have 11/12 rigtige for at bestå</p>
+    <div class="exam-wrapper">
+        <!-- ==================== TOP BAR ==================== -->
+        <div class="exam-topbar">
+            <span class="badge-bronze"><i class="fas fa-medal"></i> Bronze Certificering</span>
+            <div class="exam-meta">
+                <span><i class="fas fa-question-circle"></i> 15 spørgsmål</span>
+                <span><i class="fas fa-check-circle"></i> 12/15 for bestået</span>
+                <span><i class="fas fa-star"></i> Ekspert-niveau</span>
+                <span class="countdown" id="countdown">
+                    <i class="fas fa-hourglass-half"></i> <span id="timer">50:00</span>
+                </span>
+            </div>
         </div>
 
-        <!-- Progress bar -->
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
-        </div>
-        <div class="question-counter" id="questionCounter">Spørgsmål 1 af 12</div>
+        <!-- ==================== EKSAMENS CONTAINER ==================== -->
+        <div class="exam-container" id="examContainer">
+            <!-- Progress -->
+            <div class="progress-section">
+                <div class="progress-info">
+                    <span id="progressText">Spørgsmål 1 af 15</span>
+                    <span id="answeredCount">0 besvaret</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%;"></div>
+                </div>
+            </div>
 
-        <!-- Spørgsmål -->
-        <div class="question-card" id="questionCard">
-            <h3 id="questionText"></h3>
-            <div class="options" id="optionsContainer"></div>
-        </div>
+            <!-- Spørgsmål -->
+            <div class="question-area">
+                <div class="question-difficulty" id="difficultyBadge">
+                    <i class="fas fa-brain"></i> <span id="difficultyText">HØJ</span>
+                </div>
+                <span class="question-number" id="questionNumber">Spørgsmål 1</span>
+                <div class="question-text" id="questionText"></div>
+                <div class="options-list" id="optionsContainer"></div>
+            </div>
 
-        <!-- Knapper -->
-        <div class="btn-group">
-            <button class="btn btn-prev" id="btnPrev" onclick="prevQuestion()" disabled>
-                <i class="fas fa-arrow-left"></i> Forrige
-            </button>
-            <button class="btn btn-next" id="btnNext" onclick="nextQuestion()">
-                Næste <i class="fas fa-arrow-right"></i>
-            </button>
-            <button class="btn btn-submit" id="btnSubmit" onclick="submitExam()" style="display: none;">
-                <i class="fas fa-check-circle"></i> Afslut eksamen
-            </button>
+            <!-- Navigation dots -->
+            <div class="nav-section">
+                <div class="question-dots" id="questionDots"></div>
+                
+                <!-- Knapper -->
+                <div class="nav-buttons">
+                    <button class="btn btn-outline" id="btnPrev" onclick="navigateQuestion(-1)" disabled>
+                        <i class="fas fa-arrow-left"></i> Forrige
+                    </button>
+                    <span class="warning-text">
+                        <i class="fas fa-exclamation-triangle"></i> Én indsendelse tilladt
+                    </span>
+                    <button class="btn btn-primary" id="btnNext" onclick="navigateQuestion(1)">
+                        Næste <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="btn btn-submit" id="btnSubmit" onclick="submitExam()">
+                        <i class="fas fa-check-double"></i> Indsend eksamen
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Resultat overlay -->
-    <div class="result-overlay" id="resultOverlay">
-        <div class="result-card" id="resultCard"></div>
+    <!-- ==================== RESULTAT OVERLAY ==================== -->
+    <div class="overlay" id="resultOverlay">
+        <div class="result-modal" id="resultModal"></div>
     </div>
 
     <script>
-        // ==================== SPØRGSMÅL (Baseret på kursus B indhold) ====================
+        // ==================== 15 EKSTREMT SVÆRE SPØRGSMÅL ====================
         const questions = [
             {
-                q: "Hvad er det primære formål med prompt engineering?",
+                id: 1,
+                difficulty: "HØJ",
+                question: "En virksomhed implementerer et RAG-system med en vector database til at besvare spørgsmål fra 200.000 interne dokumenter. Systemet returnerer ofte irrelevante resultater. Efter grundig fejlfinding identificerer du, at chunking-strategien er problemet. Hvilken chunking-strategi vil med STØRST sandsynlighed løse problemet og hvorfor?",
                 options: [
-                    "At skrive så korte prompts som muligt",
-                    "At designe præcise instruktioner, der får AI til at give de ønskede outputs",
-                    "At programmere AI-modeller fra bunden",
-                    "At oversætte tekst mellem sprog"
+                    "A) Fast chunk size på 512 tokens med 0% overlap – det er den mest standardiserede tilgang og garanterer ensartede chunks",
+                    "B) Semantisk chunking med overlap på 20%, hvor chunks opdeles ved naturlige afsnit og bevarer kontekst. Dette sikrer at relateret information forbliver samlet, og overlap forhindrer tab af information ved chunk-grænser. Der suppleres med metadata om dokumenttitel, sektion og dato for hver chunk",
+                    "C) Reducér chunk size til 128 tokens for at få flere granulære resultater – flere chunks betyder flere relevante matches",
+                    "D) Brug én gigantisk chunk på 100.000 tokens per dokument for at undgå opdeling helt"
                 ],
                 correct: 1
             },
             {
-                q: "Hvilken teknik bruger man, når man giver AI'en et eksempel på det ønskede output først?",
+                id: 2,
+                difficulty: "EKSTREM",
+                question: "Du designer en multi-agent AI-arkitektur til automatisering af en kompleks forretningsproces der involverer: dataindsamling, analyse, rapportgenerering og kvalitetskontrol. Systemet skal håndtere edge cases uden menneskelig indblanding. Hvilken arkitektur er MEST robust, og hvilken fejlhåndteringsmekanisme er kritisk?",
                 options: [
-                    "Zero-shot prompting",
-                    "Chain-of-thought prompting",
-                    "Few-shot prompting",
-                    "Negative prompting"
+                    "A) En enkelt monolitisk agent der håndterer alle trin sekventielt med try-catch omkring hele processen",
+                    "B) En orchestra-multi-agent arkitektur med specialiserede agenter: DataAgent → AnalyseAgent → RapportAgent → KvalitetsAgent. Hver agent har en refleksions-loop (generér → evaluér → forbedr). En Supervisor-agent overvåger og omdirigerer ved fejl. Kritisk mekanisme: circuit-breaker pattern der forhindrer kaskaderende fejl, kombineret med dead-letter queue til fejlbehæftede tasks",
+                    "C) Parallelle agenter der alle forsøger at løse opgaven, og den bedste løsning vælges ved afstemning",
+                    "D) En enkelt agent med en meget lang og detaljeret system prompt der dækker alle tænkelige scenarier"
+                ],
+                correct: 1
+            },
+            {
+                id: 3,
+                difficulty: "HØJ",
+                question: "I en produktionssætning opdager du, at din LLM-baserede applikation af og til returnerer komplet forkerte svar med høj 'confidence'. Du har allerede sat temperature=0. Hvilken kombination af teknikker vil MEST effektivt reducere hallucinationer uden at ofre brugbarheden?",
+                options: [
+                    "A) Sænk temperature yderligere til negative værdier og håb på det bedste",
+                    "B) Implementér en tre-lags strategi: (1) RAG med citation-krav hvor hvert claim skal have en kildehenvisning, (2) en separat 'fact-checker' agent der verificerer output mod kildematerialet, (3) confidence calibration hvor modellen eksplicit skal angive usikkerhed på en skala 1-5 for hvert faktapåstand. Outputs med lav confidence flagges til menneskelig gennemgang",
+                    "C) Tilføj 'Vær 100% korrekt' til alle prompts – det løser problemet",
+                    "D) Brug kun pre-genererede svar fra en database og undgå AI-generering helt"
+                ],
+                correct: 1
+            },
+            {
+                id: 4,
+                difficulty: "EKSTREM",
+                question: "Du træner en brugerdefineret model via fine-tuning til at generere medicinske rapporter. Efter 3 episoders træning opdager du, at modellen performer fremragende på træningsdata, men forfærdeligt på valideringsdata. Du har brugt 10.000 eksempler. Hvad er den MEST sandsynlige årsag og den bedste løsning?",
+                options: [
+                    "A) Modellen har brug for flere træningsepoker – øg til 50 episoder for bedre konvergens",
+                    "B) Overfitting – modellen har memoriseret træningsdata i stedet for at lære generaliserbare mønstre. Løsning: (1) reducér learning rate med faktor 10, (2) implementér early stopping baseret på valideringstab, (3) tilføj dropout (0.1-0.2) og weight decay, (4) brug data augmentation til at øge datasættets diversitet, (5) evalúer med cross-validation (k=5)",
+                    "C) Modellen er underfittet og har brug for flere parametre – opgradér til en større model",
+                    "D"): "Fjern valideringsdatasættet – hvis modellen kun evalueres på træningsdata, er problemet løst"
+                ],
+                correct: 1
+            },
+            {
+                id: 5,
+                difficulty: "HØJ",
+                question: "Du designer en prompt til at evaluere 500 jobansøgninger for bias. Prompten skal identificere kønsmæssig, etnisk og aldersmæssig bias i ansættelsesprocessen. Hvilken prompting-strategi er MEST etisk forsvarlig og metodisk robust?",
+                options: [
+                    "A) Bed AI'en om at 'finde alle biased beslutninger' uden yderligere specifikation",
+                    "B) Design en struktureret evalueringsrubrik der: (1) anonymiserer alle identificerbare karakteristika før AI-behandling, (2) definerer specifikke, målbare bias-indikatorer (fx sprogbrug, kvalifikationsvægtning, erfaringskrav), (3) kræver evidens fra ansøgningsteksten for hver bias-markering, (4) outputter i standardiseret JSON-format med severity score, (5) inkluderer en 'false positive' advarsel om at AI også kan have bias",
+                    "C) Træn en specialiseret model på historiske ansættelsesdata for at lære virksomhedens præferencer",
+                    "D) Brug kun mandlige ansøgere som baseline og sammenlign andre mod denne"
+                ],
+                correct: 1
+            },
+            {
+                id: 6,
+                difficulty: "EKSTREM",
+                question: "Du implementerer et system der bruger chain-of-thought (CoT) prompting til kompleks matematisk ræsonnering. Du observerer at modellen nogle gange laver korrekte mellemregninger men et forkert endeligt svar. Andre gange er mellemregningerne forkerte, men svaret tilfældigvis korrekt. Hvilken teknik adresserer BEGGE disse fejlmodi?",
+                options: [
+                    "A) Brug kun det endelige svar og ignorer mellemregningerne",
+                    "B) Implementér 'self-consistency' med verification: generér 5-7 uafhængige CoT-ræsonnementer (med temperature=0.7 for diversitet), sammenlign både mellemregninger og slutresultater, og brug majoritetsafstemning. Suppler med en 'verification agent' der specifikt tjekker logisk konsistens mellem hvert trin. Vægt svar højere når mellemregninger er konsistente på tværs af samples",
+                    "C) Forøg temperature til 1.0 for mere kreative løsninger",
+                    "D) Brug kun zero-shot prompting uden mellemregninger for at undgå fejl"
+                ],
+                correct: 1
+            },
+            {
+                id: 7,
+                difficulty: "HØJ",
+                question: "En C-level executive kræver et AI-system der kan forudsige aktiemarkedet med 90% nøjagtighed. Som AI-specialist ved du, at dette er umuligt. Hvad er den MEST professionelle og etiske måde at håndtere denne situation på?",
+                options: [
+                    "A) Byg systemet alligevel og håb på at executive ikke opdager unøjagtighederne",
+                    "B) Afvis opgaven blankt – det er umuligt og spild af tid",
+                    "C) Præsentér en veldokumenteret analyse der: (1) forklarer 'efficient market hypothesis' og hvorfor 90% forudsigelse er teoretisk umuligt, (2) demonstrerer hvad state-of-the-art AI KAN gøre (mønsteranalyse, anomalidetektion, sentiment-analyse af nyheder), (3) foreslår et realistisk alternativ: et AI-assisteret beslutningsstøttesystem med risikoanalyse og scenario-modellering, (4) inkluderer klare disclaimers om at AI'en er et værktøj, ikke en orakel",
+                    "D) Lov 90% nøjagtighed men tilføj 'resultater kan variere' med småt"
                 ],
                 correct: 2
             },
             {
-                q: "Hvad er chain-of-thought (CoT) prompting?",
+                id: 8,
+                difficulty: "EKSTREM",
+                question: "Din virksomhed ønsker at fine-tune en open-source LLM på proprietære data. Datasættet indeholder 50.000 kundeservice-samtaler med personfølsomme oplysninger. Hvilken fremgangsmåde overholder BÅDE GDPR og bedste praksis for AI-træning?",
                 options: [
-                    "At bede AI'en om at svare uden forklaring",
-                    "At bede AI'en om at tænke trin-for-trin og vise sin ræsonnering",
-                    "At give AI'en en kæde af links",
-                    "At skrive prompts i en bestemt rækkefølge"
+                    "A) Fine-tune direkte på alle data – det er virksomhedens egne data, så det er tilladt",
+                    "B) (1) Udfør en Data Protection Impact Assessment (DPIA) først, (2) anonymisér og pseudonymisér alle personfølsomme data (navne, adresser, CPR-numre, betalingsoplysninger) før træning, (3) indhent eksplicit samtykke hvor muligt, (4) dokumentér 'legitimate interest' for behandlingen, (5) implementér 'right to be forgotten' ved at kunne fjerne individers data fra modellen via unlearning-teknikker, (6) hold træningsdata på EU-servere, (7) få juridisk gennemgang før træning påbegyndes",
+                    "C) Send data til en cloud-udbyder i USA og lad dem håndtere compliance",
+                    "D) Anonymisér data ved at erstatte alle navne med 'John Doe' – det er tilstrækkeligt"
                 ],
                 correct: 1
             },
             {
-                q: "Hvad er en 'hallucination' i AI-sammenhæng?",
+                id: 9,
+                difficulty: "HØJ",
+                question: "Du evaluerer output fra en AI-model og bemærker at den konsekvent undervurderer risici og overvurderer fordele ved et foreslået projekt. Dette er et eksempel på hvilken type bias, og hvordan korrigeres det bedst i prompten?",
                 options: [
-                    "Når AI'en bliver træt og lukker ned",
-                    "Når AI'en genererer fakta, der lyder rigtige, men som er forkerte eller opdigtede",
-                    "Når AI'en ser billeder, der ikke findes",
-                    "Når brugeren forestiller sig ting"
+                    "A) Dette er 'recency bias' – modellen husker kun de seneste inputs. Løsning: gentag prompten flere gange",
+                    "B) Dette er 'optimism bias' (eller 'positivity bias') – modellen har en tendens til at være overdrevent positiv. Løsning: tilføj eksplicit instruktion: 'Analysér dette projekt BALANCERET. Du SKAL identificere MINDST 3 specifikke risici og 3 specifikke fordele. For hvert punkt, angiv sandsynlighed (lav/middel/høj) og potentiel impact. Vær særligt opmærksom på worst-case scenarier. Undgå overoptimistisk sprog.'",
+                    "C) Dette er 'confirmation bias' – modellen bekræfter det, den tror, jeg vil høre. Løsning: sig det modsatte i prompten",
+                    "D) Bias findes ikke i AI – modellen er altid objektiv"
                 ],
                 correct: 1
             },
             {
-                q: "Hvilken af følgende er en bedste praksis for prompt engineering?",
+                id: 10,
+                difficulty: "EKSTREM",
+                question: "Du administrerer et enterprise RAG-system der skal svare på spørgsmål fra 1 million+ dokumenter med sub-sekund latency. Nuværende arkitektur: embedding → approximate nearest neighbor (ANN) search → top-10 → LLM. Brugerne klager over langsomme svartider (5-8 sekunder). Hvilken optimering giver den STØRSTE latency-reduktion UDEN signifikant kvalitetstab?",
                 options: [
-                    "Bruge så få ord som overhovedet muligt",
-                    "Være specifik, give kontekst og definere det ønskede format",
-                    "Aldrig stille opfølgende spørgsmål",
-                    "Kun bruge ét ord ad gangen"
+                    "A) Opgradér til en større LLM – den vil svare hurtigere",
+                    "B) Implementér en fler-trins retrieval: (1) brug en letvægts BM25/lexical search til at filtrere til top-100 kandidater (<50ms), (2) anvend embeddings kun på disse 100 for præcis semantisk ranking (<100ms), (3) brug en cross-encoder reranker på top-20 for final ordering (<200ms), (4) send kun top-5 til LLM. Suppler med: query caching for hyppige spørgsmål, pre-computede embeddings for alle dokumenter, og streaming af LLM-output så brugeren ser svar med det samme",
+                    "C) Fjern ANN search og brug brute-force sammenligning – det er mere præcist",
+                    "D) Reducér antallet af dokumenter til 10.000 for hurtigere søgning"
                 ],
                 correct: 1
             },
             {
-                q: "Hvad betyder 'temperature' i forbindelse med AI-modeller?",
+                id: 11,
+                difficulty: "HØJ",
+                question: "Du skal designe en prompt til en AI, der skal fungere som 'red team' for at finde sårbarheder i en anden AI-applikation. Prompten må IKKE selv være skadelig. Hvilken tilgang er MEST effektiv og etisk forsvarlig?",
                 options: [
-                    "Hvor varm computeren bliver under brug",
-                    "Hvor kreativ eller forudsigelig modellens output er – højere temperatur = mere kreativt",
-                    "Hvor hurtigt modellen svarer",
-                    "Hvor mange brugere der er på samtidigt"
+                    "A) 'Find alle måder at hacke systemet på' – direkte og effektivt",
+                    "B) Design en struktureret red-teaming prompt der: (1) definerer rollen som 'AI Security Auditor' med klare etiske grænser, (2) specificerer angrebsvektorer der skal testes (prompt injection, jailbreak, data leakage, bias exploitation, hallucination triggering), (3) kræver dokumentation af hver sårbarhed med: angrebsmetode, systemrespons, risikoniveau (CVSS-score), og anbefalet mitigering, (4) eksplicit forbyder generering af skadeligt indhold og kræver at alle tests udføres i et sandboxed miljø",
+                    "C) Brug dark web prompts som inspiration til angreb",
+                    "D) Lad AI'en frit eksperimentere uden begrænsninger – det er den eneste måde at finde alle sårbarheder"
                 ],
                 correct: 1
             },
             {
-                q: "Hvad er formålet med en 'system prompt'?",
+                id: 12,
+                difficulty: "EKSTREM",
+                question: "Efter at have implementeret et AI-system til automatisk generering af markedsføringstekster, opdager du at CTR (click-through rate) er steget 40%, men kundeklager er steget 300%. Analyse viser, at teksterne er manipulerende og lover mere end produktet kan holde. Hvad er den MEST ansvarlige handlingsplan?",
                 options: [
-                    "At tænde og slukke for AI'en",
-                    "At sætte rammerne og reglerne for, hvordan AI'en skal opføre sig i samtalen",
-                    "At opdatere softwaren",
-                    "At logge brugerens aktivitet"
+                    "A) Ignorér klagerne – 40% CTR-stigning er en kæmpe succes",
+                    "B) (1) Stop øjeblikkeligt AI-genereringen og revertér til manuelt godkendte tekster, (2) nedsæt en task force med marketing, legal, og AI-specialister, (3) definér klare etiske guidelines for AI-genereret marketing (ingen falske løfter, klar skelnen mellem fakta og marketing, inklusion af forbehold), (4) implementér en 'ethical review agent' der scorer alt AI-output for manipulerende sprog før publicering, (5) A/B-test den nye, etisk-kompatible AI-tekst mod den gamle manuelle for at finde balancen mellem performance og ærlighed",
+                    "C) Tilføj en disclaimer med småt – det løser det juridiske problem",
+                    "D) Fyr marketing-teamet – de er tydeligvis ikke nødvendige længere"
                 ],
                 correct: 1
             },
             {
-                q: "Hvad er RAG (Retrieval-Augmented Generation)?",
+                id: 13,
+                difficulty: "HØJ",
+                question: "Du træner en klassifikationsmodel til at detektere svindel i finansielle transaktioner. Datasættet har 0.01% positive cases (svindel) og 99.99% negative. Modellen opnår 99.99% accuracy ved altid at forudsige 'ikke svindel'. Hvilke(n) metrik(ker) og teknik(ker) vil korrekt evaluere og forbedre modellen?",
                 options: [
-                    "En metode til at tegne billeder",
-                    "En teknik der kombinerer informationssøgning med tekstgenerering for mere præcise svar",
-                    "Et spil om AI",
-                    "En type hardware til AI"
+                    "A) Accuracy er den eneste vigtige metrik – 99.99% er fremragende",
+                    "B) Skift til: (1) Metrikker: F1-score, precision-recall kurve, og specifikt recall for svindel-klassen (du vil fange ALLE tilfælde), (2) Teknikker: SMOTE eller ADASYN til oversampling af minoritetsklassen, class weights i loss-funktionen (vægt svindel højere), anomaly detection tilgang (isolation forest, autoencoders) da svindel er en anomali, og cost-sensitive learning hvor omkostningen ved missed fraud er 1000x højere end false alarm",
+                    "C) Fjern alle ikke-svindel cases for at balancere datasættet – færre data er bedre",
+                    "D) Accuracy er fin – modellen virker jo"
                 ],
                 correct: 1
             },
             {
-                q: "Hvorfor er det vigtigt at faktatjekke AI-genereret indhold?",
+                id: 14,
+                difficulty: "EKSTREM",
+                question: "Du designer et prompt-baseret system, der skal kunne håndtere brugerinput på 47 forskellige sprog og dialekter, inklusiv sprog med begrænsede digitale ressourcer (low-resource languages). Systemet må ikke diskriminere mod nogen sproggruppe. Hvilken arkitektur er MEST inkluderende og teknisk robust?",
                 options: [
-                    "Fordi AI altid lyver",
-                    "Fordi AI kan hallucinere og generere overbevisende, men forkert information",
-                    "Fordi det er lovpligtigt i alle lande",
-                    "Fordi AI ikke kan læse tekst"
+                    "A) Oversæt alt til engelsk først via Google Translate, behandl på engelsk, oversæt tilbage – det er den mest standardiserede tilgang",
+                    "B) (1) Implementér et sprogdetektionslag der identificerer sprog/dialekt med confidence score, (2) brug sprog-specifikke system-prompts for top-20 sprog med kulturelle tilpasninger, (3) for low-resource sprog: brug few-shot prompting med eksempler på det specifikke sprog + en 'cultural sensitivity' instruktion, (4) implementér en 'fairness validator' agent der tjekker output for sproglig/kulturel bias før levering, (5) log og monitorér performance per sproggruppe og allokér ressourcer til forbedring af underperformende sprog, (6) tilbyd altid en 'rapportér problem' knap for kontinuerlig forbedring",
+                    "C) Afvis low-resource sprog – de udgør en for lille del af markedet",
+                    "D) Brug kun engelsk – alle andre må tilpasse sig"
                 ],
                 correct: 1
             },
             {
-                q: "Hvad er en 'token' i AI-sammenhæng?",
+                id: 15,
+                difficulty: "HØJ",
+                question: "En stakeholder spørger: 'Kan vi ikke bare bruge GPT-4 til alt? Hvorfor har vi brug for alt dette ekstra arbejde med RAG, fine-tuning, og evaluering?' Som AI-specialist skal du give det MEST overbevisende, evidensbaserede svar på under 60 sekunder. Hvad siger du?",
                 options: [
-                    "En sikkerhedsnøgle til login",
-                    "En enhed af tekst (ord eller dele af ord), som AI-modellen behandler",
-                    "Et point man optjener ved brug",
-                    "En type filformat"
-                ],
-                correct: 1
-            },
-            {
-                q: "Hvilken rolle spiller 'context window' for en AI-model?",
-                options: [
-                    "Det er vinduet på computerens skærm",
-                    "Det er mængden af tekst (tokens) som AI'en kan 'huske' og forholde sig til i én samtale",
-                    "Det er et sikkerhedsvindue",
-                    "Det er tidsrummet hvor AI'en er tilgængelig"
-                ],
-                correct: 1
-            },
-            {
-                q: "Hvad er forskellen på supervised og unsupervised learning?",
-                options: [
-                    "Der er ingen forskel",
-                    "Supervised bruger mærkede data med facit, unsupervised finder selv mønstre i umærkede data",
-                    "Supervised er hurtigere end unsupervised",
-                    "Unsupervised kræver mere strøm"
+                    "A) 'Du har ret – lad os bare bruge GPT-4 direkte. Det sparer os masser af tid.'",
+                    "B) 'GPT-4 er et kraftfuldt værktøj, men til vores specifikke use case med 200.000 interne dokumenter og krav om 99% faktuel korrekthed, er der tre kritiske begrænsninger: (1) Hallucinationer – GPT-4 kan opfinde plausible, men forkerte svar uden adgang til vores data, (2) Context window – vi kan ikke inkludere alle dokumenter i én prompt, (3) Domænespecificitet – GPT-4 kender ikke vores interne processer, jargon og forretningsregler. RAG løser dette ved at give modellen præcis, relevant information fra vores kilder. Uden dette risikerer vi forkerte svar til kunder – hvilket kan koste os både penge og omdømme.''",
+                    "C) 'GPT-4 er for dyrt – vi bruger en mindre model i stedet'",
+                    "D) 'Jeg ved ikke – jeg er ny her'"
                 ],
                 correct: 1
             }
         ];
 
-        let currentQuestion = 0;
-        let answers = new Array(questions.length).fill(null);
+        // ==================== STATE MANAGEMENT ====================
+        let currentIndex = 0;
+        let userAnswers = new Array(questions.length).fill(null);
         let examSubmitted = false;
+        let timeLeft = 50 * 60; // 50 minutter
+        let timerInterval;
+        let questionStartTime;
+        let questionTimeLog = [];
 
-        // DOM elementer
+        // ==================== DOM REFERENCES ====================
         const questionText = document.getElementById('questionText');
+        const questionNumber = document.getElementById('questionNumber');
+        const difficultyText = document.getElementById('difficultyText');
+        const difficultyBadge = document.getElementById('difficultyBadge');
         const optionsContainer = document.getElementById('optionsContainer');
-        const questionCounter = document.getElementById('questionCounter');
         const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        const answeredCount = document.getElementById('answeredCount');
         const btnPrev = document.getElementById('btnPrev');
         const btnNext = document.getElementById('btnNext');
         const btnSubmit = document.getElementById('btnSubmit');
+        const questionDots = document.getElementById('questionDots');
         const resultOverlay = document.getElementById('resultOverlay');
-        const resultCard = document.getElementById('resultCard');
+        const resultModal = document.getElementById('resultModal');
+        const timerDisplay = document.getElementById('timer');
+        const countdownEl = document.getElementById('countdown');
 
-        function loadQuestion(index) {
+        // ==================== TIMER ====================
+        function startTimer() {
+            questionStartTime = Date.now();
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                const minutes = Math.floor(timeLeft / 60);
+                const seconds = timeLeft % 60;
+                timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (timeLeft <= 600) {
+                    countdownEl.classList.add('warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('⏰ Tiden er gået! Din eksamen indsendes automatisk.');
+                    submitExam(true);
+                }
+            }, 1000);
+        }
+
+        function logQuestionTime() {
+            if (questionStartTime) {
+                const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
+                questionTimeLog[currentIndex] = (questionTimeLog[currentIndex] || 0) + timeSpent;
+            }
+            questionStartTime = Date.now();
+        }
+
+        // ==================== RENDER ====================
+        function renderQuestion(index) {
             if (examSubmitted) return;
+            
+            logQuestionTime();
             
             const q = questions[index];
-            questionText.textContent = q.q;
+            questionNumber.textContent = `Spørgsmål ${index + 1}`;
+            questionText.textContent = q.question;
+            difficultyText.textContent = q.difficulty;
+            
+            // Farve efter sværhedsgrad
+            if (q.difficulty === 'EKSTREM') {
+                difficultyBadge.style.background = '#7f1d1d';
+                difficultyBadge.style.color = '#fca5a5';
+            } else {
+                difficultyBadge.style.background = '#1a1a2e';
+                difficultyBadge.style.color = '#fbbf24';
+            }
+            
             optionsContainer.innerHTML = '';
-
+            const letters = ['A', 'B', 'C', 'D'];
+            
             q.options.forEach((opt, i) => {
-                const label = document.createElement('label');
-                label.className = 'option';
-                if (answers[index] === i) label.classList.add('selected');
-
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option-item';
+                if (userAnswers[index] === i) optionDiv.classList.add('selected');
+                
                 const radio = document.createElement('input');
                 radio.type = 'radio';
-                radio.name = 'question';
+                radio.name = `question_${index}`;
+                radio.id = `option_${index}_${i}`;
                 radio.value = i;
-                radio.checked = (answers[index] === i);
-                radio.addEventListener('change', () => selectAnswer(index, i, label));
-
-                const span = document.createElement('span');
-                span.textContent = opt;
-
-                label.appendChild(radio);
-                label.appendChild(span);
-                optionsContainer.appendChild(label);
+                radio.checked = (userAnswers[index] === i);
+                
+                const letterSpan = document.createElement('span');
+                letterSpan.className = 'option-letter';
+                letterSpan.textContent = letters[i];
+                
+                const label = document.createElement('label');
+                label.htmlFor = `option_${index}_${i}`;
+                label.textContent = opt.substring(3); // Fjern "A) " prefix
+                
+                optionDiv.appendChild(radio);
+                optionDiv.appendChild(letterSpan);
+                optionDiv.appendChild(label);
+                
+                optionDiv.addEventListener('click', (e) => {
+                    if (e.target !== radio) {
+                        radio.checked = true;
+                        selectAnswer(index, i);
+                    }
+                });
+                
+                optionsContainer.appendChild(optionDiv);
             });
 
-            questionCounter.textContent = `Spørgsmål ${index + 1} af ${questions.length}`;
-            progressFill.style.width = ((index + 1) / questions.length) * 100 + '%';
-
+            // Progress
+            progressText.textContent = `Spørgsmål ${index + 1} af ${questions.length}`;
+            progressFill.style.width = ((index + 1) / questions.length * 100) + '%';
+            
+            const answeredTotal = userAnswers.filter(a => a !== null).length;
+            answeredCount.textContent = `${answeredTotal} besvaret (${questions.length - answeredTotal} mangler)`;
+            
             // Knapper
             btnPrev.disabled = (index === 0);
+            
             if (index === questions.length - 1) {
                 btnNext.style.display = 'none';
-                btnSubmit.style.display = 'inline-block';
+                btnSubmit.style.display = 'inline-flex';
             } else {
-                btnNext.style.display = 'inline-block';
+                btnNext.style.display = 'inline-flex';
                 btnSubmit.style.display = 'none';
             }
-        }
-
-        function selectAnswer(questionIndex, answerIndex, labelElement) {
-            if (examSubmitted) return;
             
-            answers[questionIndex] = answerIndex;
-
-            // Fjern selected fra alle option labels i dette spørgsmål
-            const allOptions = optionsContainer.querySelectorAll('.option');
-            allOptions.forEach(opt => opt.classList.remove('selected'));
-            labelElement.classList.add('selected');
-        }
-
-        function nextQuestion() {
-            if (currentQuestion < questions.length - 1) {
-                currentQuestion++;
-                loadQuestion(currentQuestion);
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                loadQuestion(currentQuestion);
-            }
-        }
-
-        function submitExam() {
-            if (examSubmitted) return;
+            renderDots();
             
-            // Tjek om alle spørgsmål er besvaret
-            const unanswered = answers.filter(a => a === null).length;
-            if (unanswered > 0) {
-                alert(`Du har ${unanswered} ubesvarede spørgsmål. Besvar alle før du afslutter.`);
-                return;
-            }
+            // Scroll til toppen af spørgsmålet
+            document.querySelector('.question-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
 
-            examSubmitted = true;
-
-            // Beregn score
-            let correctCount = 0;
-            answers.forEach((ans, i) => {
-                if (ans === questions[i].correct) correctCount++;
+        function renderDots() {
+            questionDots.innerHTML = '';
+            questions.forEach((_, i) => {
+                const dot = document.createElement('button');
+                dot.className = 'question-dot';
+                if (i === currentIndex) dot.classList.add('active');
+                if (userAnswers[i] !== null) dot.classList.add('answered');
+                dot.textContent = i + 1;
+                dot.title = `Gå til spørgsmål ${i + 1}${userAnswers[i] !== null ? ' (besvaret)' : ' (ikke besvaret)'}`;
+                dot.addEventListener('click', () => {
+                    logQuestionTime();
+                    currentIndex = i;
+                    renderQuestion(i);
+                });
+                questionDots.appendChild(dot);
             });
+        }
 
-            const passed = correctCount >= 11;
+        function selectAnswer(questionIndex, answerIndex) {
+            if (examSubmitted) return;
+            userAnswers[questionIndex] = answerIndex;
+            renderQuestion(questionIndex);
+        }
+
+        function navigateQuestion(direction) {
+            const newIndex = currentIndex + direction;
+            if (newIndex >= 0 && newIndex < questions.length) {
+                logQuestionTime();
+                currentIndex = newIndex;
+                renderQuestion(currentIndex);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (examSubmitted) return;
+            if (e.key === 'ArrowLeft' && currentIndex > 0) {
+                navigateQuestion(-1);
+            } else if (e.key === 'ArrowRight' && currentIndex < questions.length - 1) {
+                navigateQuestion(1);
+            } else if (e.key >= '1' && e.key <= '4') {
+                const optionIndex = parseInt(e.key) - 1;
+                selectAnswer(currentIndex, optionIndex);
+            }
+        });
+
+        // ==================== SUBMIT ====================
+        function submitExam(isAutoSubmit = false) {
+            if (examSubmitted) return;
+            
+            logQuestionTime();
+            
+            const unanswered = userAnswers.filter(a => a === null).length;
+            
+            if (!isAutoSubmit && unanswered > 0) {
+                const bekræft = confirm(
+                    `⚠️ ADVARSEL: Du har ${unanswered} ubesvarede spørgsmål!\n\n` +
+                    `Ubesvarede spørgsmål tæller som FORKERTE og kan ikke ændres efter indsendelse.\n\n` +
+                    `Er du HELT sikker på, at du vil indsende nu?`
+                );
+                if (!bekræft) return;
+            }
+            
+            examSubmitted = true;
+            clearInterval(timerInterval);
+            
+            let correctCount = 0;
+            const questionResults = [];
+            
+            userAnswers.forEach((ans, i) => {
+                const isCorrect = ans === questions[i].correct;
+                if (isCorrect) correctCount++;
+                questionResults.push({
+                    number: i + 1,
+                    userAnswer: ans,
+                    correctAnswer: questions[i].correct,
+                    isCorrect: isCorrect,
+                    timeSpent: questionTimeLog[i] || 0
+                });
+            });
+            
+            const passed = correctCount >= 12;
             const percentage = Math.round((correctCount / questions.length) * 100);
-
-            // Vis resultater på spørgsmålene
-            showCorrectAnswers();
-
-            // Vis resultat overlay
-            resultCard.innerHTML = `
-                <div class="result-icon">${passed ? '🏆' : '😔'}</div>
-                <h2>${passed ? 'Tillykke! Du bestod!' : 'Desværre - ikke bestået'}</h2>
-                <p>Du skal have mindst 11 ud af 12 rigtige for at bestå.</p>
-                <div class="result-score ${passed ? 'passed' : 'failed'}">${correctCount} / 12</div>
-                <p style="color: var(--muted);">${percentage}% rigtige</p>
-                ${passed ? `
-                    <p style="margin-top: 0.5rem; color: var(--success); font-weight: 600;">
-                        <i class="fas fa-unlock"></i> Du kan nu gå videre til Eksamen B2 (Sølv)
-                    </p>
-                    <p style="margin-top: 0.5rem; color: var(--bronze-dark);">
-                        <i class="fas fa-medal"></i> Bronze badge optjent! 🥉
-                    </p>
-                    <button class="btn-continue" onclick="window.location.href='eksamen-b2.html'">
-                        <i class="fas fa-arrow-right"></i> Fortsæt til Eksamen B2
-                    </button>
-                ` : `
-                    <button class="btn-retry" onclick="retryExam()">
-                        <i class="fas fa-redo"></i> Prøv igen
-                    </button>
-                `}
-            `;
-            resultOverlay.classList.add('show');
-
-            // Deaktiver alle radio buttons
+            const grade = correctCount >= 14 ? 'A+' : correctCount >= 13 ? 'A' : correctCount >= 12 ? 'B' : 'F';
+            
+            // Deaktiver alt
             document.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = true);
+            document.querySelectorAll('.option-item').forEach(o => o.style.pointerEvents = 'none');
             btnPrev.disabled = true;
             btnNext.disabled = true;
             btnSubmit.disabled = true;
-        }
-
-        function showCorrectAnswers() {
-            const allOptionLabels = optionsContainer.querySelectorAll('.option');
-            const correctIndex = questions[currentQuestion].correct;
-            const userAnswer = answers[currentQuestion];
-
-            allOptionLabels.forEach((label, i) => {
-                if (i === correctIndex) {
-                    label.classList.add('correct');
-                }
-                if (i === userAnswer && userAnswer !== correctIndex) {
-                    label.classList.add('wrong');
-                }
-            });
+            document.querySelectorAll('.question-dot').forEach(d => d.style.pointerEvents = 'none');
+            
+            // Vis resultater per spørgsmål
+            const resultSummary = questionResults.map(r => 
+                `${r.isCorrect ? '✅' : '❌'} Q${r.number}: ${r.isCorrect ? 'Korrekt' : 'Forkert'} (${r.timeSpent}s)`
+            ).join('<br>');
+            
+            // Byg resultat modal
+            resultModal.innerHTML = `
+                <div class="result-icon">${passed ? '🏆' : '📚'}</div>
+                <h2 style="color: var(--text-primary); margin-bottom: 0.3rem;">
+                    ${passed ? 'TILLYKKE! Du bestod!' : 'Desværre - ikke bestået'}
+                </h2>
+                <p style="color: var(--text-muted); font-size: 0.9rem;">
+                    ${passed ? 'Bronze-certificering opnået' : 'Du skal øve dig mere'}
+                </p>
+                <div class="result-score ${passed ? 'score-pass' : 'score-fail'}">${correctCount} / 15</div>
+                <p style="font-size: 1.2rem; font-weight: 700; color: ${passed ? '#059669' : '#dc2626'};">
+                    ${percentage}% • Karakter: ${grade}
+                </p>
+                <p style="color: var(--text-muted); margin: 0.3rem 0;">
+                    ${passed 
+                        ? '✓ Minimum 12/15 opnået' 
+                        : `✗ Du mangler ${12 - correctCount} rigtige for at bestå`}
+                </p>
+                
+                ${passed ? `
+                    <div class="certificate-preview">
+                        <h4><i class="fas fa-certificate"></i> Certificeringsdetaljer</h4>
+                        <p style="font-size: 0.9rem; color: var(--bronze-dark);">
+                            <strong>Niveau:</strong> B1 Bronze<br>
+                            <strong>Score:</strong> ${correctCount}/15 (${percentage}%)<br>
+                            <strong>Karakter:</strong> ${grade}<br>
+                            <strong>Dato:</strong> ${new Date().toLocaleDateString('da-DK', { year: 'numeric', month: 'long', day: 'numeric' })}<br>
+                            <strong>Status:</strong> Bestået ✅
+                        </p>
+                    </div>
+                    <a href="eksamen-b2.html" class="btn-next-level">
+                        <i class="fas fa-arrow-right"></i> Fortsæt til Eksamen B2 (Sølv)
+                    </a>
+                ` : `
+                    <div style="background: #fef2f2; border: 2px solid #dc2626; border-radius: 1rem; padding: 1rem; margin: 1rem 0; text-align: left; font-size: 0.85rem; color: #991b1b; max-height: 200px; overflow-y: auto;">
+                        <strong>Detaljerede resultater:</strong><br><br>
+                        ${resultSummary}
+                    </div>
+                    <button class="btn-retry" onclick="retryExam()">
+                        <i class="fas fa-redo"></i> Prøv igen
+                    </button>
+                    <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.8rem;">
+                        💡 <strong>Tip:</strong> Gennemgå hele kursus B materialet igen. 
+                        Fokuser særligt på: prompt engineering, RAG, fine-tuning, bias-håndtering og enterprise AI-arkitektur.
+                    </p>
+                `}
+            `;
+            
+            resultOverlay.classList.add('active');
         }
 
         function retryExam() {
             examSubmitted = false;
-            answers = new Array(questions.length).fill(null);
-            currentQuestion = 0;
-            resultOverlay.classList.remove('show');
+            userAnswers = new Array(questions.length).fill(null);
+            currentIndex = 0;
+            timeLeft = 50 * 60;
+            questionTimeLog = [];
+            countdownEl.classList.remove('warning');
+            resultOverlay.classList.remove('active');
             document.querySelectorAll('input[type="radio"]').forEach(r => r.disabled = false);
+            document.querySelectorAll('.option-item').forEach(o => o.style.pointerEvents = 'auto');
+            document.querySelectorAll('.question-dot').forEach(d => d.style.pointerEvents = 'auto');
             btnPrev.disabled = false;
             btnNext.disabled = false;
             btnSubmit.disabled = false;
-            loadQuestion(0);
+            renderQuestion(0);
+            startTimer();
         }
 
-        // Start
-        loadQuestion(0);
+        // ==================== INIT ====================
+        renderQuestion(0);
+        startTimer();
+
+        // Luk overlay ved ESC eller klik udenfor (kun hvis ikke bestået)
+        resultOverlay.addEventListener('click', function(e) {
+            if (e.target === this && !examSubmitted) {
+                this.classList.remove('active');
+            }
+        });
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !examSubmitted) {
+                resultOverlay.classList.remove('active');
+            }
+        });
+
+        // Advarsel ved forsøg på at forlade siden
+        window.addEventListener('beforeunload', (e) => {
+            if (!examSubmitted && userAnswers.some(a => a !== null)) {
+                e.preventDefault();
+                e.returnValue = 'Du har ubesvarede spørgsmål. Er du sikker på, at du vil forlade eksamen?';
+                return e.returnValue;
+            }
+        });
+
+        console.log('🥉 Eksamen B1 (Bronze) klar - 15 svære spørgsmål');
+        console.log('📋 Krav: 12/15 for at bestå');
+        console.log('⏱️  Tid: 50 minutter');
+        console.log('💡 Keyboard shortcuts: ← → for navigation, 1-4 for at vælge svar');
     </script>
 </body>
 </html>
