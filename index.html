@@ -1,292 +1,1006 @@
-<!DOCTYPE html>
+{
+  "name": "learnai",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
+    "start": "NODE_ENV=production node dist/index.js",
+    "preview": "vite preview --host",
+    "check": "tsc --noEmit",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@radix-ui/react-alert-dialog": "^1.1.15",
+    "@radix-ui/react-aspect-ratio": "^1.1.7",
+    "@radix-ui/react-avatar": "^1.1.10",
+    "@radix-ui/react-checkbox": "^1.3.3",
+    "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-context-menu": "^2.2.16",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-dropdown-menu": "^2.1.16",
+    "@radix-ui/react-hover-card": "^1.1.15",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-menubar": "^1.1.16",
+    "@radix-ui/react-navigation-menu": "^1.2.14",
+    "@radix-ui/react-popover": "^1.1.15",
+    "@radix-ui/react-progress": "^1.1.7",
+    "@radix-ui/react-radio-group": "^1.3.8",
+    "@radix-ui/react-scroll-area": "^1.2.10",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-separator": "^1.1.7",
+    "@radix-ui/react-slider": "^1.3.6",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tabs": "^1.1.13",
+    "@radix-ui/react-toggle": "^1.1.10",
+    "@radix-ui/react-toggle-group": "^1.1.11",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "axios": "^1.12.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
+    "embla-carousel-react": "^8.6.0",
+    "express": "^4.21.2",
+    "framer-motion": "^12.23.22",
+    "input-otp": "^1.4.2",
+    "lucide-react": "^0.453.0",
+    "nanoid": "^5.1.5",
+    "next-themes": "^0.4.6",
+    "react": "^19.2.1",
+    "react-day-picker": "^9.11.1",
+    "react-dom": "^19.2.1",
+    "react-hook-form": "^7.64.0",
+    "react-resizable-panels": "^3.0.6",
+    "recharts": "^2.15.2",
+    "sonner": "^2.0.7",
+    "streamdown": "^1.4.0",
+    "tailwind-merge": "^3.3.1",
+    "tailwindcss-animate": "^1.0.7",
+    "vaul": "^1.1.2",
+    "wouter": "^3.3.5",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@builder.io/vite-plugin-jsx-loc": "^0.1.1",
+    "@tailwindcss/typography": "^0.5.15",
+    "@tailwindcss/vite": "^4.1.3",
+    "@types/express": "4.17.21",
+    "@types/node": "^24.7.0",
+    "@types/react": "^19.2.1",
+    "@types/react-dom": "^19.2.1",
+    "@vitejs/plugin-react": "^5.0.4",
+    "autoprefixer": "^10.4.20",
+    "esbuild": "^0.25.0",
+    "pnpm": "^10.15.1",
+    "postcss": "^8.4.47",
+    "prettier": "^3.6.2",
+    "tailwindcss": "^4.1.14",
+    "tsx": "^4.19.1",
+    "typescript": "5.6.3",
+    "vite": "^7.1.7",
+    "vitest": "^2.1.4"
+  },
+  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af"
+}<!doctype html>
 <html lang="da">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kursus D — Eksamen | LearnAI DK</title>
-  <meta name="description" content="Eksamen til Kursus D på LearnAI DK. Test din viden om AI, prompts og sikker brug.">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; line-height: 1.6; }
-    nav { background: white; border-bottom: 1px solid #e8e8e5; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
-    .logo { display: flex; align-items: center; gap: 9px; font-size: 17px; font-weight: 600; color: #1a1a1a; text-decoration: none; }
-    .logo-icon { width: 30px; height: 30px; background: #185FA5; border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; }
-    .nav-right { display: flex; align-items: center; gap: 12px; }
-    .nav-link { font-size: 14px; color: #666; text-decoration: none; }
-    .nav-btn, button, .btn { background: #185FA5; color: white; border: none; padding: 10px 18px; border-radius: 9px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-    .nav-btn:hover, button:hover, .btn:hover { background: #124b84; }
-    button:disabled { background: #a8b4c0; cursor: not-allowed; }
-    .hero { background: white; padding: 3rem 1.5rem 2.25rem; border-bottom: 1px solid #e8e8e5; text-align: center; }
-    .badge { display: inline-block; background: #E6F1FB; color: #185FA5; font-size: 13px; font-weight: 600; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
-    .hero h1 { font-size: clamp(28px, 5vw, 42px); line-height: 1.15; margin-bottom: 1rem; }
-    .hero p { max-width: 660px; margin: 0 auto; color: #555; font-size: 17px; }
-    main { width: min(980px, calc(100% - 2rem)); margin: 2rem auto 4rem; }
-    .card { background: white; border: 1px solid #e8e8e5; border-radius: 18px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 12px 34px rgba(15, 23, 42, 0.05); }
-    .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.25rem; }
-    .info-box { background: #f4f7fb; border: 1px solid #dce8f5; border-radius: 14px; padding: 1rem; }
-    .info-box strong { display: block; color: #185FA5; margin-bottom: 0.25rem; }
-    label { display: block; font-weight: 600; margin: 0.75rem 0 0.35rem; }
-    input, textarea { width: 100%; padding: 12px 13px; border: 1px solid #d8d8d4; border-radius: 10px; font: inherit; background: white; }
-    textarea { min-height: 120px; resize: vertical; }
-    .question-top { display: flex; justify-content: space-between; gap: 1rem; align-items: center; margin-bottom: 1rem; color: #666; font-size: 14px; }
-    .progress-wrap { background: #e8e8e5; height: 8px; border-radius: 999px; overflow: hidden; margin-bottom: 1.25rem; }
-    .progress { height: 100%; width: 0; background: #185FA5; transition: width 0.25s ease; }
-    .question h2 { font-size: clamp(22px, 4vw, 28px); line-height: 1.25; margin-bottom: 1rem; }
-    .answers { display: grid; gap: 0.75rem; }
-    .answer { border: 1px solid #e1e1dc; background: #fbfbfa; border-radius: 13px; padding: 1rem; cursor: pointer; transition: border 0.15s ease, background 0.15s ease, transform 0.15s ease; }
-    .answer:hover { border-color: #185FA5; transform: translateY(-1px); }
-    .answer.correct { background: #eaf7f1; border-color: #0F6E56; color: #0d573f; }
-    .answer.wrong { background: #fff0ee; border-color: #c84435; color: #8b2c22; }
-    .answer.locked { cursor: default; }
-    .answer.locked:hover { transform: none; }
-    .feedback { display: none; margin-top: 1rem; padding: 1rem; border-radius: 13px; background: #f4f7fb; border: 1px solid #dce8f5; }
-    .feedback.show { display: block; }
-    .actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.25rem; }
-    .secondary { background: #eef1f4; color: #1a1a1a; }
-    .secondary:hover { background: #dfe5ea; }
-    .hidden { display: none !important; }
-    .result-score { font-size: clamp(36px, 8vw, 64px); line-height: 1; font-weight: 800; color: #185FA5; margin: 0.75rem 0; }
-    .passed { color: #0F6E56; }
-    .failed { color: #c84435; }
-    .review-item { border-top: 1px solid #ecece8; padding: 1rem 0; }
-    .review-item:first-child { border-top: none; }
-    .review-item strong { display: block; margin-bottom: 0.4rem; }
-    .practical-box { background: #f4f7fb; border: 1px solid #dce8f5; border-radius: 14px; padding: 1rem; margin: 1rem 0; }
-    .certificate { border: 2px solid #185FA5; border-radius: 20px; padding: 2rem; text-align: center; background: linear-gradient(135deg, #ffffff, #f2f7fc); margin-top: 1rem; }
-    .certificate h2 { color: #185FA5; font-size: clamp(28px, 6vw, 44px); margin-bottom: 0.75rem; }
-    .certificate .name { font-size: 28px; font-weight: 800; margin: 1rem 0; }
-    .small { color: #666; font-size: 14px; }
-    @media (max-width: 760px) { nav { padding: 0 1rem; } .nav-link { display: none; } .grid { grid-template-columns: 1fr; } .card { padding: 1.1rem; border-radius: 15px; } main { width: min(100% - 1rem, 980px); margin-top: 1rem; } }
-    @media print { nav, .hero, .actions, #intro, #quizCard, #resultCard, #practicalCard { display: none !important; } body { background: white; } main { margin: 0; width: 100%; } .card { box-shadow: none; border: none; } .certificate { min-height: 80vh; display: flex; flex-direction: column; justify-content: center; } }
-  </style>
-</head>
-<body>
-  <nav>
-    <a class="logo" href="platform.html">
-      <span class="logo-icon">AI</span>
-      LearnAI DK
-    </a>
-    <div class="nav-right">
-      <a class="nav-link" href="kursus-d.html">Tilbage til Kursus D</a>
-      <a class="nav-btn" href="platform.html">Alle kurser</a>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+    <title>LearnAI – Lær Kunstig Intelligens</title>
+    <meta name="description" content="Lær kunstig intelligens fra nybegynder til ekspert. Gratis startkursus, strukturerede niveauer og eksamensbevis." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.tsx";
+import "./index.css";
+
+ReactDOM.createRoot(document.getElementById("root" )!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import { Route, Switch } from "wouter";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Home from "./pages/Home";
+import Sidekurser from "./pages/Sidekurser";
+
+function Router() {
+  return (
+    <Switch>
+      <Route path={"/"} component={Home} />
+      <Route path={"/sidekurser"} component={Sidekurser} />
+      <Route path={"/404"} component={NotFound} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="light">
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+}
+
+:root {
+  --radius: 0.5rem;
+  --background: oklch(0.975 0.008 75);
+  --foreground: oklch(0.18 0.03 240);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.18 0.03 240);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.18 0.03 240);
+  --primary: oklch(0.28 0.08 240);
+  --primary-foreground: oklch(0.97 0.005 75);
+  --secondary: oklch(0.93 0.008 75);
+  --secondary-foreground: oklch(0.28 0.08 240);
+  --muted: oklch(0.94 0.006 75);
+  --muted-foreground: oklch(0.52 0.03 240);
+  --accent: oklch(0.75 0.15 75);
+  --accent-foreground: oklch(0.18 0.03 240);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.985 0 0);
+  --border: oklch(0.88 0.01 240);
+  --input: oklch(0.88 0.01 240);
+  --ring: oklch(0.28 0.08 240);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Source Serif 4', Georgia, serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Sora', sans-serif;
+  }
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  [type="button"]:not(:disabled),
+  [type="submit"]:not(:disabled),
+  a[href],
+  select:not(:disabled) {
+    @apply cursor-pointer;
+  }
+}
+
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .flex {
+    min-height: 0;
+    min-width: 0;
+  }
+
+  @media (min-width: 640px) {
+    .container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      padding-left: 2rem;
+      padding-right: 2rem;
+      max-width: 1280px;
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  .stagger-1 { animation-delay: 0.1s; opacity: 0; }
+  .stagger-2 { animation-delay: 0.2s; opacity: 0; }
+}import React, { createContext, useContext, useEffect, useState } from "react";
+
+type Theme = "light" | "dark";
+
+interface ThemeContextType {
+  theme: Theme;
+  toggleTheme: () => void;
+}
+
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
+
+export function ThemeProvider({
+  children,
+  defaultTheme = "light",
+  switchable = false,
+}: {
+  children: React.ReactNode;
+  defaultTheme?: Theme;
+  switchable?: boolean;
+}) {
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    if (switchable) {
+      setTheme((prev) => (prev === "light" ? "dark" : "light"));
+    }
+  };
+
+  return (
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      {children}
+    </ThemeContext.Provider>
+  );
+}
+
+export function useTheme() {
+  const context = useContext(ThemeContext);
+  if (context === undefined) {
+    throw new Error("useTheme must be used within a ThemeProvider");
+  }
+  return context;
+}import React from "react";
+
+interface Props {
+  children: React.ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+  error?: Error;
+}
+
+export default class ErrorBoundary extends React.Component<Props, State> {
+  constructor(props: Props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError(error: Error): State {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error) {
+    console.error("Error caught by boundary:", error);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen flex items-center justify-center bg-background p-4">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
+              Noget gik galt
+            </h1>
+            <p className="text-muted-foreground mb-4">
+              {this.state.error?.message}
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
+            >
+              Genindlæs siden
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}import { useState } from "react";
+import { ExternalLink, BookOpen, Trophy, ChevronDown, ChevronUp, Brain, Star, ArrowRight } from "lucide-react";
+import { useLocation } from "wouter";
+
+const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/futuristic-3d-workspace-8MDAEsBmBmR2BoGC3W6ikv.webp";
+const PROGRESSION_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/progression-illustration-csmR3p9s6c9RDBAgWPixGr.webp";
+
+interface CourseItem {
+  title: string;
+  type: "kursus" | "quiz" | "eksamen";
+  publicUrl?: string;
+  note?: string;
+  comingSoon?: boolean;
+}
+
+interface Level {
+  id: string;
+  label: string;
+  sublabel: string;
+  description: string;
+  color: string;
+  bgColor: string;
+  borderColor: string;
+  textColor: string;
+  badgeClass: string;
+  price: string;
+  items: CourseItem[];
+}
+
+const levels: Level[] = [
+  {
+    id: "D",
+    label: "Niveau D",
+    sublabel: "Nybegynder",
+    description: "Det perfekte startpunkt. Gratis og tilgængeligt for alle – ingen forkundskaber nødvendige. Lær de grundlæggende principper i kunstig intelligens og bestå din første eksamen.",
+    color: "#2d8a4e",
+    bgColor: "bg-emerald-50",
+    borderColor: "border-emerald-300",
+    textColor: "text-emerald-800",
+    badgeClass: "level-badge-d",
+    price: "Gratis",
+    items: [
+      {
+        title: "D Kursus",
+        type: "kursus",
+        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-d.html",
+      },
+      {
+        title: "D Eksamen",
+        type: "eksamen",
+        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/",
+        note: "Skal muligvis gøres nemmere",
+      },
+    ],
+  },
+  {
+    id: "C",
+    label: "Niveau C",
+    sublabel: "Øvet",
+    description: "Tag det næste skridt. Tre moduler med mini-quizzer undervejs og to afsluttende eksamener. Du bygger videre på grundlaget fra niveau D og dykker dybere ned i AI-koncepter.",
+    color: "#1e5fa8",
+    bgColor: "bg-blue-50",
+    borderColor: "border-blue-300",
+    textColor: "text-blue-800",
+    badgeClass: "level-badge-c",
+    price: "Kommende",
+    items: [
+      { title: "C1 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c1.html" },
+      { title: "C1 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c1.html" },
+      { title: "C2 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c2.html" },
+      { title: "C2 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c2.html" },
+      { title: "C3 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c3.html" },
+      { title: "C Eksamen 1", type: "eksamen", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c.html" },
+      { title: "C Eksamen 2", type: "eksamen", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c2.html" },
+    ],
+  },
+  {
+    id: "B",
+    label: "Niveau B",
+    sublabel: "Avanceret",
+    description: "Fem intensive moduler med tilhørende quizzer og tre afsluttende eksamener. På dette niveau arbejder du med avancerede AI-teknikker og begynder at anvende AI professionelt.",
+    color: "#c05c10",
+    bgColor: "bg-orange-50",
+    borderColor: "border-orange-300",
+    textColor: "text-orange-800",
+    badgeClass: "level-badge-b",
+    price: "Kommende",
+    items: [
+      { title: "B1 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b1.html" },
+      { title: "B1 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b1.html" },
+      { title: "B2 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b2.html" },
+      { title: "B2 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b2.html" },
+      { title: "B3 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b3.html" },
+      { title: "B3 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b3.html" },
+      { title: "B4 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b4.html" },
+      { title: "B4 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b4.html" },
+      { title: "B5 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b5.html" },
+      { title: "B Eksamen 1", type: "eksamen", comingSoon: true },
+      { title: "B Eksamen 2", type: "eksamen", comingSoon: true },
+      { title: "B Eksamen 3", type: "eksamen", comingSoon: true },
+    ],
+  },
+  {
+    id: "A",
+    label: "Niveau A",
+    sublabel: "Ekspert",
+    description: "Det ultimative niveau. Bliv en certificeret AI-ekspert med dybdegående viden og praktiske færdigheder. Niveau A er under udvikling og lanceres snart.",
+    color: "#a07010",
+    bgColor: "bg-amber-50",
+    borderColor: "border-amber-300",
+    textColor: "text-amber-800",
+    badgeClass: "level-badge-a",
+    price: "Kommende",
+    items: [],
+  },
+];
+
+function TypeIcon({ type }: { type: CourseItem["type"] } ) {
+  if (type === "kursus") return <BookOpen className="w-4 h-4" />;
+  if (type === "quiz") return <Brain className="w-4 h-4" />;
+  return <Trophy className="w-4 h-4" />;
+}
+
+function TypeLabel({ type }: { type: CourseItem["type"] }) {
+  if (type === "kursus") return "Kursus";
+  if (type === "quiz") return "Quiz";
+  return "Eksamen";
+}
+
+function CourseCard({ item, levelColor }: { item: CourseItem; levelColor: string }) {
+  const typeColors: Record<CourseItem["type"], string> = {
+    kursus: "bg-slate-100 text-slate-700",
+    quiz: "bg-violet-100 text-violet-700",
+    eksamen: "bg-rose-100 text-rose-700",
+  };
+
+  return (
+    <div className={`flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-white hover:shadow-md transition-all duration-200 group ${item.comingSoon ? "opacity-60" : "hover:-translate-y-0.5"}`}>
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 text-white" style={{ backgroundColor: levelColor }}>
+          <TypeIcon type={item.type} />
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-sm text-foreground truncate" style={{ fontFamily: "'Sora', sans-serif" }}>
+            {item.title}
+          </p>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[item.type]}`}>
+            <TypeLabel type={item.type} />
+          </span>
+        </div>
+      </div>
+      <div className="flex-shrink-0">
+        {item.comingSoon ? (
+          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Snart</span>
+        ) : item.publicUrl ? (
+          <a href={item.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white transition-all hover:opacity-90 hover:shadow-sm" style={{ backgroundColor: levelColor }}>
+            Åbn <ExternalLink className="w-3 h-3" />
+          </a>
+        ) : null}
+      </div>
     </div>
-  </nav>
+  );
+}
 
-  <section class="hero">
-    <span class="badge">Kursus D · Afsluttende eksamen</span>
-    <h1>Bevis at du forstår AI som nybegynder</h1>
-    <p>Eksamen tester det vigtigste fra Kursus D: hvad AI er, hvordan du starter en samtale, hvordan du skriver gode prompts, og hvordan du bruger AI sikkert.</p>
-  </section>
+function LevelSection({ level }: { level: Level }) {
+  const [expanded, setExpanded] = useState(level.id === "D");
 
-  <main>
-    <section id="intro" class="card">
-      <h2>Sådan fungerer eksamen</h2>
-      <div class="grid">
-        <div class="info-box"><strong>Del 1</strong>10 multiple choice-spørgsmål. Du skal have mindst 7 rigtige for at bestå.</div>
-        <div class="info-box"><strong>Del 2</strong>En praktisk prompt-opgave, hvor du viser at du kan skrive et godt prompt.</div>
-        <div class="info-box"><strong>Bevis</strong>Når du består, får du et simpelt kursusbevis, som du kan printe eller gemme.</div>
+  return (
+    <div className={`rounded-2xl border-2 ${level.borderColor} overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300`}>
+      <div className={`${level.bgColor} p-6`}>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-md flex-shrink-0" style={{ backgroundColor: level.color, fontFamily: "'Sora', sans-serif" }}>
+              {level.id}
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="text-xl font-bold" style={{ fontFamily: "'Sora', sans-serif", color: level.color }}>
+                  {level.label}
+                </h3>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${level.textColor} bg-white/60`}>
+                  {level.sublabel}
+                </span>
+              </div>
+              <p className="text-sm text-muted-foreground mt-1 max-w-lg">{level.description}</p>
+            </div>
+          </div>
+          <div className="flex flex-col items-end gap-2 flex-shrink-0">
+            <span className="text-sm font-bold px-3 py-1 rounded-full text-white" style={{ backgroundColor: level.color }}>
+              {level.price}
+            </span>
+            {level.items.length > 0 && (
+              <button onClick={() => setExpanded(!expanded)} className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition-all ${level.borderColor} ${level.textColor} bg-white/80 hover:bg-white`}>
+                {expanded ? <><ChevronUp className="w-3 h-3" /> Skjul</> : <><ChevronDown className="w-3 h-3" /> Vis {level.items.length} moduler</>}
+              </button>
+            )}
+            {level.items.length === 0 && <span className="text-xs text-muted-foreground italic">Under udvikling</span>}
+          </div>
+        </div>
       </div>
 
-      <label for="studentName">Dit navn</label>
-      <input id="studentName" type="text" placeholder="Skriv dit navn">
+      {expanded && level.items.length > 0 && (
+        <div className="p-6 bg-white">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {level.items.map((item, idx) => (
+              <CourseCard key={idx} item={item} levelColor={level.color} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-      <label for="studentEmail">Din e-mail</label>
-      <input id="studentEmail" type="email" placeholder="Skriv din e-mail">
+export default function Home() {
+  const [, setLocation] = useLocation();
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }}>
+      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(15,23,41,0.95)", borderColor: "rgba(0,212,255,0.3)" }}>
+        <div className="container flex items-center justify-between h-16">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
+              AI
+            </div>
+            <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+              LearnAI
+            </span>
+          </div>
+          <div className="hidden md:flex items-center gap-6">
+            <a href="#kurser" className="text-sm font-medium transition-colors" style={{ color: "#b0b8d4" }}>
+              Kurser
+            </a>
+            <button onClick={() => setLocation("/sidekurser")} className="text-sm font-medium transition-colors cursor-pointer" style={{ color: "#b0b8d4" }}>
+              Sidekurser
+            </button>
+            <a href="#om-os" className="text-sm font-medium transition-colors" style={{ color: "#b0b8d4" }}>
+              Om os
+            </a>
+          </div>
+          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full text-white transition-all hover:opacity-90" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
+            Start gratis <ArrowRight className="w-3.5 h-3.5" />
+          </a>
+        </div>
+      </nav>
 
-      <div class="actions">
-        <button onclick="startExam()">Start eksamen</button>
-        <a class="btn secondary" href="kursus-d.html">Læs Kursus D igen</a>
+      <section className="relative overflow-hidden py-16 md:py-24">
+        <div className="container">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-fade-in-up stagger-1">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 border" style={{ backgroundColor: "rgba(0,212,255,0.1 )", borderColor: "#00d4ff", color: "#00d4ff" }}>
+                <Star className="w-3 h-3" fill="currentColor" />
+                Gratis startkursus – ingen forkundskaber nødvendige
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
+                Lær kunstig  
+
+                <span style={{ color: "#00d4ff" }}>intelligens</span>  
+
+                trin for trin
+              </h1>
+              <p className="text-lg leading-relaxed mb-8 max-w-lg" style={{ color: "#b0b8d4" }}>
+                Fra nybegynder til ekspert – strukturerede AI-kurser med quizzer, eksamener og kursusbeviser. Inspireret af Duolingo, bygget til den danske lærende.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white text-base transition-all hover:opacity-90" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
+                  Start niveau D – gratis <ArrowRight className="w-4 h-4" />
+                </a>
+                <a href="#kurser" className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-base border-2 transition-all" style={{ borderColor: "#00d4ff", color: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
+                  Se alle kurser
+                </a>
+              </div>
+            </div>
+
+            <div className="relative animate-fade-in-up stagger-2">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ boxShadow: "0 0 40px rgba(0,212,255,0.3 )" }}>
+                <img src={HERO_IMG} alt="AI neural network illustration" className="w-full h-auto object-cover" style={{ maxHeight: "420px" }} />
+              </div>
+              <div className="absolute -bottom-4 -left-4 rounded-2xl shadow-xl p-4 border-2" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style={{ backgroundColor: "#2d8a4e" }}>
+                    D
+                  </div>
+                  <div>
+                    <p className="text-xs" style={{ color: "#b0b8d4" }}>Start her</p>
+                    <p className="text-sm font-bold" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>Niveau D – Gratis</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="kurser" className="py-16 md:py-24">
+        <div className="container">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+              Alle kurser
+            </h2>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "#b0b8d4" }}>
+              Klik på et niveau for at se modulerne. Hvert modul åbner direkte i kursusplatformen.
+            </p>
+          </div>
+
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {levels.map((level) => (
+              <LevelSection key={level.id} level={level} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="om-os" className="py-16 md:py-20 border-t" style={{ backgroundColor: "#0f1535", borderColor: "#00d4ff" }}>
+        <div className="container">
+          <div className="max-w-3xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+              Om os
+            </h2>
+            <div className="rounded-3xl p-8 md:p-10 shadow-sm border-2" style={{ backgroundColor: "#0a0e27", borderColor: "#00d4ff" }}>
+              <p className="text-lg leading-relaxed mb-6" style={{ color: "#b0b8d4" }}>
+                Vi bor begge i Værløse og deler en passion for matematik, business, salg, sport, konkurrence og alt der har med penge at gøre. Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre.
+              </p>
+              <p className="text-lg leading-relaxed mb-8" style={{ color: "#b0b8d4" }}>
+                Jeg elsker AI – og det er netop derfor, at jeg drømmer om at lave AI-kurser og sælge dem. Dette projekt er vores første skridt mod at gøre AI tilgængeligt for alle danskere.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16" style={{ backgroundColor: "#00d4ff" }}>
+        <div className="container text-center">
+          <h2 className="text-3xl md:text-4xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
+            Klar til at starte?
+          </h2>
+          <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "#0f1729" }}>
+            Niveau D er helt gratis. Ingen tilmelding, ingen kreditkort – bare åbn kurset og kom i gang.
+          </p>
+          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg transition-all hover:opacity-90" style={{ backgroundColor: "#0f1729", color: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
+            Start niveau D nu – det er gratis <ArrowRight className="w-5 h-5" />
+          </a>
+        </div>
+      </section>
+
+      <footer className="py-8 border-t" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
+        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
+              AI
+            </div>
+            <span className="font-bold" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+              LearnAI
+            </span>
+          </div>
+          <p className="text-sm text-center" style={{ color: "#b0b8d4" }}>
+            Bygget med passion i Værløse, Danmark · {new Date( ).getFullYear()}
+          </p>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setLocation("/sidekurser")} className="text-sm transition-colors font-medium" style={{ color: "#b0b8d4" }}>
+              Sidekurser
+            </button>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}import { useLocation } from "wouter";
+import { ArrowLeft, BookOpen, Zap, Palette, Code, Briefcase, Brain, Lightbulb, Users } from "lucide-react";
+
+const sideCourses = [
+  {
+    id: 1,
+    title: "Prompt Engineering",
+    description: "Lær at skrive effektive prompts til ChatGPT, Claude og andre AI-modeller. Få maksimal værdi ud af dine AI-værktøjer.",
+    icon: Zap,
+    color: "#ff6b6b",
+  },
+  {
+    id: 2,
+    title: "AI til Business",
+    description: "Hvordan implementerer du AI i din virksomhed? Strategier, værktøjer og best practices for business leaders.",
+    icon: Briefcase,
+    color: "#4ecdc4",
+  },
+  {
+    id: 3,
+    title: "Machine Learning Basics",
+    description: "En praktisk introduktion til machine learning. Byg dine første modeller med Python og scikit-learn.",
+    icon: Brain,
+    color: "#45b7d1",
+  },
+  {
+    id: 4,
+    title: "DALL-E & Midjourney",
+    description: "Lær at generere fantastiske billeder med AI. Fra prompt til professionel output.",
+    icon: Palette,
+    color: "#f9ca24",
+  },
+  {
+    id: 5,
+    title: "ChatGPT for Creators",
+    description: "Brug ChatGPT til at skabe indhold. Copywriting, videoer, podcasts og meget mere.",
+    icon: Lightbulb,
+    color: "#6c5ce7",
+  },
+  {
+    id: 6,
+    title: "AI-Etik & Sikkerhed",
+    description: "Vigtige emner omkring AI-etik, bias, sikkerhed og ansvar. Bliv en responsible AI-bruger.",
+    icon: Users,
+    color: "#a29bfe",
+  },
+  {
+    id: 7,
+    title: "Python for AI",
+    description: "Lær Python fra bunden og op til avanceret AI-programmering. Perfekt for alle niveauer.",
+    icon: Code,
+    color: "#00b894",
+  },
+  {
+    id: 8,
+    title: "AI-værktøjer til Freelancers",
+    description: "Automatiser dit arbejde som freelancer. Værktøjer der sparer tid og øger indtjening.",
+    icon: BookOpen,
+    color: "#fdcb6e",
+  },
+];
+
+export default function Sidekurser() {
+  const [, setLocation] = useLocation();
+
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }}>
+      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(15,23,41,0.95)", borderColor: "rgba(0,212,255,0.3)" }}>
+        <div className="container flex items-center justify-between h-16">
+          <button
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-2 text-sm font-semibold transition-colors"
+            style={{ color: "#00d4ff" }}
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Tilbage
+          </button>
+          <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+            LearnAI Sidekurser
+          </span>
+          <div className="w-12" />
+        </div>
+      </nav>
+
+      <section className="py-16 md:py-24">
+        <div className="container">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
+              Specialiserede <span style={{ color: "#00d4ff" }}>Sidekurser</span>
+            </h1>
+            <p className="text-lg max-w-2xl mx-auto" style={{ color: "#b0b8d4" }}>
+              Gå dybere ned i specifikke AI-emner. Disse kurser er designet til at give dig praktiske færdigheder du kan bruge med det samme.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {sideCourses.map((course) => {
+              const IconComponent = course.icon;
+              return (
+                <div
+                  key={course.id}
+                  className="rounded-2xl p-6 border-2 transition-all hover:shadow-lg hover:-translate-y-1"
+                  style={{ backgroundColor: "#0a0e27", borderColor: course.color }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-white"
+                    style={{ backgroundColor: course.color }}
+                  >
+                    <IconComponent className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
+                    {course.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed" style={{ color: "#b0b8d4" }}>
+                    {course.description}
+                  </p>
+                  <button
+                    className="mt-4 w-full py-2 rounded-lg font-semibold text-sm transition-all text-white"
+                    style={{ backgroundColor: course.color }}
+                  >
+                    Snart tilgængelig
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 border-t" style={{ backgroundColor: "#0f1535", borderColor: "#00d4ff" }}>
+        <div className="container text-center">
+          <h2 className="text-3xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
+            Vil du blive notificeret når de er klar?
+          </h2>
+          <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "#b0b8d4" }}>
+            Tilmeld dig vores venteliste og få beskeden når de første sidekurser bliver tilgængelige.
+          </p>
+          <button
+            className="px-8 py-3 rounded-full font-bold text-white transition-all hover:opacity-90"
+            style={{ backgroundColor: "#00d4ff", color: "#0f1729", fontFamily: "'Sora', sans-serif" }}
+          >
+            Tilmeld venteliste
+          </button>
+        </div>
+      </section>
+
+      <footer className="py-8 border-t" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
+        <div className="container text-center">
+          <p className="text-sm" style={{ color: "#b0b8d4" }}>
+            LearnAI © {new Date().getFullYear()} · Alle rettigheder forbeholdt
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+}import { useLocation } from "wouter";
+
+export default function NotFound() {
+  const [, setLocation] = useLocation();
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
+      <div className="text-center">
+        <div className="text-6xl font-bold text-foreground mb-4">404</div>
+        <h1 className="text-2xl font-bold text-foreground mb-2">Side ikke fundet</h1>
+        <p className="text-muted-foreground mb-8">
+          Beklager, siden du søgte efter findes ikke.
+        </p>
+        <button
+          onClick={() => setLocation("/")}
+          className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-semibold"
+        >
+          Tilbage til forsiden
+        </button>
       </div>
-    </section>
+    </div>
+  );
+}import express from "express";
+import { createServer } from "http";
+import path from "path";
+import { fileURLToPath } from "url";
 
-    <section id="quizCard" class="card hidden">
-      <div class="question-top">
-        <span id="questionCounter">Spørgsmål 1 af 10</span>
-        <span id="scoreCounter">0 rigtige</span>
-      </div>
-      <div class="progress-wrap"><div id="progress" class="progress"></div></div>
-      <div id="questionArea"></div>
-    </section>
+const __filename = fileURLToPath(import.meta.url );
+const __dirname = path.dirname(__filename);
 
-    <section id="resultCard" class="card hidden">
-      <span class="badge">Resultat</span>
-      <h2 id="resultTitle">Din score</h2>
-      <div id="resultScore" class="result-score">0/10</div>
-      <p id="resultText"></p>
-      <div class="actions" id="resultActions"></div>
-      <div id="review"></div>
-    </section>
+async function startServer() {
+  const app = express();
+  const server = createServer(app);
 
-    <section id="practicalCard" class="card hidden">
-      <span class="badge">Praktisk opgave</span>
-      <h2>Lav dit eget gode prompt</h2>
-      <p>Nu skal du vise, at du kan bruge de 3 prompt-regler: vær specifik, giv kontekst og bed om et format.</p>
-      <div class="practical-box">
-        <strong>Din opgave:</strong>
-        <p>Skriv et prompt til en AI, der skal hjælpe dig med at lave en venlig og tydelig besked til en lærer om, at du har brug for ekstra tid til en aflevering.</p>
-      </div>
-      <label for="promptAnswer">Dit prompt</label>
-      <textarea id="promptAnswer" placeholder="Eksempel: Jeg er elev i 8. klasse, og jeg skal skrive til min lærer..."></textarea>
-      <div class="actions"><button onclick="checkPractical()">Tjek min opgave</button></div>
-      <div id="practicalFeedback" class="feedback"></div>
-    </section>
+  const staticPath =
+    process.env.NODE_ENV === "production"
+      ? path.resolve(__dirname, "public")
+      : path.resolve(__dirname, "..", "dist", "public");
 
-    <section id="certificateCard" class="card hidden">
-      <div class="certificate">
-        <p class="small">LearnAI DK bekræfter hermed, at</p>
-        <div id="certificateName" class="name">Navn</div>
-        <h2>har bestået Kursus D</h2>
-        <p>Eleven har vist grundlæggende forståelse for AI, AI-chatbots, gode prompts og sikker brug af AI.</p>
-        <p class="small" id="certificateDate"></p>
-      </div>
-      <div class="actions">
-        <button onclick="window.print()">Print eller gem bevis</button>
-        <a class="btn" href="kursus-c1.html">Fortsæt til Kursus C1</a>
-        <button class="secondary" onclick="restartExam()">Tag eksamen igen</button>
-      </div>
-    </section>
-  </main>
+  app.use(express.static(staticPath));
 
-  <script>
-    const questions = [
-      { question: "Hvad er kunstig intelligens i Kursus D forklaret som?", answers: ["Kun fysiske robotter, der kan gå rundt", "Programmer, der kan løse opgaver intelligent ved at genkende mønstre", "En normal hjemmeside uden funktioner", "En alarm, der ringer på et fast tidspunkt"], correct: 1, explanation: "AI handler ikke kun om robotter. I kurset lærer du, at AI er programmer, der kan løse opgaver intelligent, fx ved at genkende mønstre." },
-      { question: "Hvilket eksempel fra hverdagen er AI?", answers: ["Netflix anbefaler film til dig", "En simpel lommeregner", "Et stykke papir", "En lampe uden sensor"], correct: 0, explanation: "Netflix bruger AI til at anbefale film og serier baseret på mønstre i det, du og andre ser." },
-      { question: "Hvilken AI-assistent anbefaler Kursus D som udgangspunkt?", answers: ["Claude", "Excel", "PowerPoint", "En lommeregner"], correct: 0, explanation: "Kurset anbefaler Claude som udgangspunkt, men nævner også ChatGPT og Gemini som gode muligheder." },
-      { question: "Hvad er et prompt?", answers: ["Den besked du skriver til AI", "En adgangskode til din computer", "En type virus", "Et billede på en hjemmeside"], correct: 0, explanation: "Et prompt er den besked eller opgave, du giver til AI. Jo bedre prompt, jo bedre svar får du ofte." },
-      { question: "Hvilket prompt er bedst?", answers: ["Hjælp mig", "Skriv noget", "Skriv en venlig mail til min nabo og inviter ham til min fødselsdag næste lørdag kl. 15", "Mail nu"], correct: 2, explanation: "Det bedste prompt er specifikt, giver kontekst og fortæller tydeligt, hvad AI skal lave." },
-      { question: "Hvilke 3 regler lærer du om gode prompts?", answers: ["Skriv kort, skriv surt, skriv tilfældigt", "Vær specifik, giv kontekst, bed om et format", "Brug kun engelsk, brug tal, brug store bogstaver", "Del private oplysninger, skriv hurtigt, stol altid på AI"], correct: 1, explanation: "Kursus D lærer tre enkle prompt-regler: vær specifik, giv kontekst og bed om et format." },
-      { question: "Hvad betyder det, at AI kan hallucere?", answers: ["At AI kan sove", "At AI altid fortæller sandheden", "At AI kan finde på svar, der lyder rigtige, men er forkerte", "At AI kun virker om natten"], correct: 2, explanation: "AI kan nogle gange finde på fakta, der lyder troværdige, men ikke passer. Derfor skal vigtige oplysninger dobbelttjekkes." },
-      { question: "Hvad bør du aldrig dele med AI?", answers: ["En almindelig opskrift", "En tekst du vil have rettet", "Dit CPR-nummer, adgangskoder eller bankoplysninger", "Et generelt hverdagsspørgsmål"], correct: 2, explanation: "Du skal aldrig dele CPR-nummer, adgangskoder, bankoplysninger eller andre meget private oplysninger med AI." },
-      { question: "Hvordan fungerer en AI-samtale typisk?", answers: ["Du skriver, AI svarer, og du kan stille opfølgende spørgsmål", "AI læser automatisk alle dine filer uden at spørge", "AI husker altid alt om dig for evigt", "Du kan kun stille ét spørgsmål"], correct: 0, explanation: "Du skriver til AI, AI svarer, og du kan fortsætte samtalen med opfølgende spørgsmål i samme chat." },
-      { question: "Hvornår er det ekstra vigtigt at dobbelttjekke AI's svar?", answers: ["Når det handler om medicin, jura, tal, datoer eller vigtige beslutninger", "Når AI skriver en sjov historie", "Når du beder om en indkøbsliste", "Når AI forklarer et meget simpelt ord"], correct: 0, explanation: "Vigtige oplysninger, især om medicin, jura, tal, datoer og beslutninger, skal altid tjekkes med en pålidelig kilde." }
-    ];
+  app.get("*", (_req, res) => {
+    res.sendFile(path.join(staticPath, "index.html"));
+  });
 
-    let currentQuestion = 0;
-    let score = 0;
-    let answered = false;
-    let userAnswers = [];
+  const port = process.env.PORT || 3000;
 
-    function startExam() {
-      const name = document.getElementById('studentName').value.trim();
-      if (!name) { alert('Skriv dit navn før du starter.'); return; }
-      document.getElementById('intro').classList.add('hidden');
-      document.getElementById('quizCard').classList.remove('hidden');
-      currentQuestion = 0;
-      score = 0;
-      answered = false;
-      userAnswers = [];
-      renderQuestion();
+  server.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}/` );
+  });
+}
+
+startServer().catch(console.error);export const APP_NAME = "LearnAI";
+export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til ekspert";{
+  "compilerOptions": {
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./client/src/*"]
     }
+  },
+  "include": ["client/src", "server"],
+  "exclude": ["node_modules", "dist"]
+}{
+  "compilerOptions": {
+    "composite": true,
+    "skipLibCheck": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["vite.config.ts"]
+}import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import path from "path";
 
-    function renderQuestion() {
-      const q = questions[currentQuestion];
-      answered = false;
-      document.getElementById('questionCounter').textContent = `Spørgsmål ${currentQuestion + 1} af ${questions.length}`;
-      document.getElementById('scoreCounter').textContent = `${score} rigtige`;
-      document.getElementById('progress').style.width = `${(currentQuestion / questions.length) * 100}%`;
-      document.getElementById('questionArea').innerHTML = `
-        <div class="question active">
-          <h2>${q.question}</h2>
-          <div class="answers">${q.answers.map((answer, index) => `<div class="answer" onclick="chooseAnswer(${index})">${answer}</div>`).join('')}</div>
-          <div id="feedback" class="feedback"></div>
-          <div class="actions"><button id="nextBtn" disabled onclick="nextQuestion()">${currentQuestion === questions.length - 1 ? 'Se resultat' : 'Næste spørgsmål'}</button></div>
-        </div>`;
-    }
+export default defineConfig({
+  plugins: [react()],
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./client/src"),
+    },
+  },
+  server: {
+    middlewareMode: true,
+  },
+});import type { Config } from "tailwindcss";
 
-    function chooseAnswer(index) {
-      if (answered) return;
-      answered = true;
-      const q = questions[currentQuestion];
-      const answers = document.querySelectorAll('.answer');
-      answers.forEach((el, i) => {
-        el.classList.add('locked');
-        if (i === q.correct) el.classList.add('correct');
-        if (i === index && i !== q.correct) el.classList.add('wrong');
-      });
-      const isCorrect = index === q.correct;
-      if (isCorrect) score++;
-      userAnswers[currentQuestion] = index;
-      const feedback = document.getElementById('feedback');
-      feedback.classList.add('show');
-      feedback.innerHTML = `<strong>${isCorrect ? 'Rigtigt svar.' : 'Forkert svar.'}</strong><br>${q.explanation}`;
-      document.getElementById('scoreCounter').textContent = `${score} rigtige`;
-      document.getElementById('nextBtn').disabled = false;
-    }
+const config: Config = {
+  content: ["./client/index.html", "./client/src/**/*.{js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
 
-    function nextQuestion() {
-      if (currentQuestion < questions.length - 1) {
-        currentQuestion++;
-        renderQuestion();
-      } else {
-        showResult();
-      }
-    }
-
-    function showResult() {
-      document.getElementById('quizCard').classList.add('hidden');
-      document.getElementById('resultCard').classList.remove('hidden');
-      const passed = score >= 7;
-      const resultScore = document.getElementById('resultScore');
-      resultScore.textContent = `${score}/${questions.length}`;
-      resultScore.className = `result-score ${passed ? 'passed' : 'failed'}`;
-      document.getElementById('resultTitle').textContent = passed ? 'Du bestod del 1' : 'Du bestod ikke endnu';
-      document.getElementById('resultText').textContent = passed ? 'Flot arbejde. Du har forstået det vigtigste fra Kursus D og kan fortsætte til den praktiske opgave.' : 'Du skal have mindst 7 rigtige. Læs gerne Kursus D igen og prøv eksamen en gang til.';
-      document.getElementById('resultActions').innerHTML = passed ? '<button onclick="openPractical()">Gå til praktisk opgave</button><button class="secondary" onclick="restartExam()">Tag eksamen igen</button>' : '<button onclick="restartExam()">Prøv igen</button><a class="btn secondary" href="kursus-d.html">Læs Kursus D igen</a>';
-      renderReview();
-    }
-
-    function renderReview() {
-      const review = document.getElementById('review');
-      review.innerHTML = '<h3>Gennemgang af dine svar</h3>' + questions.map((q, i) => {
-        const chosen = userAnswers[i];
-        const correct = chosen === q.correct;
-        return `<div class="review-item"><strong>${i + 1}. ${q.question}</strong><p>Dit svar: ${q.answers[chosen] || 'Intet svar'}</p><p>Rigtigt svar: ${q.answers[q.correct]}</p><p class="${correct ? 'passed' : 'failed'}">${correct ? 'Rigtigt' : 'Forkert'}</p></div>`;
-      }).join('');
-    }
-
-    function openPractical() {
-      document.getElementById('resultCard').classList.add('hidden');
-      document.getElementById('practicalCard').classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function checkPractical() {
-      const answer = document.getElementById('promptAnswer').value.trim();
-      const lower = answer.toLowerCase();
-      let points = 0;
-      if (answer.length >= 120) points++;
-      if (lower.includes('jeg er') || lower.includes('elev') || lower.includes('klasse')) points++;
-      if (lower.includes('lærer') || lower.includes('aflevering')) points++;
-      if (lower.includes('venlig') || lower.includes('tydelig') || lower.includes('kort')) points++;
-      if (lower.includes('besked') || lower.includes('mail') || lower.includes('format') || lower.includes('punkt')) points++;
-      const feedback = document.getElementById('practicalFeedback');
-      feedback.classList.add('show');
-      if (points >= 4) {
-        feedback.innerHTML = '<strong>Godkendt praktisk opgave.</strong><br>Dit prompt har både kontekst, en tydelig opgave og et ønsket resultat. Du har bestået Kursus D.';
-        setTimeout(showCertificate, 900);
-      } else {
-        feedback.innerHTML = '<strong>Ikke helt klar endnu.</strong><br>Prøv at gøre dit prompt mere specifikt. Husk at fortælle hvem du er, hvad situationen er, og hvilket format du vil have svaret i.';
-      }
-    }
-
-    function showCertificate() {
-      const name = document.getElementById('studentName').value.trim();
-      document.getElementById('practicalCard').classList.add('hidden');
-      document.getElementById('certificateCard').classList.remove('hidden');
-      document.getElementById('certificateName').textContent = name;
-      document.getElementById('certificateDate').textContent = `Bestået den ${new Date().toLocaleDateString('da-DK')} · Score: ${score}/${questions.length}`;
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function restartExam() {
-      document.getElementById('resultCard').classList.add('hidden');
-      document.getElementById('practicalCard').classList.add('hidden');
-      document.getElementById('certificateCard').classList.add('hidden');
-      document.getElementById('intro').classList.remove('hidden');
-      document.getElementById('promptAnswer').value = '';
-      document.getElementById('practicalFeedback').classList.remove('show');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-  </script>
-</body>
-</html>
+export default config;node_modules/
+dist/
+.env
+.env.local
+.env.*.local
+*.log
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
