@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Kursus A3</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --blue-mid:    #c8dff5;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #0B1F3F;
+      --purple-light:#E2E8F0;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(11,31,63,0.10);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+    .hero-meta-item span { font-size: 18px; }
+
+    .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+    .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .step-dot.active { background: var(--purple); color: white; }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.active { color: var(--purple); }
+    .step-label.done   { color: var(--green); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+    .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+    .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+    .module-header:hover { background: #cbd5e1; }
+    .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .module-title-wrap { flex: 1; }
+    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+    .module.open .module-body { display: block; }
+
+    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-box p { font-size: 14px; line-height: 1.6; }
+    .info-box ul { padding-left: 1.1rem; }
+    .info-box li { font-size: 14px; line-height: 1.7; }
+    .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+    .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+    .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+    .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+    .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
+
+    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+    .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+    .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .practice li { margin-bottom: 4px; }
+
+    .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+    .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+    .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+    .btn-quiz:hover { background: #1a3866; transform: translateY(-1px); }
+
+    .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+    .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+    .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.75rem 1rem 3rem; }
+      .module-body { padding: 1.1rem; }
+      .quiz-cta { padding: 1.5rem 1rem; }
+      .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+      .step-label { display: none; }
+      .step-arrow { margin: 0 2px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Kursus A — Del 3 af 5</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot done">A1</div>
+    <span class="step-label done">Fine-tuning</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q1</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">A2</div>
+    <span class="step-label done">Multi-modal</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q2</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot active">A3</div>
+    <span class="step-label active">Arkitektur</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q3</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A4</div>
+    <span class="step-label next">Governance</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q4</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A5</div>
+    <span class="step-label next">Capstone</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 1</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 2</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 3</span>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Kursus A &nbsp;·&nbsp; Del 3 af 5</div>
+  <h1>Avanceret system-arkitektur</h1>
+  <p>Multi-agent systems, model routing, distribuerede AI-pipelines og det svære valg: hvornår rigtige agenter slår en simpel workflow.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span>⏱</span> 2 – 2,5 timer</div>
+    <div class="hero-meta-item"><span>📋</span> 4 moduler</div>
+    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">Del A3</div>
+  <div class="section-title">Når én model ikke er nok</div>
+  <p class="section-body">På B-niveau lærte du at bygge én agent (B4). På A-niveau bygger du <em>systemer</em> af agenter og modeller der samarbejder. Det er forskellen mellem en intern automation og et rigtigt AI-produkt der skalerer til tusind brugere.</p>
+
+  <!-- ── MODULE 1 ── -->
+  <div class="module open" id="mod1">
+    <div class="module-header" onclick="toggleModule('mod1')">
+      <div class="module-letter">1</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Multi-agent systemer: hvornår 5 agenter slår 1</div>
+        <div class="module-sub">Den dyreste arkitektur-fejl: at bygge multi-agent når en workflow ville have virket</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">I 2024 troede alle multi-agent var fremtiden. I 2026 ved professionelle teams at <strong>de fleste multi-agent-projekter fejler</strong> — ikke fordi konceptet er forkert, men fordi det blev brugt til problemer en simpel workflow (B4 mønster 1-2) løste bedre.</p>
+
+      <h3 class="subhead">Beslutnings-rammen</h3>
+      <div class="info-box box-purple">
+        <div class="info-box-title">De tre nøglespørgsmål</div>
+        <ol>
+          <li>Er antallet af steps <em>kendt på forhånd</em>? → workflow (B4)</li>
+          <li>Kan opgaven nedbrydes i klart adskilte roller med forskellig ekspertise? → multi-agent kan vinde</li>
+          <li>Er agenterne <em>afhængige</em> af hinandens output i mere end 1-2 ping-pongs? → STOP. Bliv ved workflow.</li>
+        </ol>
+      </div>
+
+      <hr class="divider">
+
+      <span class="technique-tag">Mønster 1</span>
+      <h3 class="subhead">Supervisor + worker</h3>
+      <p class="prose">Én "supervisor"-agent koordinerer; flere "worker"-agenter har hver deres tools og kompetencer. Supervisor ruter beskeder, sammenlægger resultater. Det er det mest robuste multi-agent mønster.</p>
+
+      <div class="code-label">Eksempel: research-agent</div>
+      <div class="code-block">supervisor: "Find seneste tal for elbilsalg i Skandinavien."
+  ├─ ruter til: web_search_agent
+  │   → "elbilsalg Norge 2026"  → returnerer artikler
+  ├─ ruter til: data_extraction_agent
+  │   → udtrækker tal fra artikler → returnerer JSON
+  └─ ruter til: synthesis_agent
+      → samler tabeller, formulerer svar</div>
+
+      <span class="technique-tag">Mønster 2</span>
+      <h3 class="subhead">Debate / multi-perspective</h3>
+      <p class="prose">Flere agenter med <em>forskellige roller</em> diskuterer samme spørgsmål. Klassisk: "Optimist" + "Skeptiker" + "Dommer". Bruges til strategi, kode-review, beslutningsstøtte.</p>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Latente problemer</div>
+        <p>Multi-agent systemer eksploderer i token-forbrug. 3 agenter × 5 turns × 2k tokens = 30k tokens per request. Det er ikke en hobby-arkitektur. Sæt hårde grænser (B5).</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Anthropic's egen lære (offentliggjort 2024-2025)</h3>
+      <p class="prose">Anthropic byggede flere multi-agent forskningsprojekter og skrev åbent om det: <em>"De fleste agentic-systemer er bedre tjent med en simpel ReAct-loop og god prompt-engineering end med multi-agent koreografi."</em> Brug multi-agent når problemets natur kræver det — ikke fordi det "lyder cool".</p>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Vurdér tre scenarier</div>
+        <ol>
+          <li>"Skriv en blog-post med researcher der finder fakta og editor der finpudser sproget."</li>
+          <li>"Booket en flybillet inkl. hotel og leje af bil baseret på en ferieplan."</li>
+          <li>"Diskutér om vi bør lancere produktet i Q3 eller Q4 — fra finans-, marketing- og produkt-perspektiv."</li>
+        </ol>
+        <p style="margin-top:0.75rem;">For hver: workflow (B4 mønster 1-2), single agent (B4 mønster 3), eller multi-agent (A3 mønster 1-2)? Hvorfor?</p>
+        <p style="margin-top:0.5rem;"><strong>Hint:</strong> 1) workflow chaining. 2) single agent med tools. 3) multi-agent debate.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 2 ── -->
+  <div class="module" id="mod2">
+    <div class="module-header" onclick="toggleModule('mod2')">
+      <div class="module-letter">2</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Model routing og cascading i produktion</div>
+        <div class="module-sub">Brug ikke en Ferrari til at hente brød</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">På B5 mødte du model cascading kort: send det nemme til billige modeller, det svære til dyre. På A-niveau gør vi det <strong>systematisk</strong> med målbare gevinster.</p>
+
+      <h3 class="subhead">De tre routing-strategier</h3>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">1. Regel-baseret routing</div>
+        <p>If-then ud fra simple features (input-længde, sprog, intent-klasse). Hurtigt, billigt, forudsigeligt. Dur til 70% af cases.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">2. Klassifikator-routing</div>
+        <p>En lille model (eller en LLM med en kort prompt) klassificerer requesten først: "let / svær". Derefter ruter du. Dette er hvor de fleste seriøse pipelines lander.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">3. Cascading med fallback</div>
+        <p>Send altid til billig model først. Lad den selv-rapportere konfidens. Hvis konfidens er lav — eskaler til dyrere model. Bedre end klassifikator når svære cases er sjældne.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Et konkret cascading-design</h3>
+      <div class="code-label">Pseudocode</div>
+      <div class="code-block">def route(query):
+    answer, confidence = haiku.complete(
+        query,
+        prompt="Svar. Slut med 'KONFIDENS: HØJ/MIDDEL/LAV'."
+    )
+
+    if confidence == "HØJ":
+        return answer        # 80% af cases — billigt
+
+    if confidence == "MIDDEL":
+        return sonnet.complete(query)   # 18% — middelpris
+
+    return opus.complete(query)         # 2% — top-kvalitet</div>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">Effekt på pris og latens</div>
+        <p>Typisk reduktion: 60-80% pris, 40-60% latens. Kvaliteten på de svære queries er stadig "Opus-niveau" — fordi de svære <em>blev</em> sendt til Opus. Det her er hvad seriøse AI-features ser ud i 2026.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Den falske besparelse: latens-skat</h3>
+      <div class="info-box box-red">
+        <div class="info-box-title">⚠ Pas på</div>
+        <p>Cascading kan blive <em>langsommere</em> end at gå direkte til den dyre model — fordi når 20% eskalerer, har de allerede ventet på det første kald. Hvis brugeren venter live, så lav den første kald så hurtigt som muligt (Haiku, kort prompt) og brug streaming på fallback.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Plan en cascade</div>
+        <ol>
+          <li>Tag et AI-projekt du kender (eget eller B-eksamen).</li>
+          <li>Estimér: hvor mange % er "lette" queries? Klassificering, simpel parafrasering, korte svar.</li>
+          <li>Hvilken model ville være "god nok" til 80% af dem?</li>
+          <li>Beregn ny pris: 80% × billig + 20% × dyr — sammenlign med 100% × dyr.</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Typisk besparelse på reelle projekter: 5-50× lavere månedlig regning.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 3 ── -->
+  <div class="module" id="mod3">
+    <div class="module-header" onclick="toggleModule('mod3')">
+      <div class="module-letter">3</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Distributed AI: kø-systemer, async jobs og batch</div>
+        <div class="module-sub">Når brugeren ikke kan vente, men opgaven tager 2 minutter</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Mange AI-opgaver tager længere end et HTTP-request burde leve. Generering af en lang rapport, processering af 50 PDF'er, fine-tuning. Synchronous design lokker dig i fælder. På A-niveau designer du async-først.</p>
+
+      <h3 class="subhead">De tre arkitektur-mønstre</h3>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">1. Job queue (typiske opgaver)</div>
+        <p>Bruger trykker "Start". Backend lægger jobbet på en kø (SQS, Redis, Cloud Tasks). En worker plukker det. Frontend poller eller modtager websocket-notifikation når det er færdigt.</p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">2. Streaming (delvis output med det samme)</div>
+        <p>Bruger ser tegn dukke op fra første sekund. Følt latens er ~0,5s i stedet for 8s. Første-token-time er det metric der betyder noget — ikke total tid.</p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">3. Batch-API'er (offline jobs)</div>
+        <p>OpenAI's og Anthropic's batch-endpoints accepterer 50.000 requests og leverer indenfor 24 timer — til <strong>halv pris</strong>. Perfekt til ad-hoc analyse, klassificering af logs, eller at generere træningsdata.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Idempotens og retries</h3>
+      <p class="prose">LLM-kald fejler oftere end klassiske API-kald: rate limits, timeouts, indre fejl. Din pipeline <em>skal</em> kunne genfremføre.</p>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Idempotens-nøgler</div>
+        <p>Send altid en <code>idempotency_key</code> (deterministisk hash af input + bruger + tidspunkt). Hvis et job genstartes, må det ikke producere et nyt resultat — og særlig ikke kalde et tool der koster penge to gange (fx send-email, charge-card).</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Memory og state mellem requests</h3>
+      <p class="prose">På B-niveau holdt du samtalehistorik i en in-memory liste. På A-niveau er det utilstrækkeligt: brugeren skifter device, dit serverpodd genstarter, eller du har et team af agenter der deler kontekst.</p>
+
+      <ul class="bullet-list">
+        <li><strong>Short-term memory:</strong> Redis med TTL = samtalens varighed.</li>
+        <li><strong>Long-term memory:</strong> Vector DB med embeddings af tidligere interaktioner — slå op i RAG-stil.</li>
+        <li><strong>Episodic memory:</strong> Struktureret JSON i din relations-database. "Brugeren kan godt lide fodbold, foretrækker korte svar."</li>
+      </ul>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Async-design</div>
+        <ol>
+          <li>Tegn et flow for: "Brugeren uploader 30 PDF'er, vil have en samlet sammenfatning."</li>
+          <li>Hvor er kø-pointet? Hvor er status-opdateringerne? Hvad sker der ved fejl i én PDF?</li>
+          <li>Hvor mange parallelle workers giver mening? (Husk rate limits.)</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Det her er præcis det design en arkitekt ville stå med på et whiteboard på dag 1 af et A-niveau-projekt.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 4 ── -->
+  <div class="module" id="mod4">
+    <div class="module-header" onclick="toggleModule('mod4')">
+      <div class="module-letter">4</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Self-hosted vs. API: det store strategiske valg</div>
+        <div class="module-sub">Total Cost of Ownership, lock-in og hvornår det vinder at hoste selv</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Indtil nu har vi taget for givet at du bruger frontier-API'er (Claude, GPT, Gemini). På A-niveau kommer det strategiske spørgsmål: hvornår betaler det sig at hoste open-source-modeller selv?</p>
+
+      <h3 class="subhead">Fordele ved API'er (de typiske 80%)</h3>
+      <ul class="bullet-list">
+        <li>Bedste kvalitet — frontier-modeller leder still i 2026</li>
+        <li>Ingen GPU-drift, ingen modelopdateringer, ingen on-call</li>
+        <li>Pay-as-you-go — passer til variable workloads</li>
+      </ul>
+
+      <h3 class="subhead">Fordele ved self-hosting (de strategiske 20%)</h3>
+      <ul class="bullet-list">
+        <li><strong>Datasuverænitet:</strong> Visse data må <em>ikke</em> forlade din infrastruktur (jura, sundhed, statslige data).</li>
+        <li><strong>Konstant load:</strong> Hvis du kører 24/7 høj volumen, kan dedicated GPU'er være billigere end pay-per-token.</li>
+        <li><strong>Ingen lock-in:</strong> Hvis API-leverandøren slukker din konto eller ændrer priser, har du dit eget setup.</li>
+        <li><strong>Custom fine-tunes:</strong> Din LoRA fra A1 kan kun deployes i dit eget setup (eller på platforme der supporterer det).</li>
+      </ul>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Break-even-beregningen</h3>
+      <div class="code-label">Skitse</div>
+      <div class="code-block">API-pris pr. 1M tokens: ~5 USD (Sonnet-klasse model)
+GPU-leje, dedicated H100 24/7: ~2.500 USD/måned
+Throughput pr. H100: ~5M tokens/time → 3.6 mia/måned
+
+Break-even API: 500M tokens/måned ≈ 17M/dag
+
+Konklusion:
+- Under 17M tokens/dag → API vinder næsten altid
+- Over 50M tokens/dag → self-host kan være 5-10× billigere
+- Imellem: spørg jurister, security og operationelt</div>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Den glemte omkostning: bemandning</div>
+        <p>Self-hosting kræver mindst én SRE/ML-engineer der ved hvad de laver. Lønomkostningen er ofte større end GPU-omkostningen. Glem det aldrig i TCO.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Hybrid: det realistiske valg</h3>
+      <p class="prose">De fleste A-niveau virksomheder ender på en hybrid: API til de svære og sjældne queries, self-hosted (eller fine-tuned via API som Anthropic's eller OpenAI's hosted fine-tuning) til de hyppige standardiserede.</p>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">Værktøjer i 2026</div>
+        <ul>
+          <li><strong>vLLM:</strong> De facto standard til at serve open-source modeller — høj throughput</li>
+          <li><strong>TGI (Hugging Face):</strong> Alternativ med god support til kvantiserede modeller</li>
+          <li><strong>Modal, Replicate, Together.ai:</strong> "Self-hosted som service" — kompromis mellem API og fuld self-host</li>
+        </ul>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — TCO-øvelse</div>
+        <ol>
+          <li>Estimer eller find tal for et reelt AI-projekt: tokens/måned, gennemsnitlig request-størrelse, peak-load.</li>
+          <li>Beregn månedlig API-pris ved Sonnet-niveau prisen.</li>
+          <li>Beregn alternativet: H100 dedicated × hvor mange.</li>
+          <li>Tilføj: 1 ekstra ingeniør (12.000 USD/måned i DK kontekst).</li>
+          <li>Hvad er break-even? Hvad ville du anbefale?</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Det her er præcis den øvelse en CTO eller VP Engineering bruger en uge på, hver gang AI-spend overstiger 50k DKK/måned.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>Del A3 — Hvad du har lært</h3>
+    <ul>
+      <li>Hvornår multi-agent systemer faktisk vinder over en simpel workflow</li>
+      <li>De to robuste mønstre: supervisor+worker og debate</li>
+      <li>Hvorfor de fleste multi-agent-projekter fejler — og hvordan du undgår det</li>
+      <li>Model routing og cascading: 60-80% lavere pris uden kvalitets-tab</li>
+      <li>Den falske besparelse — hvornår cascading bliver langsommere</li>
+      <li>Async-arkitektur: job queues, streaming, batch APIs</li>
+      <li>Idempotens, retries og memory-niveauer i distribuerede AI-systemer</li>
+      <li>API vs. self-host: TCO-beregningen og hvornår break-even faktisk skifter</li>
+    </ul>
+  </div>
+
+  <div class="quiz-cta">
+    <div class="quiz-cta-icon">📝</div>
+    <h2>Klar til mini-quizzen?</h2>
+    <p>A3-quizzen tester arkitektur-vurdering på case-niveau. Forvent spørgsmål hvor flere svar er "rigtige" — men kun ét er <em>bedst</em> givet konteksten. Mindst 7 ud af 8 rigtige.</p>
+    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+    <a href="quiz-a3.html" class="btn-quiz">Start mini-quiz A3 →</a>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(id) {
+  const mod = document.getElementById(id);
+  mod.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
