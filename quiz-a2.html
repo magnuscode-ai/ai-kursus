@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Mini-quiz A2</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #B42318;
+      --purple-light:#FEE4E2;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #FBF6F5;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --shadow:      0 4px 24px rgba(180,35,24,0.10);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--purple); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(24px, 5vw, 34px); font-weight: 400; line-height: 1.2; margin-bottom: 0.6rem; }
+    .hero p { font-size: 15px; opacity: 0.85; max-width: 480px; margin: 0 auto; }
+
+    .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+    .step-item { display: flex; align-items: center; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .step-dot.active { background: var(--purple); color: white; }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.active { color: var(--purple); }
+    .step-label.done   { color: var(--green); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .progress-info {
+      background: var(--purple-light);
+      border-radius: 12px;
+      padding: 0.9rem 1.1rem;
+      margin-bottom: 1.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 14px;
+      color: var(--purple);
+      font-weight: 600;
+    }
+    .progress-bar-wrap {
+      flex: 1;
+      height: 6px;
+      background: white;
+      border-radius: 3px;
+      margin: 0 1rem;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--purple);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .question {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    .q-num {
+      display: inline-block;
+      background: var(--purple);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    .q-text {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 1rem;
+      line-height: 1.5;
+    }
+    .q-context {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 1rem;
+      padding: 0.75rem 1rem;
+      background: var(--grey);
+      border-radius: 8px;
+      font-style: italic;
+    }
+    .q-code {
+      background: #1e2a3a;
+      color: #e2f0fb;
+      border-radius: 8px;
+      padding: 0.85rem 1rem;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .option {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: white;
+    }
+    .option:hover { border-color: var(--purple); background: var(--purple-light); }
+    .option.selected {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .option input { display: none; }
+    .option-letter {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--grey);
+      color: var(--text);
+      font-size: 12px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .option.selected .option-letter {
+      background: var(--purple);
+      color: white;
+    }
+    .option-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    .option.correct {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .option.correct .option-letter {
+      background: var(--green);
+      color: white;
+    }
+    .option.wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+    .option.wrong .option-letter {
+      background: var(--red);
+      color: white;
+    }
+    .feedback {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct { background: var(--green-light); color: var(--green); border-left: 3px solid var(--green); }
+    .feedback.wrong { background: var(--red-light); color: var(--red); border-left: 3px solid var(--red); }
+    .feedback strong { display: block; margin-bottom: 0.25rem; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    .submit-bar {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      margin: 0 -1.5rem -4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+    }
+    .answered-count { font-size: 14px; color: var(--muted); font-weight: 500; }
+    .btn-submit {
+      background: var(--purple);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 28px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn-submit:hover:not(:disabled) { background: #8a1a13; transform: translateY(-1px); }
+    .btn-submit:disabled { background: var(--border); color: var(--muted); cursor: not-allowed; }
+
+    .result {
+      background: white;
+      border-radius: 18px;
+      padding: 2.5rem 2rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      border: 2px solid var(--purple);
+    }
+    .result.fail { border-color: var(--red); }
+    .result-icon { font-size: 56px; margin-bottom: 1rem; }
+    .result h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px; font-weight: 400;
+      color: var(--text); margin-bottom: 0.5rem;
+    }
+    .result-score {
+      font-size: 48px;
+      font-weight: 700;
+      color: var(--purple);
+      margin: 1rem 0;
+      font-family: 'DM Serif Display', serif;
+    }
+    .result.fail .result-score { color: var(--red); }
+    .result-msg {
+      font-size: 15px; color: var(--muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    .btn-result {
+      display: inline-block;
+      background: var(--purple); color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 700;
+      padding: 14px 32px; border-radius: 12px;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin: 0 0.5rem;
+    }
+    .btn-result:hover { background: #8a1a13; transform: translateY(-1px); }
+    .btn-result.secondary {
+      background: white; color: var(--purple);
+      border: 2px solid var(--purple);
+    }
+    .btn-result.secondary:hover { background: var(--purple-light); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 1.5rem; }
+      .content { padding: 1.5rem 1rem 5rem; }
+      .question { padding: 1.1rem; }
+      .steps-bar { padding: 0.75rem 0.5rem; }
+      .step-label { display: none; }
+      .step-arrow { margin: 0 2px; }
+      .submit-bar { padding: 0.85rem 1rem; margin: 0 -1rem -4rem; }
+      .result { padding: 2rem 1.25rem; }
+      .result-score { font-size: 38px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Mini-quiz A2</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step-item"><div class="step-dot done">A1</div><span class="step-label done">Reasoning</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">Q1</div><span class="step-label done">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">A2</div><span class="step-label done">Fine-tuning</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot active">Q2</div><span class="step-label active">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">A3</div><span class="step-label next">Multi-agent</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">Q3</div><span class="step-label next">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">A4</div><span class="step-label next">Arkitektur</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">Q4</div><span class="step-label next">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">A5</div><span class="step-label next">Mastery</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 1</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 2</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 3</span></div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Mini-quiz A2</div>
+  <h1>Mini-quiz: Fine-tuning og custom modeller</h1>
+  <p>8 spørgsmål om hvornår fine-tuning vinder, LoRA vs QLoRA, træningsdata-disciplin, validation/holdout og catastrophic forgetting. Du skal have minimum 7 ud af 8 rigtige for at låse A3 op.</p>
+</div>
+
+<div class="content" id="quiz-content">
+
+  <div class="progress-info">
+    <span id="answered-text">0 / 8 besvaret</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <span>Krav: 7 / 8</span>
+  </div>
+
+  <!-- Q0 -->
+  <div class="question" id="q0">
+    <span class="q-num">Spørgsmål 1 af 8</span>
+    <div class="q-text">Din chef siger: "Vores AI-chatbot ved ikke nok om vores produkt — fine-tun den på vores produktdokumentation." Hvad er den vigtigste indvending?</div>
+    <div class="options">
+      <label class="option" data-q="0" data-opt="0">
+        <input type="radio" name="q0" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Produktdokumentation skifter ofte, så modellen vil hurtigt være forældet</div>
+      </label>
+      <label class="option" data-q="0" data-opt="1">
+        <input type="radio" name="q0" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Det er et videns-problem, ikke et stil-problem — RAG er det rigtige værktøj. Fine-tuning lærer dårligt nye fakta og er dyrt at vedligeholde</div>
+      </label>
+      <label class="option" data-q="0" data-opt="2">
+        <input type="radio" name="q0" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Produktdokumentation er typisk for kort til at træne en model på — du har brug for mindst 1 mio. tokens</div>
+      </label>
+      <label class="option" data-q="0" data-opt="3">
+        <input type="radio" name="q0" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Der er ingen indvending — fine-tuning på produktdokumentation er en standardpraksis i 2026</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb0"></div>
+  </div>
+
+  <!-- Q1 -->
+  <div class="question" id="q1">
+    <span class="q-num">Spørgsmål 2 af 8</span>
+    <div class="q-text">Du har 4 use-cases. På hvilken er fine-tuning mest sandsynligt at slå "god prompt + RAG" på en stærk general-purpose model?</div>
+    <div class="options">
+      <label class="option" data-q="1" data-opt="0">
+        <input type="radio" name="q1" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">En kundesupport-bot der skal kende firmaets seneste politikker og produkter</div>
+      </label>
+      <label class="option" data-q="1" data-opt="1">
+        <input type="radio" name="q1" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Klassifikation af 5 millioner support-mails dagligt i en stærkt domæne-specifik taksonomi, hvor latency og pris betyder noget</div>
+      </label>
+      <label class="option" data-q="1" data-opt="2">
+        <input type="radio" name="q1" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Et personligt skriveværktøj der hjælper én bruger med at skrive bedre emails</div>
+      </label>
+      <label class="option" data-q="1" data-opt="3">
+        <input type="radio" name="q1" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">En proof-of-concept med 80 håndlavede eksempler på et nyt use-case</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <!-- Q2 -->
+  <div class="question" id="q2">
+    <span class="q-num">Spørgsmål 3 af 8</span>
+    <div class="q-text">Du står med tre fine-tuning-strategier til at specialisere en 70B base-model. Du har én A100/H100 GPU og et budget på 5.000 kr til træning. Hvad er det rigtige førstevalg?</div>
+    <div class="options">
+      <label class="option" data-q="2" data-opt="0">
+        <input type="radio" name="q2" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Full fine-tuning — du får maksimal fleksibilitet og det er den "rigtige" måde</div>
+      </label>
+      <label class="option" data-q="2" data-opt="1">
+        <input type="radio" name="q2" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">LoRA — du fryser basis-modellen og træner kun adapter-matricer. Holder dig inden for budget</div>
+      </label>
+      <label class="option" data-q="2" data-opt="2">
+        <input type="radio" name="q2" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">QLoRA — basis-modellen quantiseres til 4-bit, og du kører LoRA på den. Eneste realistiske vej til en 70B på én GPU</div>
+      </label>
+      <label class="option" data-q="2" data-opt="3">
+        <input type="radio" name="q2" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Drop fine-tuning og brug en større general-purpose model med god prompting — 70B kan ikke fine-tunes meningsfuldt på det budget</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <!-- Q3 -->
+  <div class="question" id="q3">
+    <span class="q-num">Spørgsmål 4 af 8</span>
+    <div class="q-text">Et team siger: "Vi har scrapet 50.000 eksempler fra nettet — det er da nok data til en god fine-tuning?" Et andet team siger: "Vi har 800 håndkurerede eksempler. Det er for lidt." Hvem har bedre udsigter til at vinde — og hvorfor?</div>
+    <div class="options">
+      <label class="option" data-q="3" data-opt="0">
+        <input type="radio" name="q3" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Det første team — 50.000 eksempler er altid bedre end 800, uanset kvalitet</div>
+      </label>
+      <label class="option" data-q="3" data-opt="1">
+        <input type="radio" name="q3" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Det andet team — 800 håndkurerede eksempler med konsistent format slår 50.000 scrapede med blandet kvalitet, fordi modellen lærer mønsteret af konsistensen</div>
+      </label>
+      <label class="option" data-q="3" data-opt="2">
+        <input type="radio" name="q3" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Det er umuligt at vurdere uden at kende basis-modellens størrelse — kvantitet er kun relevant for små modeller</div>
+      </label>
+      <label class="option" data-q="3" data-opt="3">
+        <input type="radio" name="q3" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Begge teams vil ende på cirka samme accuracy — datasæt-størrelse betyder mindre end de fleste tror</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <!-- Q4 -->
+  <div class="question" id="q4">
+    <span class="q-num">Spørgsmål 5 af 8</span>
+    <div class="q-text">Du fine-tuner en model og deployer den. Validation loss faldt smukt under træning — fra 2.1 ned til 0.4. I produktion virker modellen alligevel skuffende. Hvad er den mest sandsynlige forklaring?</div>
+    <div class="options">
+      <label class="option" data-q="4" data-opt="0">
+        <input type="radio" name="q4" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Du har overfittet — du skulle have stoppet træningen tidligere</div>
+      </label>
+      <label class="option" data-q="4" data-opt="1">
+        <input type="radio" name="q4" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Dit validation set blev taget fra samme distribution som training set. Det fortalte dig kun at modellen lærte det den allerede havde set — ikke om den generaliserer til den faktiske produktion</div>
+      </label>
+      <label class="option" data-q="4" data-opt="2">
+        <input type="radio" name="q4" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Inferens-koden bruger formentlig en forkert prompt-skabelon</div>
+      </label>
+      <label class="option" data-q="4" data-opt="3">
+        <input type="radio" name="q4" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Validation loss på 0.4 er for højt — du skulle ned under 0.1 før deploy</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <!-- Q5 -->
+  <div class="question" id="q5">
+    <span class="q-num">Spørgsmål 6 af 8</span>
+    <div class="q-text">Du fine-tuner en chat-model på 3.000 eksempler af juridisk dansk. På dit holdout-set er modellen markant bedre end baseline til juridiske formuleringer. Men når du tester den på almindelige opgaver — oversæt en sætning, opsummer en email, simpel matematik — er den blevet væsentligt dårligere. Hvad sker der, og hvad er det typiske fix?</div>
+    <div class="options">
+      <label class="option" data-q="5" data-opt="0">
+        <input type="radio" name="q5" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Det er forventet — du har specialiseret modellen, så den naturligvis er dårligere på alt andet. Lev med det</div>
+      </label>
+      <label class="option" data-q="5" data-opt="1">
+        <input type="radio" name="q5" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Catastrophic forgetting — modellen har "glemt" generelle evner mens den lærte den specialiserede opgave. Lavere learning rate, færre epochs eller LoRA i stedet for full FT er typiske fix</div>
+      </label>
+      <label class="option" data-q="5" data-opt="2">
+        <input type="radio" name="q5" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Dit datasæt indeholder forkerte labels — gennemgå det manuelt og start træningen forfra</div>
+      </label>
+      <label class="option" data-q="5" data-opt="3">
+        <input type="radio" name="q5" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Modellen er underfittet på det juridiske domæne — kør flere epochs til den glemmer endnu mere af det generelle</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <!-- Q6 -->
+  <div class="question" id="q6">
+    <span class="q-num">Spørgsmål 7 af 8</span>
+    <div class="q-text">Du har fine-tunet en model. Resultaterne ser sådan ud:
+    <br>• <strong>Baseline (god prompt på GPT-4o):</strong> 73% accuracy, 0,12 kr / kald
+    <br>• <strong>Din fine-tuned model:</strong> 76% accuracy, 0,04 kr / kald
+    <br>Ledelsen spørger: "Var det værd at fine-tune?" Hvilket svar er bedst funderet?</div>
+    <div class="options">
+      <label class="option" data-q="6" data-opt="0">
+        <input type="radio" name="q6" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Nej — 3 procentpoint i accuracy er for lidt til at retfærdiggøre et fine-tuning-projekt</div>
+      </label>
+      <label class="option" data-q="6" data-opt="1">
+        <input type="radio" name="q6" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Ja, men beslutningen afhænger af volumen: ved høj request-volumen er 67% billigere og 3 procentpoint bedre en stærk gevinst; ved lav volumen retfærdiggør den ikke vedligeholdsomkostningen</div>
+      </label>
+      <label class="option" data-q="6" data-opt="2">
+        <input type="radio" name="q6" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Ja — accuracy er højere og pris er lavere, så det er entydigt et bedre setup</div>
+      </label>
+      <label class="option" data-q="6" data-opt="3">
+        <input type="radio" name="q6" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Spørgsmålet kan ikke besvares uden at kende validation loss-kurven</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <!-- Q7 -->
+  <div class="question" id="q7">
+    <span class="q-num">Spørgsmål 8 af 8</span>
+    <div class="q-text">En kollega kører LoRA og foreslår: "Lad os bare hæve rank fra 16 til 256 — så har vi mere kapacitet, og det burde altid give bedre resultater." Hvad er den korrekte indvending?</div>
+    <div class="options">
+      <label class="option" data-q="7" data-opt="0">
+        <input type="radio" name="q7" value="0">
+        <div class="option-letter">A</div>
+        <div class="option-text">Højere rank giver altid bedre resultater, så indvendingen er svag — kør bare det</div>
+      </label>
+      <label class="option" data-q="7" data-opt="1">
+        <input type="radio" name="q7" value="1">
+        <div class="option-letter">B</div>
+        <div class="option-text">Højere rank øger antallet af trænbare parametre. Det øger risikoen for overfitting på små datasæt, koster mere VRAM, og bringer dig tættere på full FT — uden den robusthed der er hele LoRAs styrke. På 3.000 eksempler er rank 16-32 typisk det rigtige</div>
+      </label>
+      <label class="option" data-q="7" data-opt="2">
+        <input type="radio" name="q7" value="2">
+        <div class="option-letter">C</div>
+        <div class="option-text">Rank skal altid matche basis-modellens hidden size — for en 7B er det typisk 4096</div>
+      </label>
+      <label class="option" data-q="7" data-opt="3">
+        <input type="radio" name="q7" value="3">
+        <div class="option-letter">D</div>
+        <div class="option-text">Højere rank får trænings-loss til at falde for hurtigt og bryder optimeringsalgoritmen</div>
+      </label>
+    </div>
+    <div class="feedback" id="fb7"></div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="result" id="result-content" style="display:none;">
+    <div class="result-icon" id="result-icon"></div>
+    <h2 id="result-title"></h2>
+    <div class="result-score" id="result-score"></div>
+    <p class="result-msg" id="result-msg"></p>
+    <div>
+      <a id="btn-retry" href="kursus-a2.html" class="btn-result secondary">↺ Læs A2 igen</a>
+      <a id="btn-next" href="kursus-a3.html" class="btn-result" style="display:none;">Gå til Kursus A3 →</a>
+    </div>
+  </div>
+
+  <div class="submit-bar">
+    <span class="answered-count" id="answered-count">Besvar alle 8 spørgsmål (0/8)</span>
+    <button id="submit-btn" class="btn-submit" disabled>Indsend svar</button>
+  </div>
+
+</div>
+
+<script>
+const CORRECT = [1, 1, 2, 1, 1, 1, 1, 1];
+
+const EXPLAIN = [
+  "Det er en af A2's vigtigste pointer: \"Modellen ved ikke noget om vores produkt\" er et videns-problem, ikke et stil-problem. RAG indlæser viden i kontekstvinduet ved hver request og holder sig automatisk opdateret. Fine-tuning er dyrt, sværere at vedligeholde, og lærer notorisk dårligt nye fakta sammenlignet med RAG. Brug fine-tuning til stil og format — RAG til viden.",
+  "Stil-konsistens kombineret med ekstrem volumen er fine-tunings sweet spot. En lille fine-tuned model kan klassificere 5 mio. mails dagligt i et domæne-specifikt taksonomi langt billigere og hurtigere end en general-purpose model med few-shot. De andre cases falder i klassiske faldgruber: A er et videns-problem (RAG), C har for lille datasæt og for skiftende behov, D har under 500 eksempler.",
+  "QLoRA er den eneste realistiske vej til en 70B på én GPU og inden for et beskedent budget. Basis-modellen quantiseres til 4-bit, og LoRA-adaptere trænes ovenpå. Full FT kræver multi-GPU og koster 50-100× mere. Standard LoRA uden quantisering kan stadig sprænge VRAM på en 70B model.",
+  "Kvalitet slår kvantitet. Modellen lærer mønsteret af konsistensen i outputtet — så 800 håndkurerede eksempler med konsistent format og verificerede labels giver langt mere stabil indlæring end 50.000 scrapede med blandet kvalitet, hvor modellen ender med at lære alle fejlene som mønstre.",
+  "Det er den dyreste begynder-fejl ved fine-tuning. Validation set fra samme distribution som training set fortæller dig kun, om modellen ikke overfittede på data den allerede havde set — ikke om den generaliserer til den faktiske produktion. Du skal have et separat <em>holdout</em>-sæt fra \"morgendagens distribution\".",
+  "Klassisk catastrophic forgetting: modellen har erstattet generelle evner med den specialiserede opgave. Standard mod-svar: lavere learning rate, færre epochs, eller LoRA frem for full FT (LoRA fryser basis-modellen og bevarer dermed dens generelle evner). At blande generelle eksempler ind i træningsdata hjælper også.",
+  "Cost-per-correct og volumen er det der afgør beslutningen. Fine-tuned: 0,04 / 0,76 ≈ 0,053 kr pr. rigtigt svar. Baseline: 0,12 / 0,73 ≈ 0,164 kr — over 3× dyrere pr. rigtigt svar. Ved millioner af kald er det enorme besparelser; ved få hundrede er det ikke værd at vedligeholde. Beslutningen er ikke binær — den afhænger af volumen.",
+  "Højere rank øger antallet af trænbare parametre, hvilket både øger overfitting-risiko på små datasæt OG VRAM-forbruget, samtidig med at du mister noget af den robusthed der er hele pointen med LoRA. På 3.000 eksempler er rank 16-32 typisk det rigtige. \"Mere kapacitet\" er ikke automatisk bedre — det er en hyperparameter der skal tunes på dit faktiske datasæt."
+];
+
+const PASS_SCORE = 7;
+const TOTAL = 8;
+
+const answers = new Array(TOTAL).fill(null);
+
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const q = parseInt(opt.dataset.q);
+    const o = parseInt(opt.dataset.opt);
+    answers[q] = o;
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(x => x.classList.remove('selected'));
+    opt.classList.add('selected');
+    updateProgress();
+  });
+});
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('answered-text').textContent = answered + ' / ' + TOTAL + ' besvaret';
+  document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
+  const btn = document.getElementById('submit-btn');
+  const lbl = document.getElementById('answered-count');
+  if (answered === TOTAL) {
+    btn.disabled = false;
+    lbl.textContent = 'Klar til at indsende';
+  } else {
+    btn.disabled = true;
+    lbl.textContent = 'Besvar alle ' + TOTAL + ' spørgsmål (' + answered + '/' + TOTAL + ')';
+  }
+}
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+  let score = 0;
+  for (let i = 0; i < TOTAL; i++) {
+    const opts = document.querySelectorAll(`.option[data-q="${i}"]`);
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const userAns = answers[i];
+    const correct = CORRECT[i];
+    if (userAns === correct) {
+      score++;
+      opts[userAns].classList.add('correct');
+      opts[userAns].classList.remove('selected');
+    } else {
+      opts[userAns].classList.add('wrong');
+      opts[userAns].classList.remove('selected');
+      opts[correct].classList.add('correct');
+    }
+    const fb = document.getElementById('fb' + i);
+    if (userAns === correct) {
+      fb.className = 'feedback correct show';
+      fb.innerHTML = '<strong>Rigtigt</strong>' + EXPLAIN[i];
+    } else {
+      fb.className = 'feedback wrong show';
+      fb.innerHTML = '<strong>Forkert — det rigtige svar er ' + String.fromCharCode(65 + correct) + '</strong>' + EXPLAIN[i];
+    }
+  }
+
+  document.querySelector('.submit-bar').style.display = 'none';
+  const result = document.getElementById('result-content');
+  result.style.display = 'block';
+  result.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-score').textContent = score + ' / ' + TOTAL;
+
+  if (passed) {
+    result.classList.remove('fail');
+    document.getElementById('result-icon').textContent = '🎉';
+    document.getElementById('result-title').textContent = 'Bestået!';
+    document.getElementById('result-msg').innerHTML = 'Du fik ' + score + ' ud af ' + TOTAL + ' rigtige. Du kan vurdere et fine-tuning-projekt rigtigt — beslutningstræet, LoRA/QLoRA-valg, datasæt-disciplin, validation/holdout og catastrophic forgetting. Du er klar til Kursus A3 — multi-agent orkestrering.';
+    document.getElementById('btn-next').style.display = 'inline-block';
+  } else {
+    result.classList.add('fail');
+    document.getElementById('result-icon').textContent = '💪';
+    document.getElementById('result-title').textContent = 'Ikke helt endnu';
+    document.getElementById('result-msg').innerHTML = 'Du fik ' + score + ' ud af ' + TOTAL + ' rigtige. Du skal have mindst ' + PASS_SCORE + ' for at låse A3 op. Fine-tuning er hvor de fleste 50.000 kr-fejl bliver begået — gå tilbage og læs de moduler hvor du var usikker. Ubegrænsede forsøg.';
+  }
+});
+</script>
+
+</body>
+</html>
