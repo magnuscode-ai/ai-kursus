@@ -56,12 +56,15 @@
         @keyframes bounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
         .result h2 { font-size: 2rem; margin-bottom: 10px; }
         .result .score { font-size: 3.5rem; font-weight: bold; margin: 15px 0; }
-        .result .message { font-size: 1.05rem; color: #6b7280; margin-bottom: 20px; line-height: 1.6; }
+        .result .message { font-size: 1.05rem; color: #6b7280; margin-bottom: 25px; line-height: 1.6; }
         .passed { color: #059669; }
         .failed { color: #dc2626; }
-        .btn-retry { background: #2563eb; color: white; padding: 13px 40px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .result-buttons { display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; }
+        .btn-retry { background: #2563eb; color: white; padding: 13px 35px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
         .btn-retry:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,0.4); }
-        @media (max-width: 600px) { .quiz-container { padding: 20px; } .quiz-header h1 { font-size: 1.5rem; } .btn-container { flex-direction: column; } .option { font-size: 0.9rem; } }
+        .btn-certificate { background: #059669; color: white; padding: 13px 35px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; text-decoration: none; display: inline-block; }
+        .btn-certificate:hover { background: #047857; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(5,150,105,0.4); }
+        @media (max-width: 600px) { .quiz-container { padding: 20px; } .quiz-header h1 { font-size: 1.5rem; } .btn-container { flex-direction: column; } .option { font-size: 0.9rem; } .result-buttons { flex-direction: column; } }
     </style>
 </head>
 <body>
@@ -71,7 +74,7 @@
             <span class="level-badge">Ekspert Niveau • Modul A1</span>
             <p style="margin-top:10px;color:#6b7280;font-size:0.95rem;">10 svære spørgsmål • 8+ rigtige for at bestå • Øjeblikkelig feedback</p>
         </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-bar" id="progressBar"><div class="progress-fill" id="progressFill"></div></div>
         <div class="score-tracker" id="scoreTracker"></div>
         <div class="question-counter" id="questionCounter"></div>
         <div id="quizQuestions"></div>
@@ -86,7 +89,7 @@
             <h2 id="resultTitle"></h2>
             <div class="score" id="resultScore"></div>
             <p class="message" id="resultMessage"></p>
-            <button class="btn-retry" onclick="retryQuiz()">Prøv igen 🔄</button>
+            <div class="result-buttons" id="resultButtons"></div>
         </div>
     </div>
 
@@ -305,28 +308,63 @@
             quizFinished = true;
             const score = Object.values(answeredQuestions).filter(v => v === true).length;
             const passed = score >= 8;
-            ['quizQuestions','btnContainer','feedback','questionCounter'].forEach(id => document.getElementById(id).style.display = 'none');
-            document.querySelector('.progress-bar').style.display = 'none';
-            document.getElementById('result').classList.add('show');
+            
+            // Skjul spørgsmål, navigation og feedback - men BEHOLD progress-bar og score-tracker
+            document.getElementById('quizQuestions').style.display = 'none';
+            document.getElementById('btnContainer').style.display = 'none';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('questionCounter').style.display = 'none';
+            // Progress-bar og score-tracker forbliver synlige!
+            
+            const resultDiv = document.getElementById('result');
+            resultDiv.classList.add('show');
+            
             document.getElementById('resultIcon').textContent = passed ? '🎉' : '📚';
             document.getElementById('resultTitle').textContent = passed ? 'Tillykke! Du bestod!' : 'Ikke bestået - 8+ kræves';
             document.getElementById('resultTitle').className = passed ? 'passed' : 'failed';
             document.getElementById('resultScore').textContent = `${score}/10`;
             document.getElementById('resultScore').className = `score ${passed ? 'passed' : 'failed'}`;
-            document.getElementById('resultMessage').textContent = passed ? 'Imponerende! Du har demonstreret dyb ekspertviden i avancerede AI-koncepter. Kursusbeviset er dit! 🏆' : 'Gennemgå forklaringerne på dine forkerte svar og prøv igen. Mestring kræver dedikation! 💪';
+            document.getElementById('resultMessage').textContent = passed 
+                ? 'Imponerende! Du har demonstreret dyb ekspertviden i avancerede AI-koncepter. Kursusbeviset er dit! 🏆' 
+                : 'Du fik desværre under 8 rigtige. Gennemgå dine forkerte svar (se dots ovenfor) og prøv quizzen igen - du kan sagtens! 💪';
+            
+            // Byg resultatknapper
+            const buttonsDiv = document.getElementById('resultButtons');
+            
+            if (passed) {
+                buttonsDiv.innerHTML = `
+                    <button class="btn-certificate" onclick="alert('🏆 Kursusbevis for A1 er hermed udstedt! Tillykke!')">📜 Hent kursusbevis</button>
+                    <button class="btn-retry" onclick="retryQuiz()">🔄 Prøv quiz igen</button>
+                `;
+            } else {
+                buttonsDiv.innerHTML = `
+                    <button class="btn-retry" onclick="retryQuiz()">🔄 Prøv quiz igen</button>
+                `;
+            }
         }
 
         function retryQuiz() {
-            currentQuestion = 0; selectedAnswers = {}; answeredQuestions = {}; quizFinished = false;
+            currentQuestion = 0;
+            selectedAnswers = {};
+            answeredQuestions = {};
+            quizFinished = false;
+            
             document.getElementById('result').classList.remove('show');
-            ['quizQuestions','btnContainer','feedback','questionCounter'].forEach(id => document.getElementById(id).style.display = 'block');
-            document.querySelector('.progress-bar').style.display = 'block';
+            document.getElementById('quizQuestions').style.display = 'block';
+            document.getElementById('btnContainer').style.display = 'flex';
+            document.getElementById('feedback').style.display = 'block';
+            document.getElementById('questionCounter').style.display = 'block';
+            // Progress-bar og score-tracker er allerede synlige
             document.getElementById('btnSubmit').style.display = 'none';
-            initScoreTracker(); renderQuestions(); showQuestion(0);
+            
+            initScoreTracker();
+            renderQuestions();
+            showQuestion(0);
             document.getElementById('btnNext').disabled = true;
         }
 
-        initScoreTracker(); renderQuestions();
+        initScoreTracker();
+        renderQuestions();
         document.getElementById('btnNext').disabled = true;
     </script>
 </body>
