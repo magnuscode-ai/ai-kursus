@@ -1,1081 +1,947 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>LearnAI | AI Kurser - Fra Begynder til Ekspert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #e94560;
+            --gold: #f0c040;
+            --light: #f8f9ff;
+            --card: #ffffff;
+            --text: #2c2c44;
+            --muted: #6c6c8a;
+            --gradient-1: #0f0c29;
+            --gradient-2: #302b63;
+            --gradient-3: #24243e;
+            --purple: #667eea;
+            --pink: #e94560;
+        }
 
-   AI-KURSER – Home Page
-   Design: Futuristisk 3D Isometric
-   - Dark navy background with blue/purple accents
-   - Holographic cyan and purple neon colors
-   - Modern minimalist aesthetic
-   - Sora headlines, Source Serif 4 body
-   - Niveau-farver: D=grøn, C=blå, B=orange, A=guld
-   ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-import { useState } from "react";
-import { ExternalLink, BookOpen, Trophy, ChevronDown, ChevronUp, Brain, Star, ArrowRight } from "lucide-react";
-import { useLocation } from "wouter";
+        body {
+            font-family: 'Segoe UI', 'Inter', Roboto, system-ui, sans-serif;
+            background: #f0f2f8;
+            color: var(--text);
+            line-height: 1.7;
+            scroll-behavior: smooth;
+        }
 
-// ─── Data ────────────────────────────────────────────────────────────────────
+        /* Container */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
 
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/futuristic-3d-workspace-8MDAEsBmBmR2BoGC3W6ikv.webp";
-const PROGRESSION_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/progression-illustration-csmR3p9s6c9RDBAgWPixGr.webp";
+        /* ========== HERO / LOGO SEKTION ========== */
+        .hero {
+            background: linear-gradient(160deg, var(--gradient-1) 0%, var(--gradient-2) 50%, var(--gradient-3) 100%);
+            border-radius: 2.5rem;
+            padding: 3rem 2rem 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.35);
+        }
 
-interface CourseItem {
-  title: string;
-  type: "kursus" | "quiz" | "eksamen";
-  publicUrl?: string;
-  note?: string;
-  comingSoon?: boolean;
-}
+        /* Animerede partikler baggrund */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -60%;
+            left: -60%;
+            width: 220%;
+            height: 220%;
+            background: 
+                radial-gradient(circle at 30% 40%, rgba(102, 126, 234, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(233, 69, 96, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 80%, rgba(240, 192, 64, 0.06) 0%, transparent 50%);
+            animation: floatBg 25s ease-in-out infinite;
+        }
 
-interface Level {
-  id: string;
-  label: string;
-  sublabel: string;
-  description: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
-  textColor: string;
-  badgeClass: string;
-  price: string;
-  items: CourseItem[];
-}
+        @keyframes floatBg {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, -2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
 
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
 
+        /* Logo container */
+        .logo-wrapper {
+            display: inline-block;
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
 
-const levels: Level[] = [
-  {
-    id: "D",
-    label: "Niveau D",
-    sublabel: "Nybegynder",
-    description: "Det perfekte startpunkt. Gratis og tilgængeligt for alle – ingen forkundskaber nødvendige. Lær de grundlæggende principper i kunstig intelligens og bestå din første eksamen.",
-    color: "#2d8a4e",
-    bgColor: "bg-emerald-50",
-    borderColor: "border-emerald-300",
-    textColor: "text-emerald-800",
-    badgeClass: "level-badge-d",
-    price: "Gratis",
-    items: [
-      {
-        title: "D Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-d.html",
-      },
-      {
-        title: "D Eksamen",
-        type: "eksamen",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/",
-        note: "Skal muligvis gøres nemmere",
-      },
-    ],
-  },
-  {
-    id: "C",
-    label: "Niveau C",
-    sublabel: "Øvet",
-    description: "Tag det næste skridt. Tre moduler med mini-quizzer undervejs og to afsluttende eksamener. Du bygger videre på grundlaget fra niveau D og dykker dybere ned i AI-koncepter.",
-    color: "#1e5fa8",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-300",
-    textColor: "text-blue-800",
-    badgeClass: "level-badge-c",
-    price: "Kommende",
-    items: [
-      {
-        title: "C1 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c1.html",
-      },
-      {
-        title: "C1 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c1.html",
-      },
-      {
-        title: "C2 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c2.html",
-      },
-      {
-        title: "C2 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c2.html",
-      },
-      {
-        title: "C3 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c3.html",
-      },
-      {
-        title: "C Eksamen 1",
-        type: "eksamen",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c.html",
-      },
-      {
-        title: "C Eksamen 2",
-        type: "eksamen",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c2.html",
-      },
-    ],
-  },
-  {
-    id: "B",
-    label: "Niveau B",
-    sublabel: "Avanceret",
-    description: "Fem intensive moduler med tilhørende quizzer og tre afsluttende eksamener. På dette niveau arbejder du med avancerede AI-teknikker og begynder at anvende AI professionelt.",
-    color: "#c05c10",
-    bgColor: "bg-orange-50",
-    borderColor: "border-orange-300",
-    textColor: "text-orange-800",
-    badgeClass: "level-badge-b",
-    price: "Kommende",
-    items: [
-      {
-        title: "B1 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b1.html",
-      },
-      {
-        title: "B1 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b1.html",
-      },
-      {
-        title: "B2 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b2.html",
-      },
-      {
-        title: "B2 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b2.html",
-      },
-      {
-        title: "B3 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b3.html",
-      },
-      {
-        title: "B3 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b3.html",
-      },
-      {
-        title: "B4 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b4.html",
-      },
-      {
-        title: "B4 Mini Quiz",
-        type: "quiz",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b4.html",
-      },
-      {
-        title: "B5 Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b5.html",
-      },
-      {
-        title: "B Eksamen 1",
-        type: "eksamen",
-        comingSoon: true,
-      },
-      {
-        title: "B Eksamen 2",
-        type: "eksamen",
-        comingSoon: true,
-      },
-      {
-        title: "B Eksamen 3",
-        type: "eksamen",
-        comingSoon: true,
-      },
-    ],
-  },
-  {
-    id: "A",
-    label: "Niveau A",
-    sublabel: "Ekspert",
-    description: "Det ultimative niveau. Bliv en certificeret AI-ekspert med dybdegående viden og praktiske færdigheder. Niveau A er under udvikling og lanceres snart.",
-    color: "#a07010",
-    bgColor: "bg-amber-50",
-    borderColor: "border-amber-300",
-    textColor: "text-amber-800",
-    badgeClass: "level-badge-a",
-    price: "Kommende",
-    items: [],
-  },
-];
+        .logo-img {
+            max-width: 200px;
+            height: auto;
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            border: 3px solid rgba(255, 255, 255, 0.25);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(5px);
+        }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+        .logo-img:hover {
+            transform: scale(1.06) rotate(-1deg);
+            box-shadow: 0 20px 50px rgba(102, 126, 234, 0.5);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
 
-function TypeIcon({ type }: { type: CourseItem["type"] }) {
-  if (type === "kursus") return <BookOpen className="w-4 h-4" />;
-  if (type === "quiz") return <Brain className="w-4 h-4" />;
-  return <Trophy className="w-4 h-4" />;
-}
+        /* Fallback hvis logo mangler */
+        .logo-fallback {
+            display: none;
+            width: 180px;
+            height: 180px;
+            margin: 0 auto 1.2rem;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: white;
+        }
 
-function TypeLabel({ type }: { type: CourseItem["type"] }) {
-  if (type === "kursus") return "Kursus";
-  if (type === "quiz") return "Quiz";
-  return "Eksamen";
-}
+        .brand-name {
+            font-size: 4.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            background: linear-gradient(135deg, #a8b8ff, #667eea, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.3rem;
+            filter: drop-shadow(0 0 25px rgba(102, 126, 234, 0.5));
+        }
 
-function CourseCard({ item, levelColor }: { item: CourseItem; levelColor: string }) {
-  const typeColors: Record<CourseItem["type"], string> = {
-    kursus: "bg-slate-100 text-slate-700",
-    quiz: "bg-violet-100 text-violet-700",
-    eksamen: "bg-rose-100 text-rose-700",
-  };
+        .tagline {
+            color: #c8c8e8;
+            font-size: 1.25rem;
+            font-weight: 400;
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.5px;
+        }
 
-  return (
-    <div
-      className={`
-        flex items-center justify-between gap-3 p-3 rounded-lg border border-border
-        bg-white hover:shadow-md transition-all duration-200 group
-        ${item.comingSoon ? "opacity-60" : "hover:-translate-y-0.5"}
-      `}
-    >
-      <div className="flex items-center gap-3 min-w-0">
-        <div
-          className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 text-white"
-          style={{ backgroundColor: levelColor }}
-        >
-          <TypeIcon type={item.type} />
-        </div>
-        <div className="min-w-0">
-          <p className="font-semibold text-sm text-foreground truncate" style={{ fontFamily: "'Sora', sans-serif" }}>
-            {item.title}
-          </p>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[item.type]}`}>
-            <TypeLabel type={item.type} />
-          </span>
-        </div>
-      </div>
-      <div className="flex-shrink-0">
-        {item.comingSoon ? (
-          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Snart</span>
-        ) : item.publicUrl ? (
-          <a
-            href={item.publicUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white transition-all hover:opacity-90 hover:shadow-sm"
-            style={{ backgroundColor: levelColor }}
-          >
-            Åbn <ExternalLink className="w-3 h-3" />
-          </a>
-        ) : null}
-      </div>
-    </div>
-  );
-}
+        .sub-tagline {
+            color: #9999bb;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
 
-function LevelSection({ level }: { level: Level }) {
-  const [expanded, setExpanded] = useState(level.id === "D");
+        /* Knapper */
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
 
-  return (
-    <div className={`rounded-2xl border-2 ${level.borderColor} overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300`}>
-      {/* Header */}
-      <div className={`${level.bgColor} p-6`}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div
-              className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-md flex-shrink-0"
-              style={{ backgroundColor: level.color, fontFamily: "'Sora', sans-serif" }}
+        .btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            border-radius: 3rem;
+            font-weight: 700;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            letter-spacing: 0.3px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple), #5a6fd6);
+            color: white;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.45);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #7b8ff0, #667eea);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-accent {
+            background: linear-gradient(135deg, var(--pink), #c0392b);
+            color: white;
+            box-shadow: 0 8px 25px rgba(233, 69, 96, 0.4);
+        }
+
+        .btn-accent:hover {
+            background: linear-gradient(135deg, #f06080, #e94560);
+            transform: translateY(-3px);
+            box-shadow: 0 14px 35px rgba(233, 69, 96, 0.55);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+
+        /* ========== SEKTIONER ========== */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-title i {
+            color: var(--purple);
+            font-size: 1.8rem;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            margin-bottom: 1.8rem;
+            font-size: 1.05rem;
+        }
+
+        /* Grids */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--card);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .card-icon {
+            font-size: 2.2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            background: linear-gradient(135deg, var(--purple), var(--pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.7rem;
+            color: var(--primary);
+        }
+
+        .card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Niveau kort */
+        .level-card {
+            background: var(--card);
+            border-radius: 1.8rem;
+            padding: 1.8rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .level-card:hover {
+            transform: scale(1.04);
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12);
+        }
+
+        .level-card.d { border-color: #4caf50; }
+        .level-card.d:hover { box-shadow: 0 18px 40px rgba(76, 175, 80, 0.2); }
+        .level-card.c { border-color: #ff9800; }
+        .level-card.c:hover { box-shadow: 0 18px 40px rgba(255, 152, 0, 0.2); }
+        .level-card.b { border-color: #f44336; }
+        .level-card.b:hover { box-shadow: 0 18px 40px rgba(244, 67, 54, 0.2); }
+        .level-card.a { border-color: #9c27b0; }
+        .level-card.a:hover { box-shadow: 0 18px 40px rgba(156, 39, 176, 0.2); }
+
+        .level-emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 0.4rem 1.3rem;
+            border-radius: 2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin: 0.7rem 0;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-d { background: #e8f5e9; color: #2e7d32; }
+        .badge-c { background: #fff3e0; color: #e65100; }
+        .badge-b { background: #ffebee; color: #b71c1c; }
+        .badge-a { background: #f3e5f5; color: #6a1b9a; }
+
+        .level-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            margin-top: 0.3rem;
+        }
+
+        /* Vores historie sektion */
+        .story-section {
+            background: linear-gradient(135deg, #fafbff, #f0f2ff);
+            border-radius: 2rem;
+            padding: 2.5rem;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        .story-section .quote {
+            font-style: italic;
+            color: var(--purple);
+            font-size: 1.1rem;
+            border-left: 4px solid var(--purple);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(to bottom, var(--purple), var(--pink));
+            border-radius: 2px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 8px;
+            width: 14px;
+            height: 14px;
+            background: white;
+            border: 3px solid var(--purple);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item h4 {
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .timeline-item p {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* Coin system sektion */
+        .coin-showcase {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .coin-icon {
+            font-size: 3rem;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .badge-showcase {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin: 1rem 0;
+        }
+
+        .badge-item {
+            background: linear-gradient(135deg, #667eea, #e94560);
+            color: white;
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        /* ========== SIDEKURSER POPUP ========== */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .overlay-content {
+            background: white;
+            max-width: 850px;
+            margin: 2.5rem auto;
+            border-radius: 2rem;
+            padding: 2.5rem;
+            position: relative;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #1a1a2e;
+            background: #f0f0f5;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-btn:hover {
+            background: #e94560;
+            color: white;
+        }
+
+        .mini-course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.8rem;
+            margin: 1rem 0 1.5rem;
+        }
+
+        .mini-course {
+            background: #f8f9ff;
+            padding: 1rem;
+            border-radius: 1rem;
+            text-align: center;
+            transition: 0.2s;
+            border: 1px solid #e8e8f0;
+            text-decoration: none;
+            color: var(--text);
+        }
+
+        .mini-course:hover {
+            background: var(--purple);
+            color: white;
+            transform: translateY(-2px);
+            border-color: var(--purple);
+        }
+
+        .mini-course i {
+            font-size: 1.5rem;
+            margin-bottom: 0.4rem;
+            display: block;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: #aaa;
+            text-align: center;
+            padding: 2.5rem 1.5rem;
+            border-radius: 2rem 2rem 0 0;
+            margin-top: 3rem;
+        }
+
+        footer .footer-brand {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #e94560);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Responsiv */
+        @media (max-width: 768px) {
+            .brand-name {
+                font-size: 3rem;
+            }
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            .overlay-content {
+                margin: 1rem;
+                padding: 1.5rem;
+                border-radius: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== HERO / LOGO ==================== -->
+    <header class="hero">
+        <div class="hero-content">
+            <!-- Logo billede -->
+            <img 
+                src="media/image1.png" 
+                alt="LearnAI Logo" 
+                class="logo-img" 
+                id="logoImage"
+                onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';"
             >
-              {level.id}
+            <div class="logo-fallback" id="logoFallback">
+                <i class="fas fa-robot"></i>
             </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-xl font-bold" style={{ fontFamily: "'Sora', sans-serif", color: level.color }}>
-                  {level.label}
-                </h3>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${level.textColor} bg-white/60`}>
-                  {level.sublabel}
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1 max-w-lg">
-                {level.description}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <span
-              className="text-sm font-bold px-3 py-1 rounded-full text-white"
-              style={{ backgroundColor: level.color }}
-            >
-              {level.price}
-            </span>
-            {level.items.length > 0 && (
-              <button
-                onClick={() => setExpanded(!expanded)}
-                className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition-all ${level.borderColor} ${level.textColor} bg-white/80 hover:bg-white`}
-              >
-                {expanded ? (
-                  <><ChevronUp className="w-3 h-3" /> Skjul</>
-                ) : (
-                  <><ChevronDown className="w-3 h-3" /> Vis {level.items.length} moduler</>
-                )}
-              </button>
-            )}
-            {level.items.length === 0 && (
-              <span className="text-xs text-muted-foreground italic">Under udvikling</span>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* Course items */}
-      {expanded && level.items.length > 0 && (
-        <div className="p-6 bg-white">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {level.items.map((item, idx) => (
-              <CourseCard key={idx} item={item} levelColor={level.color} />
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+            <h1 class="brand-name">LearnAI</h1>
+            <p class="tagline">Fra begynder (D) til ekspert (A) – Din AI-rejse starter her</p>
+            <p class="sub-tagline">🚀 Struktureret læring · Eksamensbeviser · Coin-system · Badges</p>
 
-// ─── Main Page ────────────────────────────────────────────────────────────────
-
-export default function Home() {
-  const [, setLocation] = useLocation();
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }}>
-      {/* ── Navigation ── */}
-      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(15,23,41,0.95)", borderColor: "rgba(0,212,255,0.3)" }}>
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
-              AI
-            </div>
-            <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-              LearnAI
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-          <a href="#kurser" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Kurser
-          </a>
-          <button
-            onClick={() => setLocation("/sidekurser")}
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-          >
-            Sidekurser
-          </button>
-          <a href="#om-os" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
-            Om os
-          </a>
-          </div>
-          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full text-white transition-all hover:opacity-90" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
-            Start gratis <ArrowRight className="w-3.5 h-3.5" />
-          </a>
-        </div>
-      </nav>
-
-      {/* ── Hero ── */}
-      <section className="relative overflow-hidden">
-        <div className="container py-16 md:py-24">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Left: Text */}
-            <div className="animate-fade-in-up stagger-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 border"
-                style={{ backgroundColor: "#FFF8E7", borderColor: "#E8A020", color: "#a07010" }}>
-                <Star className="w-3 h-3" fill="currentColor" />
-                Gratis startkursus – ingen forkundskaber nødvendige
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6"
-                style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-                Lær kunstig<br />
-                <span style={{ color: "#E8A020" }}>intelligens</span><br />
-                trin for trin
-              </h1>
-              <p className="text-lg leading-relaxed text-muted-foreground mb-8 max-w-lg">
-                Fra nybegynder til ekspert – strukturerede AI-kurser med quizzer, eksamener og kursusbeviser. Inspireret af Duolingo, bygget til den danske lærende.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <a
-                  href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white text-base transition-all hover:opacity-90 hover:shadow-lg"
-                  style={{ backgroundColor: "#1B2B4B", fontFamily: "'Sora', sans-serif" }}
-                >
-                  Start niveau D – gratis <ArrowRight className="w-4 h-4" />
+            <div class="btn-group">
+                <a href="#niveauer" class="btn btn-primary">
+                    <i class="fas fa-layer-group"></i> Se niveauer
                 </a>
-                <a
-                  href="#kurser"
-                  className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-base border-2 transition-all hover:bg-white"
-                  style={{ borderColor: "#1B2B4B", color: "#1B2B4B", fontFamily: "'Sora', sans-serif" }}
-                >
-                  Se alle kurser
+                <a href="#" class="btn btn-accent" onclick="document.getElementById('sidekurserOverlay').style.display='block'; return false;">
+                    <i class="fas fa-th-large"></i> Alle sidekurser
                 </a>
-              </div>
-
-              {/* Stats */}
-              <div className="flex flex-wrap gap-6 mt-10 pt-8 border-t border-border">
-                {[
-                  { value: "4", label: "Niveauer" },
-                  { value: "16+", label: "Moduler" },
-                  { value: "10+", label: "Quizzer & Eksamener" },
-                ].map((stat) => (
-                  <div key={stat.label}>
-                    <p className="text-2xl font-extrabold" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-                      {stat.value}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{stat.label}</p>
-                  </div>
-                ))}
-              </div>
+                <a href="#historie" class="btn btn-outline">
+                    <i class="fas fa-users"></i> Vores historie
+                </a>
             </div>
+        </div>
+    </header>
 
-            {/* Right: Hero image */}
-            <div className="relative animate-fade-in-up stagger-2">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl">
-                <img
-                  src={HERO_IMG}
-                  alt="AI neural network illustration"
-                  className="w-full h-auto object-cover"
-                  style={{ maxHeight: "420px" }}
-                />
-              </div>
-              {/* Floating badge */}
-              <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl shadow-xl p-4 border border-border">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style={{ backgroundColor: "#2d8a4e" }}>
-                    D
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground">Start her</p>
-                    <p className="text-sm font-bold" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>Niveau D – Gratis</p>
-                  </div>
+    <main class="container">
+
+        <!-- ==================== OM PROJEKTET ==================== -->
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-info-circle"></i> Om LearnAI</h2>
+            <p class="section-subtitle">Et AI-kursus system bygget med passion og dedikation</p>
+            <div class="grid-2">
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-cogs"></i></div>
+                    <h3>Sådan fungerer det</h3>
+                    <p>Start gratis på <strong>niveau D</strong> som nybegynder. Gennemfør kurser og mini-quizzer, bestå den afgørende eksamen, og lås op for næste niveau. Systemet er bygget som en progressiv læringsrejse – lidt ligesom Duolingo, men for AI.</p>
                 </div>
-              </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-bullseye"></i></div>
+                    <h3>Målet med projektet</h3>
+                    <p>Vi bygger en professionel platform, hvor du kan købe adgang til dybdegående AI-kurser. Tanken er at skabe et <strong>app-system</strong> med coins, badges og unlockable content – præcis som Duolingo.</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-coins"></i></div>
+                    <h3>Coin-system & Badges</h3>
+                    <p>Optjen <strong>digitale coins</strong> ved at gennemføre kurser og bestå eksamener. Brug coins til at købe adgang til sidekurser. Coins kan også købes for penge på platformen. Saml <strong>badges</strong> som bevis på dine færdigheder!</p>
+                </div>
+                <div class="card">
+                    <div class="card-icon"><i class="fas fa-forward-step"></i></div>
+                    <h3>Næste skridt</h3>
+                    <p>✅ Færdiggøre C2 eksamen<br>✅ Udvikle B kurser<br>✅ Bygge en rigtig platform hjemmeside<br>✅ Lave sidekurser<br>✅ Implementere automatiseret vurdering</p>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ── Progression visual ── */}
-      <section id="hvordan" className="py-16 border-y border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4" style={{ fontFamily: "'Sora', sans-serif" }}>
-                Din rejse fra nybegynder til ekspert
-              </h2>
-              <p className="text-blue-200 text-lg leading-relaxed mb-8">
-                Kurserne er bygget som et progressionssystem – ligesom niveauer i et spil. Du starter gratis på niveau D og arbejder dig op mod det øverste niveau A.
-              </p>
-              <div className="space-y-4">
-                {[
-                  { level: "D", color: "#2d8a4e", title: "Nybegynder", desc: "Gratis. Lær det grundlæggende om AI." },
-                  { level: "C", color: "#1e5fa8", title: "Øvet", desc: "3 moduler + 2 eksamener. Dyk dybere ned." },
-                  { level: "B", color: "#c05c10", title: "Avanceret", desc: "5 moduler + 3 eksamener. Professionel brug." },
-                  { level: "A", color: "#a07010", title: "Ekspert", desc: "Det ultimative niveau. Kommende." },
-                ].map((item) => (
-                  <div key={item.level} className="flex items-center gap-4">
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-                      style={{ backgroundColor: item.color, fontFamily: "'Sora', sans-serif" }}
-                    >
-                      {item.level}
+        <!-- ==================== NIVEAUER ==================== -->
+        <section class="section" id="niveauer">
+            <h2 class="section-title"><i class="fas fa-layer-group"></i> Kursusniveauer</h2>
+            <p class="section-subtitle">Progressionssystemet: Fra amatør til ekspert</p>
+            <div class="grid-4">
+                <div class="level-card d">
+                    <div class="level-emoji">🟢</div>
+                    <span class="level-badge badge-d">Niveau D</span>
+                    <h4>Amatør</h4>
+                    <p class="level-desc">Helt gratis start<br>Grundlæggende AI<br>1 kursus + 1 eksamen</p>
+                </div>
+                <div class="level-card c">
+                    <div class="level-emoji">🟡</div>
+                    <span class="level-badge badge-c">Niveau C</span>
+                    <h4>Let øvet</h4>
+                    <p class="level-desc">3 kurser + quizzer<br>2 eksamener<br>Mere professionelt indhold</p>
+                </div>
+                <div class="level-card b">
+                    <div class="level-emoji">🟠</div>
+                    <span class="level-badge badge-b">Niveau B</span>
+                    <h4>Videregående</h4>
+                    <p class="level-desc">5 kurser + quizzer<br>3 eksamener (kommende)<br>Professionelt niveau</p>
+                </div>
+                <div class="level-card a">
+                    <div class="level-emoji">🔴</div>
+                    <span class="level-badge badge-a">Niveau A</span>
+                    <h4>Ekspert</h4>
+                    <p class="level-desc">Certificering<br>Ekspertniveau<br>Kommende</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== PROGRESSION ==================== -->
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-route"></i> Sådan fungerer progressionen</h2>
+            <p class="section-subtitle">Eksempel for niveau C</p>
+            <div class="card" style="text-align: center; padding: 2.5rem;">
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.8rem; font-weight: 600; font-size: 1.1rem;">
+                    <span style="background: #e8f5e9; padding: 0.5rem 1rem; border-radius: 1rem;">📘 C1 Kursus</span>
+                    <span style="color: var(--purple);">→</span>
+                    <span style="background: #fff3e0; padding: 0.5rem 1rem; border-radius: 1rem;">📝 Quiz C1</span>
+                    <span style="color: var(--purple);">→</span>
+                    <span style="background: #e8f5e9; padding: 0.5rem 1rem; border-radius: 1rem;">📘 C2 Kursus</span>
+                    <span style="color: var(--purple);">→</span>
+                    <span style="background: #fff3e0; padding: 0.5rem 1rem; border-radius: 1rem;">📝 Quiz C2</span>
+                    <span style="color: var(--purple);">→</span>
+                    <span style="background: #e8f5e9; padding: 0.5rem 1rem; border-radius: 1rem;">📘 C3 Kursus</span>
+                </div>
+                <p style="margin-top: 1.5rem; color: var(--muted);">
+                    Derefter skal begge eksamener bestås: <strong>📋 C Eksamen 1</strong> + <strong>📋 C Eksamen 2</strong>
+                </p>
+                <p style="color: var(--purple); font-weight: 600;">✔ Begge eksamener skal bestås for at låse op for niveau B</p>
+            </div>
+        </section>
+
+        <!-- ==================== COINS & BADGES ==================== -->
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-star"></i> Coins & Badges</h2>
+            <p class="section-subtitle">Belønningssystemet – ligesom Duolingo</p>
+            <div class="grid-2">
+                <div class="card" style="text-align: center;">
+                    <div class="coin-icon">🪙</div>
+                    <h3>Digitale Coins</h3>
+                    <p>Optjen coins ved at gennemføre kurser og bestå eksamener. Brug dem til at <strong>købe adgang til sidekurser</strong>.</p>
+                    <p style="margin-top: 0.8rem;"><strong>Køb coins</strong> direkte på platformen for hurtigere adgang.</p>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 2.8rem; margin-bottom: 0.5rem;">🏅</div>
+                    <h3>Badges</h3>
+                    <p>Saml badges som bevis på dine gennemførte niveauer og eksamener.</p>
+                    <div class="badge-showcase" style="justify-content: center;">
+                        <span class="badge-item">🏆 D Mester</span>
+                        <span class="badge-item">🥈 C Certificeret</span>
+                        <span class="badge-item">🥇 B Professionel</span>
+                        <span class="badge-item">💎 A Ekspert</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== VORES HISTORIE ==================== -->
+        <section class="section" id="historie">
+            <h2 class="section-title"><i class="fas fa-heart"></i> Vores Historie & Baggrund</h2>
+            <p class="section-subtitle">Rejsen bag LearnAI – fra idé til virkelighed</p>
+            <div class="story-section">
+                <div class="grid-2">
+                    <div>
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">
+                            <i class="fas fa-users" style="color: var(--purple);"></i> Hvem er vi?
+                        </h3>
+                        <p>Vi er to fra <strong>Værløse</strong>, der elsker matematik, business, salg, sport, konkurrence – og alt, der har med penge at gøre. Vi startede uden særlig meget IT-erfaring, men har arbejdet hårdt for at blive bedre.</p>
+                        <p style="margin-top: 0.8rem;">Vores passion for AI drev os til at starte dette projekt – vi drømmer om at skabe AI-kurser og sælge dem til folk, der vil lære.</p>
+                        <div class="quote">
+                            "Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre. Jeg elsker AI."
+                        </div>
                     </div>
                     <div>
-                      <span className="font-semibold text-white text-sm" style={{ fontFamily: "'Sora', sans-serif" }}>
-                        {item.title}
-                      </span>
-                      <span className="text-blue-300 text-sm ml-2">– {item.desc}</span>
+                        <h3 style="color: var(--primary); margin-bottom: 1rem;">
+                            <i class="fas fa-clock" style="color: var(--purple);"></i> Tidslinje
+                        </h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <h4>April 2026</h4>
+                                <p>Projektet startede. Vi brugte mange timer – ofte sent om aftenen – og sagde nej til aftaler for at arbejde videre.</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>Tidlig rejse</h4>
+                                <p>Investering i <strong>Claude Pro</strong> (~200 kr/måned). Mistede adgang pga. aldersbegrænsning (under 18) – mistede filer og arbejde. Men vi gav ikke op!</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>24. april 2026</h4>
+                                <p>Geninvestering i Claude Pro på fars konto. Projektet genopbygget med fornyet styrke.</p>
+                            </div>
+                            <div class="timeline-item">
+                                <h4>Nu</h4>
+                                <p>Vi har brugt <strong>flere dage, nætter og måneder</strong> på dette projekt. Det er vores passion.</p>
+                            </div>
+                        </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="flex justify-center">
-              <img
-                src={PROGRESSION_IMG}
-                alt="Kursusniveauer D til A progression"
-                className="w-full max-w-md rounded-2xl shadow-xl"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* ── Kurser ── */}
-      <section id="kurser" className="py-16 md:py-24">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-              Alle kurser
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Klik på et niveau for at se modulerne. Hvert modul åbner direkte i kursusplatformen.
-            </p>
-          </div>
-
-          <div className="space-y-6 max-w-4xl mx-auto">
-            {levels.map((level) => (
-              <LevelSection key={level.id} level={level} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Om os ── */}
-      <section id="om-os" className="py-16 md:py-20 border-t border-border/50" style={{ backgroundColor: "#F0EDE8" }}>
-        <div className="container">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-              Om os
-            </h2>
-            <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-border">
-              <p className="text-lg leading-relaxed text-foreground mb-6">
-                Vi bor begge i Værløse og deler en passion for matematik, business, salg, sport, konkurrence og alt der har med penge at gøre. Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre.
-              </p>
-              <p className="text-lg leading-relaxed text-foreground mb-8">
-                Jeg elsker AI – og det er netop derfor, at jeg drømmer om at lave AI-kurser og sælge dem. Dette projekt er vores første skridt mod at gøre AI tilgængeligt for alle danskere.
-              </p>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-6 border-t border-border">
-                {[
-                  { icon: "🎯", title: "Vores mål", desc: "En platform med professionelle AI-kurser – lidt som Duolingo, men for kunstig intelligens." },
-                  { icon: "📍", title: "Hjemsted", desc: "Baseret i Værløse, Danmark. Vi bygger for den danske lærende." },
-                  { icon: "🚀", title: "Næste skridt", desc: "B-niveau eksamenerne og sidekurser er under udvikling og lanceres snart." },
-                ].map((item) => (
-                  <div key={item.title} className="text-center p-4 rounded-2xl" style={{ backgroundColor: "#F8F5F0" }}>
-                    <div className="text-3xl mb-2">{item.icon}</div>
-                    <h4 className="font-bold text-sm mb-1" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-                      {item.title}
-                    </h4>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA ── */}
-      <section className="py-16" style={{ backgroundColor: "#E8A020" }}>
-        <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold text-white mb-4" style={{ fontFamily: "'Sora', sans-serif" }}>
-            Klar til at starte?
-          </h2>
-          <p className="text-amber-100 text-lg mb-8 max-w-xl mx-auto">
-            Niveau D er helt gratis. Ingen tilmelding, ingen kreditkort – bare åbn kurset og kom i gang.
-          </p>
-          <a
-            href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg transition-all hover:opacity-90 hover:shadow-xl"
-            style={{ backgroundColor: "#1B2B4B", color: "white", fontFamily: "'Sora', sans-serif" }}
-          >
-            Start niveau D nu – det er gratis <ArrowRight className="w-5 h-5" />
-          </a>
-        </div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className="py-8 border-t border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: "#E8A020", fontFamily: "'Sora', sans-serif" }}>
-              AI
-            </div>
-            <span className="font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
-              LearnAI
-            </span>
-          </div>
-          <p className="text-blue-300 text-sm text-center">
-            Bygget med passion i Værløse, Danmark · {new Date().getFullYear()}
-          </p>
-          <div className="flex items-center gap-4">
-            <button
-              onClick={() => setLocation("/sidekurser")}
-              className="text-blue-300 hover:text-white text-sm transition-colors font-medium"
-            >
-              Sidekurser
-            </button>
-            <a
-              href="https://magnuscode-ai.github.io/ai-kursus/platform.html"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 text-blue-300 hover:text-white text-sm transition-colors"
-            >
-              Kursusplatform <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Sidekurser from "./pages/Sidekurser";
-
-function Router() {
-  return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/sidekurser"} component={Sidekurser} />
-      <Route path={"/404"} component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
-  );
-}
-
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
-
-export default App;/* ============================================================
-   SIDEKURSER – LearnAI Side Courses Page
-   Design: Nordisk Teknologi-Akademi
-   ============================================================ */
-
-import { ArrowLeft, Star } from "lucide-react";
-import { useLocation } from "wouter";
-
-interface SideCourse {
-  title: string;
-  description: string;
-  duration: string;
-  level: string;
-  icon: string;
-  comingSoon?: boolean;
-}
-
-const sideCourses: SideCourse[] = [
-  {
-    title: "Prompt Engineering Masterclass",
-    description: "Lær at skrive perfekte prompts til ChatGPT, Claude og andre AI-modeller. Få maksimal værdi ud af dine AI-værktøjer.",
-    duration: "4 timer",
-    level: "Alle niveauer",
-    icon: "💬",
-  },
-  {
-    title: "AI til Business & Salg",
-    description: "Hvordan bruger du AI til at øge salg, automatisere processer og spare tid? Praktiske eksempler fra virksomheder.",
-    duration: "6 timer",
-    level: "Begyndere",
-    icon: "📈",
-  },
-  {
-    title: "Machine Learning Grundlæggende",
-    description: "Forstå hvordan maskiner lærer. Fra lineær regression til neurale netværk – uden avanceret matematik.",
-    duration: "8 timer",
-    level: "Øvet",
-    icon: "🤖",
-  },
-  {
-    title: "AI-billeder med DALL-E & Midjourney",
-    description: "Skab fantastiske billeder med AI. Lær teknikker til at få præcis det billede du drømmer om.",
-    duration: "3 timer",
-    level: "Begyndere",
-    icon: "🎨",
-  },
-  {
-    title: "ChatGPT for Indholdskreatorer",
-    description: "Skriv bedre artikler, sociale medier-posts og videoer med ChatGPT. Spar timer på research og skrivning.",
-    duration: "5 timer",
-    level: "Begyndere",
-    icon: "✍️",
-  },
-  {
-    title: "AI-Etik & Sikkerhed",
-    description: "Vigtige spørgsmål om bias, datasikkerhed og etik i AI. Hvad skal vi være opmærksomme på?",
-    duration: "4 timer",
-    level: "Alle niveauer",
-    icon: "⚖️",
-  },
-  {
-    title: "Python for AI-udvikling",
-    description: "Lær Python fra bunden – det vigtigste programmeringssprog til AI og data science.",
-    duration: "10 timer",
-    level: "Øvet",
-    icon: "🐍",
-  },
-  {
-    title: "AI-værktøjer til Freelancers",
-    description: "Hvilke AI-værktøjer skal du bruge? Oversigt over de bedste tools og hvordan du tjener penge med dem.",
-    duration: "3 timer",
-    level: "Begyndere",
-    icon: "🔧",
-    comingSoon: true,
-  },
-];
-
-export default function Sidekurser() {
-  const [, setLocation] = useLocation();
-
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: "#F8F5F0" }}>
-      {/* ── Navigation ── */}
-      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(248,245,240,0.92)" }}>
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "#1B2B4B", fontFamily: "'Sora', sans-serif" }}>
-              AI
-            </div>
-            <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-              LearnAI
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            <button
-              onClick={() => setLocation("/")}
-              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-            >
-              Kurser
-            </button>
-            <span className="text-sm font-medium" style={{ color: "#1B2B4B" }}>
-              Sidekurser
-            </span>
-          </div>
-          <button
-            onClick={() => setLocation("/")}
-            className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full text-white transition-all hover:opacity-90 hover:shadow-md"
-            style={{ backgroundColor: "#1B2B4B", fontFamily: "'Sora', sans-serif" }}
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Tilbage
-          </button>
-        </div>
-      </nav>
-
-      {/* ── Header ── */}
-      <section className="py-16 md:py-24 border-b border-border/50">
-        <div className="container">
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-4 border"
-              style={{ backgroundColor: "#E8F5FF", borderColor: "#1B2B4B", color: "#1B2B4B" }}>
-              <Star className="w-3 h-3" fill="currentColor" />
-              Specialiserede kurser
-            </div>
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-              LearnAI Sidekurser
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Gå dybere ned i specifikke AI-emner. Fra Prompt Engineering til Machine Learning – vælg hvad der interesserer dig.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Course Grid ── */}
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sideCourses.map((course, idx) => (
-              <div
-                key={idx}
-                className={`
-                  rounded-2xl border-2 border-border p-6 bg-white
-                  hover:shadow-lg transition-all duration-300 group
-                  ${course.comingSoon ? "opacity-70" : "hover:-translate-y-1"}
-                `}
-              >
-                <div className="text-5xl mb-4">{course.icon}</div>
-                <h3 className="font-bold text-lg mb-3" style={{ fontFamily: "'Sora', sans-serif", color: "#1B2B4B" }}>
-                  {course.title}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
-                  {course.description}
-                </p>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  <span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-700 font-medium">
-                    {course.duration}
-                  </span>
-                  <span className="text-xs px-2 py-1 rounded-full bg-amber-100 text-amber-700 font-medium">
-                    {course.level}
-                  </span>
                 </div>
-                {course.comingSoon ? (
-                  <button className="w-full py-2.5 rounded-lg text-sm font-semibold text-muted-foreground bg-muted cursor-default">
-                    Snart tilgængeligt
-                  </button>
-                ) : (
-                  <button
-                    className="w-full py-2.5 rounded-lg text-sm font-semibold text-white transition-all hover:opacity-90 group-hover:shadow-md"
-                    style={{ backgroundColor: "#1B2B4B", fontFamily: "'Sora', sans-serif" }}
-                  >
-                    Kom på venteliste
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Footer ── */}
-      <footer className="py-8 border-t border-border/50" style={{ backgroundColor: "#1B2B4B" }}>
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: "#E8A020", fontFamily: "'Sora', sans-serif" }}>
-              AI
             </div>
-            <span className="font-bold text-white" style={{ fontFamily: "'Sora', sans-serif" }}>
-              LearnAI
-            </span>
-          </div>
-          <p className="text-blue-300 text-sm text-center">
-            Bygget med passion i Værløse, Danmark · {new Date().getFullYear()}
-          </p>
-          <button
-            onClick={() => setLocation("/")}
-            className="text-blue-300 hover:text-white text-sm transition-colors font-medium"
-          >
-            Tilbage til kurser
-          </button>
+        </section>
+
+        <!-- ==================== HOVEDKURSER ==================== -->
+        <section class="section">
+            <h2 class="section-title"><i class="fas fa-graduation-cap"></i> Hovedkurser</h2>
+            <p class="section-subtitle">Klik på et kursus for at åbne det</p>
+            <div class="grid-4">
+                <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" target="_blank" class="mini-course">
+                    <i class="fas fa-home"></i> Platform (kladde)
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book-open"></i> D Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank" class="mini-course">
+                    <i class="fas fa-pencil-alt"></i> D Eksamen
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C1 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-c1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> C1 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C2 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> C2 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C3 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-c.html" target="_blank" class="mini-course">
+                    <i class="fas fa-clipboard-check"></i> C Eksamen 1
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-clipboard-check"></i> C Eksamen 2
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B1 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B1 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B2 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B2 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B3 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B3 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b4.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B4 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b4.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B4 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b5.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B5 Kursus
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <p class="footer-brand">LearnAI</p>
+        <p style="margin-top: 0.5rem;">🚀 Bygget med passion i Værløse · April 2026</p>
+        <p style="margin-top: 0.5rem; font-size: 0.85rem;">
+            <i class="fas fa-brain"></i> Fra IT-begynder til AI-entusiast · Sammen mod ekspertniveau
+        </p>
+    </footer>
+
+    <!-- ==================== SIDEKURSER OVERLAY ==================== -->
+    <div class="overlay" id="sidekurserOverlay">
+        <div class="overlay-content">
+            <button class="close-btn" onclick="document.getElementById('sidekurserOverlay').style.display='none'">&times;</button>
+            
+            <h2 style="color: var(--primary); margin-bottom: 0.3rem;">
+                <i class="fas fa-th-large" style="color: var(--purple);"></i> Alle Sidekurser
+            </h2>
+            <p style="color: var(--muted); margin-bottom: 1.5rem;">Kortere kurser med fokus på specifikke AI-emner – låses op med coins</p>
+
+            <h3 style="margin-top: 1.2rem;">📗 Niveau D</h3>
+            <div class="mini-course-grid">
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book-open"></i> D Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank" class="mini-course">
+                    <i class="fas fa-pencil-alt"></i> D Eksamen
+                </a>
+            </div>
+
+            <h3 style="margin-top: 1.2rem;">📘 Niveau C</h3>
+            <div class="mini-course-grid">
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C1 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-c1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> C1 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C2 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> C2 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-c3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-book"></i> C3 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-c.html" target="_blank" class="mini-course">
+                    <i class="fas fa-clipboard-check"></i> C Eksamen 1
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-c2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-clipboard-check"></i> C Eksamen 2
+                </a>
+            </div>
+
+            <h3 style="margin-top: 1.2rem;">📙 Niveau B</h3>
+            <div class="mini-course-grid">
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B1 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b1.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B1 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B2 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b2.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B2 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B3 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b3.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B3 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b4.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B4 Kursus
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/quiz-b4.html" target="_blank" class="mini-course">
+                    <i class="fas fa-question-circle"></i> B4 Quiz
+                </a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-b5.html" target="_blank" class="mini-course">
+                    <i class="fas fa-laptop-code"></i> B5 Kursus
+                </a>
+                <span class="mini-course" style="opacity: 0.4;">
+                    <i class="fas fa-clock"></i> B Eksamener (kommende)
+                </span>
+            </div>
+
+            <div style="text-align: center; margin-top: 2rem;">
+                <button onclick="document.getElementById('sidekurserOverlay').style.display='none'" 
+                        style="background: var(--purple); color: white; border: none; padding: 0.8rem 2rem; border-radius: 2rem; cursor: pointer; font-weight: 600;">
+                    <i class="fas fa-times"></i> Luk oversigt
+                </button>
+            </div>
         </div>
-      </footer>
     </div>
-  );
-}/* ============================================================
-   AI-KURSER – Nordisk Teknologi-Akademi Design System
-   Philosophy: Warm off-white base, deep navy primary,
-   amber accents, Sora headlines, Source Serif 4 body.
-   Niveau-farver: D=grøn, C=blå, B=orange, A=guld
-   ============================================================ */
 
-@import "tailwindcss";
-@import "tw-animate-css";
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        // Luk overlay ved klik udenfor indholdet
+        document.getElementById('sidekurserOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
 
-@custom-variant dark (&:is(.dark *));
+        // Luk overlay med Escape-tast
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.getElementById('sidekurserOverlay').style.display = 'none';
+            }
+        });
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
+        // Smooth scroll for ankerlinks
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const href = this.getAttribute('href');
+                if (href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
 
-  /* Custom brand tokens */
-  --font-display: 'Sora', sans-serif;
-  --font-body: 'Source Serif 4', Georgia, serif;
-
-  /* Niveau farver */
-  --level-d: oklch(0.55 0.15 145);
-  --level-c: oklch(0.45 0.18 240);
-  --level-b: oklch(0.60 0.18 50);
-  --level-a: oklch(0.72 0.17 80);
-}
-
-:root {
-  --radius: 0.5rem;
-
-  /* Brand: Navy + Amber + Warm Off-White */
-  --background: oklch(0.975 0.008 75);
-  --foreground: oklch(0.18 0.03 240);
-
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 240);
-
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 240);
-
-  /* Primary: Deep Navy */
-  --primary: oklch(0.28 0.08 240);
-  --primary-foreground: oklch(0.97 0.005 75);
-
-  /* Secondary: Soft warm grey */
-  --secondary: oklch(0.93 0.008 75);
-  --secondary-foreground: oklch(0.28 0.08 240);
-
-  --muted: oklch(0.94 0.006 75);
-  --muted-foreground: oklch(0.52 0.03 240);
-
-  /* Accent: Amber */
-  --accent: oklch(0.75 0.15 75);
-  --accent-foreground: oklch(0.18 0.03 240);
-
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-
-  --border: oklch(0.88 0.01 240);
-  --input: oklch(0.88 0.01 240);
-  --ring: oklch(0.28 0.08 240);
-
-  --chart-1: oklch(0.55 0.15 145);
-  --chart-2: oklch(0.45 0.18 240);
-  --chart-3: oklch(0.60 0.18 50);
-  --chart-4: oklch(0.72 0.17 80);
-  --chart-5: oklch(0.28 0.08 240);
-
-  --sidebar: oklch(0.97 0.008 75);
-  --sidebar-foreground: oklch(0.18 0.03 240);
-  --sidebar-primary: oklch(0.28 0.08 240);
-  --sidebar-primary-foreground: oklch(0.97 0.005 75);
-  --sidebar-accent: oklch(0.93 0.008 75);
-  --sidebar-accent-foreground: oklch(0.18 0.03 240);
-  --sidebar-border: oklch(0.88 0.01 240);
-  --sidebar-ring: oklch(0.28 0.08 240);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Source Serif 4', Georgia, serif;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', sans-serif;
-  }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  a[href],
-  select:not(:disabled) {
-    @apply cursor-pointer;
-  }
-}
-
-@layer components {
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1280px;
-    }
-  }
-
-  /* Level badge styles */
-  .level-badge-d {
-    background-color: oklch(0.55 0.15 145);
-    color: white;
-  }
-  .level-badge-c {
-    background-color: oklch(0.45 0.18 240);
-    color: white;
-  }
-  .level-badge-b {
-    background-color: oklch(0.60 0.18 50);
-    color: white;
-  }
-  .level-badge-a {
-    background-color: oklch(0.72 0.17 80);
-    color: oklch(0.18 0.03 240);
-  }
-
-  /* Smooth entrance animation */
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
-  }
-
-  .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-  .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-  .stagger-3 { animation-delay: 0.3s; opacity: 0; }
-  .stagger-4 { animation-delay: 0.4s; opacity: 0; }
-  .stagger-5 { animation-delay: 0.5s; opacity: 0; }
-}<!doctype html>
-<html lang="da">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>AI-Kurser – Lær Kunstig Intelligens</title>
-    <meta name="description" content="Lær kunstig intelligens fra nybegynder til ekspert. Gratis startkursus, strukturerede niveauer og eksamensbevis." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-    <script
-      defer
-      src="%VITE_ANALYTICS_ENDPOINT%/umami"
-      data-website-id="%VITE_ANALYTICS_WEBSITE_ID%"></script>
-  </body>
-</html>import openpyxl
-wb = openpyxl.load_workbook('/home/ubuntu/upload/Ai-kurser.xlsx')
-for sheet_name in wb.sheetnames:
-    ws = wb[sheet_name]
-    print(f'\n=== Sheet: {sheet_name} ===')
-    for row in ws.iter_rows(values_only=True):
-        if any(cell is not None for cell in row):
-            print(row)
+</body>
+</html>
