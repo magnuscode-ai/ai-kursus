@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz A1 - AI Ekspert Niveau</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+            min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px;
+        }
+        .quiz-container {
+            background: white; border-radius: 20px; box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            max-width: 850px; width: 100%; padding: 40px;
+        }
+        .quiz-header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid #2563eb; }
+        .quiz-header h1 { color: #2563eb; font-size: 2rem; margin-bottom: 5px; }
+        .quiz-header .level-badge { display: inline-block; background: #2563eb; color: white; padding: 6px 22px; border-radius: 20px; font-weight: bold; margin-top: 10px; font-size: 0.95rem; }
+        .progress-bar { background: #e5e7eb; height: 8px; border-radius: 10px; margin-bottom: 25px; overflow: hidden; }
+        .progress-fill { background: #2563eb; height: 100%; border-radius: 10px; transition: width 0.3s ease; width: 0%; }
+        .score-tracker { display: flex; justify-content: center; gap: 8px; margin-bottom: 18px; }
+        .score-dot { width: 14px; height: 14px; border-radius: 50%; background: #d1d5db; transition: all 0.3s ease; }
+        .score-dot.correct-dot { background: #059669; box-shadow: 0 0 8px rgba(5,150,105,0.4); }
+        .score-dot.incorrect-dot { background: #dc2626; box-shadow: 0 0 8px rgba(220,38,38,0.4); }
+        .question-counter { text-align: center; color: #6b7280; margin-bottom: 15px; font-size: 0.9rem; font-weight: 500; }
+        .question { display: none; animation: fadeIn 0.4s ease; }
+        .question.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .question h3 { color: #1f2937; font-size: 1.2rem; margin-bottom: 20px; line-height: 1.6; font-weight: 600; }
+        .options { display: flex; flex-direction: column; gap: 10px; }
+        .option { padding: 15px 20px; border: 2px solid #d1d5db; border-radius: 12px; cursor: pointer; transition: all 0.25s ease; font-size: 0.95rem; background: #f9fafb; position: relative; line-height: 1.5; }
+        .option:hover:not(.disabled) { border-color: #2563eb; background: #eff6ff; transform: translateX(4px); }
+        .option.selected { border-color: #2563eb; background: #dbeafe; font-weight: 600; box-shadow: 0 3px 10px rgba(37,99,235,0.15); }
+        .option.correct { border-color: #059669 !important; background: #d1fae5 !important; color: #065f46 !important; font-weight: 600; }
+        .option.incorrect { border-color: #dc2626 !important; background: #fee2e2 !important; color: #991b1b !important; font-weight: 600; }
+        .option.disabled { cursor: not-allowed; pointer-events: none; }
+        .feedback { display: none; margin-top: 20px; padding: 16px 20px; border-radius: 12px; animation: fadeIn 0.35s ease; font-weight: 500; line-height: 1.6; }
+        .feedback.show { display: block; }
+        .feedback.correct-feedback { background: #d1fae5; border-left: 4px solid #059669; color: #065f46; }
+        .feedback.incorrect-feedback { background: #fee2e2; border-left: 4px solid #dc2626; color: #991b1b; }
+        .feedback-icon { font-size: 1.4rem; margin-right: 8px; vertical-align: middle; }
+        .btn-container { display: flex; justify-content: space-between; margin-top: 20px; gap: 12px; }
+        .btn { padding: 13px 28px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-prev { background: #e5e7eb; color: #374151; }
+        .btn-prev:hover:not(:disabled) { background: #d1d5db; transform: translateX(-2px); }
+        .btn-next { background: #2563eb; color: white; flex: 1; }
+        .btn-next:hover:not(:disabled) { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,0.4); }
+        .btn-submit { background: #059669; color: white; flex: 1; font-size: 1.05rem; }
+        .btn-submit:hover:not(:disabled) { background: #047857; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(5,150,105,0.4); }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .result { display: none; text-align: center; animation: fadeIn 0.5s ease; }
+        .result.show { display: block; }
+        .result-icon { font-size: 5rem; margin-bottom: 20px; animation: bounce 0.6s ease; }
+        @keyframes bounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .result h2 { font-size: 2rem; margin-bottom: 10px; }
+        .result .score { font-size: 3.5rem; font-weight: bold; margin: 15px 0; }
+        .result .message { font-size: 1.05rem; color: #6b7280; margin-bottom: 20px; line-height: 1.6; }
+        .passed { color: #059669; }
+        .failed { color: #dc2626; }
+        .btn-retry { background: #2563eb; color: white; padding: 13px 40px; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        .btn-retry:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(37,99,235,0.4); }
+        @media (max-width: 600px) { .quiz-container { padding: 20px; } .quiz-header h1 { font-size: 1.5rem; } .btn-container { flex-direction: column; } .option { font-size: 0.9rem; } }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>🧠 Quiz A1</h1>
+            <span class="level-badge">Ekspert Niveau • Modul A1</span>
+            <p style="margin-top:10px;color:#6b7280;font-size:0.95rem;">10 svære spørgsmål • 8+ rigtige for at bestå • Øjeblikkelig feedback</p>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div class="score-tracker" id="scoreTracker"></div>
+        <div class="question-counter" id="questionCounter"></div>
+        <div id="quizQuestions"></div>
+        <div class="feedback" id="feedback"></div>
+        <div class="btn-container" id="btnContainer">
+            <button class="btn btn-prev" id="btnPrev" onclick="prevQuestion()" style="display:none;">⬅ Forrige</button>
+            <button class="btn btn-next" id="btnNext" onclick="handleNextOrCheck()">Tjek svar ✓</button>
+            <button class="btn btn-submit" id="btnSubmit" onclick="submitQuiz()" style="display:none;">Se resultat 🏆</button>
+        </div>
+        <div class="result" id="result">
+            <div class="result-icon" id="resultIcon"></div>
+            <h2 id="resultTitle"></h2>
+            <div class="score" id="resultScore"></div>
+            <p class="message" id="resultMessage"></p>
+            <button class="btn-retry" onclick="retryQuiz()">Prøv igen 🔄</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "I en transformer med 8 attention heads og d_model=512, hvad er dimensionen af hver enkelt head, og hvordan påvirker dette modellens kapacitet til at fange diverse relationelle mønstre?",
+                options: [
+                    "Hver head har 512 dimensioner og kan derfor operere på det fulde embeddingsrum uden nogen form for dimensionel reduktion",
+                    "Hver head har 64 dimensioner og tvinges gennem lavdimensionel projektion til at fokusere på specifikke aspekter af input-sekvensen",
+                    "Hver head har 256 dimensioner og balancerer mellem beregningseffektivitet og evnen til at modellere komplekse afhængigheder i data",
+                    "Hver head har 128 dimensioner og kompenserer for den reducerede kapacitet gennem residualforbindelser mellem de forskellige lag"
+                ],
+                correct: 1,
+                explanation: "Med 8 heads og d_model=512 får hver head d_k = 512/8 = 64 dimensioner. Denne reduktion tvinger hver head til at specialisere sig i forskellige mønstre: én fokuserer på syntaks, en anden på semantik, en tredje på positionelle relationer. Konkatenering af alle heads gendanner den fulde 512-dimensionelle repræsentation."
+            },
+            {
+                question: "Hvordan adskiller Layer Normalization sig fundamentalt fra Batch Normalization, og hvorfor er LayerNorm afgørende for transformer-arkitekturers stabilitet?",
+                options: [
+                    "LayerNorm estimerer statistik per sample på tværs af features og er dermed fuldstændig immun over for varierende batchstørrelser og sekvenslængder under både træning og inferens",
+                    "LayerNorm normaliserer på tværs af hele batch-dimensionen og kræver running averages for at kunne fungere korrekt under inferens på nye data",
+                    "LayerNorm anvender en på forhånd fastlagt normaliseringskonstant og estimerer ikke nogen form for statistiske mål fra de aktuelle data",
+                    "LayerNorm opererer udelukkende på aktiveringsfunktionens output og normaliserer både vægtmatricer og gradienter samtidigt gennem hele netværket"
+                ],
+                correct: 0,
+                explanation: "LayerNorm beregner μ og σ² per sample på tværs af features: μ_n = (1/H)Σx_{n,i}, σ²_n = (1/H)Σ(x_{n,i}-μ_n)². Dette gør den uafhængig af batch-sammensætning og sekvenslængder, hvilket er kritisk for transformere der ofte trænes med varierende batches og dynamiske sekvenslængder."
+            },
+            {
+                question: "I diffusionsmodeller: Hvad er den matematiske forbindelse mellem forward noising-processen og reverse denoising-processen, og hvordan bruges Langevin-dynamik?",
+                options: [
+                    "Begge processer er fuldstændig deterministiske og forbundet gennem Euler-integration uden nogen form for stokastisk komponent i nogen af retningerne",
+                    "Den reverse proces anvender udelukkende importance sampling til at estimere den underliggende fordeling uden brug af gradient-baseret dynamik",
+                    "Den reverse SDE samples via score-funktionen plus Brownsk bevægelse, hvor Langevin-dynamik følger gradienten af log-sandsynligheden kombineret med kontrolleret støj",
+                    "Langevin-dynamikken anvendes kun i forward-processen til gradvist at øge støjniveauet og har ingen funktion i den reverse denoising-proces"
+                ],
+                correct: 2,
+                explanation: "Den reverse SDE: dx = [f(x,t)-g²(t)·s_θ(x,t)]dt+g(t)·dw̄. Langevin-dynamik sampler: x_{t-1}=x_t+ε·s_θ(x_t,t)+√(2ε)·z. Kombinationen af score-funktionens gradient med kontrolleret støj sikrer korrekt sampling uden at sidde fast i lokal minima."
+            },
+            {
+                question: "I Low-Rank Adaptation (LoRA): Hvordan forhindrer den specifikke dekomposition af vægtopdateringer katastrofisk interferens med allerede indlært viden fra pretraining?",
+                options: [
+                    "LoRA dekomponerer hele vægtmatricen og genoptræner samtlige parametre med en stærk regularisering der begrænser afvigelsen fra de originale vægte",
+                    "LoRA anvender knowledge distillation mellem den originale og den tilpassede model for at bevare vigtige features og undgå at glemme tidligere indlært viden",
+                    "LoRA tilføjer ekstra lag mellem de eksisterende og fryser udelukkende bias-termerne mens vægtmatricerne opdateres med en meget lav indlæringsrate",
+                    "LoRA fryser de originale vægte W og dekomponerer opdateringen som ΔW=B·A med lav rang, så gradienter kun påvirker de nye parametre uden at ændre eksisterende viden"
+                ],
+                correct: 3,
+                explanation: "LoRA fryser W og lærer kun ΔW=(α/r)·B·A med r << min(d,k). Gradient-flow rammer kun B og A. W forbliver intakt, så al pretraining-viden bevares perfekt. Kun residuale tilpasninger til den nye opgave læres."
+            },
+            {
+                question: "Hvordan koder Rotary Position Embedding (RoPE) positionsinformation, og hvilken matematisk egenskab muliggør stabil ekstrapolation til sekvenslængder ud over træningsdata?",
+                options: [
+                    "RoPE summerer absolutte positionsembeddings til tokenrepræsentationerne og bruger lærte frekvenser til at beregne afstandsbaserede relationer mellem alle ord",
+                    "RoPE roterer query og key vektorer proportionalt med positionen så dot-produktet kun afhænger af relativ afstand, og de trigonometriske funktioners begrænsede værdiområde sikrer stabil ekstrapolation",
+                    "RoPE anvender en lært positionsmatrix der vægter alle tokens baseret på deres absolutte position og normaliserer vægtene for at kunne generalisere til længere sekvenser",
+                    "RoPE bruger binære positionskoder i stedet for kontinuerte værdier og opbygger hierarkiske kompositioner for at repræsentere vilkårligt lange sekvenser"
+                ],
+                correct: 1,
+                explanation: "RoPE roterer hvert dimensionspar med vinkel θ_pos=pos/10000^{2i/d}. Dot-produktet (R_q·q)^T·(R_k·k)=q^T·R_{Δpos}·k afhænger kun af relativ afstand. Sin/cos er begrænset til [-1,1], så værdier forbliver stabile selv for positioner langt over træningslængden."
+            },
+            {
+                question: "I Grouped-Query Attention (GQA): Hvordan reducerer arkitekturen specifikt memory-båndbredde-flaskehalse under autoregressiv decoding af meget lange sekvenser?",
+                options: [
+                    "GQA deler et fælles key-value par på tværs af grupper af query-heads, så KV-cachen reduceres markant og aflaster den kritiske memory-båndbredde under sekventiel token-generering",
+                    "GQA duplikerer key-value heads for hver enkelt query-head og cacher alle mellemresultater for at maksimere modellens kapacitet på bekostning af øget hukommelsesforbrug",
+                    "GQA anvender en avanceret hierarkisk attention-mekanisme hvor tokens grupperes i balancerede binære træer for at minimere antallet af nødvendige beregninger",
+                    "GQA komprimerer key-value repræsentationerne gennem en trænet autoencoder før caching og dekomprimerer dem dynamisk under decoding for at spare plads"
+                ],
+                correct: 0,
+                explanation: "GQA organiserer M query-heads i G grupper med ét fælles KV-par per gruppe. KV-cache reduceres fra M·d til G·d - en faktor G/M. Under autoregressiv decoding er KV-cache læsning memory-båndbredde-begrænset, så reduktionen giver næsten lineær speedup i tokens-per-sekund for lange kontekster."
+            },
+            {
+                question: "I PPO til RLHF: Hvad er den præcise klipningsmekanisme i objektivfunktionen, og hvordan forhindrer den specifikt reward hacking under policy-opdateringer?",
+                options: [
+                    "PPO klipser alle rewards til et foruddefineret interval og normaliserer advantage-funktionen for at forhindre modellen i at overoptimere på sjældne reward-signaler",
+                    "PPO anvender en running average af tidligere policy-opdateringer og afviser automatisk ændringer der afviger mere end to standardafvigelser fra det historiske gennemsnit",
+                    "PPO tilføjer en entropy-bonus til objektivfunktionen der forhindrer policy'en i at konvergere mod deterministiske og potentielt skadelige strategier under træning",
+                    "PPO begrænser policy-ratioen via L_CLIP=E[min(r_t·A_t, clip(r_t,1-ε,1+ε)·A_t)], hvilket forhindrer store opdateringer der kunne udnytte spurious korrelationer i reward-modellen"
+                ],
+                correct: 3,
+                explanation: "PPO's clipped objective begrænser r_t=π_θ/π_old til [1-ε,1+ε]. I RLHF er reward-modellen en uperfekt proxy og kan have blind spots. Uden klipning kunne policy'en exploitere disse svagheder gennem ekstreme skift. Trust-region constraint'en (ε≈0.1-0.2) sikrer konservative opdateringer."
+            },
+            {
+                question: "I Mixture of Experts (MoE): Hvordan fungerer routing-mekanismen kombineret med load balancing, og hvad er konsekvenserne af expert capacity for token dropping?",
+                options: [
+                    "Routeren tildeler tokens deterministisk til eksperter og omskalerer output baseret på aktiveringsfrekvens for at simulere en balanceret fordeling af arbejdsbyrden",
+                    "Routeren anvender reinforcement learning til dynamisk at allokere tokens og kapaciteten defineres som et moving average af historisk token-volumen for hver enkelt ekspert",
+                    "Routeren bruger softmax-gating med top-k selection, og load balancing loss forhindrer kollaps mod én ekspert, mens capacity limits kan forårsage token dropping som implicit regularisering",
+                    "Routeren implementerer en hash-baseret deterministisk allokering der perfekt garanterer load balancing, og capacity er en fast brøkdel af totale tokens"
+                ],
+                correct: 2,
+                explanation: "MoE-router: g(x)=softmax(W_r·x) med top-k. Load balancing: L_balance=N·Σ(f_i·P_i). Capacity C=(tokens/batch)/experts·capacity_factor. Når capacity overskrides, droppes tokens. Dette regulariserer men kan degradere perplexity ved for aggressiv capacity_factor."
+            },
+            {
+                question: "I Flash Attention: Hvordan opnås den reducerede hukommelseskompleksitet, og hvad er online softmax's specifikke rolle i den tile-baserede beregning på moderne GPU'er?",
+                options: [
+                    "Flash Attention gemmer den fulde attention-matrix i CPU-RAM og overfører den i komprimerede chunks til GPU'en hvor softmax derefter beregnes inkrementelt over tiles",
+                    "Flash Attention dekomponerer beregningen i SRAM-tiles og bruger online softmax med running statistics, så N×N matricen aldrig materialiseres i HBM, hvilket dramatisk reducerer I/O",
+                    "Flash Attention approksimerer hele attention-matricen gennem random projection og beregner softmax på den reducerede matrix for at opnå asymptotisk lavere hukommelsesforbrug",
+                    "Flash Attention distribuerer beregningen på tværs af flere GPU'er i parallel og aggregerer resultaterne så hver GPU kun behøver at gemme en lille brøkdel"
+                ],
+                correct: 1,
+                explanation: "Flash Attention's nøgle: tiling i SRAM med online softmax. S=QK^T/√d (O(N²)) materialiseres aldrig i HBM. Online softmax holder running max m og sum l, opdaterer inkrementelt. HBM-adgange falder fra O(N²) til O(N²·d/M) hvor M er SRAM-størrelse, hvilket giver 2-4x speedup på A100/H100 GPU'er."
+            },
+            {
+                question: "I WGAN-GP: Hvad er den duale formulering af Wasserstein-afstanden, og hvordan adskiller gradient penalty sig fundamentalt fra weight clipping i at håndhæve Lipschitz-betingelsen?",
+                options: [
+                    "Wasserstein-1 afstanden er supremum over 1-Lipschitz funktioner af differencen i forventede kritiske værdier, og gradient penalty straffer afvigelser fra ||∇f||₂=1 på interpolationer, hvilket er teoretisk motiveret",
+                    "Den duale formulering minimerer KL-divergensen mellem distributionerne, og weight clipping er teoretisk overlegen fordi den giver en hård garant for Lipschitz-kontinuitet",
+                    "Wasserstein-afstanden estimeres gennem Monte Carlo sampling af transportplaner, og weight clipping giver mere stabile gradienter end nogen form for penalty-baseret metode",
+                    "Den duale formulering er baseret på Jensen-Shannon divergensen mellem de to distributioner, og gradient penalty regulariserer vægtene direkte i stedet for at klippe dem"
+                ],
+                correct: 0,
+                explanation: "Wasserstein-1: W(P_r,P_g)=sup_{||f||_L≤1}E[f(x)]-E[f(g(z))]. WGAN-GP's gradient penalty: λ·E[(||∇_x̂f(x̂)||₂-1)²] på x̂=εx_r+(1-ε)x_g. Dette er teoretisk motiveret: den optimale kritiker har gradient-norm 1 næsten overalt på interpolationer, hvilket giver mere stabile gradienter end weight clipping."
+            }
+        ];
+
+        let currentQuestion = 0;
+        let selectedAnswers = {};
+        let answeredQuestions = {};
+        let quizFinished = false;
+
+        function initScoreTracker() {
+            const tracker = document.getElementById('scoreTracker');
+            tracker.innerHTML = '';
+            for (let i = 0; i < questions.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'score-dot';
+                dot.id = `dot${i}`;
+                dot.title = `Spørgsmål ${i+1}`;
+                tracker.appendChild(dot);
+            }
+        }
+
+        function updateScoreDot(index, isCorrect) {
+            document.getElementById(`dot${index}`).className = `score-dot ${isCorrect ? 'correct-dot' : 'incorrect-dot'}`;
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('quizQuestions');
+            container.innerHTML = '';
+            questions.forEach((q, index) => {
+                const div = document.createElement('div');
+                div.className = `question ${index === 0 ? 'active' : ''}`;
+                div.id = `question${index}`;
+                div.innerHTML = `<h3>${index+1}. ${q.question}</h3><div class="options">${
+                    q.options.map((opt, i) => `<div class="option" id="option${index}_${i}" onclick="selectOption(${index},${i})"><strong>${String.fromCharCode(65+i)})</strong> ${opt}</div>`).join('')
+                }</div>`;
+                container.appendChild(div);
+            });
+            updateUI();
+        }
+
+        function selectOption(qIdx, oIdx) {
+            if (quizFinished || answeredQuestions[qIdx] !== undefined) return;
+            selectedAnswers[qIdx] = oIdx;
+            document.querySelectorAll(`#question${qIdx} .option`).forEach((o, i) => {
+                o.classList.toggle('selected', i === oIdx);
+            });
+            document.getElementById('btnNext').disabled = false;
+        }
+
+        function handleNextOrCheck() {
+            answeredQuestions[currentQuestion] !== undefined ? nextQuestion() : checkAnswer();
+        }
+
+        function checkAnswer() {
+            if (selectedAnswers[currentQuestion] === undefined || answeredQuestions[currentQuestion] !== undefined) return;
+            const correct = selectedAnswers[currentQuestion] === questions[currentQuestion].correct;
+            answeredQuestions[currentQuestion] = correct;
+            updateScoreDot(currentQuestion, correct);
+            document.querySelectorAll(`#question${currentQuestion} .option`).forEach((o, i) => {
+                o.classList.add('disabled');
+                if (i === questions[currentQuestion].correct) o.classList.add('correct');
+                if (i === selectedAnswers[currentQuestion] && !correct) o.classList.add('incorrect');
+            });
+            const fb = document.getElementById('feedback');
+            fb.classList.remove('correct-feedback', 'incorrect-feedback', 'show');
+            fb.classList.add(correct ? 'correct-feedback' : 'incorrect-feedback', 'show');
+            fb.innerHTML = `<span class="feedback-icon">${correct ? '✅' : '❌'}</span><strong>${correct ? 'Korrekt!' : 'Forkert.'}</strong> ${questions[currentQuestion].explanation}`;
+            document.getElementById('btnNext').textContent = 'Næste ➡';
+        }
+
+        function updateUI() {
+            document.getElementById('progressFill').style.width = ((currentQuestion+1)/questions.length*100)+'%';
+            document.getElementById('questionCounter').textContent = `Spørgsmål ${currentQuestion+1} af ${questions.length}`;
+            document.getElementById('btnPrev').style.display = currentQuestion === 0 ? 'none' : 'inline-block';
+            const allDone = Object.keys(answeredQuestions).length === questions.length;
+            const isLast = currentQuestion === questions.length-1;
+            document.getElementById('btnSubmit').style.display = (allDone && isLast) ? 'inline-block' : 'none';
+            document.getElementById('btnNext').style.display = (allDone && isLast) ? 'none' : 'inline-block';
+            if (!(allDone && isLast)) {
+                if (answeredQuestions[currentQuestion] !== undefined) {
+                    document.getElementById('btnNext').textContent = 'Næste ➡';
+                    document.getElementById('btnNext').disabled = false;
+                } else {
+                    document.getElementById('btnNext').textContent = 'Tjek svar ✓';
+                    document.getElementById('btnNext').disabled = selectedAnswers[currentQuestion] === undefined;
+                }
+            }
+            const fb = document.getElementById('feedback');
+            answeredQuestions[currentQuestion] !== undefined ? fb.classList.add('show') : fb.classList.remove('show','correct-feedback','incorrect-feedback');
+        }
+
+        function showQuestion(i) {
+            document.querySelectorAll('.question').forEach(q => q.classList.remove('active'));
+            document.getElementById(`question${i}`).classList.add('active');
+            currentQuestion = i;
+            updateUI();
+        }
+
+        function nextQuestion() { if (currentQuestion < questions.length-1) showQuestion(currentQuestion+1); }
+        function prevQuestion() { if (currentQuestion > 0) showQuestion(currentQuestion-1); }
+
+        function submitQuiz() {
+            quizFinished = true;
+            const score = Object.values(answeredQuestions).filter(v => v === true).length;
+            const passed = score >= 8;
+            ['quizQuestions','btnContainer','feedback','questionCounter'].forEach(id => document.getElementById(id).style.display = 'none');
+            document.querySelector('.progress-bar').style.display = 'none';
+            document.getElementById('result').classList.add('show');
+            document.getElementById('resultIcon').textContent = passed ? '🎉' : '📚';
+            document.getElementById('resultTitle').textContent = passed ? 'Tillykke! Du bestod!' : 'Ikke bestået - 8+ kræves';
+            document.getElementById('resultTitle').className = passed ? 'passed' : 'failed';
+            document.getElementById('resultScore').textContent = `${score}/10`;
+            document.getElementById('resultScore').className = `score ${passed ? 'passed' : 'failed'}`;
+            document.getElementById('resultMessage').textContent = passed ? 'Imponerende! Du har demonstreret dyb ekspertviden i avancerede AI-koncepter. Kursusbeviset er dit! 🏆' : 'Gennemgå forklaringerne på dine forkerte svar og prøv igen. Mestring kræver dedikation! 💪';
+        }
+
+        function retryQuiz() {
+            currentQuestion = 0; selectedAnswers = {}; answeredQuestions = {}; quizFinished = false;
+            document.getElementById('result').classList.remove('show');
+            ['quizQuestions','btnContainer','feedback','questionCounter'].forEach(id => document.getElementById(id).style.display = 'block');
+            document.querySelector('.progress-bar').style.display = 'block';
+            document.getElementById('btnSubmit').style.display = 'none';
+            initScoreTracker(); renderQuestions(); showQuestion(0);
+            document.getElementById('btnNext').disabled = true;
+        }
+
+        initScoreTracker(); renderQuestions();
+        document.getElementById('btnNext').disabled = true;
+    </script>
+</body>
+</html>
