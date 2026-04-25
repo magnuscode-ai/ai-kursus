@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Kursus A1</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --blue-mid:    #c8dff5;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #0B1F3F;
+      --purple-light:#E2E8F0;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(11,31,63,0.10);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+    .hero-meta-item span { font-size: 18px; }
+
+    .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+    .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .step-dot.active { background: var(--purple); color: white; }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.active { color: var(--purple); }
+    .step-label.done   { color: var(--green); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+    .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+    .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+    .module-header:hover { background: #cbd5e1; }
+    .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .module-title-wrap { flex: 1; }
+    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+    .module.open .module-body { display: block; }
+
+    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-box p { font-size: 14px; line-height: 1.6; }
+    .info-box ul { padding-left: 1.1rem; }
+    .info-box li { font-size: 14px; line-height: 1.7; }
+    .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+    .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+    .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+    .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+    .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
+
+    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+    .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+    .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .practice li { margin-bottom: 4px; }
+
+    .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+    .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+    .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+    .btn-quiz:hover { background: #1a3866; transform: translateY(-1px); }
+
+    .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+    .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+    .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.75rem 1rem 3rem; }
+      .module-body { padding: 1.1rem; }
+      .quiz-cta { padding: 1.5rem 1rem; }
+      .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+      .step-label { display: none; }
+      .step-arrow { margin: 0 2px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Kursus A — Del 1 af 5</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot active">A1</div>
+    <span class="step-label active">Fine-tuning</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q1</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A2</div>
+    <span class="step-label next">Multi-modal</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q2</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A3</div>
+    <span class="step-label next">Arkitektur</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q3</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A4</div>
+    <span class="step-label next">Governance</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q4</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A5</div>
+    <span class="step-label next">Capstone</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 1</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 2</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 3</span>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Kursus A &nbsp;·&nbsp; Del 1 af 5</div>
+  <h1>Fine-tuning og model-tilpasning</h1>
+  <p>Når prompting ikke længere er nok. LoRA, RLHF, custom embeddings — og hvornår fine-tuning faktisk er det rigtige værktøj.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span>⏱</span> 2,5 – 3 timer</div>
+    <div class="hero-meta-item"><span>📋</span> 4 moduler</div>
+    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">Velkommen til Kursus A</div>
+  <div class="section-title">Fra professionel til ekspert</div>
+  <p class="section-body">I Kursus C lærte du prompt-teknik og workflows. I Kursus B byggede du RAG-systemer, agenter og produktionspipelines. Nu går vi under motorhjelmen. Kursus A handler om at <strong>tilpasse selve modellen</strong> — ikke bare prompten — og om at træffe de svære arkitektur-valg som professionelle AI-teams bruger uger på i 2026.</p>
+
+  <div class="info-box box-yellow" style="margin-bottom:2rem;">
+    <div class="info-box-title">⚠ Forudsætninger — uden undtagelse</div>
+    <p>Kursus A bygger direkte på Kursus B. Hvis du ikke er fortrolig med tool-loops (B3), prompt injection (B5) og struktureret output (B1), så stop her og kør B færdig. A-niveau er der hvor "det virker for mig" ikke er godt nok — vi måler, vi finetuner, og vi træffer beslutninger om penge og jura.</p>
+  </div>
+
+  <div class="info-box box-blue" style="margin-bottom:2.5rem;">
+    <div class="info-box-title">💡 Inden du starter</div>
+    <p>Du får mest ud af A1 hvis du har et konkret scenarie i tankerne — fx en chatbot der opfører sig "næsten rigtigt", men ikke helt. Underveis vurderer vi: skal du fine-tune, eller skal du blive bedre til at prompte?</p>
+  </div>
+
+  <!-- ── MODULE 1 ── -->
+  <div class="module open" id="mod1">
+    <div class="module-header" onclick="toggleModule('mod1')">
+      <div class="module-letter">1</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Hvornår fine-tuning faktisk er svaret</div>
+        <div class="module-sub">Den dyreste fejl i AI: at fine-tune for tidligt</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Fine-tuning lyder som det "professionelle" valg — det er det, store firmaer gør, ikke? Sandheden er at <strong>de fleste fine-tuning-projekter er spild af tid og penge</strong>, fordi problemet kunne være løst med en bedre prompt eller bedre RAG.</p>
+
+      <h3 class="subhead">Beslutningstræet</h3>
+      <div class="info-box box-purple">
+        <div class="info-box-title">Spørg dig selv i denne rækkefølge</div>
+        <ol>
+          <li>Kan en bedre <strong>prompt</strong> løse det? (Genlæs B1.)</li>
+          <li>Kan <strong>few-shot eksempler</strong> i prompten løse det? (B1, modul 2.)</li>
+          <li>Mangler modellen <strong>viden</strong> den kunne få via RAG? (B2.)</li>
+          <li>Mangler modellen <strong>handlinger</strong> den kunne få via tools? (B3.)</li>
+          <li>Først NU: overvej fine-tuning.</li>
+        </ol>
+      </div>
+
+      <h3 class="subhead">De tre tilfælde hvor fine-tuning vinder</h3>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">1. Stil og format konsistens</div>
+        <p>Du har 5.000 eksempler på "sådan skriver vores firma". Du vil have AI'en til at ramme den tone <em>uden</em> at give 10 few-shot eksempler i hver eneste prompt. Fine-tuning gør stilen til en del af modellen.</p>
+      </div>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">2. Latens og pris ved skala</div>
+        <p>Du laver 1 million kald om dagen. En lille fine-tuned model kan ofte ramme 95% af kvaliteten af en stor model — til 10× lavere pris og 5× lavere latens.</p>
+      </div>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">3. Niche-domæner med eget vokabular</div>
+        <p>Medicin, jura, intern firma-kode med tusindvis af interne forkortelser. Hvis modellen <em>aldrig</em> har set dit domæne, hjælper prompts kun begrænset.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">De røde flag</h3>
+      <div class="info-box box-red">
+        <div class="info-box-title">Fine-tune IKKE hvis...</div>
+        <ul>
+          <li>Du har under ~500 højkvalitets-eksempler</li>
+          <li>Problemet er "den ved ikke noget om vores produkt" — det er RAG, ikke fine-tuning</li>
+          <li>Din evaluerings-pipeline ikke virker endnu (B5) — du kan ikke måle om det blev bedre</li>
+          <li>Kravene ændres hver uge — fine-tuning fryser viden ind i modellen</li>
+        </ul>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Beslutnings-øvelse</div>
+        <ol>
+          <li>Tag et konkret AI-problem du har set (eget eller fra arbejdet).</li>
+          <li>Gå beslutningstræet igennem trin for trin. Stop ved første "ja".</li>
+          <li>Skriv ned: hvilken løsning landede du på? Var fine-tuning overhovedet på bordet?</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Cirka 8 ud af 10 problemer løses bedre med prompting + RAG. At kunne se det er hele pointen med dette modul.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 2 ── -->
+  <div class="module" id="mod2">
+    <div class="module-header" onclick="toggleModule('mod2')">
+      <div class="module-letter">2</div>
+      <div class="module-title-wrap">
+        <div class="module-title">LoRA og parameter-efficient fine-tuning</div>
+        <div class="module-sub">Træn 0,1% af modellen — få 95% af effekten</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Klassisk fine-tuning betød at opdatere alle modellens vægte — milliarder af parametre. Det krævede et datacenter. <strong>LoRA</strong> (Low-Rank Adaptation) er gennembruddet der gjorde fine-tuning tilgængeligt for alle.</p>
+
+      <span class="technique-tag">Teknik 1</span>
+      <h3 class="subhead">Idéen bag LoRA på én side</h3>
+      <p class="prose">I stedet for at opdatere hele vægt-matricen <em>W</em>, lærer LoRA to små matricer <em>A</em> og <em>B</em> hvor <em>A·B</em> er det <em>tillæg</em> der lægges til W. Da A og B er lavdimensionelle, er der typisk under 1% så mange parametre at træne.</p>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">Hvad det betyder i praksis</div>
+        <ul>
+          <li>Du kan fine-tune en 7-milliard-parameter-model på en enkelt GPU</li>
+          <li>Adapteren fylder typisk 10-200 MB i stedet for 14 GB</li>
+          <li>Du kan have <em>flere</em> adaptere til samme base-model og hot-swappe dem</li>
+        </ul>
+      </div>
+
+      <hr class="divider">
+
+      <span class="technique-tag">Teknik 2</span>
+      <h3 class="subhead">QLoRA — endnu billigere</h3>
+      <p class="prose"><strong>QLoRA</strong> kombinerer LoRA med 4-bit kvantisering af base-modellen. Det betyder du kan fine-tune en 70B-model på én forbruger-GPU. For tre år siden krævede det et lille rack.</p>
+
+      <div class="code-label">Konceptuelt — hvad du sender til træning</div>
+      <div class="code-block">{"messages": [
+  {"role": "system", "content": "Du er kundesupport hos Acme."},
+  {"role": "user",   "content": "Min ordre er forsinket, hvad gør jeg?"},
+  {"role": "assistant", "content": "Jeg er ked af forsinkelsen. Find dit ordrenummer i din bekræftelses-mail og send det til support@acme.dk — vi sporer pakken indenfor 2 timer."}
+]}
+{"messages": [
+  ...næste eksempel...
+]}</div>
+
+      <p class="prose">Format: JSONL, en samtale pr. linje. Du skriver IKKE prompten — du skriver det <strong>færdige output du ønsker</strong>. Modellen lærer at imitere mønstret.</p>
+
+      <hr class="divider">
+
+      <span class="technique-tag">Teknik 3</span>
+      <h3 class="subhead">Data-kvalitet slår data-mængde — altid</h3>
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Den klassiske fælde</div>
+        <p>Et team samler 50.000 chat-logs fra deres support, dumper det ind, og fine-tuner. Resultat: modellen lærer at imitere <em>middelmådighed</em>, fordi 70% af loggene var middelmådige svar.</p>
+      </div>
+      <p class="prose">Bedre tilgang: 500 håndplukkede, perfekte eksempler skrevet af dine bedste medarbejdere. Det slår 50.000 blandede logs — hver gang.</p>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Audit dit datasæt</div>
+        <ol>
+          <li>Forestil dig du skal fine-tune en model på dine sidste 1.000 emails.</li>
+          <li>Hvor mange ville du være stolt af at have modellen imitere?</li>
+          <li>Hvis tallet er under 200 — har du intet datasæt. Du har en hjemmeopgave.</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Det her er hvorfor data-curation er 80% af et seriøst fine-tuning-projekt.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 3 ── -->
+  <div class="module" id="mod3">
+    <div class="module-header" onclick="toggleModule('mod3')">
+      <div class="module-letter">3</div>
+      <div class="module-title-wrap">
+        <div class="module-title">RLHF, DPO og preference-tuning</div>
+        <div class="module-sub">Fine-tune på "hvad er bedre" — ikke "hvad er det rigtige svar"</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">For nogle opgaver findes der ikke ét rigtigt svar — kun <em>bedre</em> og <em>værre</em>. Hvilken af to oversættelser læses bedst? Hvilket digt rammer tonen? Her hjælper supervised fine-tuning ikke. Vi skal lære modellen <strong>præferencer</strong>.</p>
+
+      <h3 class="subhead">Hvordan RLHF virker — i klartekst</h3>
+      <ol class="numbered-list">
+        <li>Du fine-tuner først en almindelig model (SFT) på eksempler.</li>
+        <li>Modellen producerer 2 svar pr. prompt. Et menneske vælger den bedste.</li>
+        <li>Du træner en <em>reward model</em> der lærer at forudsige hvilket svar et menneske ville vælge.</li>
+        <li>Du bruger reward-modellen som "lærer" til at finjustere hovedmodellen via reinforcement learning.</li>
+      </ol>
+
+      <div class="info-box box-orange">
+        <div class="info-box-title">Det er det ChatGPT er</div>
+        <p>Den oprindelige GPT-3 var rå og sær. Det der gjorde ChatGPT brugbar var RLHF. Hele "den hjælper dig høfligt"-vibe er ikke iboende i transformere — det er trænet ind via menneske-præferencer.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">DPO — Direct Preference Optimization</h3>
+      <p class="prose">RLHF er kompliceret: 4 modeller i spil, ustabile gradienter, dyrt. <strong>DPO</strong> (2023) viste at man kan opnå næsten det samme uden reinforcement learning overhovedet — bare en smart loss-funktion på preference-par.</p>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">DPO i én sætning</div>
+        <p>"For hvert preference-par (vinder, taber): juster modellen så den er mere tilbøjelig til at producere vinderen og mindre tilbøjelig til at producere taberen — relativt til base-modellen."</p>
+      </div>
+
+      <p class="prose">Resultat: stort set alle nyere åbne modeller (Llama 3, Mistral, Qwen) bruger DPO eller varianter (IPO, KTO, SimPO). Hvis du fine-tuner i 2026, er det sandsynligvis DPO — ikke RLHF.</p>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Preference data — hvor det kommer fra</h3>
+      <ul class="bullet-list">
+        <li><strong>Eksplicit:</strong> Vis brugeren to svar, lad dem vælge. (ChatGPT's tommel op/ned i forklædning.)</li>
+        <li><strong>Implicit:</strong> Logget brugeradfærd. Klik, edits, copy-paste, "regenerate"-knap.</li>
+        <li><strong>Synthetic:</strong> Brug en stærkere model (GPT-4) som dommer over en svagere.</li>
+      </ul>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Spot RLHF i naturen</div>
+        <ol>
+          <li>Stil ChatGPT et bevidst tvetydigt spørgsmål med et lidt risikabelt emne.</li>
+          <li>Læg mærke til hvordan svaret er formuleret: forsigtigt, balanceret, med advarsler.</li>
+          <li>Det er ikke modellens "natur" — det er RLHF. Et menneske har trænet den til at svare sådan.</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Når du senere designer dit eget preference-datasæt, vil du indse at <em>du</em> bestemmer hvad "bedre" betyder.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 4 ── -->
+  <div class="module" id="mod4">
+    <div class="module-header" onclick="toggleModule('mod4')">
+      <div class="module-letter">4</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Custom embeddings og domain adaptation</div>
+        <div class="module-sub">Når general-purpose embeddings ikke fanger dit domæne</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">I B2 lærte du om embeddings og RAG. På B-niveau brugte du off-the-shelf embeddings (OpenAI's <code>text-embedding-3</code>, Cohere, Voyage). For 90% af brugscases er det perfekt. Men hvis dine RAG-resultater stadig er middelmådige <em>efter</em> du har optimeret chunking og hybrid search — så er det måske tid til custom embeddings.</p>
+
+      <h3 class="subhead">Hvornår almindelige embeddings fejler</h3>
+      <div class="info-box box-red">
+        <div class="info-box-title">Symptomer</div>
+        <ul>
+          <li>Spørgsmål om "produkt X" returnerer chunks om "produkt Y" fordi de hedder næsten det samme</li>
+          <li>Domæne-specifikke synonymer (jura: "skadelidte" / "den krænkede part") matches ikke</li>
+          <li>Korte querys og lange dokumenter har systematisk dårlig similarity</li>
+        </ul>
+      </div>
+
+      <h3 class="subhead">De tre niveauer af tilpasning</h3>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">Niveau 1: Bedre off-the-shelf model</div>
+        <p>Test 3-4 embedding-modeller på dit eget datasæt, ikke på MTEB-leaderboardet. Den bedste på MTEB er ikke nødvendigvis bedst på dit domæne.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">Niveau 2: Fine-tune en åben embedding-model</div>
+        <p>Tag fx <code>BAAI/bge-large</code> og fine-tune den på 5.000-50.000 (query, relevant_doc, irrelevant_doc)-tripler fra dit eget domæne. Brug contrastive loss. Typisk 20-40% bedre retrieval.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">Niveau 3: Train fra scratch</div>
+        <p>Stort set ingen bør gøre dette. Det kræver millioner af træningseksempler og er sjældent værd det. Niveau 2 dækker 99% af reelle behov.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Hard negatives — den hemmelige sauce</h3>
+      <p class="prose">Når du træner en embedding-model på (query, positive, negative)-tripler, så er <strong>negative</strong> det vigtigste valg. "Random" negatives er nemt — men en god embedding-model bør lære at skelne <em>tæt på</em> hinanden, ikke kun langt fra hinanden.</p>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Hard negative mining</div>
+        <p>For hvert positive-par: kør en <em>nuværende</em> embedding-model og find de top-20 mest similar dokumenter. Filter de rigtigt-positive fra. Det der er tilbage er hard negatives — næsten-rigtige svar modellen forveksler. <em>De</em> er guld.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Diagnose dit RAG-system</div>
+        <ol>
+          <li>Tag et RAG-system du kender (eget eller fra B-eksamen).</li>
+          <li>Saml 20 querys hvor svaret <em>er</em> i dokumentmængden.</li>
+          <li>Mål: hvor ofte er det rigtige chunk i top-3? Top-10?</li>
+          <li>Hvis top-3 hit-rate er under 70% — har du et embeddings-problem, ikke et generation-problem.</li>
+        </ol>
+        <p style="margin-top:0.75rem;">På B-niveau optimerede du prompten. På A-niveau optimerer du selve søgningen.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>Del A1 — Hvad du har lært</h3>
+    <ul>
+      <li>Beslutningstræet: hvornår fine-tuning faktisk er svaret — og de tre tilfælde hvor det vinder</li>
+      <li>LoRA og QLoRA: hvorfor du kan fine-tune en 70B-model på din egen maskine i 2026</li>
+      <li>Data-kvalitet slår data-mængde: 500 perfekte eksempler &gt; 50.000 middelmådige</li>
+      <li>RLHF og DPO: hvordan modeller lærer præferencer — ikke kun rigtige svar</li>
+      <li>Hvor preference-data faktisk kommer fra (og hvorfor du selv definerer "bedre")</li>
+      <li>Custom embeddings og hard negative mining til niche-domæner</li>
+      <li>Hvornår RAG er problemet, og hvornår embeddings er problemet</li>
+    </ul>
+  </div>
+
+  <div class="quiz-cta">
+    <div class="quiz-cta-icon">📝</div>
+    <h2>Klar til mini-quizzen?</h2>
+    <p>A1-quizzen er væsentligt sværere end B-niveau. Spørgsmålene tester ikke kun om du <em>kender</em> teknikkerne, men om du kan <em>vælge mellem dem</em> i konkrete scenarier. Du skal have mindst 7 ud af 8 rigtige.</p>
+    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+    <a href="quiz-a1.html" class="btn-quiz">Start mini-quiz A1 →</a>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(id) {
+  const mod = document.getElementById(id);
+  mod.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
