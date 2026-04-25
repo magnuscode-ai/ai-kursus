@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Kursus A4</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --blue-mid:    #c8dff5;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #0B1F3F;
+      --purple-light:#E2E8F0;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(11,31,63,0.10);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--purple); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--purple); color: white; padding: 3rem 1.5rem 2.5rem; text-align: center; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 5vw, 38px); font-weight: 400; line-height: 1.2; margin-bottom: 0.75rem; }
+    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
+    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
+    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
+    .hero-meta-item span { font-size: 18px; }
+
+    .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 1rem 1rem; display: flex; justify-content: center; align-items: center; gap: 0; flex-wrap: wrap; }
+    .step-item { display: flex; align-items: center; gap: 0; font-size: 13px; }
+    .step-dot { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .step-dot.active { background: var(--purple); color: white; }
+    .step-dot.done   { background: var(--green); color: white; }
+    .step-dot.next   { background: var(--border); color: var(--muted); }
+    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
+    .step-label.active { color: var(--purple); }
+    .step-label.done   { color: var(--green); }
+    .step-label.next   { color: var(--muted); }
+    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+
+    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    .section-label { font-size: 11px; font-weight: 700; color: var(--purple); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem; }
+    .section-title { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+
+    .module { background: white; border: 1px solid var(--border); border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow); }
+    .module-header { background: var(--purple-light); padding: 1.1rem 1.5rem; display: flex; align-items: center; gap: 1rem; cursor: pointer; user-select: none; }
+    .module-header:hover { background: #cbd5e1; }
+    .module-letter { width: 40px; height: 40px; border-radius: 10px; background: var(--purple); color: white; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; flex-shrink: 0; }
+    .module-title-wrap { flex: 1; }
+    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
+    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
+    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
+    .module.open .module-body { display: block; }
+
+    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
+    .info-box p { font-size: 14px; line-height: 1.6; }
+    .info-box ul { padding-left: 1.1rem; }
+    .info-box li { font-size: 14px; line-height: 1.7; }
+    .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+    .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+    .box-orange { background: var(--orange-light); } .box-orange .info-box-title { color: var(--orange); }
+    .box-purple { background: var(--purple-light); } .box-purple .info-box-title { color: var(--purple); }
+    .box-red    { background: var(--red-light); } .box-red .info-box-title    { color: var(--red); }
+
+    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+    .numbered-list, .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
+    .numbered-list li, .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+
+    .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
+    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
+    .practice li { margin-bottom: 4px; }
+
+    .summary { background: var(--purple); border-radius: 16px; padding: 1.75rem; color: white; margin-bottom: 2rem; }
+    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+
+    .quiz-cta { background: white; border: 2px solid var(--purple); border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
+    .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
+    .quiz-cta .req { display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt); font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem; }
+    .btn-quiz { display: inline-block; background: var(--purple); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+    .btn-quiz:hover { background: #1a3866; transform: translateY(-1px); }
+
+    .technique-tag { display: inline-block; background: var(--purple); color: white; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem; }
+
+    .code-block { background: #1e2a3a; color: #e2f0fb; border-radius: 10px; padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap; overflow-x: auto; }
+    .code-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem; }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.75rem 1rem 3rem; }
+      .module-body { padding: 1.1rem; }
+      .quiz-cta { padding: 1.5rem 1rem; }
+      .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+      .step-label { display: none; }
+      .step-arrow { margin: 0 2px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Kursus A — Del 4 af 5</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step-item">
+    <div class="step-dot done">A1</div>
+    <span class="step-label done">Fine-tuning</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q1</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">A2</div>
+    <span class="step-label done">Multi-modal</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q2</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">A3</div>
+    <span class="step-label done">Arkitektur</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot done">Q3</div>
+    <span class="step-label done">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot active">A4</div>
+    <span class="step-label active">Governance</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">Q4</div>
+    <span class="step-label next">Mini-quiz</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">A5</div>
+    <span class="step-label next">Capstone</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 1</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 2</span>
+  </div>
+  <span class="step-arrow">›</span>
+  <div class="step-item">
+    <div class="step-dot next">🏆</div>
+    <span class="step-label next">Eksamen 3</span>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Kursus A &nbsp;·&nbsp; Del 4 af 5</div>
+  <h1>AI governance, EU AI Act og compliance</h1>
+  <p>Det jurister, CTO'er og DPO'er kæmper med i 2026. Risk-klassificering, GDPR, dataminimering — og hvordan du dokumenterer dit AI-system så det holder en revision.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span>⏱</span> 2 timer</div>
+    <div class="hero-meta-item"><span>📋</span> 4 moduler</div>
+    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="section-label">Del A4</div>
+  <div class="section-title">AI er ikke længere ureguleret</div>
+  <p class="section-body">EU AI Act trådte i kraft i 2024 og er fuldt anvendelig i 2026. GDPR har altid gældet. På A-niveau skal du forstå begge — for det er typisk først her, AI-projekter rammer rigtige brugere, rigtige data, og rigtige konsekvenser. Dette modul gør dig ikke til jurist. Men det gør dig til den, der ved hvornår jurister skal involveres — og hvad de spørger om.</p>
+
+  <div class="info-box box-yellow" style="margin-bottom:2rem;">
+    <div class="info-box-title">⚠ Disclaimer</div>
+    <p>Indholdet her er undervisning, ikke juridisk rådgivning. Reglerne ændres, fortolkes af myndigheder, og varierer pr. branche. Konsulter altid en jurist før produktion.</p>
+  </div>
+
+  <!-- ── MODULE 1 ── -->
+  <div class="module open" id="mod1">
+    <div class="module-header" onclick="toggleModule('mod1')">
+      <div class="module-letter">1</div>
+      <div class="module-title-wrap">
+        <div class="module-title">EU AI Act: de fire risikoniveauer</div>
+        <div class="module-sub">Klassificér dit system korrekt — det afgør alt det andet</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">EU AI Act er bygget omkring en simpel idé: forskellige AI-systemer indebærer forskellige risici. Reglerne skalerer med risikoen.</p>
+
+      <h3 class="subhead">De fire kategorier</h3>
+
+      <div class="info-box box-red">
+        <div class="info-box-title">1. Forbudt (Unacceptable Risk)</div>
+        <ul>
+          <li>Social scoring af personer på offentligt niveau</li>
+          <li>Manipulerende AI der udnytter sårbarheder (børn, ældre, mentalt syge)</li>
+          <li>Biometric kategorisering der udleder følsomme attributer (race, religion, seksuel orientering)</li>
+          <li>Real-time fjern-biometrisk identifikation i offentlige rum (med snævre undtagelser for retshåndhævelse)</li>
+        </ul>
+      </div>
+
+      <div class="info-box box-orange">
+        <div class="info-box-title">2. Højrisiko (High Risk)</div>
+        <ul>
+          <li>AI i kritisk infrastruktur (energi, transport)</li>
+          <li>Uddannelse og rekruttering (CV-screening, eksamen-scoring)</li>
+          <li>Beskæftigelse og personale-beslutninger</li>
+          <li>Adgang til offentlige ydelser, kreditvurdering, forsikringspriser</li>
+          <li>Retshåndhævelse, migration, asyl</li>
+          <li>Retsplejende AI</li>
+        </ul>
+        <p style="margin-top:0.5rem;"><strong>Krav:</strong> Risk management, datakvalitet, dokumentation, menneskelig overvågning, robusthed, log-pligt, konformitetsvurdering før markedsføring.</p>
+      </div>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">3. Begrænset risiko (Limited Risk)</div>
+        <p>Chatbots, deepfakes, emotion recognition. <strong>Krav:</strong> Transparens — brugeren skal vide at de interagerer med AI, eller at indhold er AI-genereret.</p>
+      </div>
+
+      <div class="info-box box-green">
+        <div class="info-box-title">4. Minimal risiko (Minimal Risk)</div>
+        <p>Spam-filtre, AI i spil, AI i interne værktøjer uden personpåvirkning. Ingen særlige krav, men frivillige codes of conduct anbefales.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">General-Purpose AI (GPAI) modeller</h3>
+      <p class="prose">Foundation-modeller (GPT, Claude, Gemini) har deres egne regler. Hvis du <em>bygger på</em> dem (du udvikler ikke selv modellen), er hovedansvaret hos leverandøren — du har stadig brugsansvar. Hvis du fine-tuner og deployer en model med en ny formålsrettet adfærd, kan du skifte til "provider"-rolle og overtage større ansvar.</p>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">Praktisk tommelfingerregel</div>
+        <p>Brug af API + system-prompt = "deployer". LoRA-fine-tune til ny use case + deploy = du nærmer dig "provider". Det her er ikke trivielt. Spørg jurist.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Klassificering</div>
+        <ol>
+          <li>"AI der screener jobansøgninger og rangerer kandidater til samtale."</li>
+          <li>"Chatbot på en e-handelsside der svarer på produktspørgsmål."</li>
+          <li>"AI der genererer forslag til forsikringspræmie baseret på adfærdsdata."</li>
+          <li>"AI der laver memes til marketing."</li>
+        </ol>
+        <p style="margin-top:0.75rem;">For hver: hvilken risikokategori? Hvad ville være de praktiske implikationer?</p>
+        <p style="margin-top:0.5rem;"><strong>Svar:</strong> 1) højrisiko (rekruttering). 2) begrænset (transparenskrav). 3) højrisiko (forsikring). 4) minimal.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 2 ── -->
+  <div class="module" id="mod2">
+    <div class="module-header" onclick="toggleModule('mod2')">
+      <div class="module-letter">2</div>
+      <div class="module-title-wrap">
+        <div class="module-title">GDPR for AI-systemer</div>
+        <div class="module-sub">Personoplysninger og AI er en svær cocktail</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">GDPR var her længe før AI Act og gælder uændret. AI-specifikke fortolkninger er stadig under udvikling, men kerneprincipperne er stærke.</p>
+
+      <h3 class="subhead">De fem principper du skal kende udenad</h3>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">1. Lovligt grundlag</div>
+        <p>Du skal have en lovlig grund til at behandle personoplysninger. De seks: samtykke, kontrakt, retslig forpligtelse, vital interesse, offentlig myndighedsudøvelse, legitim interesse. AI-træning på personoplysninger uden klart grundlag er en <em>stor</em> compliance-risiko.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">2. Dataminimering</div>
+        <p>Kun de data der er <em>nødvendige</em> for formålet. AI-systemer der "samler bare alt for sikkerhedsskyld" er i strid med princippet.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">3. Formålsbegrænsning</div>
+        <p>Data indsamlet til formål A må ikke uden videre bruges til formål B. Klassisk fælde: Logs fra kundesupport bruges til at træne en chatbot uden specifikt grundlag.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">4. Den registreredes rettigheder</div>
+        <p>Indsigt, sletning, dataportabilitet, indsigelse, automatiserede afgørelser (Art. 22). Det sidste er kritisk: brugeren har ret til <strong>menneskelig review</strong> af afgørelser med betydelig retsvirkning.</p>
+      </div>
+
+      <div class="info-box box-blue">
+        <div class="info-box-title">5. Ansvar (accountability)</div>
+        <p>Du skal kunne <em>dokumentere</em> at du overholder reglerne. Logging, DPIA, register over behandlingsaktiviteter.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">De tre konkrete AI-fælder</h3>
+
+      <div class="info-box box-red">
+        <div class="info-box-title">Fælde 1: API-kald sender data ud af EU</div>
+        <p>Hvis du sender personoplysninger til en model hostet i USA, har du en international overførsel. Du skal have et transfer-grundlag (typisk SCC + supplerende foranstaltninger). Anthropic, OpenAI og Google tilbyder EU-hostede instanser eller data residency. Brug dem.</p>
+      </div>
+
+      <div class="info-box box-red">
+        <div class="info-box-title">Fælde 2: "Modellen huskede personoplysninger"</div>
+        <p>Hvis du fine-tuner en model på personoplysninger uden grundlag, og modellen senere reproducerer dem — er det en sikkerhedsbrud. Du <em>kan</em> ikke nemt slette personoplysninger fra en trænet model.</p>
+      </div>
+
+      <div class="info-box box-red">
+        <div class="info-box-title">Fælde 3: RAG der eksponerer på tværs af brugere</div>
+        <p>Klassisk B2-bug der bliver A-niveau-katastrofe i produktion: Bruger A's data ender i Bruger B's RAG-resultat fordi du glemte tenant-isolation. Test specifikt for dette.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Spot persondata-flowet</div>
+        <ol>
+          <li>Tegn dataflowet i et af dine egne AI-projekter.</li>
+          <li>Marker hvert sted hvor personoplysninger kunne være involveret.</li>
+          <li>For hvert punkt: hvad er lovgrundlaget? Hvor lagres data? Hvor længe? Forlader det EU?</li>
+          <li>Hvis du ikke kan svare — det er præcis dét en DPO ville spørge dig om.</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 3 ── -->
+  <div class="module" id="mod3">
+    <div class="module-header" onclick="toggleModule('mod3')">
+      <div class="module-letter">3</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Bias, fairness og diskrimination</div>
+        <div class="module-sub">Tekniske og organisatoriske beskyttelsesforanstaltninger</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">AI-systemer kan diskriminere selv når ingen havde til hensigt at de skulle. Det er ikke kun et etisk problem — det er et juridisk: ligebehandlingsloven, EU's anti-diskriminations-direktiver, og AI Act kræver alle aktive foranstaltninger.</p>
+
+      <h3 class="subhead">Hvor bias snuser sig ind</h3>
+
+      <div class="info-box box-orange">
+        <div class="info-box-title">1. Træningsdata</div>
+        <p>Data fra fortiden afspejler fortidens uligheder. Klassisk eksempel: rekrutteringssystem trænet på 10 års CV-data fra teknisk industri lærer at "kvinde" er en negativ signal — fordi der historisk har været få kvinder ansat. Modellen "lærer" dette helt uden at en udvikler har skrevet det ind.</p>
+      </div>
+
+      <div class="info-box box-orange">
+        <div class="info-box-title">2. Proxy-features</div>
+        <p>Du må ikke bruge etnicitet — så du fjerner kolonnen. Men postnummer, navn og uddannelses-institution er <em>proxies</em> der korrelerer stærkt. Modellen finder selv vej til diskriminationen via dem.</p>
+      </div>
+
+      <div class="info-box box-orange">
+        <div class="info-box-title">3. Output-distribution</div>
+        <p>Selv hvis input er "neutralt", kan output skævvride: tekstgenererende AI'er producerer demografisk skæve repræsentationer ("læge" → typisk mand i billedgenerering, "sygeplejerske" → typisk kvinde).</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Praktiske mod-foranstaltninger</h3>
+      <ol class="numbered-list">
+        <li><strong>Pre-deployment testing:</strong> Test din model på syntetiske kant-cases for hvert beskyttet kriterium (køn, alder, etnicitet, handicap)</li>
+        <li><strong>Audit af træningsdata:</strong> Inden fine-tuning — er kategorier balanceret? Er der subkulturer der mangler?</li>
+        <li><strong>Output-filtre:</strong> Guardrails der opfanger åbenbart problematiske outputs (B5-teknik genbrugt)</li>
+        <li><strong>Periodisk review:</strong> Konfusion-matricer pr. demografisk gruppe. Sker der "forskelsbehandling" i fejl-rates?</li>
+        <li><strong>Mennesklig review for høj-stakes beslutninger:</strong> Aldrig fuldautomatiserede afgørelser i højrisiko-domæner</li>
+      </ol>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ "Fairness" har ikke én definition</div>
+        <p>Demografisk paritet, equalized odds, calibration — er forskellige fairness-mål, og nogle af dem er <em>matematisk umulige at opfylde samtidigt</em>. Det er ikke en bug — det er den dybe sandhed. Tving dig selv til at vælge hvilken fairness-definition din use case kræver.</p>
+      </div>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Bias-audit på en LLM</div>
+        <ol>
+          <li>Bed Claude eller ChatGPT om at "skrive en kort historie om en succesfuld iværksætter."</li>
+          <li>Gentag 10 gange. Notér: køn, alder, etnicitet, navngivning.</li>
+          <li>Gør samme test for "succesfuld sygeplejerske", "ingeniør", "social-pædagog".</li>
+          <li>Hvor skævt er output-distributionen?</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Det her er præcis hvordan en bias-auditrapport ville se ud — bare større skala. Når du vælger AI-leverandør på A-niveau, er det disse tests du beder om at se resultater fra.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── MODULE 4 ── -->
+  <div class="module" id="mod4">
+    <div class="module-header" onclick="toggleModule('mod4')">
+      <div class="module-letter">4</div>
+      <div class="module-title-wrap">
+        <div class="module-title">Dokumentation der holder en revision</div>
+        <div class="module-sub">Model cards, system cards, DPIA og AI-impact-assessments</div>
+      </div>
+      <div class="module-toggle">+</div>
+    </div>
+    <div class="module-body">
+      <p class="prose">Compliance er ikke noget du laver én gang. Det er en levende proces dokumenteret i artefakter. På A-niveau skal du kende formaterne og vide hvornår de skal opdateres.</p>
+
+      <h3 class="subhead">De fire dokumenter</h3>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">1. Model card</div>
+        <p>Beskriver modellen: arkitektur, træningsdata (oprindelse, periode, sprog), metrics på standardevals, kendte begrænsninger og bias. For frontier-modeller laves den af leverandøren (læs Anthropic's Claude model cards). For dine egne fine-tunes — du laver den.</p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">2. System card</div>
+        <p>Beskriver det <em>samlede system</em> du har bygget: hvilke modeller bruges, hvilke tools, hvilke guardrails, datalagring, retention. Det er system-niveauet — det modellen alene ikke fanger.</p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">3. Data Protection Impact Assessment (DPIA)</div>
+        <p>Påkrævet under GDPR når behandling indebærer høj risiko for personer (typisk alle højrisiko AI Act-systemer). Strukturen: formål, nødvendighed, risici for de registrerede, foranstaltninger.</p>
+      </div>
+
+      <div class="info-box box-purple">
+        <div class="info-box-title">4. Fundamental Rights Impact Assessment (FRIA)</div>
+        <p>AI Act-specifik. Påkrævet for visse offentlige aktører og højrisikosystemer. Vurderer påvirkning på grundlæggende rettigheder (privatliv, lighed, ytringsfrihed, m.fl.).</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Den minimale dokumentpakke for et A-niveau system</h3>
+      <div class="code-label">Hvad et seriøst AI-projekt har klar</div>
+      <div class="code-block">/governance/
+  ├── system-card.md          # Hvad systemet gør, version, ejere
+  ├── model-card.md           # For hver custom model
+  ├── dpia.md                 # GDPR risk-assessment
+  ├── fria.md                 # AI Act fundamental rights (hvis relevant)
+  ├── data-flow-diagram.png   # Visuel: hvor data går
+  ├── retention-policy.md     # Hvor længe gemmes hvad
+  ├── eval-reports/           # B5-evals med dato
+  ├── incident-log.md         # Alle hændelser, fixet eller ej
+  └── change-log.md           # Hver model/prompt/config-ændring</div>
+
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Den dyre fejl</div>
+        <p>"Det her er et MVP, vi laver dokumentation senere" — er det største juridiske rødt-flag i AI-projekter. Compliance bygges fra dag 1, ikke retrofittes når man har 10.000 brugere.</p>
+      </div>
+
+      <hr class="divider">
+
+      <h3 class="subhead">Logging-kravet i praksis</h3>
+      <p class="prose">For højrisiko-systemer: AI Act kræver "automatisk logging af events" gennem hele systemets levetid. Det betyder ikke "et par debug-prints". Det betyder strukturede logs med tidsstempler, input-hash, modelversion, output, og hvilken bruger der ramte systemet.</p>
+
+      <div class="practice">
+        <div class="practice-title">🔥 PRØV DET NU — Skriv et model card</div>
+        <ol>
+          <li>Tag et AI-projekt du har bygget (selv en simpel chatbot).</li>
+          <li>Skriv et 1-side model card med: formål, anvendt model, evals, kendte begrænsninger, kontaktperson.</li>
+          <li>Kunne en jurist eller revisor læse det og forstå systemet?</li>
+        </ol>
+        <p style="margin-top:0.75rem;">Det her er den faktiske hjemmeopgave en compliance-officer ville give dig på dag 1 i et reguleret miljø.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h3>Del A4 — Hvad du har lært</h3>
+    <ul>
+      <li>EU AI Acts fire risikoniveauer og hvordan du klassificerer dit eget system</li>
+      <li>Hvornår "deployer" bliver til "provider" — og det skifter ansvar</li>
+      <li>GDPR's fem kerneprincipper anvendt på AI</li>
+      <li>De tre fælder: international overførsel, modeller der husker, RAG cross-tenant lækage</li>
+      <li>Hvor bias kommer fra — træningsdata, proxy-features, output-distribution</li>
+      <li>De fem mod-foranstaltninger og hvorfor "fairness" ikke har én definition</li>
+      <li>Model cards, system cards, DPIA, FRIA — og minimumspakken til A-niveau</li>
+      <li>Logging-kravet og hvorfor compliance bygges fra dag 1</li>
+    </ul>
+  </div>
+
+  <div class="quiz-cta">
+    <div class="quiz-cta-icon">📝</div>
+    <h2>Klar til mini-quizzen?</h2>
+    <p>A4-quizzen er den case-tungeste i hele kurset. Forvent scenarier hvor du skal kombinere AI Act-, GDPR- og fairness-overvejelser. Mindst 7 ud af 8 rigtige.</p>
+    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+    <a href="quiz-a4.html" class="btn-quiz">Start mini-quiz A4 →</a>
+  </div>
+
+</div>
+
+<script>
+function toggleModule(id) {
+  const mod = document.getElementById(id);
+  mod.classList.toggle('open');
+}
+</script>
+
+</body>
+</html>
