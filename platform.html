@@ -3,20 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Kurser | Luksus AI Uddannelse - Fra Begynder til Ekspert</title>
-    <meta name="description" content="Professionelle AI-kurser med ekspertvejledning. Start gratis som nybegynder og bliv AI-ekspert. Kurser fra niveau D til A med certificering.">
-    <meta name="keywords" content="AI, kurser, kunstig intelligens, uddannelse, machine learning, certificering">
+    <title>LearnAI | Luksus AI Platform - Sidekurser</title>
+    <meta name="description" content="LearnAI - Professionelle AI-kurser med 3D-oplevelse. Fra nybegynder til ekspert med sidekurser og coin-system.">
     
-    <!-- Three.js CDN -->
+    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GSAP CDN -->
+    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     
     <style>
-        /* ============================================
-           GLOBAL STYLES & CSS VARIABLES
-           ============================================ */
         :root {
             --gold: #C6A962;
             --gold-light: #E5C77D;
@@ -26,13 +22,14 @@
             --onyx: #1A1A1A;
             --diamond: #F8F8FF;
             --holographic: #7B68EE;
+            --emerald: #10B981;
+            --ruby: #EF4444;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            cursor: none !important;
         }
 
         html {
@@ -43,20 +40,18 @@
         body {
             background: var(--obsidian);
             color: var(--diamond);
-            font-family: 'Georgia', serif;
+            font-family: 'Georgia', 'Times New Roman', serif;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
+            cursor: none;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--obsidian); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
         ::selection { background: var(--gold); color: var(--obsidian); }
 
-        /* ============================================
-           CANVAS CONTAINER
-           ============================================ */
+        /* 3D CANVAS */
         #canvas-container {
             position: fixed;
             top: 0;
@@ -64,11 +59,10 @@
             width: 100%;
             height: 100%;
             z-index: 0;
+            pointer-events: none;
         }
 
-        /* ============================================
-           LOADING SCREEN
-           ============================================ */
+        /* LOADING SCREEN */
         #loading-screen {
             position: fixed;
             inset: 0;
@@ -77,16 +71,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: opacity 1s ease-out;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
         }
 
         #loading-screen.hidden {
             opacity: 0;
-            pointer-events: none;
+            visibility: hidden;
         }
 
         .loader-content {
             text-align: center;
+            z-index: 1;
         }
 
         .loader-ring {
@@ -133,27 +128,28 @@
         }
 
         .loader-title {
-            font-size: 28px;
+            font-size: 32px;
+            font-weight: bold;
             background: linear-gradient(135deg, #C6A962, #E5C77D, #F3DBA5, #C6A962);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             margin-bottom: 8px;
-            font-weight: bold;
+            letter-spacing: 2px;
         }
 
         .loader-subtitle {
             color: rgba(229, 228, 226, 0.5);
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 25px;
+            letter-spacing: 4px;
+            margin-bottom: 30px;
         }
 
         .progress-bar {
-            width: 250px;
+            width: 280px;
             height: 2px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 2px;
             overflow: hidden;
             margin: 0 auto 20px;
@@ -166,45 +162,44 @@
             border-radius: 2px;
             width: 0%;
             transition: width 0.5s ease-out;
-            box-shadow: 0 0 10px rgba(198, 169, 98, 0.5);
+            box-shadow: 0 0 15px rgba(198, 169, 98, 0.6);
         }
 
         .progress-glow {
             position: absolute;
             top: 50%;
-            width: 15px;
-            height: 15px;
+            width: 16px;
+            height: 16px;
             background: var(--gold);
             border-radius: 50%;
             transform: translate(-50%, -50%);
-            box-shadow: 0 0 20px rgba(198, 169, 98, 0.8);
-            filter: blur(2px);
+            box-shadow: 0 0 25px rgba(198, 169, 98, 0.9);
+            filter: blur(3px);
             transition: left 0.5s ease-out;
+            left: 0%;
         }
 
         .loader-percentage {
-            font-size: 40px;
-            color: var(--gold);
+            font-size: 48px;
             font-weight: bold;
+            color: var(--gold);
         }
 
         .loader-percentage span {
-            font-size: 24px;
-            color: rgba(229, 228, 226, 0.5);
+            font-size: 28px;
+            color: rgba(229, 228, 226, 0.4);
         }
 
         .loader-status {
-            color: rgba(229, 228, 226, 0.3);
-            font-size: 11px;
+            color: rgba(229, 228, 226, 0.25);
+            font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-top: 8px;
+            letter-spacing: 4px;
+            margin-top: 10px;
             font-family: 'Courier New', monospace;
         }
 
-        /* ============================================
-           CUSTOM CURSOR
-           ============================================ */
+        /* CUSTOM CURSOR */
         #cursor {
             position: fixed;
             z-index: 9999;
@@ -216,7 +211,7 @@
             margin-left: -10px;
             margin-top: -10px;
             mix-blend-mode: difference;
-            transition: width 0.3s, height 0.3s, margin 0.3s;
+            transition: width 0.3s, height 0.3s, margin 0.3s, background 0.3s;
         }
 
         #cursor.hover {
@@ -235,7 +230,7 @@
             pointer-events: none;
             width: 40px;
             height: 40px;
-            border: 1px solid rgba(198, 169, 98, 0.5);
+            border: 1px solid rgba(198, 169, 98, 0.4);
             border-radius: 50%;
             margin-left: -20px;
             margin-top: -20px;
@@ -248,30 +243,29 @@
             height: 80px;
             margin-left: -40px;
             margin-top: -40px;
-            background: radial-gradient(circle, rgba(198, 169, 98, 0.1), transparent 70%);
+            background: radial-gradient(circle, rgba(198, 169, 98, 0.08), transparent 70%);
+            border-color: rgba(198, 169, 98, 0.7);
         }
 
-        /* ============================================
-           NAVIGATION
-           ============================================ */
+        /* NAVIGATION */
         #navigation {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 100;
-            padding: 0 20px;
+            padding: 0 24px;
             transition: all 0.5s;
         }
 
         #navigation.scrolled {
             background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
         }
 
         .nav-inner {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
             display: flex;
             align-items: center;
@@ -279,35 +273,32 @@
             height: 80px;
         }
 
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
         .nav-logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             text-decoration: none;
             color: inherit;
         }
 
         .nav-logo-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--gold);
-            border-radius: 50%;
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--obsidian);
             font-weight: bold;
-            font-size: 14px;
-            position: relative;
-        }
-
-        .nav-logo-icon::before {
-            content: '';
-            position: absolute;
-            inset: -4px;
-            border-radius: 50%;
-            background: rgba(198, 169, 98, 0.2);
-            animation: pulse 2s ease-in-out infinite;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(198, 169, 98, 0.3);
         }
 
         .nav-logo-text {
@@ -319,50 +310,48 @@
             background-clip: text;
         }
 
-        .nav-logo-sub {
-            display: block;
-            font-size: 8px;
-            color: rgba(229, 228, 226, 0.5);
+        .coin-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(198, 169, 98, 0.1);
+            border: 1px solid rgba(198, 169, 98, 0.25);
+            border-radius: 50px;
+            padding: 8px 16px;
+        }
+
+        .coin-amount {
+            font-weight: bold;
+            color: var(--gold);
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .coin-label {
+            font-size: 9px;
             text-transform: uppercase;
             letter-spacing: 2px;
+            color: rgba(229, 228, 226, 0.4);
         }
 
         .nav-links {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
 
         .nav-link {
-            color: rgba(229, 228, 226, 0.7);
+            color: rgba(229, 228, 226, 0.65);
             text-decoration: none;
-            padding: 8px 16px;
+            padding: 10px 18px;
             font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s;
-            position: relative;
+            letter-spacing: 1.5px;
+            transition: all 0.3s;
         }
 
         .nav-link:hover {
             color: var(--gold);
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 1px;
-            background: var(--gold);
-            transform: scaleX(0);
-            transition: transform 0.3s;
-            transform-origin: left;
-        }
-
-        .nav-link:hover::after {
-            transform: scaleX(1);
         }
 
         .nav-cta {
@@ -374,23 +363,33 @@
             font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
+            cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 0 20px rgba(198, 169, 98, 0.3);
+            box-shadow: 0 4px 20px rgba(198, 169, 98, 0.3);
+        }
+
+        .nav-cta.side-courses-btn {
+            background: linear-gradient(135deg, var(--holographic), #6B5ECD);
+            box-shadow: 0 4px 20px rgba(123, 104, 238, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .nav-cta:hover {
-            box-shadow: 0 0 40px rgba(198, 169, 98, 0.5);
-            transform: scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 35px rgba(198, 169, 98, 0.5);
         }
 
         .nav-mobile-btn {
             display: none;
             background: none;
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             position: relative;
+            cursor: pointer;
         }
 
         .nav-mobile-btn span {
@@ -399,30 +398,28 @@
             height: 2px;
             background: var(--gold);
             position: absolute;
-            left: 8px;
+            left: 10px;
             transition: all 0.3s;
         }
 
-        .nav-mobile-btn span:nth-child(1) { top: 12px; }
-        .nav-mobile-btn span:nth-child(2) { top: 19px; }
-        .nav-mobile-btn span:nth-child(3) { top: 26px; }
+        .nav-mobile-btn span:nth-child(1) { top: 13px; }
+        .nav-mobile-btn span:nth-child(2) { top: 21px; }
+        .nav-mobile-btn span:nth-child(3) { top: 29px; }
 
-        /* ============================================
-           MOBILE MENU
-           ============================================ */
+        /* MOBILE MENU */
         #mobile-menu {
             position: fixed;
             inset: 0;
             z-index: 99;
             background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(30px);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 30px;
+            gap: 25px;
             transform: translateX(100%);
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s;
         }
 
         #mobile-menu.open {
@@ -432,7 +429,7 @@
         #mobile-menu a {
             color: var(--platinum);
             text-decoration: none;
-            font-size: 28px;
+            font-size: 26px;
             transition: color 0.3s;
         }
 
@@ -441,8 +438,261 @@
         }
 
         /* ============================================
-           HERO SECTION
+           SIDE COURSES OVERLAY - HORIZONTAL SCROLL
            ============================================ */
+        #side-courses-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(30px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s, visibility 0.5s;
+        }
+
+        #side-courses-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .side-courses-horizontal {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .side-courses-horizontal::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .side-courses-horizontal::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .side-courses-horizontal::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .side-course-panel {
+            min-width: 100vw;
+            height: 100vh;
+            scroll-snap-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .side-course-card {
+            width: 90%;
+            max-width: 550px;
+            background: rgba(30, 30, 30, 0.7);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(198, 169, 98, 0.2);
+            border-radius: 30px;
+            padding: 50px 40px;
+            text-align: center;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            transition: all 0.4s;
+            position: relative;
+        }
+
+        .side-course-card:hover {
+            border-color: rgba(198, 169, 98, 0.5);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 40px rgba(198, 169, 98, 0.1);
+        }
+
+        .side-course-number {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 12px;
+            color: rgba(229, 228, 226, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .side-course-icon {
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .side-course-title {
+            font-size: 30px;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+
+        .side-course-desc {
+            color: rgba(229, 228, 226, 0.55);
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .side-course-price {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 25px;
+        }
+
+        .side-course-price.free {
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            color: var(--emerald);
+        }
+
+        .side-course-price.paid {
+            background: rgba(198, 169, 98, 0.1);
+            border: 1px solid rgba(198, 169, 98, 0.4);
+            color: var(--gold);
+        }
+
+        .side-course-btn {
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 15px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .side-course-btn.unlock {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian);
+            box-shadow: 0 4px 20px rgba(198, 169, 98, 0.3);
+        }
+
+        .side-course-btn.unlock:hover {
+            box-shadow: 0 6px 30px rgba(198, 169, 98, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .side-course-btn.unlocked {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--emerald);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            cursor: default;
+        }
+
+        .side-course-btn.locked {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--ruby);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            cursor: not-allowed;
+        }
+
+        /* Navigation arrows for side courses */
+        .side-nav-arrows {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 210;
+        }
+
+        .side-nav-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(198, 169, 98, 0.3);
+            color: var(--gold);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .side-nav-arrow:hover {
+            background: rgba(198, 169, 98, 0.1);
+            border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(198, 169, 98, 0.3);
+        }
+
+        .side-course-counter {
+            position: fixed;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 210;
+            color: rgba(229, 228, 226, 0.4);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .close-overlay-btn {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--platinum);
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 210;
+            transition: all 0.3s;
+        }
+
+        .close-overlay-btn:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--ruby);
+            color: var(--ruby);
+        }
+
+        /* Scroll hint */
+        .scroll-hint {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 210;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: rgba(229, 228, 226, 0.3);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: fadeInOut 3s ease-in-out infinite;
+        }
+
+        .scroll-hint-line {
+            width: 60px;
+            height: 1px;
+            background: rgba(198, 169, 98, 0.3);
+        }
+
+        /* SECTIONS */
         .section {
             position: relative;
             z-index: 1;
@@ -450,7 +700,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 100px 20px;
+            padding: 100px 24px;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .hero-content {
@@ -460,32 +716,34 @@
 
         .hero-badge {
             display: inline-block;
-            padding: 8px 20px;
+            padding: 10px 24px;
             border: 1px solid rgba(198, 169, 98, 0.3);
             border-radius: 50px;
             font-size: 11px;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
             color: var(--gold);
-            margin-bottom: 25px;
-            background: rgba(198, 169, 98, 0.05);
+            margin-bottom: 30px;
+            background: rgba(198, 169, 98, 0.04);
         }
 
         .hero-title {
-            font-size: clamp(48px, 8vw, 120px);
+            font-size: clamp(50px, 8vw, 110px);
             font-weight: bold;
             line-height: 1;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             background: linear-gradient(135deg, #C6A962 0%, #E5C77D 25%, #F3DBA5 50%, #C6A962 75%, #A88B4A 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            background-size: 200% 200%;
+            animation: goldShimmer 4s ease-in-out infinite;
         }
 
         .hero-subtitle {
             font-size: clamp(16px, 2vw, 22px);
-            color: rgba(229, 228, 226, 0.7);
-            margin-bottom: 40px;
+            color: rgba(229, 228, 226, 0.65);
+            margin-bottom: 45px;
             font-family: 'Courier New', monospace;
             letter-spacing: 2px;
         }
@@ -495,34 +753,34 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 60px;
+            margin-bottom: 70px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 10px;
-            padding: 18px 36px;
+            padding: 18px 38px;
             border-radius: 50px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             text-decoration: none;
             transition: all 0.3s;
-            position: relative;
-            overflow: hidden;
+            cursor: pointer;
+            border: none;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
             color: var(--obsidian);
-            box-shadow: 0 0 30px rgba(198, 169, 98, 0.3);
+            box-shadow: 0 6px 30px rgba(198, 169, 98, 0.3);
         }
 
         .btn-primary:hover {
-            box-shadow: 0 0 50px rgba(198, 169, 98, 0.5);
-            transform: translateY(-2px);
+            box-shadow: 0 10px 45px rgba(198, 169, 98, 0.5);
+            transform: translateY(-3px);
         }
 
         .btn-secondary {
@@ -538,38 +796,38 @@
 
         .hero-features {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
             max-width: 800px;
             margin: 0 auto;
         }
 
         .hero-feature {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 25px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 18px;
+            padding: 30px 20px;
             text-align: center;
-            transition: all 0.3s;
+            transition: all 0.4s;
             backdrop-filter: blur(10px);
         }
 
         .hero-feature:hover {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border-color: rgba(198, 169, 98, 0.3);
-            transform: translateY(-5px);
+            transform: translateY(-6px);
         }
 
         .hero-feature-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
+            font-size: 35px;
+            margin-bottom: 12px;
         }
 
         .hero-feature-text {
-            font-size: 12px;
-            color: rgba(229, 228, 226, 0.6);
+            font-size: 11px;
+            color: rgba(229, 228, 226, 0.55);
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
         }
 
         .scroll-indicator {
@@ -580,11 +838,11 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 10px;
-            color: rgba(229, 228, 226, 0.3);
+            gap: 12px;
+            color: rgba(229, 228, 226, 0.25);
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 3px;
+            letter-spacing: 4px;
         }
 
         .scroll-line {
@@ -594,16 +852,14 @@
         }
 
         .scroll-dot {
-            width: 8px;
-            height: 8px;
-            background: rgba(198, 169, 98, 0.5);
+            width: 6px;
+            height: 6px;
+            background: rgba(198, 169, 98, 0.4);
             border-radius: 50%;
-            animation: bounce 2s infinite;
+            animation: bounce 2s ease-in-out infinite;
         }
 
-        /* ============================================
-           COURSES SECTION
-           ============================================ */
+        /* COURSES GRID */
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -613,12 +869,12 @@
         }
 
         .course-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 35px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 22px;
+            padding: 40px 30px;
             transition: all 0.5s;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
             position: relative;
             overflow: hidden;
         }
@@ -626,27 +882,16 @@
         .course-card:hover {
             border-color: rgba(198, 169, 98, 0.4);
             transform: translateY(-10px);
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-        }
-
-        .course-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 150px;
-            height: 150px;
-            background: radial-gradient(circle, rgba(198, 169, 98, 0.05), transparent);
-            border-radius: 0 0 0 100%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
         }
 
         .course-level {
             display: inline-block;
-            padding: 6px 16px;
+            padding: 8px 18px;
             border-radius: 50px;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             color: white;
         }
 
@@ -656,48 +901,50 @@
         .level-a { background: linear-gradient(135deg, #fbbf24, #d97706); }
 
         .course-price {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: var(--gold);
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .course-title {
-            font-size: 24px;
+            font-size: 26px;
             color: var(--platinum);
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            font-weight: bold;
         }
 
         .course-desc {
-            color: rgba(229, 228, 226, 0.5);
+            color: rgba(229, 228, 226, 0.45);
             font-size: 14px;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            margin-bottom: 22px;
+            line-height: 1.7;
         }
 
         .course-features {
             list-style: none;
-            margin-bottom: 25px;
+            margin-bottom: 28px;
         }
 
         .course-features li {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 0;
-            color: rgba(229, 228, 226, 0.6);
+            padding: 9px 0;
+            color: rgba(229, 228, 226, 0.55);
             font-size: 13px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
         }
 
         .course-features li::before {
-            content: '✓';
+            content: '✦';
             color: var(--gold);
-            font-weight: bold;
+            font-size: 10px;
         }
 
         .course-btn {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: transparent;
             border: 1px solid rgba(198, 169, 98, 0.3);
             color: var(--gold);
@@ -705,19 +952,19 @@
             font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            cursor: pointer;
             transition: all 0.3s;
         }
 
         .course-btn:hover {
             background: var(--gold);
             color: var(--obsidian);
-            box-shadow: 0 0 30px rgba(198, 169, 98, 0.3);
+            border-color: var(--gold);
+            box-shadow: 0 8px 35px rgba(198, 169, 98, 0.35);
         }
 
-        /* ============================================
-           ABOUT SECTION
-           ============================================ */
+        /* ABOUT */
         .about-content {
             max-width: 800px;
             margin: 0 auto;
@@ -725,21 +972,50 @@
         }
 
         .about-text {
-            color: rgba(229, 228, 226, 0.6);
+            color: rgba(229, 228, 226, 0.55);
             font-size: 16px;
-            line-height: 1.8;
+            line-height: 1.9;
             margin-bottom: 30px;
         }
 
-        /* ============================================
-           FOOTER
-           ============================================ */
+        .about-text strong {
+            color: var(--gold);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 10px 24px;
+            border: 1px solid rgba(198, 169, 98, 0.3);
+            border-radius: 50px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            background: rgba(198, 169, 98, 0.04);
+        }
+
+        .section-title {
+            font-size: clamp(38px, 6vw, 70px);
+            font-weight: bold;
+            background: linear-gradient(135deg, #C6A962, #E5C77D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* FOOTER */
         #footer {
             position: relative;
             z-index: 1;
             background: var(--obsidian);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 60px 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 70px 24px 30px;
         }
 
         .footer-inner {
@@ -748,23 +1024,23 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 40px;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .footer-col h4 {
             color: var(--gold);
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            margin-bottom: 20px;
+            margin-bottom: 22px;
         }
 
         .footer-col a {
             display: block;
-            color: rgba(229, 228, 226, 0.4);
+            color: rgba(229, 228, 226, 0.35);
             text-decoration: none;
             font-size: 13px;
-            padding: 6px 0;
+            padding: 7px 0;
             transition: color 0.3s;
         }
 
@@ -776,30 +1052,30 @@
             max-width: 1200px;
             margin: 0 auto;
             padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 20px;
             font-size: 12px;
-            color: rgba(229, 228, 226, 0.3);
+            color: rgba(229, 228, 226, 0.25);
         }
 
         .footer-social {
             display: flex;
-            gap: 15px;
+            gap: 12px;
         }
 
         .footer-social a {
             width: 36px;
             height: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: rgba(229, 228, 226, 0.4);
+            color: rgba(229, 228, 226, 0.35);
             text-decoration: none;
             font-size: 11px;
             font-weight: bold;
@@ -811,80 +1087,40 @@
             color: var(--gold);
         }
 
-        /* ============================================
-           GLASS PANEL UTILITY
-           ============================================ */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(20px);
-            border-radius: 20px;
-        }
-
-        .section-title {
-            font-size: clamp(36px, 6vw, 72px);
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 15px;
-            background: linear-gradient(135deg, #C6A962, #E5C77D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .section-badge {
-            display: inline-block;
-            padding: 8px 20px;
-            border: 1px solid rgba(198, 169, 98, 0.3);
-            border-radius: 50px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--gold);
-            margin-bottom: 20px;
-            background: rgba(198, 169, 98, 0.05);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        /* ============================================
-           ANIMATIONS
-           ============================================ */
+        /* ANIMATIONS */
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
 
         @keyframes pulse {
-            0%, 100% { opacity: 0.5; transform: rotate(45deg) scale(1); }
-            50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
+            0%, 100% { opacity: 0.4; transform: rotate(45deg) scale(1); }
+            50% { opacity: 1; transform: rotate(45deg) scale(1.3); }
         }
 
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            50% { transform: translateY(-12px); }
         }
 
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+            50% { transform: translateY(-15px); }
         }
 
-        @keyframes shimmer {
-            0% { background-position: 200% 0; }
-            100% { background-position: -200% 0; }
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
         }
 
-        .float-animation {
-            animation: float 6s ease-in-out infinite;
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 0.7; }
         }
 
         .reveal {
             opacity: 0;
-            transform: translateY(50px);
+            transform: translateY(60px);
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -893,317 +1129,264 @@
             transform: translateY(0);
         }
 
-        /* ============================================
-           RESPONSIVE
-           ============================================ */
-        @media (max-width: 768px) {
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
             .nav-links { display: none; }
             .nav-mobile-btn { display: block; }
-            
-            .hero-features {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-inner {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .footer-bottom {
-                flex-direction: column;
-                text-align: center;
-            }
+            .coin-display { display: none; }
+            .hero-features { grid-template-columns: repeat(2, 1fr); }
+            .footer-inner { grid-template-columns: repeat(2, 1fr); }
+            .footer-bottom { flex-direction: column; text-align: center; }
+            .side-course-card { padding: 35px 25px; }
         }
 
         @media (max-width: 480px) {
-            .hero-features {
-                grid-template-columns: 1fr;
-            }
-            
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
+            .hero-features { grid-template-columns: 1fr; }
+            .hero-buttons { flex-direction: column; align-items: center; }
         }
     </style>
 </head>
 <body>
-    <!-- ============================================
-    LOADING SCREEN
-    ============================================ -->
+    <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="loader-content">
-            <div class="loader-ring">
-                <div class="loader-diamond"></div>
-            </div>
-            <div class="loader-title">AI Kurser</div>
-            <div class="loader-subtitle">Luksus Uddannelse</div>
+            <div class="loader-ring"><div class="loader-diamond"></div></div>
+            <div class="loader-title">LearnAI</div>
+            <div class="loader-subtitle">Luksus Platform</div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progress-fill"></div>
-                <div class="progress-glow" id="progress-glow" style="left: 0%"></div>
+                <div class="progress-glow" id="progress-glow"></div>
             </div>
-            <div class="loader-percentage">
-                <span id="progress-number">0</span><span>%</span>
-            </div>
+            <div class="loader-percentage"><span id="progress-number">0</span><span>%</span></div>
             <div class="loader-status" id="loader-status">Initialiserer...</div>
         </div>
     </div>
 
-    <!-- ============================================
-    CUSTOM CURSOR
-    ============================================ -->
+    <!-- CURSOR -->
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
 
-    <!-- ============================================
-    3D CANVAS
-    ============================================ -->
+    <!-- 3D CANVAS -->
     <div id="canvas-container"></div>
 
-    <!-- ============================================
-    NAVIGATION
-    ============================================ -->
+    <!-- NAVIGATION -->
     <nav id="navigation">
         <div class="nav-inner">
-            <a href="#" class="nav-logo">
-                <div class="nav-logo-icon">AI</div>
-                <div>
-                    <span class="nav-logo-text">AI Kurser</span>
-                    <span class="nav-logo-sub">Premium</span>
+            <div class="nav-left">
+                <a href="#" class="nav-logo">
+                    <div class="nav-logo-icon">LA</div>
+                    <span class="nav-logo-text">LearnAI</span>
+                </a>
+                <div class="coin-display">
+                    <span>🪙</span>
+                    <span class="coin-amount" id="coin-amount">100</span>
+                    <span class="coin-label">Coins</span>
                 </div>
-            </a>
+            </div>
             <div class="nav-links">
                 <a href="#kurser" class="nav-link">Kurser</a>
-                <a href="#niveauer" class="nav-link">Niveauer</a>
                 <a href="#om-os" class="nav-link">Om Os</a>
-                <a href="#kontakt" class="nav-link">Kontakt</a>
-                <button class="nav-cta">Start Nu</button>
+                <button class="nav-cta side-courses-btn" id="side-courses-btn">◈ Sidekurser</button>
             </div>
-            <button class="nav-mobile-btn" id="mobile-btn" aria-label="Menu">
-                <span></span>
-                <span></span>
-                <span></span>
-            </button>
+            <button class="nav-mobile-btn" id="mobile-btn"><span></span><span></span><span></span></button>
         </div>
     </nav>
 
-    <!-- ============================================
-    MOBILE MENU
-    ============================================ -->
+    <!-- MOBILE MENU -->
     <div id="mobile-menu">
         <a href="#kurser">Kurser</a>
-        <a href="#niveauer">Niveauer</a>
         <a href="#om-os">Om Os</a>
-        <a href="#kontakt">Kontakt</a>
-        <button class="nav-cta" style="margin-top: 20px;">Start Din Rejse</button>
+        <button class="nav-cta side-courses-btn" id="side-courses-btn-mobile">◈ Sidekurser</button>
+        <div style="display:flex;align-items:center;gap:10px;margin-top:20px;padding:12px 24px;background:rgba(198,169,98,0.1);border:1px solid rgba(198,169,98,0.3);border-radius:50px;">
+            <span>🪙</span>
+            <span style="color:var(--gold);font-weight:bold;font-size:20px;">100</span>
+            <span style="color:rgba(229,228,226,0.4);font-size:10px;text-transform:uppercase;letter-spacing:2px;">Coins</span>
+        </div>
     </div>
 
     <!-- ============================================
-    HERO SECTION
+    SIDE COURSES OVERLAY - HORIZONTAL SCROLL
     ============================================ -->
+    <div id="side-courses-overlay">
+        <button class="close-overlay-btn" id="close-overlay-btn">✕</button>
+        <div class="side-course-counter" id="side-course-counter">Kursus 1 / 12</div>
+        
+        <div class="side-courses-horizontal" id="side-courses-horizontal">
+            <!-- Generated by JS -->
+        </div>
+        
+        <div class="side-nav-arrows">
+            <button class="side-nav-arrow" id="side-nav-prev">◂</button>
+            <button class="side-nav-arrow" id="side-nav-next">▸</button>
+        </div>
+        
+        <div class="scroll-hint" id="scroll-hint">
+            <span class="scroll-hint-line"></span>
+            <span>Swipe for at udforske</span>
+            <span class="scroll-hint-line"></span>
+        </div>
+    </div>
+
+    <!-- HERO -->
     <section class="section" id="hero">
         <div class="hero-content">
-            <div class="hero-badge reveal">Premium AI Uddannelse</div>
-            <h1 class="hero-title reveal">Mestre Fremtiden<br>med AI</h1>
-            <p class="hero-subtitle reveal" id="scramble-text">Fra Begynder til Ekspert - Din Rejse Starter Her</p>
+            <div class="hero-badge reveal">✦ LearnAI Premium ✦</div>
+            <h1 class="hero-title reveal">Mestre AI<br>Med Stil</h1>
+            <p class="hero-subtitle reveal" id="scramble-text">Fra Begynder til Ekspert - Din AI Rejse</p>
             <div class="hero-buttons reveal">
-                <a href="#kurser" class="btn btn-primary">
-                    Start Gratis Kursus
-                    <span>→</span>
-                </a>
-                <a href="#" class="btn btn-secondary">
-                    ▶ Se Demo
-                </a>
+                <a href="#kurser" class="btn btn-primary">Start Din Rejse <span>→</span></a>
+                <button class="btn btn-secondary" id="hero-side-courses-btn">◈ Sidekurser</button>
             </div>
             <div class="hero-features">
-                <div class="hero-feature reveal">
-                    <div class="hero-feature-icon">🎓</div>
-                    <div class="hero-feature-text">Ekspert Certificering</div>
-                </div>
-                <div class="hero-feature reveal">
-                    <div class="hero-feature-icon">🚀</div>
-                    <div class="hero-feature-text">AI-Drevet Læring</div>
-                </div>
-                <div class="hero-feature reveal">
-                    <div class="hero-feature-icon">💎</div>
-                    <div class="hero-feature-text">Premium Indhold</div>
-                </div>
-                <div class="hero-feature reveal">
-                    <div class="hero-feature-icon">🏆</div>
-                    <div class="hero-feature-text">Praktisk Erfaring</div>
-                </div>
+                <div class="hero-feature reveal"><div class="hero-feature-icon">🎓</div><div class="hero-feature-text">Certificering</div></div>
+                <div class="hero-feature reveal"><div class="hero-feature-icon">🚀</div><div class="hero-feature-text">AI-Drevet</div></div>
+                <div class="hero-feature reveal"><div class="hero-feature-icon">💎</div><div class="hero-feature-text">Premium</div></div>
+                <div class="hero-feature reveal"><div class="hero-feature-icon">🏆</div><div class="hero-feature-text">Ekspert</div></div>
             </div>
         </div>
         <div class="scroll-indicator">
-            <span>Scroll</span>
+            <span>Udforsk</span>
             <div class="scroll-line"></div>
             <div class="scroll-dot"></div>
         </div>
     </section>
 
-    <!-- ============================================
-    COURSES SECTION
-    ============================================ -->
+    <!-- COURSES -->
     <section class="section" id="kurser">
-        <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+        <div class="section-inner">
             <div class="section-header reveal">
-                <span class="section-badge">Vores Kurser</span>
-                <h2 class="section-title">Vælg Dit Niveau</h2>
-                <p style="color: rgba(229,228,226,0.6); font-size: 16px;">Fra Nybegynder til AI-Ekspert</p>
+                <span class="section-badge">Hovedkurser</span>
+                <h2 class="section-title">Vælg Niveau</h2>
             </div>
             <div class="courses-grid">
-                <!-- Niveau D -->
                 <div class="course-card reveal">
                     <span class="course-level level-d">Niveau D</span>
                     <div class="course-price">Gratis</div>
                     <h3 class="course-title">Amatør</h3>
-                    <p class="course-desc">Start din AI-rejse med grundlæggende koncepter. Perfekt for begyndere.</p>
+                    <p class="course-desc">Start din AI-rejse her med grundlæggende koncepter.</p>
                     <ul class="course-features">
-                        <li>Grundlæggende AI</li>
-                        <li>Simple Øvelser</li>
-                        <li>Intro Certifikat</li>
-                        <li>Gratis Adgang</li>
+                        <li>Grundlæggende AI</li><li>Simple Øvelser</li><li>Intro Certifikat</li><li>Gratis Adgang</li>
                     </ul>
-                    <button class="course-btn">Start Kursus</button>
+                    <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Start Kursus →</button>
                 </div>
-
-                <!-- Niveau C -->
                 <div class="course-card reveal">
                     <span class="course-level level-c">Niveau C</span>
                     <div class="course-price">499 DKK</div>
-                    <h3 class="course-title">Avanceret Begynder</h3>
-                    <p class="course-desc">Dyk dybere ned i machine learning og AI-værktøjer.</p>
+                    <h3 class="course-title">Avanceret</h3>
+                    <p class="course-desc">Machine learning og avancerede AI-værktøjer.</p>
                     <ul class="course-features">
-                        <li>Machine Learning</li>
-                        <li>Data Analyse</li>
-                        <li>API Integration</li>
-                        <li>C Certifikat</li>
+                        <li>Machine Learning</li><li>Data Analyse</li><li>API Integration</li><li>C Certifikat</li>
                     </ul>
-                    <button class="course-btn">Vælg Kursus</button>
+                    <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
-
-                <!-- Niveau B -->
                 <div class="course-card reveal">
                     <span class="course-level level-b">Niveau B</span>
                     <div class="course-price">999 DKK</div>
                     <h3 class="course-title">Professionel</h3>
-                    <p class="course-desc">Professionelle værktøjer og teknikker til AI-udvikling.</p>
+                    <p class="course-desc">Professionelle teknikker til AI-udvikling.</p>
                     <ul class="course-features">
-                        <li>Neurale Netværk</li>
-                        <li>Deep Learning</li>
-                        <li>Pro Eksamen</li>
-                        <li>B Certifikat</li>
+                        <li>Neurale Netværk</li><li>Deep Learning</li><li>Pro Eksamen</li><li>B Certifikat</li>
                     </ul>
-                    <button class="course-btn">Vælg Kursus</button>
+                    <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
-
-                <!-- Niveau A -->
                 <div class="course-card reveal">
                     <span class="course-level level-a">Niveau A</span>
                     <div class="course-price">1.999 DKK</div>
                     <h3 class="course-title">Ekspert</h3>
-                    <p class="course-desc">Mestre avancerede AI-systemer og bliv certificeret ekspert.</p>
+                    <p class="course-desc">Mestre avancerede AI-systemer.</p>
                     <ul class="course-features">
-                        <li>AI Arkitektur</li>
-                        <li>System Design</li>
-                        <li>Ekspert Certificering</li>
-                        <li>A Certifikat</li>
+                        <li>AI Arkitektur</li><li>System Design</li><li>Ekspert Certificering</li><li>A Certifikat</li>
                     </ul>
-                    <button class="course-btn">Vælg Kursus</button>
+                    <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ============================================
-    ABOUT SECTION
-    ============================================ -->
+    <!-- ABOUT -->
     <section class="section" id="om-os">
         <div class="about-content">
             <div class="section-header reveal">
-                <span class="section-badge">Om Os</span>
-                <h2 class="section-title">Hvem er vi?</h2>
+                <span class="section-badge">Om LearnAI</span>
+                <h2 class="section-title">Vores Historie</h2>
             </div>
-            <p class="about-text reveal">
-                Vi begge to bor i Værløse. Vi elsker matematik, business, salg, sport, konkurrence og alt der har med penge at gøre. 
-                Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre. 
-                Jeg elsker AI og det er også derfor at jeg drømmer om at lave AI-kurser og sælge dem.
-            </p>
-            <p class="about-text reveal" style="margin-top: 20px;">
-                <strong style="color: var(--gold);">Hvordan fungerer projektet?</strong><br>
-                Man starter på platformen hvor man kan se alle kurserne og læse om min baggrund. 
-                Der er både hovedkurser, som man kan starte helt gratis som nybegynder og blive til ekspert. 
-                Kurserne går fra niveau D (amatør) til niveau A (ekspert) med kursus C og B imellem. 
-                Startkurset er meget let og gratis mens de andre bliver mere professionelle og dyrere. 
-                Man får et kursusbevis når man har bestået den afgørende eksamen.
-            </p>
-            <p class="about-text reveal" style="margin-top: 20px;">
-                <strong style="color: var(--gold);">Mål med projektet:</strong><br>
-                Vores mål er at lave en hjemmeside med en masse professionelle AI-kurser man kan købe sig adgang til 
-                og at lave det lidt som et app-system som Duolingo.
-            </p>
-            <p class="about-text reveal" style="margin-top: 20px;">
-                <strong style="color: var(--gold);">Næste skridt:</strong><br>
-                Næste skridt er at få lavet B-eksamen og lave nogle af sidekurserne.
-            </p>
+            <p class="about-text reveal">Vi bor i Værløse og brænder for matematik, business, salg, sport og konkurrence. LearnAI startede som en drøm om at gøre AI-uddannelse tilgængelig for alle.</p>
+            <p class="about-text reveal"><strong>Vores Metode:</strong><br>Start på platformen hvor du kan se alle kurser. Fra niveau D til A. Start gratis og avancer gennem systemet med certificeringer.</p>
+            <p class="about-text reveal"><strong>Vores Mål:</strong><br>At skabe verdens bedste AI-platform - kombineret med en luksus 3D-oplevelse, sidekurser og et belønnende coin-system.</p>
         </div>
     </section>
 
-    <!-- ============================================
-    FOOTER
-    ============================================ -->
+    <!-- FOOTER -->
     <footer id="footer">
         <div class="footer-inner">
             <div class="footer-col">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
-                    <div style="width: 35px; height: 35px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--obsidian); font-weight: bold; font-size: 12px;">AI</div>
-                    <div>
-                        <span style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #C6A962, #E5C77D); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Kurser</span>
-                        <span style="display: block; font-size: 8px; color: rgba(229,228,226,0.5); text-transform: uppercase; letter-spacing: 2px;">Premium</span>
-                    </div>
+                <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;">
+                    <div style="width:35px;height:35px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--obsidian);font-weight:bold;">LA</div>
+                    <div><span style="font-size:18px;font-weight:bold;background:linear-gradient(135deg,#C6A962,#E5C77D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">LearnAI</span></div>
                 </div>
-                <p style="color: rgba(229,228,226,0.4); font-size: 12px; line-height: 1.6;">Vi skaber fremtidens AI-uddannelse med fokus på praktisk læring og ekspertvejledning.</p>
             </div>
             <div class="footer-col">
-                <h4>Kurser</h4>
-                <a href="#">Niveau D - Amatør</a>
-                <a href="#">Niveau C - Begynder</a>
-                <a href="#">Niveau B - Professionel</a>
-                <a href="#">Niveau A - Ekspert</a>
-                <a href="#">Sidekurser</a>
+                <h4>Hovedkurser</h4>
+                <a href="#kurser">Niveau D (Gratis)</a>
+                <a href="#kurser">Niveau C</a>
+                <a href="#kurser">Niveau B</a>
+                <a href="#kurser">Niveau A</a>
             </div>
             <div class="footer-col">
                 <h4>Platform</h4>
-                <a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub Repository</a>
-                <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" target="_blank">Platform Demo</a>
-                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank">D Eksamen</a>
-                <a href="#">Dokumentation</a>
-                <a href="#">Support</a>
-            </div>
-            <div class="footer-col">
-                <h4>Kontakt</h4>
-                <a href="#">Værløse, Danmark</a>
-                <a href="mailto:kontakt@ai-kurser.dk">kontakt@ai-kurser.dk</a>
-                <a href="#">LinkedIn</a>
-                <a href="#">Twitter</a>
+                <a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub</a>
+                <a href="#" id="footer-side-courses">Sidekurser</a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank">Eksamen</a>
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2024 AI Kurser. Alle rettigheder forbeholdt. • Værløse, Danmark</span>
+            <span>© 2024 LearnAI • Værløse, Danmark</span>
             <div class="footer-social">
-                <a href="https://github.com/magnuscode-ai" target="_blank" title="GitHub">G</a>
-                <a href="#" title="LinkedIn">L</a>
-                <a href="#" title="Twitter">T</a>
-                <a href="#" title="YouTube">Y</a>
+                <a href="https://github.com/magnuscode-ai" target="_blank">G</a>
+                <a href="#">L</a>
+                <a href="#">T</a>
             </div>
         </div>
     </footer>
 
-    <!-- ============================================
-    SCRIPTS
-    ============================================ -->
     <script>
         // ============================================
-        // LOADING SCREEN
+        // GLOBAL STATE
+        // ============================================
+        let userCoins = 100;
+        const sideCourses = [
+            { icon: '🤖', title: 'AI Etik & Sikkerhed', desc: 'Forstå de etiske dilemmaer og sikkerhedsaspekter ved AI.', price: 0, unlocked: false },
+            { icon: '📊', title: 'Data Visualisering', desc: 'Visualiser komplekse data med AI-drevne værktøjer.', price: 0, unlocked: false },
+            { icon: '🎨', title: 'AI Kunst Generation', desc: 'Skab fantastisk kunst med generative AI-modeller.', price: 0, unlocked: false },
+            { icon: '🗣️', title: 'NLP & Sprogmodeller', desc: 'Arbejd med Natural Language Processing.', price: 50, unlocked: false },
+            { icon: '🤖', title: 'Robotik & AI', desc: 'Kombiner robotteknologi med kunstig intelligens.', price: 100, unlocked: false },
+            { icon: '🏥', title: 'AI i Sundhed', desc: 'Udforsk AI-applikationer inden for medicin.', price: 150, unlocked: false },
+            { icon: '💰', title: 'AI til Finans', desc: 'Anvend AI til finansiel analyse og trading.', price: 200, unlocked: false },
+            { icon: '🎮', title: 'AI Spiludvikling', desc: 'Byg intelligente spil med machine learning.', price: 250, unlocked: false },
+            { icon: '🔒', title: 'Cybersikkerhed & AI', desc: 'Beskyt mod cybertrusler med AI.', price: 300, unlocked: false },
+            { icon: '🌍', title: 'AI & Miljø', desc: 'Løs miljøproblemer med kunstig intelligens.', price: 400, unlocked: false },
+            { icon: '🚗', title: 'Autonome Systemer', desc: 'Design selvkørende systemer med AI.', price: 500, unlocked: false },
+            { icon: '🧠', title: 'Advanced Neural Networks', desc: 'Mestre avancerede neurale netværk.', price: 600, unlocked: false }
+        ];
+
+        // ============================================
+        // COINS
+        // ============================================
+        function updateCoinDisplay() {
+            document.getElementById('coin-amount').textContent = userCoins;
+        }
+
+        function spendCoins(amount) {
+            if (userCoins >= amount) {
+                userCoins -= amount;
+                updateCoinDisplay();
+                return true;
+            }
+            return false;
+        }
+
+        // ============================================
+        // LOADING
         // ============================================
         let progress = 0;
         const progressFill = document.getElementById('progress-fill');
@@ -1213,127 +1396,74 @@
         const loadingScreen = document.getElementById('loading-screen');
 
         const loadingInterval = setInterval(() => {
-            progress += Math.random() * 15;
+            progress += Math.random() * 12;
             if (progress > 100) progress = 100;
-            
             progressFill.style.width = progress + '%';
             progressGlow.style.left = progress + '%';
             progressNumber.textContent = Math.round(progress);
-            
-            if (progress < 30) loaderStatus.textContent = 'Initialiserer...';
-            else if (progress < 60) loaderStatus.textContent = 'Indlæser 3D Assets...';
-            else if (progress < 90) loaderStatus.textContent = 'Klargør Oplevelse...';
-            else loaderStatus.textContent = 'Næsten Klar...';
-            
+            if (progress < 25) loaderStatus.textContent = 'Initialiserer 3D...';
+            else if (progress < 50) loaderStatus.textContent = 'Genererer Partikler...';
+            else if (progress < 75) loaderStatus.textContent = 'Klargør Platform...';
+            else loaderStatus.textContent = '✨ Velkommen';
             if (progress >= 100) {
                 clearInterval(loadingInterval);
-                loaderStatus.textContent = 'Velkommen';
-                setTimeout(() => {
-                    loadingScreen.classList.add('hidden');
-                }, 800);
+                setTimeout(() => loadingScreen.classList.add('hidden'), 600);
             }
-        }, 200);
+        }, 180);
 
         // ============================================
         // 3D SCENE
         // ============================================
         let scene, camera, renderer, particles, sculpture;
-        let mouseX = 0, mouseY = 0;
-        let targetMouseX = 0, targetMouseY = 0;
+        let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
         let scrollProgress = 0;
+        let isFlying = false, flyProgress = 0;
 
         function initThreeJS() {
             const container = document.getElementById('canvas-container');
-            
-            // Scene setup
             scene = new THREE.Scene();
-            
-            // Camera
-            camera = new THREE.PerspectiveCamera(
-                window.innerWidth < 768 ? 75 : 60,
-                window.innerWidth / window.innerHeight,
-                0.1,
-                100
-            );
+            camera = new THREE.PerspectiveCamera(window.innerWidth < 768 ? 75 : 60, window.innerWidth / window.innerHeight, 0.1, 100);
             camera.position.z = 8;
-
-            // Renderer
-            renderer = new THREE.WebGLRenderer({ 
-                antialias: true, 
-                alpha: true,
-                powerPreference: 'high-performance'
-            });
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: 'high-performance' });
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.setClearColor(0x000000, 0);
             container.appendChild(renderer.domElement);
 
-            // Particle system
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = window.innerWidth < 768 ? 1000 : 3000;
-            const posArray = new Float32Array(particlesCount * 3);
-            
-            for (let i = 0; i < particlesCount * 3; i += 3) {
-                posArray[i] = (Math.random() - 0.5) * 20;
-                posArray[i + 1] = (Math.random() - 0.5) * 20;
-                posArray[i + 2] = (Math.random() - 0.5) * 20;
+            const pGeo = new THREE.BufferGeometry();
+            const pCount = window.innerWidth < 768 ? 800 : 2500;
+            const posArray = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i += 3) {
+                posArray[i] = (Math.random() - 0.5) * 25;
+                posArray[i + 1] = (Math.random() - 0.5) * 25;
+                posArray[i + 2] = (Math.random() - 0.5) * 25;
             }
-            
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            
-            const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.03,
-                color: 0xC6A962,
-                transparent: true,
-                opacity: 0.6,
-                blending: THREE.AdditiveBlending,
-                depthWrite: false
-            });
-            
-            particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            pGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            particles = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.04, color: 0xC6A962, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
             scene.add(particles);
 
-            // Center sculpture
-            const sculptureGeometry = new THREE.IcosahedronGeometry(1.2, 3);
-            const sculptureMaterial = new THREE.MeshPhongMaterial({
-                color: 0xC6A962,
-                emissive: 0x1a1a1a,
-                shininess: 100,
-                transparent: true,
-                opacity: 0.8,
-                wireframe: true
-            });
-            
-            sculpture = new THREE.Mesh(sculptureGeometry, sculptureMaterial);
+            sculpture = new THREE.Mesh(
+                new THREE.IcosahedronGeometry(1.3, 3),
+                new THREE.MeshPhongMaterial({ color: 0xC6A962, emissive: 0x1a1a1a, shininess: 80, transparent: true, opacity: 0.7, wireframe: true })
+            );
             scene.add(sculpture);
 
-            // Ambient light
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
-            scene.add(ambientLight);
-            
-            // Point light
-            const pointLight = new THREE.PointLight(0xC6A962, 1, 20);
-            pointLight.position.set(5, 5, 5);
-            scene.add(pointLight);
-            
-            // Second light
-            const pointLight2 = new THREE.PointLight(0x7B68EE, 0.5, 15);
-            pointLight2.position.set(-5, -3, 3);
-            scene.add(pointLight2);
+            scene.add(new THREE.AmbientLight(0x404040, 0.6));
+            const pl = new THREE.PointLight(0xC6A962, 1.2, 25);
+            pl.position.set(5, 5, 5);
+            scene.add(pl);
+            const pl2 = new THREE.PointLight(0x7B68EE, 0.6, 18);
+            pl2.position.set(-5, -3, 3);
+            scene.add(pl2);
 
-            // Mouse tracking
-            document.addEventListener('mousemove', (e) => {
+            document.addEventListener('mousemove', e => {
                 targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
                 targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
             });
-
-            // Scroll tracking
             window.addEventListener('scroll', () => {
-                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-                scrollProgress = window.scrollY / maxScroll;
+                const max = document.documentElement.scrollHeight - window.innerHeight;
+                scrollProgress = window.scrollY / max;
             });
-
-            // Resize handler
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.fov = window.innerWidth < 768 ? 75 : 60;
@@ -1341,68 +1471,47 @@
                 renderer.setSize(window.innerWidth, window.innerHeight);
             });
 
-            // Animation loop
             function animate() {
                 requestAnimationFrame(animate);
-
-                // Smooth mouse tracking
-                mouseX += (targetMouseX - mouseX) * 0.05;
-                mouseY += (targetMouseY - mouseY) * 0.05;
-
-                // Rotate particles
-                particles.rotation.y += 0.0003;
+                mouseX += (targetMouseX - mouseX) * 0.04;
+                mouseY += (targetMouseY - mouseY) * 0.04;
+                particles.rotation.y += 0.0002;
                 particles.rotation.x += 0.0001;
-
-                // Animate sculpture
-                const time = Date.now() * 0.001;
-                sculpture.rotation.x = Math.sin(time * 0.5) * 0.3 + scrollProgress * Math.PI * 2;
-                sculpture.rotation.y = Math.cos(time * 0.4) * 0.4 + scrollProgress * Math.PI;
-                sculpture.rotation.z = Math.sin(time * 0.3) * 0.1;
-                sculpture.position.y = Math.sin(time * 0.6) * 0.3 + scrollProgress * 5;
-
-                // Light movement
-                pointLight.intensity = 1 + Math.sin(time) * 0.3;
-                
-                // Render
+                const t = Date.now() * 0.001;
+                if (isFlying) { flyProgress = Math.min(flyProgress + 0.015, 2); }
+                else { flyProgress = Math.max(flyProgress - 0.02, 0); }
+                camera.position.z = 8 - flyProgress * 3;
+                camera.fov = 60 - flyProgress * 15;
+                camera.updateProjectionMatrix();
+                sculpture.scale.setScalar(1 + flyProgress * 2);
+                particles.material.opacity = 0.5 - flyProgress * 0.3;
+                sculpture.rotation.x = Math.sin(t * 0.5) * 0.3 + scrollProgress * Math.PI * 1.5;
+                sculpture.rotation.y = Math.cos(t * 0.4) * 0.4 + scrollProgress * Math.PI;
+                sculpture.position.y = Math.sin(t * 0.6) * 0.3 + scrollProgress * 4;
+                pl.intensity = 1.2 + Math.sin(t) * 0.4;
                 renderer.render(scene, camera);
             }
-            
             animate();
         }
-
-        // Initialize 3D scene after loading
-        setTimeout(initThreeJS, 500);
+        setTimeout(initThreeJS, 400);
 
         // ============================================
-        // CUSTOM CURSOR
+        // CURSOR
         // ============================================
         const cursor = document.getElementById('cursor');
         const cursorFollower = document.getElementById('cursor-follower');
-        let cursorX = 0, cursorY = 0;
-        let followerX = 0, followerY = 0;
-
-        document.addEventListener('mousemove', (e) => {
-            cursorX = e.clientX;
-            cursorY = e.clientY;
-            
-            // Fast cursor
+        let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
+        document.addEventListener('mousemove', e => {
+            cursorX = e.clientX; cursorY = e.clientY;
             cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
-            
-            // Check if hovering over interactive elements
-            const target = e.target;
-            if (target.closest('button') || target.closest('a') || target.closest('[data-interactive]')) {
-                cursor.classList.add('hover');
-                cursorFollower.classList.add('hover');
-            } else {
-                cursor.classList.remove('hover');
-                cursorFollower.classList.remove('hover');
-            }
+            const t = e.target;
+            const hovering = t.closest('button') || t.closest('a') || t.closest('.course-btn') || t.closest('.side-nav-arrow');
+            cursor.classList.toggle('hover', hovering);
+            cursorFollower.classList.toggle('hover', hovering);
         });
-
-        // Smooth follower animation
         function animateFollower() {
-            followerX += (cursorX - followerX) * 0.1;
-            followerY += (cursorY - followerY) * 0.1;
+            followerX += (cursorX - followerX) * 0.08;
+            followerY += (cursorY - followerY) * 0.08;
             cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
             requestAnimationFrame(animateFollower);
         }
@@ -1411,193 +1520,241 @@
         // ============================================
         // MAGNETIC BUTTONS
         // ============================================
-        document.querySelectorAll('.nav-cta, .course-btn, .btn-primary').forEach(button => {
-            button.setAttribute('data-interactive', 'true');
-            
-            button.addEventListener('mousemove', (e) => {
-                const rect = button.getBoundingClientRect();
+        document.querySelectorAll('.nav-cta, .course-btn, .btn-primary, .btn-secondary').forEach(btn => {
+            btn.addEventListener('mousemove', e => {
+                const rect = btn.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-                
-                gsap.to(button, {
-                    x: x * 0.3,
-                    y: y * 0.3,
-                    scale: 1.05,
-                    duration: 0.3,
-                    ease: 'power2.out'
-                });
+                gsap.to(btn, { x: x * 0.25, y: y * 0.25, scale: 1.04, duration: 0.3, ease: 'power2.out' });
             });
-            
-            button.addEventListener('mouseleave', () => {
-                gsap.to(button, {
-                    x: 0,
-                    y: 0,
-                    scale: 1,
-                    duration: 0.5,
-                    ease: 'elastic.out(1, 0.5)'
-                });
+            btn.addEventListener('mouseleave', () => {
+                gsap.to(btn, { x: 0, y: 0, scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
             });
         });
 
         // ============================================
-        // NAVIGATION SCROLL EFFECT
+        // NAVIGATION
         // ============================================
         const nav = document.getElementById('navigation');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        });
-
-        // ============================================
-        // MOBILE MENU
-        // ============================================
+        window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+        
         const mobileBtn = document.getElementById('mobile-btn');
         const mobileMenu = document.getElementById('mobile-menu');
         let menuOpen = false;
-
         mobileBtn.addEventListener('click', () => {
             menuOpen = !menuOpen;
             mobileMenu.classList.toggle('open', menuOpen);
-            
-            const spans = mobileBtn.querySelectorAll('span');
-            if (menuOpen) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.opacity = '0';
-                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
-            } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
-            }
         });
-
-        // Close menu on link click
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 menuOpen = false;
                 mobileMenu.classList.remove('open');
-                const spans = mobileBtn.querySelectorAll('span');
-                spans[0].style.transform = 'none';
-                spans[1].style.opacity = '1';
-                spans[2].style.transform = 'none';
             });
         });
 
         // ============================================
-        // SCRAMBLE TEXT EFFECT
+        // SCRAMBLE TEXT
         // ============================================
-        const scrambleElement = document.getElementById('scramble-text');
-        const originalText = scrambleElement.textContent;
-        const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        let scrambleInterval;
-
+        const scrambleEl = document.getElementById('scramble-text');
+        const originalText = scrambleEl.textContent;
         function scrambleText() {
             let iterations = 0;
-            const maxIterations = 20;
-            
-            clearInterval(scrambleInterval);
-            
-            scrambleInterval = setInterval(() => {
-                scrambleElement.textContent = originalText.split('').map((char, index) => {
-                    if (char === ' ') return ' ';
-                    if (index < iterations) return originalText[index];
-                    return chars[Math.floor(Math.random() * chars.length)];
-                }).join('');
+            const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const interval = setInterval(() => {
+                scrambleEl.textContent = originalText.split('').map((c, i) => c === ' ' ? ' ' : (i < iterations ? originalText[i] : chars[Math.floor(Math.random() * chars.length)])).join('');
+                if (iterations >= originalText.length) { clearInterval(interval); scrambleEl.textContent = originalText; }
+                iterations += 0.4;
+            }, 40);
+        }
+        setTimeout(scrambleText, 2200);
+        scrambleEl.addEventListener('mouseenter', scrambleText);
+
+        // ============================================
+        // SIDE COURSES - HORIZONTAL SCROLL
+        // ============================================
+        const sideCoursesOverlay = document.getElementById('side-courses-overlay');
+        const sideCoursesHorizontal = document.getElementById('side-courses-horizontal');
+        const sideCourseCounter = document.getElementById('side-course-counter');
+        const scrollHint = document.getElementById('scroll-hint');
+
+        function buildSideCourses() {
+            sideCoursesHorizontal.innerHTML = '';
+            sideCourses.forEach((course, index) => {
+                const panel = document.createElement('div');
+                panel.className = 'side-course-panel';
+                panel.id = `side-panel-${index}`;
                 
-                if (iterations >= originalText.length) {
-                    clearInterval(scrambleInterval);
-                    scrambleElement.textContent = originalText;
-                }
+                const isUnlocked = course.unlocked || course.price === 0;
+                const canAfford = userCoins >= course.price;
                 
-                iterations += 0.5;
-            }, 50);
+                panel.innerHTML = `
+                    <div class="side-course-card">
+                        <div class="side-course-number">${String(index + 1).padStart(2, '0')} / 12</div>
+                        <div class="side-course-icon">${course.icon}</div>
+                        <h3 class="side-course-title">${course.title}</h3>
+                        <p class="side-course-desc">${course.desc}</p>
+                        <div class="side-course-price ${course.price === 0 ? 'free' : 'paid'}">
+                            ${course.price === 0 ? '🆓 Gratis' : `🪙 ${course.price} Coins`}
+                        </div>
+                        <button class="side-course-btn ${isUnlocked ? 'unlocked' : (canAfford ? 'unlock' : 'locked')}" 
+                                data-course-index="${index}"
+                                ${!isUnlocked && !canAfford ? 'disabled' : ''}>
+                            ${isUnlocked ? '✓ Låst Op' : (canAfford ? 'Lås Op Nu' : `🔒 ${course.price - userCoins} Coins`)}
+                        </button>
+                    </div>
+                `;
+                sideCoursesHorizontal.appendChild(panel);
+            });
         }
 
-        // Run scramble on load
-        setTimeout(scrambleText, 2500);
+        function updateCounter() {
+            const scrollLeft = sideCoursesHorizontal.scrollLeft;
+            const panelWidth = window.innerWidth;
+            const currentIndex = Math.round(scrollLeft / panelWidth);
+            if (sideCourseCounter) {
+                sideCourseCounter.textContent = `Kursus ${Math.min(currentIndex + 1, 12)} / 12`;
+            }
+        }
+
+        function openSideCourses() {
+            isFlying = true;
+            buildSideCourses();
+            sideCoursesOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            sideCoursesHorizontal.scrollLeft = 0;
+            updateCounter();
+            
+            // Animate first card
+            setTimeout(() => {
+                const firstCard = document.querySelector('.side-course-card');
+                if (firstCard) {
+                    gsap.fromTo(firstCard, 
+                        { scale: 1.3, opacity: 0, y: 80 },
+                        { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
+                    );
+                }
+            }, 300);
+            
+            // Hide scroll hint after 5 seconds
+            setTimeout(() => {
+                if (scrollHint) scrollHint.style.opacity = '0';
+            }, 5000);
+        }
+
+        function closeSideCourses() {
+            isFlying = false;
+            sideCoursesOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+            if (scrollHint) scrollHint.style.opacity = '1';
+        }
+
+        // Event listeners
+        document.getElementById('side-courses-btn').addEventListener('click', openSideCourses);
+        document.getElementById('side-courses-btn-mobile').addEventListener('click', () => {
+            menuOpen = false;
+            mobileMenu.classList.remove('open');
+            openSideCourses();
+        });
+        document.getElementById('hero-side-courses-btn').addEventListener('click', openSideCourses);
+        document.getElementById('footer-side-courses')?.addEventListener('click', e => { e.preventDefault(); openSideCourses(); });
+        document.getElementById('close-overlay-btn').addEventListener('click', closeSideCourses);
         
-        // Re-run on hover
-        scrambleElement.addEventListener('mouseenter', scrambleText);
+        // Close on ESC
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && sideCoursesOverlay.classList.contains('active')) {
+                closeSideCourses();
+            }
+        });
+
+        // Horizontal scroll tracking
+        sideCoursesHorizontal.addEventListener('scroll', () => {
+            updateCounter();
+        });
+
+        // Nav arrows
+        document.getElementById('side-nav-prev').addEventListener('click', () => {
+            const panelWidth = window.innerWidth;
+            const currentScroll = sideCoursesHorizontal.scrollLeft;
+            const targetScroll = Math.max(0, currentScroll - panelWidth);
+            sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        });
+
+        document.getElementById('side-nav-next').addEventListener('click', () => {
+            const panelWidth = window.innerWidth;
+            const currentScroll = sideCoursesHorizontal.scrollLeft;
+            const maxScroll = sideCoursesHorizontal.scrollWidth - panelWidth;
+            const targetScroll = Math.min(maxScroll, currentScroll + panelWidth);
+            sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
+        });
+
+        // Touch/swipe detection for mobile
+        let touchStartX = 0;
+        sideCoursesHorizontal.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        sideCoursesHorizontal.addEventListener('touchend', e => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) {
+                const panelWidth = window.innerWidth;
+                const currentScroll = sideCoursesHorizontal.scrollLeft;
+                const targetScroll = diff > 0 
+                    ? Math.min(sideCoursesHorizontal.scrollWidth - panelWidth, currentScroll + panelWidth)
+                    : Math.max(0, currentScroll - panelWidth);
+                sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
+            }
+        });
+
+        // Unlock course
+        sideCoursesHorizontal.addEventListener('click', e => {
+            const btn = e.target.closest('.side-course-btn');
+            if (!btn || btn.classList.contains('unlocked') || btn.classList.contains('locked')) return;
+            
+            const index = parseInt(btn.dataset.courseIndex);
+            const course = sideCourses[index];
+            if (!course) return;
+            
+            if (spendCoins(course.price)) {
+                course.unlocked = true;
+                btn.classList.remove('unlock');
+                btn.classList.add('unlocked');
+                btn.textContent = '✓ Låst Op';
+                gsap.fromTo(btn, { scale: 0.8 }, { scale: 1.2, duration: 0.3, yoyo: true, repeat: 1, ease: 'power2.out' });
+            }
+        });
 
         // ============================================
         // GSAP SCROLL ANIMATIONS
         // ============================================
         gsap.registerPlugin(ScrollTrigger);
-
-        // Reveal elements on scroll
-        const revealElements = document.querySelectorAll('.reveal');
-        revealElements.forEach((el, index) => {
-            gsap.fromTo(el, 
-                { y: 80, opacity: 0 },
-                {
-                    y: 0,
-                    opacity: 1,
-                    duration: 1,
-                    delay: index * 0.1,
-                    ease: 'power4.out',
-                    scrollTrigger: {
-                        trigger: el,
-                        start: 'top bottom-=100',
-                        toggleActions: 'play none none reverse'
-                    }
-                }
-            );
+        document.querySelectorAll('.reveal').forEach((el, i) => {
+            gsap.fromTo(el, { y: 70, opacity: 0 }, {
+                y: 0, opacity: 1, duration: 0.9, delay: i * 0.08, ease: 'power3.out',
+                scrollTrigger: { trigger: el, start: 'top bottom-=80', toggleActions: 'play none none reverse' }
+            });
         });
-
-        // Course cards animation
-        gsap.fromTo('.course-card', 
-            { y: 100, opacity: 0, rotateX: 30 },
-            {
-                y: 0,
-                opacity: 1,
-                rotateX: 0,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: 'power3.out',
-                scrollTrigger: {
-                    trigger: '.courses-grid',
-                    start: 'top center+=100',
-                    toggleActions: 'play none none reverse'
-                }
-            }
-        );
-
-        // Hero title parallax
+        gsap.fromTo('.course-card', { y: 100, opacity: 0, rotateX: 25 }, {
+            y: 0, opacity: 1, rotateX: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out',
+            scrollTrigger: { trigger: '.courses-grid', start: 'top center+=80', toggleActions: 'play none none reverse' }
+        });
         gsap.to('.hero-title', {
-            y: -100,
-            ease: 'none',
-            scrollTrigger: {
-                trigger: '#hero',
-                start: 'top top',
-                end: 'bottom top',
-                scrub: true
-            }
+            y: -80, ease: 'none',
+            scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
         });
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
+        // Smooth scroll links
+        document.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
             });
         });
 
-        // ============================================
-        // INITIALIZATION LOG
-        // ============================================
-        console.log('%c🚀 AI Kurser - Luksus 3D Hjemmeside %cLoaded Successfully', 
-            'color: #C6A962; font-size: 20px; font-weight: bold;',
-            'color: #E5E4E2; font-size: 14px;');
-        console.log('%cFeatures: 3D Scene | Custom Cursor | GSAP Animations | Magnetic Buttons | Scramble Text',
-            'color: rgba(229,228,226,0.5); font-size: 11px;');
-        console.log('%cBuilt with ❤️ in Værløse, Danmark',
-            'color: #7B68EE; font-size: 11px; font-style: italic;');
+        // Easter egg
+        console.log('%c🚀 LearnAI %cPremium Platform', 'color:#C6A962;font-size:28px;font-weight:bold;', 'color:#E5E4E2;font-size:16px;');
+        console.log('%c✦ Sidekurser med futuristisk horisontal scroll ✦', 'color:rgba(229,228,226,0.4);font-size:11px;');
     </script>
 </body>
 </html>
