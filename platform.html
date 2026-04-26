@@ -1,821 +1,1603 @@
-/**
- * Manus Debug Collector (agent-friendly)
- *
- * Captures:
- * 1) Console logs
- * 2) Network requests (fetch + XHR)
- * 3) User interactions (semantic uiEvents: click/type/submit/nav/scroll/etc.)
- *
- * Data is periodically sent to /__manus__/logs
- * Note: uiEvents are mirrored to sessionEvents for sessionReplay.log
- */
-(function () {
-  "use strict";
-
-  // Prevent double initialization
-  if (window.__MANUS_DEBUG_COLLECTOR__) return;
-
-  // ==========================================================================
-  // Configuration
-  // ==========================================================================
-  const CONFIG = {
-    reportEndpoint: "/__manus__/logs",
-    bufferSize: {
-      console: 500,
-      network: 200,
-      // semantic, agent-friendly UI events
-      ui: 500,
-    },
-    reportInterval: 2000,
-    sensitiveFields: [
-      "password",
-      "token",
-      "secret",
-      "key",
-      "authorization",
-      "cookie",
-      "session",
-    ],
-    maxBodyLength: 10240,
-    // UI event logging privacy policy:
-    // - inputs matching sensitiveFields or type=password are masked by default
-    // - non-sensitive inputs log up to 200 chars
-    uiInputMaxLen: 200,
-    uiTextMaxLen: 80,
-    // Scroll throttling: minimum ms between scroll events
-    scrollThrottleMs: 500,
-  };
-
-  // ==========================================================================
-  // Storage
-  // ==========================================================================
-  const store = {
-    consoleLogs: [],
-    networkRequests: [],
-    uiEvents: [],
-    lastReportTime: Date.now(),
-    lastScrollTime: 0,
-  };
-
-  // ==========================================================================
-  // Utility Functions
-  // ==========================================================================
-
-  function sanitizeValue(value, depth) {
-    if (depth === void 0) depth = 0;
-    if (depth > 5) return "[Max Depth]";
-    if (value === null) return null;
-    if (value === undefined) return undefined;
-
-    if (typeof value === "string") {
-      return value.length > 1000 ? value.slice(0, 1000) + "...[truncated]" : value;
-    }
-
-    if (typeof value !== "object") return value;
-
-    if (Array.isArray(value)) {
-      return value.slice(0, 100).map(function (v) {
-        return sanitizeValue(v, depth + 1);
-      });
-    }
-
-    var sanitized = {};
-    for (var k in value) {
-      if (Object.prototype.hasOwnProperty.call(value, k)) {
-        var isSensitive = CONFIG.sensitiveFields.some(function (f) {
-          return k.toLowerCase().indexOf(f) !== -1;
-        });
-        if (isSensitive) {
-          sanitized[k] = "[REDACTED]";
-        } else {
-          sanitized[k] = sanitizeValue(value[k], depth + 1);
-        }
-      }
-    }
-    return sanitized;
-  }
-
-  function formatArg(arg) {
-    try {
-      if (arg instanceof Error) {
-        return { type: "Error", message: arg.message, stack: arg.stack };
-      }
-      if (typeof arg === "object") return sanitizeValue(arg);
-      return String(arg);
-    } catch (e) {
-      return "[Unserializable]";
-    }
-  }
-
-  function formatArgs(args) {
-    var result = [];
-    for (var i = 0; i < args.length; i++) result.push(formatArg(args[i]));
-    return result;
-  }
-
-  function pruneBuffer(buffer, maxSize) {
-    if (buffer.length > maxSize) buffer.splice(0, buffer.length - maxSize);
-  }
-
-  function tryParseJson(str) {
-    if (typeof str !== "string") return str;
-    try {
-      return JSON.parse(str);
-    } catch (e) {
-      return str;
-    }
-  }
-
-  // ==========================================================================
-  // Semantic UI Event Logging (agent-friendly)
-  // ==========================================================================
-
-  function shouldIgnoreTarget(target) {
-    try {
-      if (!target || !(target instanceof Element)) return false;
-      return !!target.closest(".manus-no-record");
-    } catch (e) {
-      return false;
-    }
-  }
-
-  function compactText(s, maxLen) {
-    try {
-      var t = (s || "").trim().replace(/\s+/g, " ");
-      if (!t) return "";
-      return t.length > maxLen ? t.slice(0, maxLen) + "…" : t;
-    } catch (e) {
-      return "";
-    }
-  }
-
-  function elText(el) {
-    try {
-      var t = el.innerText || el.textContent || "";
-      return compactText(t, CONFIG.uiTextMaxLen);
-    } catch (e) {
-      return "";
-    }
-  }
-
-  function describeElement(el) {
-    if (!el || !(el instanceof Element)) return null;
-
-    var getAttr = function (name) {
-      return el.getAttribute(name);
-    };
-
-    var tag = el.tagName ? el.tagName.toLowerCase() : null;
-    var id = el.id || null;
-    var name = getAttr("name") || null;
-    var role = getAttr("role") || null;
-    var ariaLabel = getAttr("aria-label") || null;
-
-    var dataLoc = getAttr("data-loc") || null;
-    var testId =
-      getAttr("data-testid") ||
-      getAttr("data-test-id") ||
-      getAttr("data-test") ||
-      null;
-
-    var type = tag === "input" ? (getAttr("type") || "text") : null;
-    var href = tag === "a" ? getAttr("href") || null : null;
-
-    // a small, stable hint for agents (avoid building full CSS paths)
-    var selectorHint = null;
-    if (testId) selectorHint = '[data-testid="' + testId + '"]';
-    else if (dataLoc) selectorHint = '[data-loc="' + dataLoc + '"]';
-    else if (id) selectorHint = "#" + id;
-    else selectorHint = tag || "unknown";
-
-    return {
-      tag: tag,
-      id: id,
-      name: name,
-      type: type,
-      role: role,
-      ariaLabel: ariaLabel,
-      testId: testId,
-      dataLoc: dataLoc,
-      href: href,
-      text: elText(el),
-      selectorHint: selectorHint,
-    };
-  }
-
-  function isSensitiveField(el) {
-    if (!el || !(el instanceof Element)) return false;
-    var tag = el.tagName ? el.tagName.toLowerCase() : "";
-    if (tag !== "input" && tag !== "textarea") return false;
-
-    var type = (el.getAttribute("type") || "").toLowerCase();
-    if (type === "password") return true;
-
-    var name = (el.getAttribute("name") || "").toLowerCase();
-    var id = (el.id || "").toLowerCase();
-
-    return CONFIG.sensitiveFields.some(function (f) {
-      return name.indexOf(f) !== -1 || id.indexOf(f) !== -1;
-    });
-  }
-
-  function getInputValueSafe(el) {
-    if (!el || !(el instanceof Element)) return null;
-    var tag = el.tagName ? el.tagName.toLowerCase() : "";
-    if (tag !== "input" && tag !== "textarea" && tag !== "select") return null;
-
-    var v = "";
-    try {
-      v = el.value != null ? String(el.value) : "";
-    } catch (e) {
-      v = "";
-    }
-
-    if (isSensitiveField(el)) return { masked: true, length: v.length };
-
-    if (v.length > CONFIG.uiInputMaxLen) v = v.slice(0, CONFIG.uiInputMaxLen) + "…";
-    return v;
-  }
-
-  function logUiEvent(kind, payload) {
-    var entry = {
-      timestamp: Date.now(),
-      kind: kind,
-      url: location.href,
-      viewport: { width: window.innerWidth, height: window.innerHeight },
-      payload: sanitizeValue(payload),
-    };
-    store.uiEvents.push(entry);
-    pruneBuffer(store.uiEvents, CONFIG.bufferSize.ui);
-  }
-
-  function installUiEventListeners() {
-    // Clicks
-    document.addEventListener(
-      "click",
-      function (e) {
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("click", {
-          target: describeElement(t),
-          x: e.clientX,
-          y: e.clientY,
-        });
-      },
-      true
-    );
-
-    // Typing "commit" events
-    document.addEventListener(
-      "change",
-      function (e) {
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("change", {
-          target: describeElement(t),
-          value: getInputValueSafe(t),
-        });
-      },
-      true
-    );
-
-    document.addEventListener(
-      "focusin",
-      function (e) {
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("focusin", { target: describeElement(t) });
-      },
-      true
-    );
-
-    document.addEventListener(
-      "focusout",
-      function (e) {
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("focusout", {
-          target: describeElement(t),
-          value: getInputValueSafe(t),
-        });
-      },
-      true
-    );
-
-    // Enter/Escape are useful for form flows & modals
-    document.addEventListener(
-      "keydown",
-      function (e) {
-        if (e.key !== "Enter" && e.key !== "Escape") return;
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("keydown", { key: e.key, target: describeElement(t) });
-      },
-      true
-    );
-
-    // Form submissions
-    document.addEventListener(
-      "submit",
-      function (e) {
-        var t = e.target;
-        if (shouldIgnoreTarget(t)) return;
-        logUiEvent("submit", { target: describeElement(t) });
-      },
-      true
-    );
-
-    // Throttled scroll events
-    window.addEventListener(
-      "scroll",
-      function () {
-        var now = Date.now();
-        if (now - store.lastScrollTime < CONFIG.scrollThrottleMs) return;
-        store.lastScrollTime = now;
-
-        logUiEvent("scroll", {
-          scrollX: window.scrollX,
-          scrollY: window.scrollY,
-          documentHeight: document.documentElement.scrollHeight,
-          viewportHeight: window.innerHeight,
-        });
-      },
-      { passive: true }
-    );
-
-    // Navigation tracking for SPAs
-    function nav(reason) {
-      logUiEvent("navigate", { reason: reason });
-    }
-
-    var origPush = history.pushState;
-    history.pushState = function () {
-      origPush.apply(this, arguments);
-      nav("pushState");
-    };
-
-    var origReplace = history.replaceState;
-    history.replaceState = function () {
-      origReplace.apply(this, arguments);
-      nav("replaceState");
-    };
-
-    window.addEventListener("popstate", function () {
-      nav("popstate");
-    });
-    window.addEventListener("hashchange", function () {
-      nav("hashchange");
-    });
-  }
-
-  // ==========================================================================
-  // Console Interception
-  // ==========================================================================
-
-  var originalConsole = {
-    log: console.log.bind(console),
-    debug: console.debug.bind(console),
-    info: console.info.bind(console),
-    warn: console.warn.bind(console),
-    error: console.error.bind(console),
-  };
-
-  ["log", "debug", "info", "warn", "error"].forEach(function (method) {
-    console[method] = function () {
-      var args = Array.prototype.slice.call(arguments);
-
-      var entry = {
-        timestamp: Date.now(),
-        level: method.toUpperCase(),
-        args: formatArgs(args),
-        stack: method === "error" ? new Error().stack : null,
-      };
-
-      store.consoleLogs.push(entry);
-      pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
-
-      originalConsole[method].apply(console, args);
-    };
-  });
-
-  window.addEventListener("error", function (event) {
-    store.consoleLogs.push({
-      timestamp: Date.now(),
-      level: "ERROR",
-      args: [
-        {
-          type: "UncaughtError",
-          message: event.message,
-          filename: event.filename,
-          lineno: event.lineno,
-          colno: event.colno,
-          stack: event.error ? event.error.stack : null,
-        },
-      ],
-      stack: event.error ? event.error.stack : null,
-    });
-    pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
-
-    // Mark an error moment in UI event stream for agents
-    logUiEvent("error", {
-      message: event.message,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    });
-  });
-
-  window.addEventListener("unhandledrejection", function (event) {
-    var reason = event.reason;
-    store.consoleLogs.push({
-      timestamp: Date.now(),
-      level: "ERROR",
-      args: [
-        {
-          type: "UnhandledRejection",
-          reason: reason && reason.message ? reason.message : String(reason),
-          stack: reason && reason.stack ? reason.stack : null,
-        },
-      ],
-      stack: reason && reason.stack ? reason.stack : null,
-    });
-    pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
-
-    logUiEvent("unhandledrejection", {
-      reason: reason && reason.message ? reason.message : String(reason),
-    });
-  });
-
-  // ==========================================================================
-  // Fetch Interception
-  // ==========================================================================
-
-  var originalFetch = window.fetch.bind(window);
-
-  window.fetch = function (input, init) {
-    init = init || {};
-    var startTime = Date.now();
-    // Handle string, Request object, or URL object
-    var url = typeof input === "string"
-      ? input
-      : (input && (input.url || input.href || String(input))) || "";
-    var method = init.method || (input && input.method) || "GET";
-
-    // Don't intercept internal requests
-    if (url.indexOf("/__manus__/") === 0) {
-      return originalFetch(input, init);
-    }
-
-    // Safely parse headers (avoid breaking if headers format is invalid)
-    var requestHeaders = {};
-    try {
-      if (init.headers) {
-        requestHeaders = Object.fromEntries(new Headers(init.headers).entries());
-      }
-    } catch (e) {
-      requestHeaders = { _parseError: true };
-    }
-
-    var entry = {
-      timestamp: startTime,
-      type: "fetch",
-      method: method.toUpperCase(),
-      url: url,
-      request: {
-        headers: requestHeaders,
-        body: init.body ? sanitizeValue(tryParseJson(init.body)) : null,
-      },
-      response: null,
-      duration: null,
-      error: null,
-    };
-
-    return originalFetch(input, init)
-      .then(function (response) {
-        entry.duration = Date.now() - startTime;
-
-        var contentType = (response.headers.get("content-type") || "").toLowerCase();
-        var contentLength = response.headers.get("content-length");
-
-        entry.response = {
-          status: response.status,
-          statusText: response.statusText,
-          headers: Object.fromEntries(response.headers.entries()),
-          body: null,
-        };
-
-        // Semantic network hint for agents on failures (sync, no need to wait for body)
-        if (response.status >= 400) {
-          logUiEvent("network_error", {
-            kind: "fetch",
-            method: entry.method,
-            url: entry.url,
-            status: response.status,
-            statusText: response.statusText,
-          });
+<!DOCTYPE html>
+<html lang="da">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Kurser | Luksus AI Uddannelse - Fra Begynder til Ekspert</title>
+    <meta name="description" content="Professionelle AI-kurser med ekspertvejledning. Start gratis som nybegynder og bliv AI-ekspert. Kurser fra niveau D til A med certificering.">
+    <meta name="keywords" content="AI, kurser, kunstig intelligens, uddannelse, machine learning, certificering">
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- GSAP CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <style>
+        /* ============================================
+           GLOBAL STYLES & CSS VARIABLES
+           ============================================ */
+        :root {
+            --gold: #C6A962;
+            --gold-light: #E5C77D;
+            --gold-dark: #A88B4A;
+            --platinum: #E5E4E2;
+            --obsidian: #0A0A0A;
+            --onyx: #1A1A1A;
+            --diamond: #F8F8FF;
+            --holographic: #7B68EE;
         }
 
-        // Skip body capture for streaming responses (SSE, etc.) to avoid memory leaks
-        var isStreaming = contentType.indexOf("text/event-stream") !== -1 ||
-                          contentType.indexOf("application/stream") !== -1 ||
-                          contentType.indexOf("application/x-ndjson") !== -1;
-        if (isStreaming) {
-          entry.response.body = "[Streaming response - not captured]";
-          store.networkRequests.push(entry);
-          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-          return response;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
         }
 
-        // Skip body capture for large responses to avoid memory issues
-        if (contentLength && parseInt(contentLength, 10) > CONFIG.maxBodyLength) {
-          entry.response.body = "[Response too large: " + contentLength + " bytes]";
-          store.networkRequests.push(entry);
-          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-          return response;
+        html {
+            scroll-behavior: smooth;
+            overflow-x: hidden;
         }
 
-        // Skip body capture for binary content types
-        var isBinary = contentType.indexOf("image/") !== -1 ||
-                       contentType.indexOf("video/") !== -1 ||
-                       contentType.indexOf("audio/") !== -1 ||
-                       contentType.indexOf("application/octet-stream") !== -1 ||
-                       contentType.indexOf("application/pdf") !== -1 ||
-                       contentType.indexOf("application/zip") !== -1;
-        if (isBinary) {
-          entry.response.body = "[Binary content: " + contentType + "]";
-          store.networkRequests.push(entry);
-          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-          return response;
+        body {
+            background: var(--obsidian);
+            color: var(--diamond);
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        // For text responses, clone and read body in background
-        var clonedResponse = response.clone();
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--obsidian); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+        ::selection { background: var(--gold); color: var(--obsidian); }
 
-        // Async: read body in background, don't block the response
-        clonedResponse
-          .text()
-          .then(function (text) {
-            if (text.length <= CONFIG.maxBodyLength) {
-              entry.response.body = sanitizeValue(tryParseJson(text));
-            } else {
-              entry.response.body = text.slice(0, CONFIG.maxBodyLength) + "...[truncated]";
+        /* ============================================
+           CANVAS CONTAINER
+           ============================================ */
+        #canvas-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* ============================================
+           LOADING SCREEN
+           ============================================ */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 10000;
+            background: var(--obsidian);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s ease-out;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .loader-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 2px solid rgba(198, 169, 98, 0.3);
+            animation: spin 3s linear infinite;
+        }
+
+        .loader-ring::after {
+            content: '';
+            position: absolute;
+            inset: 8px;
+            border-radius: 50%;
+            border: 1px solid rgba(198, 169, 98, 0.5);
+            animation: spin 2s linear infinite reverse;
+        }
+
+        .loader-diamond {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-diamond::after {
+            content: '';
+            width: 15px;
+            height: 15px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            box-shadow: 0 0 20px rgba(198, 169, 98, 0.5);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .loader-title {
+            font-size: 28px;
+            background: linear-gradient(135deg, #C6A962, #E5C77D, #F3DBA5, #C6A962);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .loader-subtitle {
+            color: rgba(229, 228, 226, 0.5);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 25px;
+        }
+
+        .progress-bar {
+            width: 250px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.5s ease-out;
+            box-shadow: 0 0 10px rgba(198, 169, 98, 0.5);
+        }
+
+        .progress-glow {
+            position: absolute;
+            top: 50%;
+            width: 15px;
+            height: 15px;
+            background: var(--gold);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 20px rgba(198, 169, 98, 0.8);
+            filter: blur(2px);
+            transition: left 0.5s ease-out;
+        }
+
+        .loader-percentage {
+            font-size: 40px;
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .loader-percentage span {
+            font-size: 24px;
+            color: rgba(229, 228, 226, 0.5);
+        }
+
+        .loader-status {
+            color: rgba(229, 228, 226, 0.3);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-top: 8px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ============================================
+           CUSTOM CURSOR
+           ============================================ */
+        #cursor {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            background: var(--gold);
+            border-radius: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            mix-blend-mode: difference;
+            transition: width 0.3s, height 0.3s, margin 0.3s;
+        }
+
+        #cursor.hover {
+            width: 60px;
+            height: 60px;
+            margin-left: -30px;
+            margin-top: -30px;
+            background: transparent;
+            border: 2px solid var(--gold);
+            mix-blend-mode: normal;
+        }
+
+        #cursor-follower {
+            position: fixed;
+            z-index: 9998;
+            pointer-events: none;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(198, 169, 98, 0.5);
+            border-radius: 50%;
+            margin-left: -20px;
+            margin-top: -20px;
+            backdrop-filter: blur(4px);
+            transition: width 0.3s, height 0.3s, margin 0.3s;
+        }
+
+        #cursor-follower.hover {
+            width: 80px;
+            height: 80px;
+            margin-left: -40px;
+            margin-top: -40px;
+            background: radial-gradient(circle, rgba(198, 169, 98, 0.1), transparent 70%);
+        }
+
+        /* ============================================
+           NAVIGATION
+           ============================================ */
+        #navigation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 20px;
+            transition: all 0.5s;
+        }
+
+        #navigation.scrolled {
+            background: rgba(10, 10, 10, 0.9);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 80px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--obsidian);
+            font-weight: bold;
+            font-size: 14px;
+            position: relative;
+        }
+
+        .nav-logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(198, 169, 98, 0.2);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .nav-logo-text {
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #C6A962, #E5C77D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-logo-sub {
+            display: block;
+            font-size: 8px;
+            color: rgba(229, 228, 226, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-link {
+            color: rgba(229, 228, 226, 0.7);
+            text-decoration: none;
+            padding: 8px 16px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--gold);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--gold);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            transform-origin: left;
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian);
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            box-shadow: 0 0 20px rgba(198, 169, 98, 0.3);
+        }
+
+        .nav-cta:hover {
+            box-shadow: 0 0 40px rgba(198, 169, 98, 0.5);
+            transform: scale(1.05);
+        }
+
+        .nav-mobile-btn {
+            display: none;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+
+        .nav-mobile-btn span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--gold);
+            position: absolute;
+            left: 8px;
+            transition: all 0.3s;
+        }
+
+        .nav-mobile-btn span:nth-child(1) { top: 12px; }
+        .nav-mobile-btn span:nth-child(2) { top: 19px; }
+        .nav-mobile-btn span:nth-child(3) { top: 26px; }
+
+        /* ============================================
+           MOBILE MENU
+           ============================================ */
+        #mobile-menu {
+            position: fixed;
+            inset: 0;
+            z-index: 99;
+            background: rgba(10, 10, 10, 0.98);
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 30px;
+            transform: translateX(100%);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #mobile-menu.open {
+            transform: translateX(0);
+        }
+
+        #mobile-menu a {
+            color: var(--platinum);
+            text-decoration: none;
+            font-size: 28px;
+            transition: color 0.3s;
+        }
+
+        #mobile-menu a:hover {
+            color: var(--gold);
+        }
+
+        /* ============================================
+           HERO SECTION
+           ============================================ */
+        .section {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid rgba(198, 169, 98, 0.3);
+            border-radius: 50px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 25px;
+            background: rgba(198, 169, 98, 0.05);
+        }
+
+        .hero-title {
+            font-size: clamp(48px, 8vw, 120px);
+            font-weight: bold;
+            line-height: 1;
+            margin-bottom: 25px;
+            background: linear-gradient(135deg, #C6A962 0%, #E5C77D 25%, #F3DBA5 50%, #C6A962 75%, #A88B4A 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(16px, 2vw, 22px);
+            color: rgba(229, 228, 226, 0.7);
+            margin-bottom: 40px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 60px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-decoration: none;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian);
+            box-shadow: 0 0 30px rgba(198, 169, 98, 0.3);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 50px rgba(198, 169, 98, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--platinum);
+            border: 1px solid rgba(229, 228, 226, 0.2);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .hero-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-feature {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero-feature:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(198, 169, 98, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .hero-feature-icon {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .hero-feature-text {
+            font-size: 12px;
+            color: rgba(229, 228, 226, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: rgba(229, 228, 226, 0.3);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 50px;
+            background: linear-gradient(to bottom, rgba(198, 169, 98, 0.5), transparent);
+        }
+
+        .scroll-dot {
+            width: 8px;
+            height: 8px;
+            background: rgba(198, 169, 98, 0.5);
+            border-radius: 50%;
+            animation: bounce 2s infinite;
+        }
+
+        /* ============================================
+           COURSES SECTION
+           ============================================ */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .course-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 35px;
+            transition: all 0.5s;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-card:hover {
+            border-color: rgba(198, 169, 98, 0.4);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .course-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(198, 169, 98, 0.05), transparent);
+            border-radius: 0 0 0 100%;
+        }
+
+        .course-level {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: white;
+        }
+
+        .level-d { background: linear-gradient(135deg, #4ade80, #059669); }
+        .level-c { background: linear-gradient(135deg, #60a5fa, #4f46e5); }
+        .level-b { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
+        .level-a { background: linear-gradient(135deg, #fbbf24, #d97706); }
+
+        .course-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .course-title {
+            font-size: 24px;
+            color: var(--platinum);
+            margin-bottom: 10px;
+        }
+
+        .course-desc {
+            color: rgba(229, 228, 226, 0.5);
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .course-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .course-features li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            color: rgba(229, 228, 226, 0.6);
+            font-size: 13px;
+        }
+
+        .course-features li::before {
+            content: '✓';
+            color: var(--gold);
+            font-weight: bold;
+        }
+
+        .course-btn {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 1px solid rgba(198, 169, 98, 0.3);
+            color: var(--gold);
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+        }
+
+        .course-btn:hover {
+            background: var(--gold);
+            color: var(--obsidian);
+            box-shadow: 0 0 30px rgba(198, 169, 98, 0.3);
+        }
+
+        /* ============================================
+           ABOUT SECTION
+           ============================================ */
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .about-text {
+            color: rgba(229, 228, 226, 0.6);
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        #footer {
+            position: relative;
+            z-index: 1;
+            background: var(--obsidian);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 60px 20px 30px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: var(--gold);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+        }
+
+        .footer-col a {
+            display: block;
+            color: rgba(229, 228, 226, 0.4);
+            text-decoration: none;
+            font-size: 13px;
+            padding: 6px 0;
+            transition: color 0.3s;
+        }
+
+        .footer-col a:hover {
+            color: var(--gold);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 12px;
+            color: rgba(229, 228, 226, 0.3);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 15px;
+        }
+
+        .footer-social a {
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(229, 228, 226, 0.4);
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .footer-social a:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        /* ============================================
+           GLASS PANEL UTILITY
+           ============================================ */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 6vw, 72px);
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #C6A962, #E5C77D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border: 1px solid rgba(198, 169, 98, 0.3);
+            border-radius: 50px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            background: rgba(198, 169, 98, 0.05);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; transform: rotate(45deg) scale(1); }
+            50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ============================================
+           RESPONSIVE
+           ============================================ */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .nav-mobile-btn { display: block; }
+            
+            .hero-features {
+                grid-template-columns: repeat(2, 1fr);
             }
-          })
-          .catch(function () {
-            entry.response.body = "[Unable to read body]";
-          })
-          .finally(function () {
-            store.networkRequests.push(entry);
-            pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-          });
-
-        // Return response immediately, don't wait for body reading
-        return response;
-      })
-      .catch(function (error) {
-        entry.duration = Date.now() - startTime;
-        entry.error = { message: error.message, stack: error.stack };
-
-        store.networkRequests.push(entry);
-        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-
-        logUiEvent("network_error", {
-          kind: "fetch",
-          method: entry.method,
-          url: entry.url,
-          message: error.message,
-        });
-
-        throw error;
-      });
-  };
-
-  // ==========================================================================
-  // XHR Interception
-  // ==========================================================================
-
-  var originalXHROpen = XMLHttpRequest.prototype.open;
-  var originalXHRSend = XMLHttpRequest.prototype.send;
-
-  XMLHttpRequest.prototype.open = function (method, url) {
-    this._manusData = {
-      method: (method || "GET").toUpperCase(),
-      url: url,
-      startTime: null,
-    };
-    return originalXHROpen.apply(this, arguments);
-  };
-
-  XMLHttpRequest.prototype.send = function (body) {
-    var xhr = this;
-
-    if (
-      xhr._manusData &&
-      xhr._manusData.url &&
-      xhr._manusData.url.indexOf("/__manus__/") !== 0
-    ) {
-      xhr._manusData.startTime = Date.now();
-      xhr._manusData.requestBody = body ? sanitizeValue(tryParseJson(body)) : null;
-
-      xhr.addEventListener("load", function () {
-        var contentType = (xhr.getResponseHeader("content-type") || "").toLowerCase();
-        var responseBody = null;
-
-        // Skip body capture for streaming responses
-        var isStreaming = contentType.indexOf("text/event-stream") !== -1 ||
-                          contentType.indexOf("application/stream") !== -1 ||
-                          contentType.indexOf("application/x-ndjson") !== -1;
-
-        // Skip body capture for binary content types
-        var isBinary = contentType.indexOf("image/") !== -1 ||
-                       contentType.indexOf("video/") !== -1 ||
-                       contentType.indexOf("audio/") !== -1 ||
-                       contentType.indexOf("application/octet-stream") !== -1 ||
-                       contentType.indexOf("application/pdf") !== -1 ||
-                       contentType.indexOf("application/zip") !== -1;
-
-        if (isStreaming) {
-          responseBody = "[Streaming response - not captured]";
-        } else if (isBinary) {
-          responseBody = "[Binary content: " + contentType + "]";
-        } else {
-          // Safe to read responseText for text responses
-          try {
-            var text = xhr.responseText || "";
-            if (text.length > CONFIG.maxBodyLength) {
-              responseBody = text.slice(0, CONFIG.maxBodyLength) + "...[truncated]";
-            } else {
-              responseBody = sanitizeValue(tryParseJson(text));
+            
+            .footer-inner {
+                grid-template-columns: repeat(2, 1fr);
             }
-          } catch (e) {
-            // responseText may throw for non-text responses
-            responseBody = "[Unable to read response: " + e.message + "]";
-          }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
         }
 
-        var entry = {
-          timestamp: xhr._manusData.startTime,
-          type: "xhr",
-          method: xhr._manusData.method,
-          url: xhr._manusData.url,
-          request: { body: xhr._manusData.requestBody },
-          response: {
-            status: xhr.status,
-            statusText: xhr.statusText,
-            body: responseBody,
-          },
-          duration: Date.now() - xhr._manusData.startTime,
-          error: null,
-        };
-
-        store.networkRequests.push(entry);
-        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-
-        if (entry.response && entry.response.status >= 400) {
-          logUiEvent("network_error", {
-            kind: "xhr",
-            method: entry.method,
-            url: entry.url,
-            status: entry.response.status,
-            statusText: entry.response.statusText,
-          });
+        @media (max-width: 480px) {
+            .hero-features {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
         }
-      });
+    </style>
+</head>
+<body>
+    <!-- ============================================
+    LOADING SCREEN
+    ============================================ -->
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="loader-ring">
+                <div class="loader-diamond"></div>
+            </div>
+            <div class="loader-title">AI Kurser</div>
+            <div class="loader-subtitle">Luksus Uddannelse</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-glow" id="progress-glow" style="left: 0%"></div>
+            </div>
+            <div class="loader-percentage">
+                <span id="progress-number">0</span><span>%</span>
+            </div>
+            <div class="loader-status" id="loader-status">Initialiserer...</div>
+        </div>
+    </div>
 
-      xhr.addEventListener("error", function () {
-        var entry = {
-          timestamp: xhr._manusData.startTime,
-          type: "xhr",
-          method: xhr._manusData.method,
-          url: xhr._manusData.url,
-          request: { body: xhr._manusData.requestBody },
-          response: null,
-          duration: Date.now() - xhr._manusData.startTime,
-          error: { message: "Network error" },
-        };
+    <!-- ============================================
+    CUSTOM CURSOR
+    ============================================ -->
+    <div id="cursor"></div>
+    <div id="cursor-follower"></div>
 
-        store.networkRequests.push(entry);
-        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+    <!-- ============================================
+    3D CANVAS
+    ============================================ -->
+    <div id="canvas-container"></div>
 
-        logUiEvent("network_error", {
-          kind: "xhr",
-          method: entry.method,
-          url: entry.url,
-          message: "Network error",
+    <!-- ============================================
+    NAVIGATION
+    ============================================ -->
+    <nav id="navigation">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo">
+                <div class="nav-logo-icon">AI</div>
+                <div>
+                    <span class="nav-logo-text">AI Kurser</span>
+                    <span class="nav-logo-sub">Premium</span>
+                </div>
+            </a>
+            <div class="nav-links">
+                <a href="#kurser" class="nav-link">Kurser</a>
+                <a href="#niveauer" class="nav-link">Niveauer</a>
+                <a href="#om-os" class="nav-link">Om Os</a>
+                <a href="#kontakt" class="nav-link">Kontakt</a>
+                <button class="nav-cta">Start Nu</button>
+            </div>
+            <button class="nav-mobile-btn" id="mobile-btn" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ============================================
+    MOBILE MENU
+    ============================================ -->
+    <div id="mobile-menu">
+        <a href="#kurser">Kurser</a>
+        <a href="#niveauer">Niveauer</a>
+        <a href="#om-os">Om Os</a>
+        <a href="#kontakt">Kontakt</a>
+        <button class="nav-cta" style="margin-top: 20px;">Start Din Rejse</button>
+    </div>
+
+    <!-- ============================================
+    HERO SECTION
+    ============================================ -->
+    <section class="section" id="hero">
+        <div class="hero-content">
+            <div class="hero-badge reveal">Premium AI Uddannelse</div>
+            <h1 class="hero-title reveal">Mestre Fremtiden<br>med AI</h1>
+            <p class="hero-subtitle reveal" id="scramble-text">Fra Begynder til Ekspert - Din Rejse Starter Her</p>
+            <div class="hero-buttons reveal">
+                <a href="#kurser" class="btn btn-primary">
+                    Start Gratis Kursus
+                    <span>→</span>
+                </a>
+                <a href="#" class="btn btn-secondary">
+                    ▶ Se Demo
+                </a>
+            </div>
+            <div class="hero-features">
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🎓</div>
+                    <div class="hero-feature-text">Ekspert Certificering</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🚀</div>
+                    <div class="hero-feature-text">AI-Drevet Læring</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">💎</div>
+                    <div class="hero-feature-text">Premium Indhold</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🏆</div>
+                    <div class="hero-feature-text">Praktisk Erfaring</div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+            <div class="scroll-dot"></div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    COURSES SECTION
+    ============================================ -->
+    <section class="section" id="kurser">
+        <div style="max-width: 1200px; margin: 0 auto; width: 100%;">
+            <div class="section-header reveal">
+                <span class="section-badge">Vores Kurser</span>
+                <h2 class="section-title">Vælg Dit Niveau</h2>
+                <p style="color: rgba(229,228,226,0.6); font-size: 16px;">Fra Nybegynder til AI-Ekspert</p>
+            </div>
+            <div class="courses-grid">
+                <!-- Niveau D -->
+                <div class="course-card reveal">
+                    <span class="course-level level-d">Niveau D</span>
+                    <div class="course-price">Gratis</div>
+                    <h3 class="course-title">Amatør</h3>
+                    <p class="course-desc">Start din AI-rejse med grundlæggende koncepter. Perfekt for begyndere.</p>
+                    <ul class="course-features">
+                        <li>Grundlæggende AI</li>
+                        <li>Simple Øvelser</li>
+                        <li>Intro Certifikat</li>
+                        <li>Gratis Adgang</li>
+                    </ul>
+                    <button class="course-btn">Start Kursus</button>
+                </div>
+
+                <!-- Niveau C -->
+                <div class="course-card reveal">
+                    <span class="course-level level-c">Niveau C</span>
+                    <div class="course-price">499 DKK</div>
+                    <h3 class="course-title">Avanceret Begynder</h3>
+                    <p class="course-desc">Dyk dybere ned i machine learning og AI-værktøjer.</p>
+                    <ul class="course-features">
+                        <li>Machine Learning</li>
+                        <li>Data Analyse</li>
+                        <li>API Integration</li>
+                        <li>C Certifikat</li>
+                    </ul>
+                    <button class="course-btn">Vælg Kursus</button>
+                </div>
+
+                <!-- Niveau B -->
+                <div class="course-card reveal">
+                    <span class="course-level level-b">Niveau B</span>
+                    <div class="course-price">999 DKK</div>
+                    <h3 class="course-title">Professionel</h3>
+                    <p class="course-desc">Professionelle værktøjer og teknikker til AI-udvikling.</p>
+                    <ul class="course-features">
+                        <li>Neurale Netværk</li>
+                        <li>Deep Learning</li>
+                        <li>Pro Eksamen</li>
+                        <li>B Certifikat</li>
+                    </ul>
+                    <button class="course-btn">Vælg Kursus</button>
+                </div>
+
+                <!-- Niveau A -->
+                <div class="course-card reveal">
+                    <span class="course-level level-a">Niveau A</span>
+                    <div class="course-price">1.999 DKK</div>
+                    <h3 class="course-title">Ekspert</h3>
+                    <p class="course-desc">Mestre avancerede AI-systemer og bliv certificeret ekspert.</p>
+                    <ul class="course-features">
+                        <li>AI Arkitektur</li>
+                        <li>System Design</li>
+                        <li>Ekspert Certificering</li>
+                        <li>A Certifikat</li>
+                    </ul>
+                    <button class="course-btn">Vælg Kursus</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================
+    ABOUT SECTION
+    ============================================ -->
+    <section class="section" id="om-os">
+        <div class="about-content">
+            <div class="section-header reveal">
+                <span class="section-badge">Om Os</span>
+                <h2 class="section-title">Hvem er vi?</h2>
+            </div>
+            <p class="about-text reveal">
+                Vi begge to bor i Værløse. Vi elsker matematik, business, salg, sport, konkurrence og alt der har med penge at gøre. 
+                Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre. 
+                Jeg elsker AI og det er også derfor at jeg drømmer om at lave AI-kurser og sælge dem.
+            </p>
+            <p class="about-text reveal" style="margin-top: 20px;">
+                <strong style="color: var(--gold);">Hvordan fungerer projektet?</strong><br>
+                Man starter på platformen hvor man kan se alle kurserne og læse om min baggrund. 
+                Der er både hovedkurser, som man kan starte helt gratis som nybegynder og blive til ekspert. 
+                Kurserne går fra niveau D (amatør) til niveau A (ekspert) med kursus C og B imellem. 
+                Startkurset er meget let og gratis mens de andre bliver mere professionelle og dyrere. 
+                Man får et kursusbevis når man har bestået den afgørende eksamen.
+            </p>
+            <p class="about-text reveal" style="margin-top: 20px;">
+                <strong style="color: var(--gold);">Mål med projektet:</strong><br>
+                Vores mål er at lave en hjemmeside med en masse professionelle AI-kurser man kan købe sig adgang til 
+                og at lave det lidt som et app-system som Duolingo.
+            </p>
+            <p class="about-text reveal" style="margin-top: 20px;">
+                <strong style="color: var(--gold);">Næste skridt:</strong><br>
+                Næste skridt er at få lavet B-eksamen og lave nogle af sidekurserne.
+            </p>
+        </div>
+    </section>
+
+    <!-- ============================================
+    FOOTER
+    ============================================ -->
+    <footer id="footer">
+        <div class="footer-inner">
+            <div class="footer-col">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px;">
+                    <div style="width: 35px; height: 35px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--obsidian); font-weight: bold; font-size: 12px;">AI</div>
+                    <div>
+                        <span style="font-size: 18px; font-weight: bold; background: linear-gradient(135deg, #C6A962, #E5C77D); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">AI Kurser</span>
+                        <span style="display: block; font-size: 8px; color: rgba(229,228,226,0.5); text-transform: uppercase; letter-spacing: 2px;">Premium</span>
+                    </div>
+                </div>
+                <p style="color: rgba(229,228,226,0.4); font-size: 12px; line-height: 1.6;">Vi skaber fremtidens AI-uddannelse med fokus på praktisk læring og ekspertvejledning.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Kurser</h4>
+                <a href="#">Niveau D - Amatør</a>
+                <a href="#">Niveau C - Begynder</a>
+                <a href="#">Niveau B - Professionel</a>
+                <a href="#">Niveau A - Ekspert</a>
+                <a href="#">Sidekurser</a>
+            </div>
+            <div class="footer-col">
+                <h4>Platform</h4>
+                <a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub Repository</a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" target="_blank">Platform Demo</a>
+                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank">D Eksamen</a>
+                <a href="#">Dokumentation</a>
+                <a href="#">Support</a>
+            </div>
+            <div class="footer-col">
+                <h4>Kontakt</h4>
+                <a href="#">Værløse, Danmark</a>
+                <a href="mailto:kontakt@ai-kurser.dk">kontakt@ai-kurser.dk</a>
+                <a href="#">LinkedIn</a>
+                <a href="#">Twitter</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <span>© 2024 AI Kurser. Alle rettigheder forbeholdt. • Værløse, Danmark</span>
+            <div class="footer-social">
+                <a href="https://github.com/magnuscode-ai" target="_blank" title="GitHub">G</a>
+                <a href="#" title="LinkedIn">L</a>
+                <a href="#" title="Twitter">T</a>
+                <a href="#" title="YouTube">Y</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============================================
+    SCRIPTS
+    ============================================ -->
+    <script>
+        // ============================================
+        // LOADING SCREEN
+        // ============================================
+        let progress = 0;
+        const progressFill = document.getElementById('progress-fill');
+        const progressGlow = document.getElementById('progress-glow');
+        const progressNumber = document.getElementById('progress-number');
+        const loaderStatus = document.getElementById('loader-status');
+        const loadingScreen = document.getElementById('loading-screen');
+
+        const loadingInterval = setInterval(() => {
+            progress += Math.random() * 15;
+            if (progress > 100) progress = 100;
+            
+            progressFill.style.width = progress + '%';
+            progressGlow.style.left = progress + '%';
+            progressNumber.textContent = Math.round(progress);
+            
+            if (progress < 30) loaderStatus.textContent = 'Initialiserer...';
+            else if (progress < 60) loaderStatus.textContent = 'Indlæser 3D Assets...';
+            else if (progress < 90) loaderStatus.textContent = 'Klargør Oplevelse...';
+            else loaderStatus.textContent = 'Næsten Klar...';
+            
+            if (progress >= 100) {
+                clearInterval(loadingInterval);
+                loaderStatus.textContent = 'Velkommen';
+                setTimeout(() => {
+                    loadingScreen.classList.add('hidden');
+                }, 800);
+            }
+        }, 200);
+
+        // ============================================
+        // 3D SCENE
+        // ============================================
+        let scene, camera, renderer, particles, sculpture;
+        let mouseX = 0, mouseY = 0;
+        let targetMouseX = 0, targetMouseY = 0;
+        let scrollProgress = 0;
+
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            
+            // Scene setup
+            scene = new THREE.Scene();
+            
+            // Camera
+            camera = new THREE.PerspectiveCamera(
+                window.innerWidth < 768 ? 75 : 60,
+                window.innerWidth / window.innerHeight,
+                0.1,
+                100
+            );
+            camera.position.z = 8;
+
+            // Renderer
+            renderer = new THREE.WebGLRenderer({ 
+                antialias: true, 
+                alpha: true,
+                powerPreference: 'high-performance'
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+
+            // Particle system
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = window.innerWidth < 768 ? 1000 : 3000;
+            const posArray = new Float32Array(particlesCount * 3);
+            
+            for (let i = 0; i < particlesCount * 3; i += 3) {
+                posArray[i] = (Math.random() - 0.5) * 20;
+                posArray[i + 1] = (Math.random() - 0.5) * 20;
+                posArray[i + 2] = (Math.random() - 0.5) * 20;
+            }
+            
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.03,
+                color: 0xC6A962,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending,
+                depthWrite: false
+            });
+            
+            particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+
+            // Center sculpture
+            const sculptureGeometry = new THREE.IcosahedronGeometry(1.2, 3);
+            const sculptureMaterial = new THREE.MeshPhongMaterial({
+                color: 0xC6A962,
+                emissive: 0x1a1a1a,
+                shininess: 100,
+                transparent: true,
+                opacity: 0.8,
+                wireframe: true
+            });
+            
+            sculpture = new THREE.Mesh(sculptureGeometry, sculptureMaterial);
+            scene.add(sculpture);
+
+            // Ambient light
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+            scene.add(ambientLight);
+            
+            // Point light
+            const pointLight = new THREE.PointLight(0xC6A962, 1, 20);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+            
+            // Second light
+            const pointLight2 = new THREE.PointLight(0x7B68EE, 0.5, 15);
+            pointLight2.position.set(-5, -3, 3);
+            scene.add(pointLight2);
+
+            // Mouse tracking
+            document.addEventListener('mousemove', (e) => {
+                targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
+                targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+            });
+
+            // Scroll tracking
+            window.addEventListener('scroll', () => {
+                const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+                scrollProgress = window.scrollY / maxScroll;
+            });
+
+            // Resize handler
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.fov = window.innerWidth < 768 ? 75 : 60;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // Animation loop
+            function animate() {
+                requestAnimationFrame(animate);
+
+                // Smooth mouse tracking
+                mouseX += (targetMouseX - mouseX) * 0.05;
+                mouseY += (targetMouseY - mouseY) * 0.05;
+
+                // Rotate particles
+                particles.rotation.y += 0.0003;
+                particles.rotation.x += 0.0001;
+
+                // Animate sculpture
+                const time = Date.now() * 0.001;
+                sculpture.rotation.x = Math.sin(time * 0.5) * 0.3 + scrollProgress * Math.PI * 2;
+                sculpture.rotation.y = Math.cos(time * 0.4) * 0.4 + scrollProgress * Math.PI;
+                sculpture.rotation.z = Math.sin(time * 0.3) * 0.1;
+                sculpture.position.y = Math.sin(time * 0.6) * 0.3 + scrollProgress * 5;
+
+                // Light movement
+                pointLight.intensity = 1 + Math.sin(time) * 0.3;
+                
+                // Render
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+        }
+
+        // Initialize 3D scene after loading
+        setTimeout(initThreeJS, 500);
+
+        // ============================================
+        // CUSTOM CURSOR
+        // ============================================
+        const cursor = document.getElementById('cursor');
+        const cursorFollower = document.getElementById('cursor-follower');
+        let cursorX = 0, cursorY = 0;
+        let followerX = 0, followerY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            cursorX = e.clientX;
+            cursorY = e.clientY;
+            
+            // Fast cursor
+            cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
+            
+            // Check if hovering over interactive elements
+            const target = e.target;
+            if (target.closest('button') || target.closest('a') || target.closest('[data-interactive]')) {
+                cursor.classList.add('hover');
+                cursorFollower.classList.add('hover');
+            } else {
+                cursor.classList.remove('hover');
+                cursorFollower.classList.remove('hover');
+            }
         });
-      });
-    }
 
-    return originalXHRSend.apply(this, arguments);
-  };
+        // Smooth follower animation
+        function animateFollower() {
+            followerX += (cursorX - followerX) * 0.1;
+            followerY += (cursorY - followerY) * 0.1;
+            cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
+            requestAnimationFrame(animateFollower);
+        }
+        animateFollower();
 
-  // ==========================================================================
-  // Data Reporting
-  // ==========================================================================
+        // ============================================
+        // MAGNETIC BUTTONS
+        // ============================================
+        document.querySelectorAll('.nav-cta, .course-btn, .btn-primary').forEach(button => {
+            button.setAttribute('data-interactive', 'true');
+            
+            button.addEventListener('mousemove', (e) => {
+                const rect = button.getBoundingClientRect();
+                const x = e.clientX - rect.left - rect.width / 2;
+                const y = e.clientY - rect.top - rect.height / 2;
+                
+                gsap.to(button, {
+                    x: x * 0.3,
+                    y: y * 0.3,
+                    scale: 1.05,
+                    duration: 0.3,
+                    ease: 'power2.out'
+                });
+            });
+            
+            button.addEventListener('mouseleave', () => {
+                gsap.to(button, {
+                    x: 0,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.5,
+                    ease: 'elastic.out(1, 0.5)'
+                });
+            });
+        });
 
-  function reportLogs() {
-    var consoleLogs = store.consoleLogs.splice(0);
-    var networkRequests = store.networkRequests.splice(0);
-    var uiEvents = store.uiEvents.splice(0);
+        // ============================================
+        // NAVIGATION SCROLL EFFECT
+        // ============================================
+        const nav = document.getElementById('navigation');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
 
-    // Skip if no new data
-    if (
-      consoleLogs.length === 0 &&
-      networkRequests.length === 0 &&
-      uiEvents.length === 0
-    ) {
-      return Promise.resolve();
-    }
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        const mobileBtn = document.getElementById('mobile-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        let menuOpen = false;
 
-    var payload = {
-      timestamp: Date.now(),
-      consoleLogs: consoleLogs,
-      networkRequests: networkRequests,
-      // Mirror uiEvents to sessionEvents for sessionReplay.log
-      sessionEvents: uiEvents,
-      // agent-friendly semantic events
-      uiEvents: uiEvents,
-    };
+        mobileBtn.addEventListener('click', () => {
+            menuOpen = !menuOpen;
+            mobileMenu.classList.toggle('open', menuOpen);
+            
+            const spans = mobileBtn.querySelectorAll('span');
+            if (menuOpen) {
+                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
+                spans[1].style.opacity = '0';
+                spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+            } else {
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            }
+        });
 
-    return originalFetch(CONFIG.reportEndpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }).catch(function () {
-      // Put data back on failure (but respect limits)
-      store.consoleLogs = consoleLogs.concat(store.consoleLogs);
-      store.networkRequests = networkRequests.concat(store.networkRequests);
-      store.uiEvents = uiEvents.concat(store.uiEvents);
+        // Close menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                menuOpen = false;
+                mobileMenu.classList.remove('open');
+                const spans = mobileBtn.querySelectorAll('span');
+                spans[0].style.transform = 'none';
+                spans[1].style.opacity = '1';
+                spans[2].style.transform = 'none';
+            });
+        });
 
-      pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
-      pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
-      pruneBuffer(store.uiEvents, CONFIG.bufferSize.ui);
-    });
-  }
+        // ============================================
+        // SCRAMBLE TEXT EFFECT
+        // ============================================
+        const scrambleElement = document.getElementById('scramble-text');
+        const originalText = scrambleElement.textContent;
+        const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let scrambleInterval;
 
-  // Periodic reporting
-  setInterval(reportLogs, CONFIG.reportInterval);
+        function scrambleText() {
+            let iterations = 0;
+            const maxIterations = 20;
+            
+            clearInterval(scrambleInterval);
+            
+            scrambleInterval = setInterval(() => {
+                scrambleElement.textContent = originalText.split('').map((char, index) => {
+                    if (char === ' ') return ' ';
+                    if (index < iterations) return originalText[index];
+                    return chars[Math.floor(Math.random() * chars.length)];
+                }).join('');
+                
+                if (iterations >= originalText.length) {
+                    clearInterval(scrambleInterval);
+                    scrambleElement.textContent = originalText;
+                }
+                
+                iterations += 0.5;
+            }, 50);
+        }
 
-  // Report on page unload
-  window.addEventListener("beforeunload", function () {
-    var consoleLogs = store.consoleLogs;
-    var networkRequests = store.networkRequests;
-    var uiEvents = store.uiEvents;
+        // Run scramble on load
+        setTimeout(scrambleText, 2500);
+        
+        // Re-run on hover
+        scrambleElement.addEventListener('mouseenter', scrambleText);
 
-    if (
-      consoleLogs.length === 0 &&
-      networkRequests.length === 0 &&
-      uiEvents.length === 0
-    ) {
-      return;
-    }
+        // ============================================
+        // GSAP SCROLL ANIMATIONS
+        // ============================================
+        gsap.registerPlugin(ScrollTrigger);
 
-    var payload = {
-      timestamp: Date.now(),
-      consoleLogs: consoleLogs,
-      networkRequests: networkRequests,
-      // Mirror uiEvents to sessionEvents for sessionReplay.log
-      sessionEvents: uiEvents,
-      uiEvents: uiEvents,
-    };
+        // Reveal elements on scroll
+        const revealElements = document.querySelectorAll('.reveal');
+        revealElements.forEach((el, index) => {
+            gsap.fromTo(el, 
+                { y: 80, opacity: 0 },
+                {
+                    y: 0,
+                    opacity: 1,
+                    duration: 1,
+                    delay: index * 0.1,
+                    ease: 'power4.out',
+                    scrollTrigger: {
+                        trigger: el,
+                        start: 'top bottom-=100',
+                        toggleActions: 'play none none reverse'
+                    }
+                }
+            );
+        });
 
-    if (navigator.sendBeacon) {
-      var payloadStr = JSON.stringify(payload);
-      // sendBeacon has ~64KB limit, truncate if too large
-      var MAX_BEACON_SIZE = 60000; // Leave some margin
-      if (payloadStr.length > MAX_BEACON_SIZE) {
-        // Prioritize: keep recent events, drop older logs
-        var truncatedPayload = {
-          timestamp: Date.now(),
-          consoleLogs: consoleLogs.slice(-50),
-          networkRequests: networkRequests.slice(-20),
-          sessionEvents: uiEvents.slice(-100),
-          uiEvents: uiEvents.slice(-100),
-          _truncated: true,
-        };
-        payloadStr = JSON.stringify(truncatedPayload);
-      }
-      navigator.sendBeacon(CONFIG.reportEndpoint, payloadStr);
-    }
-  });
+        // Course cards animation
+        gsap.fromTo('.course-card', 
+            { y: 100, opacity: 0, rotateX: 30 },
+            {
+                y: 0,
+                opacity: 1,
+                rotateX: 0,
+                duration: 0.8,
+                stagger: 0.15,
+                ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: '.courses-grid',
+                    start: 'top center+=100',
+                    toggleActions: 'play none none reverse'
+                }
+            }
+        );
 
-  // ==========================================================================
-  // Initialization
-  // ==========================================================================
+        // Hero title parallax
+        gsap.to('.hero-title', {
+            y: -100,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: '#hero',
+                start: 'top top',
+                end: 'bottom top',
+                scrub: true
+            }
+        });
 
-  // Install semantic UI listeners ASAP
-  try {
-    installUiEventListeners();
-  } catch (e) {
-    console.warn("[Manus] Failed to install UI listeners:", e);
-  }
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
 
-  // Mark as initialized
-  window.__MANUS_DEBUG_COLLECTOR__ = {
-    version: "2.0-no-rrweb",
-    store: store,
-    forceReport: reportLogs,
-  };
-
-  console.debug("[Manus] Debug collector initialized (no rrweb, UI events only)");
-})();
+        // ============================================
+        // INITIALIZATION LOG
+        // ============================================
+        console.log('%c🚀 AI Kurser - Luksus 3D Hjemmeside %cLoaded Successfully', 
+            'color: #C6A962; font-size: 20px; font-weight: bold;',
+            'color: #E5E4E2; font-size: 14px;');
+        console.log('%cFeatures: 3D Scene | Custom Cursor | GSAP Animations | Magnetic Buttons | Scramble Text',
+            'color: rgba(229,228,226,0.5); font-size: 11px;');
+        console.log('%cBuilt with ❤️ in Værløse, Danmark',
+            'color: #7B68EE; font-size: 11px; font-style: italic;');
+    </script>
+</body>
+</html>
