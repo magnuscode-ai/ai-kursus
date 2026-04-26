@@ -1,1462 +1,821 @@
-// ============================================================================
-// KOMPLET 3D LUKSUS HJEMMESIDE - ALLE KOMPONENTER I EN FILOVERSIGT
-// ============================================================================
-// Teknologi Stack: Next.js 14 + TypeScript + R3F + GSAP + Tailwind
-// Bygget af: Senior Creative Frontend Developer
-// Version: 1.0.0 - Production Ready
-// ============================================================================
-
-// ============================================================================
-// 1. PROJEKT STRUKTUR
-// ============================================================================
-/*
-Projektet er bygget med Next.js 14 App Router og indeholder:
-
-src/
-├── app/
-│   ├── layout.tsx          - Root layout med fonts og metadata
-│   ├── page.tsx            - Hovedside med alle sektioner
-│   ├── globals.css         - Global styles og animationer
-│   ├── loading.tsx         - Loading screen
-│   └── not-found.tsx       - 404 side
-├── components/
-│   ├── canvas/
-│   │   └── Scene.tsx       - 3D scene med Three.js/R3F
-│   ├── ui/
-│   │   ├── CustomCursor.tsx    - Luksus cursor med states
-│   │   ├── MagneticButton.tsx  - Magnetiske knapper
-│   │   ├── ScrambleText.tsx    - Text scramble effekt
-│   │   ├── ProgressLoader.tsx  - Loading animation
-│   │   └── Navigation.tsx      - Navigation med mobile menu
-│   └── sections/
-│       ├── HeroSection.tsx     - Hero med 3D parallax
-│       ├── ProductSection.tsx  - Kursus kort med 3D tilt
-│       └── FooterSection.tsx   - Footer med links
-├── hooks/
-│   ├── useScrollAnimation.ts  - Scroll triggere
-│   ├── useMouseTracking.ts    - Mouse position tracking
-│   └── useProgressiveLoad.ts  - Asset loading
-├── shaders/
-│   ├── holographicGlow.vert   - Vertex shader
-│   ├── holographicGlow.frag   - Fragment shader
-│   ├── liquidDistortion.vert  - Flydende distortion
-│   └── liquidDistortion.frag  - Distortion fragment
-└── types/
-    └── scene.ts               - TypeScript interfaces
-*/
-// ============================================================================
-
-// ============================================================================
-// 2. TYPESCRIPT INTERFACES (src/types/scene.ts)
-// ============================================================================
-export interface SceneObject {
-  id: string;
-  position: [number, number, number];
-  rotation: [number, number, number];
-  scale: number | [number, number, number];
-  intensity: number;
-  meshRef?: React.RefObject<THREE.Mesh>;
-  groupRef?: React.RefObject<THREE.Group>;
-}
-
-export interface ShaderUniforms {
-  uTime: { value: number };
-  uMouse: { value: [number, number] };
-  uScroll: { value: number };
-  uColor: { value: [number, number, number] };
-  uIntensity: { value: number };
-  uResolution: { value: [number, number] };
-  uDistortion: { value: number };
-}
-
-export interface LoaderState {
-  progress: number;
-  loaded: boolean;
-  error: string | null;
-  assetsLoaded: number;
-  totalAssets: number;
-}
-
-export interface ScrollAnimationConfig {
-  trigger: string | Element;
-  start: string;
-  end: string;
-  scrub: number | boolean;
-  pin: boolean;
-  anticipatePin: number;
-  markers?: boolean;
-}
-
-export interface MouseState {
-  x: number;
-  y: number;
-  normalizedX: number;
-  normalizedY: number;
-  velocity: number;
-  isHovering: boolean;
-  hoveredElement: string | null;
-}
-
-export interface DeviceConfig {
-  isMobile: boolean;
-  isTablet: boolean;
-  isDesktop: boolean;
-  isHighPerformance: boolean;
-  pixelRatio: number;
-  maxPixelRatio: number;
-}
-
-export const getDeviceConfig = (): DeviceConfig => {
-  if (typeof window === 'undefined') {
-    return {
-      isMobile: false,
-      isTablet: false,
-      isDesktop: true,
-      isHighPerformance: true,
-      pixelRatio: 2,
-      maxPixelRatio: 2,
-    };
-  }
-
-  const width = window.innerWidth;
-  const pixelRatio = Math.min(window.devicePixelRatio, 2);
-  
-  return {
-    isMobile: width < 768,
-    isTablet: width >= 768 && width < 1024,
-    isDesktop: width >= 1024,
-    isHighPerformance: pixelRatio >= 2 && width >= 1024,
-    pixelRatio,
-    maxPixelRatio: pixelRatio > 2 ? 2 : pixelRatio,
-  };
-};
-// ============================================================================
-
-// ============================================================================
-// 3. GLOBAL STYLES (src/app/globals.css) - Konverteret til Tailwind klasser
-// ============================================================================
-const globalStyles = `
-/* Root variabler */
-:root {
-  --cursor-size: 20px;
-  --cursor-outline-size: 40px;
-  --luxury-gold: #C6A962;
-  --luxury-platinum: #E5E4E2;
-  --luxury-obsidian: #0A0A0A;
-  --luxury-onyx: #1A1A1A;
-  --luxury-diamond: #F8F8FF;
-}
-
-/* Skjul standard cursor */
-* {
-  cursor: none !important;
-  user-select: none;
-}
-
-html {
-  scroll-behavior: smooth;
-  overflow-x: hidden;
-}
-
-body {
-  background: var(--luxury-obsidian);
-  overflow-x: hidden;
-}
-
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: var(--luxury-obsidian);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--luxury-gold);
-  border-radius: 3px;
-}
-
-/* Selection */
-::selection {
-  background: var(--luxury-gold);
-  color: var(--luxury-obsidian);
-}
-
-/* Animationer */
-@keyframes holographicShimmer {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-@keyframes floatAnimation {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-10px) rotate(0.5deg); }
-  75% { transform: translateY(10px) rotate(-0.5deg); }
-}
-
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* Utility klasser */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-}
-
-.gold-gradient-text {
-  background: linear-gradient(135deg, #C6A962 0%, #E5C77D 25%, #F3DBA5 50%, #C6A962 75%, #A88B4A 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.holographic-border::after {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(45deg, #C6A962, #7B68EE, #C6A962, #FF69B4, #C6A962);
-  background-size: 400% 400%;
-  animation: holographicShimmer 3s ease infinite;
-  border-radius: inherit;
-  z-index: -1;
-  opacity: 0.5;
-}
-
-.magnetic-button {
-  position: relative;
-  overflow: hidden;
-  border-radius: 9999px;
-  padding: 20px 40px;
-  font-family: var(--font-display);
-  font-size: 18px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  transition: all 0.3s;
-  background: linear-gradient(135deg, var(--luxury-gold), #A88B4A);
-  color: var(--luxury-obsidian);
-  box-shadow: 0 0 20px rgba(198, 169, 98, 0.3);
-}
-
-.magnetic-button:hover {
-  box-shadow: 0 0 40px rgba(198, 169, 98, 0.5);
-  transform: scale(1.05);
-}
-
-.scramble-text {
-  font-family: var(--font-mono);
-  letter-spacing: 0.1em;
-}
-
-.canvas-container {
-  position: fixed !important;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 0;
-}
-
-.content-overlay {
-  position: relative;
-  z-index: 1;
-}
-
-.skeleton-loader {
-  background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-}
-`;
-// ============================================================================
-
-// ============================================================================
-// 4. SHADERS - HOLOGRAPHIC GLOW (src/shaders/holographicGlow.vert)
-// ============================================================================
-const holographicGlowVertexShader = `
-varying vec2 vUv;
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec3 vViewDirection;
-
-uniform float uTime;
-uniform float uIntensity;
-uniform vec2 uMouse;
-
-void main() {
-    vUv = uv;
-    
-    // Subtile vertex displacement baseret på tid og mus
-    vec3 pos = position;
-    float displacement = sin(pos.x * 3.0 + uTime) * cos(pos.y * 3.0 + uTime) * 0.05 * uIntensity;
-    displacement += sin(pos.x * 10.0 + uMouse.x) * cos(pos.y * 10.0 + uMouse.y) * 0.03;
-    
-    pos += normal * displacement;
-    
-    vec4 modelViewPosition = modelViewMatrix * vec4(pos, 1.0);
-    vPosition = position;
-    vNormal = normalize(normalMatrix * normal);
-    vViewDirection = normalize(-modelViewPosition.xyz);
-    
-    gl_Position = projectionMatrix * modelViewPosition;
-}
-`;
-// ============================================================================
-
-// ============================================================================
-// 5. SHADERS - HOLOGRAPHIC GLOW FRAGMENT (src/shaders/holographicGlow.frag)
-// ============================================================================
-const holographicGlowFragmentShader = `
-varying vec2 vUv;
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying vec3 vViewDirection;
-
-uniform float uTime;
-uniform vec3 uColor;
-uniform float uIntensity;
-uniform vec2 uResolution;
-uniform float uDistortion;
-
-// Simplex noise for organiske mønstre
-vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
-vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
-
-float snoise(vec2 v) {
-    const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
-    vec2 i  = floor(v + dot(v, C.yy));
-    vec2 x0 = v - i + dot(i, C.xx);
-    vec2 i1;
-    i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
-    vec4 x12 = x0.xyxy + C.xxzz;
-    x12.xy -= i1;
-    i = mod289(i);
-    vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
-    vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
-    m = m*m;
-    m = m*m;
-    vec3 x = 2.0 * fract(p * C.www) - 1.0;
-    vec3 h = abs(x) - 0.5;
-    vec3 ox = floor(x + 0.5);
-    vec3 a0 = x - ox;
-    m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
-    vec3 g;
-    g.x  = a0.x  * x0.x  + h.x  * x0.y;
-    g.yz = a0.yz * x12.xz + h.yz * x12.yw;
-    return 130.0 * dot(m, g);
-}
-
-void main() {
-    vec2 uv = vUv;
-    
-    // Holografiske scan lines
-    float scanLine = sin(uv.y * 100.0 + uTime * 2.0) * 0.1;
-    scanLine += sin(uv.y * 200.0 - uTime * 3.0) * 0.05;
-    
-    // Fresnel effekt for kanter
-    float fresnel = pow(1.0 - abs(dot(vNormal, vViewDirection)), 3.0);
-    
-    // Kromatisk aberration
-    float r = snoise(vec2(uv.x * 10.0 + uTime * 0.2, uv.y * 10.0)) * uDistortion * 0.02;
-    float g = snoise(vec2(uv.x * 10.0 + uTime * 0.3 + 1.0, uv.y * 10.0 + 1.0)) * uDistortion * 0.02;
-    float b = snoise(vec2(uv.x * 10.0 + uTime * 0.4 + 2.0, uv.y * 10.0 + 2.0)) * uDistortion * 0.02;
-    
-    // Kombiner farver med holografisk effekt
-    vec3 finalColor;
-    finalColor.r = texture2D(vec2(uv.x + r, uv.y)).r;
-    finalColor.g = texture2D(vec2(uv.x + g, uv.y)).g;
-    finalColor.b = texture2D(vec2(uv.x + b, uv.y)).b;
-    
-    // Tilføj holografisk shimmer
-    float shimmer = snoise(vec2(uv.x * 5.0 + uTime * 0.5, uv.y * 5.0));
-    finalColor += uColor * shimmer * 0.1 * uIntensity;
-    
-    // Tilføj scan lines
-    finalColor += scanLine * uIntensity;
-    
-    // Edge glow
-    finalColor += uColor * fresnel * uIntensity * 0.5;
-    
-    // Vignette
-    float vignette = 1.0 - length(uv - 0.5) * 0.5;
-    finalColor *= vignette;
-    
-    gl_FragColor = vec4(finalColor, 0.8 + fresnel * 0.2);
-}
-`;
-// ============================================================================
-
-// ============================================================================
-// 6. SHADERS - LIQUID DISTORTION VERTEX (src/shaders/liquidDistortion.vert)
-// ============================================================================
-const liquidDistortionVertexShader = `
-varying vec2 vUv;
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying float vDisplacement;
-
-uniform float uTime;
-uniform float uIntensity;
-uniform vec2 uMouse;
-
-// Noise funktioner for organisk bevægelse
-float hash(float n) { return fract(sin(n) * 43758.5453123); }
-
-float noise(vec3 x) {
-    vec3 p = floor(x);
-    vec3 f = fract(x);
-    f = f * f * (3.0 - 2.0 * f);
-    
-    float n = p.x + p.y * 57.0 + 113.0 * p.z;
-    return mix(mix(mix(hash(n+0.0), hash(n+1.0), f.x),
-                   mix(hash(n+57.0), hash(n+58.0), f.x), f.y),
-               mix(mix(hash(n+113.0), hash(n+114.0), f.x),
-                   mix(hash(n+170.0), hash(n+171.0), f.x), f.y), f.z);
-}
-
-void main() {
-    vUv = uv;
-    
-    // Multi-lags noise for flydende bevægelse
-    float noise1 = noise(position * 2.0 + uTime * 0.5) * 0.5;
-    float noise2 = noise(position * 4.0 - uTime * 0.3) * 0.25;
-    float noise3 = noise(position * 8.0 + uTime * 0.7) * 0.125;
-    
-    // Mus indflydelse
-    float mouseDistance = length(uv - uMouse);
-    float mouseInfluence = smoothstep(0.5, 0.0, mouseDistance) * uIntensity;
-    
-    // Kombiner displacements
-    float displacement = (noise1 + noise2 + noise3) * uIntensity * 0.1;
-    displacement += mouseInfluence * 0.15;
-    
-    // Anvend displacement langs normal
-    vec3 newPosition = position + normal * displacement;
-    
-    vPosition = newPosition;
-    vNormal = normalize(normalMatrix * normal);
-    vDisplacement = displacement;
-    
-    vec4 modelViewPosition = modelViewMatrix * vec4(newPosition, 1.0);
-    gl_Position = projectionMatrix * modelViewPosition;
-}
-`;
-// ============================================================================
-
-// ============================================================================
-// 7. SHADERS - LIQUID DISTORTION FRAGMENT (src/shaders/liquidDistortion.frag)
-// ============================================================================
-const liquidDistortionFragmentShader = `
-varying vec2 vUv;
-varying vec3 vPosition;
-varying vec3 vNormal;
-varying float vDisplacement;
-
-uniform float uTime;
-uniform vec3 uColor;
-uniform float uIntensity;
-
-void main() {
-    // Iridescent effekt baseret på displacement
-    vec3 color1 = uColor;
-    vec3 color2 = uColor * 1.5;
-    vec3 color3 = uColor * 0.7 + vec3(0.1, 0.0, 0.2);
-    
-    // Mix farver baseret på displacement
-    float mix1 = sin(vDisplacement * 10.0 + uTime) * 0.5 + 0.5;
-    float mix2 = cos(vDisplacement * 15.0 - uTime * 0.5) * 0.5 + 0.5;
-    
-    vec3 iridescentColor = mix(color1, color2, mix1);
-    iridescentColor = mix(iridescentColor, color3, mix2);
-    
-    // Specular highlights
-    vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0));
-    float specular = pow(max(0.0, dot(vNormal, lightDir)), 32.0);
-    
-    // Tilføj væske-lignende refleksioner
-    float reflection = sin(vUv.x * 20.0 + uTime) * 0.1 + sin(vUv.y * 20.0 - uTime) * 0.1;
-    
-    vec3 finalColor = iridescentColor + specular * 0.3 * uIntensity + reflection * 0.1;
-    
-    // Subsurface scattering effekt
-    float sss = max(0.0, vDisplacement) * 0.2;
-    finalColor += sss * uColor * 0.5;
-    
-    gl_FragColor = vec4(finalColor, 0.9);
-}
-`;
-// ============================================================================
-
-// ============================================================================
-// 8. CUSTOM HOOKS - useMouseTracking (src/hooks/useMouseTracking.ts)
-// ============================================================================
-import { useState, useEffect, useCallback, useRef } from 'react';
-import { gsap } from 'gsap';
-
-export const useMouseTracking = (options: {
-  smooth?: boolean;
-  smoothAmount?: number;
-  parallaxStrength?: number;
-} = {}) => {
-  const { smooth = true, smoothAmount = 0.1, parallaxStrength = 0.02 } = options;
-  
-  const [mousePosition, setMousePosition] = useState({
-    x: 0,
-    y: 0,
-    normalizedX: 0,
-    normalizedY: 0,
-    velocityX: 0,
-    velocityY: 0,
-    isMoving: false,
-  });
-
-  const targetRef = useRef({ x: 0, y: 0 });
-  const prevPosition = useRef({ x: 0, y: 0 });
-  const velocityRef = useRef({ x: 0, y: 0 });
-  const frameRef = useRef<number>();
-
-  useEffect(() => {
-    const handleMouseMove = (event: MouseEvent) => {
-      const { clientX, clientY } = event;
-      
-      const normalizedX = (clientX / window.innerWidth) * 2 - 1;
-      const normalizedY = -(clientY / window.innerHeight) * 2 + 1;
-      
-      targetRef.current = { x: clientX, y: clientY };
-      
-      velocityRef.current = {
-        x: clientX - prevPosition.current.x,
-        y: clientY - prevPosition.current.y,
-      };
-      
-      prevPosition.current = { x: clientX, y: clientY };
-      
-      if (!smooth) {
-        setMousePosition({
-          x: clientX,
-          y: clientY,
-          normalizedX,
-          normalizedY,
-          velocityX: velocityRef.current.x,
-          velocityY: velocityRef.current.y,
-          isMoving: true,
-        });
-      }
-    };
-
-    if (smooth) {
-      const animate = () => {
-        setMousePosition(prev => {
-          const newX = gsap.utils.interpolate(prev.x, targetRef.current.x, smoothAmount);
-          const newY = gsap.utils.interpolate(prev.y, targetRef.current.y, smoothAmount);
-          
-          return {
-            x: newX,
-            y: newY,
-            normalizedX: (newX / window.innerWidth) * 2 - 1,
-            normalizedY: -(newY / window.innerHeight) * 2 + 1,
-            velocityX: velocityRef.current.x,
-            velocityY: velocityRef.current.y,
-            isMoving: true,
-          };
-        });
-        
-        frameRef.current = requestAnimationFrame(animate);
-      };
-      
-      frameRef.current = requestAnimationFrame(animate);
-    }
-
-    window.addEventListener('mousemove', handleMouseMove);
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
-    };
-  }, [smooth, smoothAmount]);
-
-  const getParallaxOffset = useCallback((strength: number = parallaxStrength) => ({
-    x: mousePosition.normalizedX * strength * 100,
-    y: mousePosition.normalizedY * strength * 100,
-  }), [mousePosition.normalizedX, mousePosition.normalizedY, parallaxStrength]);
-
-  return { mousePosition, getParallaxOffset };
-};
-// ============================================================================
-
-// ============================================================================
-// 9. CUSTOM HOOKS - useScrollAnimation (src/hooks/useScrollAnimation.ts)
-// ============================================================================
-import { useEffect, useRef } from 'react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
-
-export const useScrollAnimation = (options: {
-  trigger?: string | Element;
-  animation?: gsap.TweenVars;
-  onUpdate?: (progress: number) => void;
-}) => {
-  const triggerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!triggerRef.current) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: options.trigger || triggerRef.current,
-        start: 'top center',
-        end: 'bottom center',
-        scrub: true,
-        onUpdate: (self) => options.onUpdate?.(self.progress),
-      });
-    }, triggerRef);
-
-    return () => ctx.revert();
-  }, [options]);
-
-  return { triggerRef };
-};
-// ============================================================================
-
-// ============================================================================
-// 10. CUSTOM HOOKS - useProgressiveLoad (src/hooks/useProgressiveLoad.ts)
-// ============================================================================
-export const useProgressiveLoad = (options: {
-  assets: string[];
-  onProgress?: (progress: number) => void;
-  onComplete?: () => void;
-  concurrent?: number;
-}) => {
-  const { assets, onProgress, onComplete, concurrent = 3 } = options;
-  const [loaderState, setLoaderState] = useState<LoaderState>({
-    progress: 0,
-    loaded: false,
-    error: null,
-    assetsLoaded: 0,
-    totalAssets: assets.length,
-  });
-
-  useEffect(() => {
-    let isCancelled = false;
-    let loadedCount = 0;
-
-    const loadAsset = async (url: string): Promise<void> => {
-      try {
-        await fetch(url);
-        if (!isCancelled) {
-          loadedCount++;
-          const progress = (loadedCount / assets.length) * 100;
-          setLoaderState(prev => ({ ...prev, progress, assetsLoaded: loadedCount }));
-          onProgress?.(progress);
-          
-          if (loadedCount === assets.length) {
-            setLoaderState(prev => ({ ...prev, loaded: true, progress: 100 }));
-            onComplete?.();
-          }
-        }
-      } catch (error) {
-        if (!isCancelled) {
-          setLoaderState(prev => ({
-            ...prev,
-            error: error instanceof Error ? error.message : 'Failed to load asset',
-          }));
-        }
-      }
-    };
-
-    const loadBatch = async () => {
-      for (let i = 0; i < assets.length; i += concurrent) {
-        if (isCancelled) break;
-        await Promise.all(assets.slice(i, i + concurrent).map(loadAsset));
-      }
-    };
-
-    loadBatch();
-    return () => { isCancelled = true; };
-  }, [assets, concurrent, onProgress, onComplete]);
-
-  return loaderState;
-};
-// ============================================================================
-
-// ============================================================================
-// 11. UI KOMPONENT - CustomCursor (src/components/ui/CustomCursor.tsx)
-// ============================================================================
-export const CustomCursor = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const followerRef = useRef<HTMLDivElement>(null);
-  const { mousePosition } = useMouseTracking({ smooth: true, smoothAmount: 0.2 });
-  const [cursorState, setCursorState] = useState({ type: 'default' as const, text: '' });
-
-  useEffect(() => {
-    if (!cursorRef.current || !followerRef.current) return;
-
-    gsap.set(cursorRef.current, { x: mousePosition.x, y: mousePosition.y });
-    gsap.to(followerRef.current, {
-      x: mousePosition.x,
-      y: mousePosition.y,
-      duration: 0.8,
-      ease: 'power2.out',
-    });
-
-    const cursorSize = cursorState.type === 'hover' ? 60 : 20;
-    const followerSize = cursorState.type === 'hover' ? 80 : 40;
-    
-    gsap.to(cursorRef.current, {
-      width: cursorSize,
-      height: cursorSize,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-    
-    gsap.to(followerRef.current, {
-      width: followerSize,
-      height: followerSize,
-      duration: 0.3,
-      ease: 'power2.out',
-    });
-  }, [mousePosition.x, mousePosition.y, cursorState]);
-
-  useEffect(() => {
-    const handleElementHover = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('button') || target.closest('a') || target.getAttribute('data-interactive')) {
-        setCursorState({ type: 'hover', text: 'Udforsk' });
-      } else {
-        setCursorState({ type: 'default', text: '' });
-      }
-    };
-
-    document.addEventListener('mouseover', handleElementHover);
-    return () => document.removeEventListener('mouseover', handleElementHover);
-  }, []);
-
-  return (
-    <>
-      <div
-        ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none rounded-full bg-luxury-gold mix-blend-difference"
-        style={{ width: 20, height: 20, marginLeft: -10, marginTop: -10 }}
-      />
-      <div
-        ref={followerRef}
-        className="fixed top-0 left-0 z-[9998] pointer-events-none rounded-full border-2 border-luxury-gold/50 backdrop-blur-sm"
-        style={{ width: 40, height: 40, marginLeft: -20, marginTop: -20 }}
-      />
-      {cursorState.type === 'hover' && (
-        <div
-          className="fixed top-0 left-0 z-[9997] pointer-events-none rounded-full"
-          style={{
-            width: 120,
-            height: 120,
-            marginLeft: -60,
-            marginTop: -60,
-            background: 'radial-gradient(circle, rgba(198,169,98,0.2) 0%, transparent 70%)',
-            transform: `translate(${mousePosition.x - 60}px, ${mousePosition.y - 60}px)`,
-          }}
-        />
-      )}
-    </>
-  );
-};
-// ============================================================================
-
-// ============================================================================
-// 12. UI KOMPONENT - MagneticButton (src/components/ui/MagneticButton.tsx)
-// ============================================================================
-interface MagneticButtonProps {
-  children: React.ReactNode;
-  className?: string;
-  onClick?: () => void;
-  href?: string;
-  strength?: number;
-}
-
-export const MagneticButton: React.FC<MagneticButtonProps> = ({
-  children,
-  className = '',
-  onClick,
-  href,
-  strength = 0.3,
-}) => {
-  const buttonRef = useRef<HTMLButtonElement | HTMLAnchorElement>(null);
-  const { mousePosition } = useMouseTracking({ smooth: true, smoothAmount: 0.1 });
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    if (!buttonRef.current) return;
-    const element = buttonRef.current;
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    const deltaX = (mousePosition.x - centerX) * strength;
-    const deltaY = (mousePosition.y - centerY) * strength;
-    const distance = Math.sqrt(deltaX ** 2 + deltaY ** 2);
-    const magneticStrength = Math.max(0, 1 - distance / 200);
-
-    if (magneticStrength > 0) {
-      gsap.to(element, {
-        x: deltaX * magneticStrength,
-        y: deltaY * magneticStrength,
-        scale: 1 + magneticStrength * 0.05,
-        duration: 0.4,
-        ease: 'power2.out',
-      });
-    } else {
-      gsap.to(element, {
-        x: 0,
-        y: 0,
-        scale: 1,
-        duration: 0.6,
-        ease: 'elastic.out(1, 0.5)',
-      });
-    }
-  }, [mousePosition.x, mousePosition.y, strength]);
-
-  const commonProps = {
-    ref: buttonRef as any,
-    className: `magnetic-button ${className}`,
-    onClick,
-    onMouseEnter: () => setIsHovered(true),
-    onMouseLeave: () => setIsHovered(false),
-    'data-interactive': 'true',
-    style: {
-      boxShadow: isHovered ? '0 0 30px rgba(198, 169, 98, 0.5)' : '0 0 10px rgba(198, 169, 98, 0.3)',
+/**
+ * Manus Debug Collector (agent-friendly)
+ *
+ * Captures:
+ * 1) Console logs
+ * 2) Network requests (fetch + XHR)
+ * 3) User interactions (semantic uiEvents: click/type/submit/nav/scroll/etc.)
+ *
+ * Data is periodically sent to /__manus__/logs
+ * Note: uiEvents are mirrored to sessionEvents for sessionReplay.log
+ */
+(function () {
+  "use strict";
+
+  // Prevent double initialization
+  if (window.__MANUS_DEBUG_COLLECTOR__) return;
+
+  // ==========================================================================
+  // Configuration
+  // ==========================================================================
+  const CONFIG = {
+    reportEndpoint: "/__manus__/logs",
+    bufferSize: {
+      console: 500,
+      network: 200,
+      // semantic, agent-friendly UI events
+      ui: 500,
     },
+    reportInterval: 2000,
+    sensitiveFields: [
+      "password",
+      "token",
+      "secret",
+      "key",
+      "authorization",
+      "cookie",
+      "session",
+    ],
+    maxBodyLength: 10240,
+    // UI event logging privacy policy:
+    // - inputs matching sensitiveFields or type=password are masked by default
+    // - non-sensitive inputs log up to 200 chars
+    uiInputMaxLen: 200,
+    uiTextMaxLen: 80,
+    // Scroll throttling: minimum ms between scroll events
+    scrollThrottleMs: 500,
   };
 
-  if (href) {
-    return <a {...commonProps} href={href}>{children}</a>;
-  }
+  // ==========================================================================
+  // Storage
+  // ==========================================================================
+  const store = {
+    consoleLogs: [],
+    networkRequests: [],
+    uiEvents: [],
+    lastReportTime: Date.now(),
+    lastScrollTime: 0,
+  };
 
-  return <button {...commonProps} type="button">{children}</button>;
-};
-// ============================================================================
+  // ==========================================================================
+  // Utility Functions
+  // ==========================================================================
 
-// ============================================================================
-// 13. UI KOMPONENT - ScrambleText (src/components/ui/ScrambleText.tsx)
-// ============================================================================
-interface ScrambleTextProps {
-  text: string;
-  className?: string;
-  delay?: number;
-  duration?: number;
-}
+  function sanitizeValue(value, depth) {
+    if (depth === void 0) depth = 0;
+    if (depth > 5) return "[Max Depth]";
+    if (value === null) return null;
+    if (value === undefined) return undefined;
 
-export const ScrambleText: React.FC<ScrambleTextProps> = ({
-  text,
-  className = '',
-  delay = 0,
-  duration = 2,
-}) => {
-  const [displayText, setDisplayText] = useState('');
-  const frameRef = useRef(0);
-  const scrambleChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    if (typeof value === "string") {
+      return value.length > 1000 ? value.slice(0, 1000) + "...[truncated]" : value;
+    }
 
-  useEffect(() => {
-    const totalFrames = duration * 60;
-    let currentFrame = 0;
+    if (typeof value !== "object") return value;
 
-    const animate = () => {
-      if (currentFrame >= totalFrames) {
-        setDisplayText(text);
-        return;
-      }
+    if (Array.isArray(value)) {
+      return value.slice(0, 100).map(function (v) {
+        return sanitizeValue(v, depth + 1);
+      });
+    }
 
-      const progress = currentFrame / totalFrames;
-      let scrambledText = '';
-      
-      for (let i = 0; i < text.length; i++) {
-        if (text[i] === ' ') {
-          scrambledText += ' ';
-        } else if (progress > i / text.length) {
-          scrambledText += text[i];
+    var sanitized = {};
+    for (var k in value) {
+      if (Object.prototype.hasOwnProperty.call(value, k)) {
+        var isSensitive = CONFIG.sensitiveFields.some(function (f) {
+          return k.toLowerCase().indexOf(f) !== -1;
+        });
+        if (isSensitive) {
+          sanitized[k] = "[REDACTED]";
         } else {
-          scrambledText += scrambleChars[Math.floor(Math.random() * scrambleChars.length)];
+          sanitized[k] = sanitizeValue(value[k], depth + 1);
         }
       }
-      
-      setDisplayText(scrambledText);
-      currentFrame++;
-      frameRef.current = requestAnimationFrame(animate);
+    }
+    return sanitized;
+  }
+
+  function formatArg(arg) {
+    try {
+      if (arg instanceof Error) {
+        return { type: "Error", message: arg.message, stack: arg.stack };
+      }
+      if (typeof arg === "object") return sanitizeValue(arg);
+      return String(arg);
+    } catch (e) {
+      return "[Unserializable]";
+    }
+  }
+
+  function formatArgs(args) {
+    var result = [];
+    for (var i = 0; i < args.length; i++) result.push(formatArg(args[i]));
+    return result;
+  }
+
+  function pruneBuffer(buffer, maxSize) {
+    if (buffer.length > maxSize) buffer.splice(0, buffer.length - maxSize);
+  }
+
+  function tryParseJson(str) {
+    if (typeof str !== "string") return str;
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      return str;
+    }
+  }
+
+  // ==========================================================================
+  // Semantic UI Event Logging (agent-friendly)
+  // ==========================================================================
+
+  function shouldIgnoreTarget(target) {
+    try {
+      if (!target || !(target instanceof Element)) return false;
+      return !!target.closest(".manus-no-record");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function compactText(s, maxLen) {
+    try {
+      var t = (s || "").trim().replace(/\s+/g, " ");
+      if (!t) return "";
+      return t.length > maxLen ? t.slice(0, maxLen) + "…" : t;
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function elText(el) {
+    try {
+      var t = el.innerText || el.textContent || "";
+      return compactText(t, CONFIG.uiTextMaxLen);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function describeElement(el) {
+    if (!el || !(el instanceof Element)) return null;
+
+    var getAttr = function (name) {
+      return el.getAttribute(name);
     };
 
-    const timeout = setTimeout(() => {
-      frameRef.current = requestAnimationFrame(animate);
-    }, delay * 1000);
+    var tag = el.tagName ? el.tagName.toLowerCase() : null;
+    var id = el.id || null;
+    var name = getAttr("name") || null;
+    var role = getAttr("role") || null;
+    var ariaLabel = getAttr("aria-label") || null;
 
-    return () => {
-      clearTimeout(timeout);
-      if (frameRef.current) cancelAnimationFrame(frameRef.current);
+    var dataLoc = getAttr("data-loc") || null;
+    var testId =
+      getAttr("data-testid") ||
+      getAttr("data-test-id") ||
+      getAttr("data-test") ||
+      null;
+
+    var type = tag === "input" ? (getAttr("type") || "text") : null;
+    var href = tag === "a" ? getAttr("href") || null : null;
+
+    // a small, stable hint for agents (avoid building full CSS paths)
+    var selectorHint = null;
+    if (testId) selectorHint = '[data-testid="' + testId + '"]';
+    else if (dataLoc) selectorHint = '[data-loc="' + dataLoc + '"]';
+    else if (id) selectorHint = "#" + id;
+    else selectorHint = tag || "unknown";
+
+    return {
+      tag: tag,
+      id: id,
+      name: name,
+      type: type,
+      role: role,
+      ariaLabel: ariaLabel,
+      testId: testId,
+      dataLoc: dataLoc,
+      href: href,
+      text: elText(el),
+      selectorHint: selectorHint,
     };
-  }, [text, delay, duration, scrambleChars]);
+  }
 
-  return (
-    <div className={`scramble-text ${className}`} aria-label={text}>
-      {displayText.split('').map((char, index) => (
-        <span
-          key={index}
-          className={`inline-block transition-colors duration-300 ${
-            char === text[index] ? 'text-luxury-gold' : 'text-luxury-platinum/50'
-          }`}
-        >
-          {char}
-        </span>
-      ))}
-    </div>
-  );
-};
-// ============================================================================
+  function isSensitiveField(el) {
+    if (!el || !(el instanceof Element)) return false;
+    var tag = el.tagName ? el.tagName.toLowerCase() : "";
+    if (tag !== "input" && tag !== "textarea") return false;
 
-// ============================================================================
-// 14. UI KOMPONENT - ProgressLoader (src/components/ui/ProgressLoader.tsx)
-// ============================================================================
-interface ProgressLoaderProps {
-  progress: number;
-  onComplete?: () => void;
-}
+    var type = (el.getAttribute("type") || "").toLowerCase();
+    if (type === "password") return true;
 
-export const ProgressLoader: React.FC<ProgressLoaderProps> = ({ progress, onComplete }) => {
-  const loaderRef = useRef<HTMLDivElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-  const percentageRef = useRef<HTMLSpanElement>(null);
+    var name = (el.getAttribute("name") || "").toLowerCase();
+    var id = (el.id || "").toLowerCase();
 
-  useEffect(() => {
-    if (!progressBarRef.current || !percentageRef.current) return;
-
-    gsap.to(progressBarRef.current, {
-      width: `${progress}%`,
-      duration: 0.5,
-      ease: 'power2.out',
+    return CONFIG.sensitiveFields.some(function (f) {
+      return name.indexOf(f) !== -1 || id.indexOf(f) !== -1;
     });
+  }
 
-    gsap.to(percentageRef.current, {
-      textContent: Math.round(progress),
-      duration: 0.3,
-      snap: { textContent: 1 },
+  function getInputValueSafe(el) {
+    if (!el || !(el instanceof Element)) return null;
+    var tag = el.tagName ? el.tagName.toLowerCase() : "";
+    if (tag !== "input" && tag !== "textarea" && tag !== "select") return null;
+
+    var v = "";
+    try {
+      v = el.value != null ? String(el.value) : "";
+    } catch (e) {
+      v = "";
+    }
+
+    if (isSensitiveField(el)) return { masked: true, length: v.length };
+
+    if (v.length > CONFIG.uiInputMaxLen) v = v.slice(0, CONFIG.uiInputMaxLen) + "…";
+    return v;
+  }
+
+  function logUiEvent(kind, payload) {
+    var entry = {
+      timestamp: Date.now(),
+      kind: kind,
+      url: location.href,
+      viewport: { width: window.innerWidth, height: window.innerHeight },
+      payload: sanitizeValue(payload),
+    };
+    store.uiEvents.push(entry);
+    pruneBuffer(store.uiEvents, CONFIG.bufferSize.ui);
+  }
+
+  function installUiEventListeners() {
+    // Clicks
+    document.addEventListener(
+      "click",
+      function (e) {
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("click", {
+          target: describeElement(t),
+          x: e.clientX,
+          y: e.clientY,
+        });
+      },
+      true
+    );
+
+    // Typing "commit" events
+    document.addEventListener(
+      "change",
+      function (e) {
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("change", {
+          target: describeElement(t),
+          value: getInputValueSafe(t),
+        });
+      },
+      true
+    );
+
+    document.addEventListener(
+      "focusin",
+      function (e) {
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("focusin", { target: describeElement(t) });
+      },
+      true
+    );
+
+    document.addEventListener(
+      "focusout",
+      function (e) {
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("focusout", {
+          target: describeElement(t),
+          value: getInputValueSafe(t),
+        });
+      },
+      true
+    );
+
+    // Enter/Escape are useful for form flows & modals
+    document.addEventListener(
+      "keydown",
+      function (e) {
+        if (e.key !== "Enter" && e.key !== "Escape") return;
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("keydown", { key: e.key, target: describeElement(t) });
+      },
+      true
+    );
+
+    // Form submissions
+    document.addEventListener(
+      "submit",
+      function (e) {
+        var t = e.target;
+        if (shouldIgnoreTarget(t)) return;
+        logUiEvent("submit", { target: describeElement(t) });
+      },
+      true
+    );
+
+    // Throttled scroll events
+    window.addEventListener(
+      "scroll",
+      function () {
+        var now = Date.now();
+        if (now - store.lastScrollTime < CONFIG.scrollThrottleMs) return;
+        store.lastScrollTime = now;
+
+        logUiEvent("scroll", {
+          scrollX: window.scrollX,
+          scrollY: window.scrollY,
+          documentHeight: document.documentElement.scrollHeight,
+          viewportHeight: window.innerHeight,
+        });
+      },
+      { passive: true }
+    );
+
+    // Navigation tracking for SPAs
+    function nav(reason) {
+      logUiEvent("navigate", { reason: reason });
+    }
+
+    var origPush = history.pushState;
+    history.pushState = function () {
+      origPush.apply(this, arguments);
+      nav("pushState");
+    };
+
+    var origReplace = history.replaceState;
+    history.replaceState = function () {
+      origReplace.apply(this, arguments);
+      nav("replaceState");
+    };
+
+    window.addEventListener("popstate", function () {
+      nav("popstate");
     });
+    window.addEventListener("hashchange", function () {
+      nav("hashchange");
+    });
+  }
 
-    if (progress >= 100 && loaderRef.current) {
-      gsap.to(loaderRef.current, {
-        opacity: 0,
-        duration: 0.8,
-        delay: 0.5,
-        ease: 'power3.in',
-        onComplete,
+  // ==========================================================================
+  // Console Interception
+  // ==========================================================================
+
+  var originalConsole = {
+    log: console.log.bind(console),
+    debug: console.debug.bind(console),
+    info: console.info.bind(console),
+    warn: console.warn.bind(console),
+    error: console.error.bind(console),
+  };
+
+  ["log", "debug", "info", "warn", "error"].forEach(function (method) {
+    console[method] = function () {
+      var args = Array.prototype.slice.call(arguments);
+
+      var entry = {
+        timestamp: Date.now(),
+        level: method.toUpperCase(),
+        args: formatArgs(args),
+        stack: method === "error" ? new Error().stack : null,
+      };
+
+      store.consoleLogs.push(entry);
+      pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
+
+      originalConsole[method].apply(console, args);
+    };
+  });
+
+  window.addEventListener("error", function (event) {
+    store.consoleLogs.push({
+      timestamp: Date.now(),
+      level: "ERROR",
+      args: [
+        {
+          type: "UncaughtError",
+          message: event.message,
+          filename: event.filename,
+          lineno: event.lineno,
+          colno: event.colno,
+          stack: event.error ? event.error.stack : null,
+        },
+      ],
+      stack: event.error ? event.error.stack : null,
+    });
+    pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
+
+    // Mark an error moment in UI event stream for agents
+    logUiEvent("error", {
+      message: event.message,
+      filename: event.filename,
+      lineno: event.lineno,
+      colno: event.colno,
+    });
+  });
+
+  window.addEventListener("unhandledrejection", function (event) {
+    var reason = event.reason;
+    store.consoleLogs.push({
+      timestamp: Date.now(),
+      level: "ERROR",
+      args: [
+        {
+          type: "UnhandledRejection",
+          reason: reason && reason.message ? reason.message : String(reason),
+          stack: reason && reason.stack ? reason.stack : null,
+        },
+      ],
+      stack: reason && reason.stack ? reason.stack : null,
+    });
+    pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
+
+    logUiEvent("unhandledrejection", {
+      reason: reason && reason.message ? reason.message : String(reason),
+    });
+  });
+
+  // ==========================================================================
+  // Fetch Interception
+  // ==========================================================================
+
+  var originalFetch = window.fetch.bind(window);
+
+  window.fetch = function (input, init) {
+    init = init || {};
+    var startTime = Date.now();
+    // Handle string, Request object, or URL object
+    var url = typeof input === "string"
+      ? input
+      : (input && (input.url || input.href || String(input))) || "";
+    var method = init.method || (input && input.method) || "GET";
+
+    // Don't intercept internal requests
+    if (url.indexOf("/__manus__/") === 0) {
+      return originalFetch(input, init);
+    }
+
+    // Safely parse headers (avoid breaking if headers format is invalid)
+    var requestHeaders = {};
+    try {
+      if (init.headers) {
+        requestHeaders = Object.fromEntries(new Headers(init.headers).entries());
+      }
+    } catch (e) {
+      requestHeaders = { _parseError: true };
+    }
+
+    var entry = {
+      timestamp: startTime,
+      type: "fetch",
+      method: method.toUpperCase(),
+      url: url,
+      request: {
+        headers: requestHeaders,
+        body: init.body ? sanitizeValue(tryParseJson(init.body)) : null,
+      },
+      response: null,
+      duration: null,
+      error: null,
+    };
+
+    return originalFetch(input, init)
+      .then(function (response) {
+        entry.duration = Date.now() - startTime;
+
+        var contentType = (response.headers.get("content-type") || "").toLowerCase();
+        var contentLength = response.headers.get("content-length");
+
+        entry.response = {
+          status: response.status,
+          statusText: response.statusText,
+          headers: Object.fromEntries(response.headers.entries()),
+          body: null,
+        };
+
+        // Semantic network hint for agents on failures (sync, no need to wait for body)
+        if (response.status >= 400) {
+          logUiEvent("network_error", {
+            kind: "fetch",
+            method: entry.method,
+            url: entry.url,
+            status: response.status,
+            statusText: response.statusText,
+          });
+        }
+
+        // Skip body capture for streaming responses (SSE, etc.) to avoid memory leaks
+        var isStreaming = contentType.indexOf("text/event-stream") !== -1 ||
+                          contentType.indexOf("application/stream") !== -1 ||
+                          contentType.indexOf("application/x-ndjson") !== -1;
+        if (isStreaming) {
+          entry.response.body = "[Streaming response - not captured]";
+          store.networkRequests.push(entry);
+          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+          return response;
+        }
+
+        // Skip body capture for large responses to avoid memory issues
+        if (contentLength && parseInt(contentLength, 10) > CONFIG.maxBodyLength) {
+          entry.response.body = "[Response too large: " + contentLength + " bytes]";
+          store.networkRequests.push(entry);
+          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+          return response;
+        }
+
+        // Skip body capture for binary content types
+        var isBinary = contentType.indexOf("image/") !== -1 ||
+                       contentType.indexOf("video/") !== -1 ||
+                       contentType.indexOf("audio/") !== -1 ||
+                       contentType.indexOf("application/octet-stream") !== -1 ||
+                       contentType.indexOf("application/pdf") !== -1 ||
+                       contentType.indexOf("application/zip") !== -1;
+        if (isBinary) {
+          entry.response.body = "[Binary content: " + contentType + "]";
+          store.networkRequests.push(entry);
+          pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+          return response;
+        }
+
+        // For text responses, clone and read body in background
+        var clonedResponse = response.clone();
+
+        // Async: read body in background, don't block the response
+        clonedResponse
+          .text()
+          .then(function (text) {
+            if (text.length <= CONFIG.maxBodyLength) {
+              entry.response.body = sanitizeValue(tryParseJson(text));
+            } else {
+              entry.response.body = text.slice(0, CONFIG.maxBodyLength) + "...[truncated]";
+            }
+          })
+          .catch(function () {
+            entry.response.body = "[Unable to read body]";
+          })
+          .finally(function () {
+            store.networkRequests.push(entry);
+            pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+          });
+
+        // Return response immediately, don't wait for body reading
+        return response;
+      })
+      .catch(function (error) {
+        entry.duration = Date.now() - startTime;
+        entry.error = { message: error.message, stack: error.stack };
+
+        store.networkRequests.push(entry);
+        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+
+        logUiEvent("network_error", {
+          kind: "fetch",
+          method: entry.method,
+          url: entry.url,
+          message: error.message,
+        });
+
+        throw error;
+      });
+  };
+
+  // ==========================================================================
+  // XHR Interception
+  // ==========================================================================
+
+  var originalXHROpen = XMLHttpRequest.prototype.open;
+  var originalXHRSend = XMLHttpRequest.prototype.send;
+
+  XMLHttpRequest.prototype.open = function (method, url) {
+    this._manusData = {
+      method: (method || "GET").toUpperCase(),
+      url: url,
+      startTime: null,
+    };
+    return originalXHROpen.apply(this, arguments);
+  };
+
+  XMLHttpRequest.prototype.send = function (body) {
+    var xhr = this;
+
+    if (
+      xhr._manusData &&
+      xhr._manusData.url &&
+      xhr._manusData.url.indexOf("/__manus__/") !== 0
+    ) {
+      xhr._manusData.startTime = Date.now();
+      xhr._manusData.requestBody = body ? sanitizeValue(tryParseJson(body)) : null;
+
+      xhr.addEventListener("load", function () {
+        var contentType = (xhr.getResponseHeader("content-type") || "").toLowerCase();
+        var responseBody = null;
+
+        // Skip body capture for streaming responses
+        var isStreaming = contentType.indexOf("text/event-stream") !== -1 ||
+                          contentType.indexOf("application/stream") !== -1 ||
+                          contentType.indexOf("application/x-ndjson") !== -1;
+
+        // Skip body capture for binary content types
+        var isBinary = contentType.indexOf("image/") !== -1 ||
+                       contentType.indexOf("video/") !== -1 ||
+                       contentType.indexOf("audio/") !== -1 ||
+                       contentType.indexOf("application/octet-stream") !== -1 ||
+                       contentType.indexOf("application/pdf") !== -1 ||
+                       contentType.indexOf("application/zip") !== -1;
+
+        if (isStreaming) {
+          responseBody = "[Streaming response - not captured]";
+        } else if (isBinary) {
+          responseBody = "[Binary content: " + contentType + "]";
+        } else {
+          // Safe to read responseText for text responses
+          try {
+            var text = xhr.responseText || "";
+            if (text.length > CONFIG.maxBodyLength) {
+              responseBody = text.slice(0, CONFIG.maxBodyLength) + "...[truncated]";
+            } else {
+              responseBody = sanitizeValue(tryParseJson(text));
+            }
+          } catch (e) {
+            // responseText may throw for non-text responses
+            responseBody = "[Unable to read response: " + e.message + "]";
+          }
+        }
+
+        var entry = {
+          timestamp: xhr._manusData.startTime,
+          type: "xhr",
+          method: xhr._manusData.method,
+          url: xhr._manusData.url,
+          request: { body: xhr._manusData.requestBody },
+          response: {
+            status: xhr.status,
+            statusText: xhr.statusText,
+            body: responseBody,
+          },
+          duration: Date.now() - xhr._manusData.startTime,
+          error: null,
+        };
+
+        store.networkRequests.push(entry);
+        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+
+        if (entry.response && entry.response.status >= 400) {
+          logUiEvent("network_error", {
+            kind: "xhr",
+            method: entry.method,
+            url: entry.url,
+            status: entry.response.status,
+            statusText: entry.response.statusText,
+          });
+        }
+      });
+
+      xhr.addEventListener("error", function () {
+        var entry = {
+          timestamp: xhr._manusData.startTime,
+          type: "xhr",
+          method: xhr._manusData.method,
+          url: xhr._manusData.url,
+          request: { body: xhr._manusData.requestBody },
+          response: null,
+          duration: Date.now() - xhr._manusData.startTime,
+          error: { message: "Network error" },
+        };
+
+        store.networkRequests.push(entry);
+        pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+
+        logUiEvent("network_error", {
+          kind: "xhr",
+          method: entry.method,
+          url: entry.url,
+          message: "Network error",
+        });
       });
     }
-  }, [progress, onComplete]);
 
-  return (
-    <div ref={loaderRef} className="fixed inset-0 z-[9999] flex items-center justify-center bg-luxury-obsidian">
-      <div className="relative z-10 text-center max-w-md w-full px-8">
-        <div className="mb-12">
-          <div className="w-20 h-20 mx-auto mb-6 relative">
-            <div className="absolute inset-0 rounded-full border-2 border-luxury-gold/30 animate-spin" style={{ animationDuration: '3s' }} />
-            <div className="absolute inset-2 rounded-full border border-luxury-gold/50 animate-spin" style={{ animationDuration: '2s', animationDirection: 'reverse' }} />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-4 h-4 bg-luxury-gold rotate-45" style={{ boxShadow: '0 0 20px rgba(198,169,98,0.5)' }} />
-            </div>
-          </div>
-          <h2 className="text-2xl font-display gold-gradient-text mb-2">AI Kurser</h2>
-          <p className="text-luxury-platinum/50 text-sm uppercase tracking-widest">Luksus Uddannelse</p>
-        </div>
+    return originalXHRSend.apply(this, arguments);
+  };
 
-        <div className="relative mb-8">
-          <div className="h-[2px] bg-white/10 rounded-full overflow-hidden">
-            <div ref={progressBarRef} className="h-full bg-gradient-to-r from-luxury-gold via-luxury-platinum to-luxury-gold" style={{ width: '0%', boxShadow: '0 0 10px rgba(198,169,98,0.5)' }} />
-          </div>
-          <div className="absolute top-1/2 -translate-y-1/2 w-4 h-4 bg-luxury-gold rounded-full" style={{ left: `${progress}%`, marginLeft: '-8px', boxShadow: '0 0 20px rgba(198,169,98,0.8)', filter: 'blur(2px)' }} />
-        </div>
+  // ==========================================================================
+  // Data Reporting
+  // ==========================================================================
 
-        <div className="flex items-center justify-center gap-2">
-          <span ref={percentageRef} className="text-4xl font-display text-luxury-gold tabular-nums">0</span>
-          <span className="text-2xl text-luxury-platinum/50">%</span>
-        </div>
-      </div>
-    </div>
-  );
-};
-// ============================================================================
+  function reportLogs() {
+    var consoleLogs = store.consoleLogs.splice(0);
+    var networkRequests = store.networkRequests.splice(0);
+    var uiEvents = store.uiEvents.splice(0);
 
-// ============================================================================
-// 15. UI KOMPONENT - Navigation (src/components/ui/Navigation.tsx)
-// ============================================================================
-const navItems = [
-  { label: 'Kurser', href: '#kurser' },
-  { label: 'Niveauer', href: '#niveauer' },
-  { label: 'Eksamen', href: '#eksamen' },
-  { label: 'Om Os', href: '#om-os' },
-];
-
-export const Navigation = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  return (
-    <>
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? 'bg-luxury-obsidian/80 backdrop-blur-xl border-b border-white/5' : 'bg-transparent'}`}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-center justify-between h-20">
-            <a href="#" className="flex items-center gap-3 group" data-interactive="true">
-              <div className="relative w-10 h-10">
-                <div className="absolute inset-0 bg-luxury-gold/20 rounded-full animate-pulse" />
-                <div className="absolute inset-2 bg-luxury-gold rounded-full" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-black font-bold text-sm">AI</span>
-                </div>
-              </div>
-              <div>
-                <span className="text-xl font-display gold-gradient-text font-bold">AI Kurser</span>
-                <span className="block text-[10px] text-luxury-platinum/50 uppercase tracking-[0.2em]">Premium</span>
-              </div>
-            </a>
-
-            <div className="hidden lg:flex items-center gap-2">
-              {navItems.map((item) => (
-                <a key={item.label} href={item.href} className="relative px-4 py-2 text-sm uppercase tracking-wider text-luxury-platinum/70 hover:text-luxury-gold transition-colors duration-300 group" data-interactive="true">
-                  {item.label}
-                  <span className="absolute bottom-0 left-0 w-full h-[1px] bg-luxury-gold scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left" />
-                </a>
-              ))}
-              <div className="ml-4">
-                <MagneticButton>Start Nu</MagneticButton>
-              </div>
-            </div>
-
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="lg:hidden relative w-10 h-10" data-interactive="true" aria-label="Menu">
-              <div className="relative w-6 h-5">
-                <span className={`absolute left-0 w-full h-[2px] bg-luxury-gold transition-all duration-300 ${isMenuOpen ? 'rotate-45 top-2' : 'top-0'}`} />
-                <span className={`absolute left-0 top-2 w-full h-[2px] bg-luxury-gold transition-all duration-300 ${isMenuOpen ? 'opacity-0' : ''}`} />
-                <span className={`absolute left-0 w-full h-[2px] bg-luxury-gold transition-all duration-300 ${isMenuOpen ? '-rotate-45 bottom-2' : 'bottom-0'}`} />
-              </div>
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <div className={`fixed inset-0 z-40 bg-luxury-obsidian/95 backdrop-blur-xl transition-transform duration-500 lg:hidden ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex flex-col items-center justify-center h-full gap-8">
-          {navItems.map((item) => (
-            <a key={item.label} href={item.href} className="text-3xl font-display text-luxury-platinum hover:text-luxury-gold transition-colors duration-300" onClick={() => setIsMenuOpen(false)}>
-              {item.label}
-            </a>
-          ))}
-          <div className="mt-8">
-            <MagneticButton onClick={() => setIsMenuOpen(false)}>Start Din Rejse</MagneticButton>
-          </div>
-        </div>
-      </div>
-    </>
-  );
-};
-// ============================================================================
-
-// ============================================================================
-// 16. 3D SCENE KOMPONENT (src/components/canvas/Scene.tsx)
-// ============================================================================
-import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { PerspectiveCamera, Environment, AdaptiveDpr, AdaptiveEvents, PerformanceMonitor, Preload, Stars, Sparkles, Float } from '@react-three/drei';
-import { EffectComposer, Bloom, Noise, Vignette, ChromaticAberration } from '@react-three/postprocessing';
-import { BlendFunction } from 'postprocessing';
-import * as THREE from 'three';
-
-const FloatingSculpture = ({ scrollProgress }: { scrollProgress: number }) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const materialRef = useRef<THREE.ShaderMaterial>(null);
-
-  useFrame((state) => {
-    if (!meshRef.current || !materialRef.current) return;
-    const time = state.clock.elapsedTime;
-    
-    materialRef.current.uniforms.uTime.value = time;
-    materialRef.current.uniforms.uIntensity.value = 0.5 + Math.sin(time) * 0.2;
-
-    meshRef.current.rotation.x = Math.sin(time * 0.5) * 0.2 + scrollProgress * Math.PI * 2;
-    meshRef.current.rotation.y = Math.cos(time * 0.3) * 0.3 + scrollProgress * Math.PI;
-    meshRef.current.position.y = Math.sin(time * 0.7) * 0.2 + scrollProgress * 5;
-  });
-
-  return (
-    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.5}>
-      <mesh ref={meshRef}>
-        <icosahedronGeometry args={[1.5, 4]} />
-        <shaderMaterial
-          ref={materialRef}
-          uniforms={{
-            uTime: { value: 0 },
-            uColor: { value: new THREE.Color('#C6A962') },
-            uIntensity: { value: 0.5 },
-          }}
-          vertexShader={holographicGlowVertexShader}
-          fragmentShader={holographicGlowFragmentShader}
-          transparent
-          depthWrite={false}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
-    </Float>
-  );
-};
-
-const ParticleField = ({ count = 1000 }: { count?: number }) => {
-  const pointsRef = useRef<THREE.Points>(null);
-  
-  const [positions, sizes] = useMemo(() => {
-    const pos = new Float32Array(count * 3);
-    const s = new Float32Array(count);
-    for (let i = 0; i < count; i++) {
-      pos[i * 3] = (Math.random() - 0.5) * 20;
-      pos[i * 3 + 1] = (Math.random() - 0.5) * 20;
-      pos[i * 3 + 2] = (Math.random() - 0.5) * 20;
-      s[i] = Math.random() * 0.1;
+    // Skip if no new data
+    if (
+      consoleLogs.length === 0 &&
+      networkRequests.length === 0 &&
+      uiEvents.length === 0
+    ) {
+      return Promise.resolve();
     }
-    return [pos, s];
-  }, [count]);
 
-  useFrame((state) => {
-    if (!pointsRef.current) return;
-    pointsRef.current.rotation.y = state.clock.elapsedTime * 0.05;
-  });
-
-  return (
-    <points ref={pointsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={count} array={positions} itemSize={3} />
-        <bufferAttribute attach="attributes-size" count={count} array={sizes} itemSize={1} />
-      </bufferGeometry>
-      <pointsMaterial size={0.05} color="#C6A962" sizeAttenuation transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} />
-    </points>
-  );
-};
-
-export const Scene = () => {
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [dpr, setDpr] = useState(1.5);
-
-  useEffect(() => {
-    setDpr(Math.min(window.devicePixelRatio, window.innerWidth < 768 ? 1.5 : 2));
-    const handleScroll = () => {
-      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(window.scrollY / maxScroll);
+    var payload = {
+      timestamp: Date.now(),
+      consoleLogs: consoleLogs,
+      networkRequests: networkRequests,
+      // Mirror uiEvents to sessionEvents for sessionReplay.log
+      sessionEvents: uiEvents,
+      // agent-friendly semantic events
+      uiEvents: uiEvents,
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
-  return (
-    <Canvas
-      dpr={dpr}
-      performance={{ min: 0.5 }}
-      gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
-    >
-      <PerformanceMonitor onIncline={() => setDpr(2)} onDecline={() => setDpr(1)} />
-      <AdaptiveDpr pixelated />
-      <AdaptiveEvents />
-      
-      <PerspectiveCamera makeDefault position={[0, 0, 8]} fov={window.innerWidth < 768 ? 75 : 60} near={0.1} far={100} />
-      <Environment preset="night" />
-      
-      <Suspense fallback={null}>
-        <Stars radius={50} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-        <ParticleField count={1500} />
-        <FloatingSculpture scrollProgress={scrollProgress} />
-        <Sparkles count={300} scale={10} size={2} speed={0.5} opacity={0.5} color="#C6A962" />
-      </Suspense>
+    return originalFetch(CONFIG.reportEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).catch(function () {
+      // Put data back on failure (but respect limits)
+      store.consoleLogs = consoleLogs.concat(store.consoleLogs);
+      store.networkRequests = networkRequests.concat(store.networkRequests);
+      store.uiEvents = uiEvents.concat(store.uiEvents);
 
-      <EffectComposer>
-        <Bloom intensity={0.5} luminanceThreshold={0.8} luminanceSmoothing={0.9} blendFunction={BlendFunction.SCREEN} />
-        <ChromaticAberration offset={[0.002 * scrollProgress, 0.002 * scrollProgress]} blendFunction={BlendFunction.NORMAL} />
-        <Noise opacity={0.02} blendFunction={BlendFunction.OVERLAY} />
-        <Vignette darkness={0.5} offset={0.1} blendFunction={BlendFunction.NORMAL} />
-      </EffectComposer>
+      pruneBuffer(store.consoleLogs, CONFIG.bufferSize.console);
+      pruneBuffer(store.networkRequests, CONFIG.bufferSize.network);
+      pruneBuffer(store.uiEvents, CONFIG.bufferSize.ui);
+    });
+  }
 
-      <Preload all />
-    </Canvas>
-  );
-};
-// ============================================================================
+  // Periodic reporting
+  setInterval(reportLogs, CONFIG.reportInterval);
 
-// ============================================================================
-// 17. SECTIONS - HeroSection (src/components/sections/HeroSection.tsx)
-// ============================================================================
-export const HeroSection = () => {
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
-  const { getParallaxOffset } = useMouseTracking();
+  // Report on page unload
+  window.addEventListener("beforeunload", function () {
+    var consoleLogs = store.consoleLogs;
+    var networkRequests = store.networkRequests;
+    var uiEvents = store.uiEvents;
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
-      
-      tl.fromTo(titleRef.current, { y: 100, opacity: 0 }, { y: 0, opacity: 1 })
-        .fromTo('.hero-subtitle', { y: 50, opacity: 0 }, { y: 0, opacity: 1 }, '-=0.8')
-        .fromTo('.hero-cta', { y: 20, opacity: 0, scale: 0.95 }, { y: 0, opacity: 1, scale: 1 }, '-=0.4');
+    if (
+      consoleLogs.length === 0 &&
+      networkRequests.length === 0 &&
+      uiEvents.length === 0
+    ) {
+      return;
+    }
 
-      ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: 'bottom top',
-        onUpdate: () => {
-          const parallax = getParallaxOffset(0.05);
-          if (titleRef.current) {
-            gsap.to(titleRef.current, { y: parallax.y * 0.3, x: parallax.x * 0.3, duration: 0.5 });
-          }
-        },
-      });
-    }, sectionRef);
+    var payload = {
+      timestamp: Date.now(),
+      consoleLogs: consoleLogs,
+      networkRequests: networkRequests,
+      // Mirror uiEvents to sessionEvents for sessionReplay.log
+      sessionEvents: uiEvents,
+      uiEvents: uiEvents,
+    };
 
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section ref={sectionRef} className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 py-20 text-center">
-        <div className="hero-subtitle mb-6">
-          <span className="inline-block px-4 py-2 rounded-full border border-luxury-gold/30 bg-luxury-gold/5 text-sm uppercase tracking-[0.3em] text-luxury-gold">
-            Premium AI Uddannelse
-          </span>
-        </div>
-
-        <h1 ref={titleRef} className="text-6xl md:text-8xl lg:text-9xl font-display gold-gradient-text font-bold mb-8 leading-none">
-          Mestre Fremtiden<br />med AI
-        </h1>
-
-        <div className="mb-12">
-          <ScrambleText text="Fra Begynder til Ekspert - Din Rejse Starter Her" className="text-xl md:text-2xl text-luxury-platinum/70" delay={2} duration={1.5} />
-        </div>
-
-        <div className="hero-cta flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-          <MagneticButton>
-            <span className="flex items-center gap-2">
-              Start Gratis Kursus
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-          </MagneticButton>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
-          {['🎓 Ekspert Certificering', '🚀 AI-Drevet Læring', '💎 Premium Indhold', '🏆 Praktisk Erfaring'].map((feature, i) => (
-            <div key={i} className="glass-panel p-6 text-center group hover:bg-white/10 transition-all duration-300">
-              <p className="text-sm text-luxury-platinum/70 group-hover:text-luxury-gold transition-colors duration-300">{feature}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-        <div className="flex flex-col items-center gap-3 text-luxury-platinum/30">
-          <span className="text-xs uppercase tracking-[0.3em]">Scroll</span>
-          <div className="w-[1px] h-16 bg-gradient-to-b from-luxury-gold/50 to-transparent" />
-          <div className="w-2 h-2 rounded-full bg-luxury-gold/50 animate-bounce" />
-        </div>
-      </div>
-    </section>
-  );
-};
-// ============================================================================
-
-// ============================================================================
-// 18. SECTIONS - ProductSection (src/components/sections/ProductSection.tsx)
-// ============================================================================
-const courseLevels = [
-  { level: 'D', title: 'Amatør', description: 'Start din AI-rejse', price: 'Gratis', color: 'from-green-400 to-emerald-600', features: ['Grundlæggende AI', 'Simple Øvelser', 'Intro Certifikat'] },
-  { level: 'C', title: 'Avanceret Begynder', description: 'Dyk dybere ned i ML', price: '499 DKK', color: 'from-blue-400 to-indigo-600', features: ['Machine Learning', 'Data Analyse', 'API Integration'] },
-  { level: 'B', title: 'Professionel', description: 'Professionelle værktøjer', price: '999 DKK', color: 'from-purple-400 to-violet-600', features: ['Neurale Netværk', 'Deep Learning', 'Pro Eksamen'] },
-  { level: 'A', title: 'Ekspert', description: 'Mestre avancerede systemer', price: '1.999 DKK', color: 'from-amber-400 to-yellow-600', features: ['AI Arkitektur', 'System Design', 'Ekspert Certificering'] },
-];
-
-export const ProductSection = () => {
-  const cardsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: cardsRef.current,
-        start: 'top center+=100',
-        onEnter: () => {
-          const cards = cardsRef.current?.children;
-          if (cards) {
-            Array.from(cards).forEach((card, index) => {
-              gsap.fromTo(card, { y: 100, opacity: 0, rotationX: 45 }, { y: 0, opacity: 1, rotationX: 0, duration: 0.8, delay: index * 0.15, ease: 'power3.out' });
-            });
-          }
-        },
-      });
-    }, cardsRef);
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section id="kurser" className="relative min-h-screen py-32">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
-        <div className="text-center mb-20">
-          <span className="inline-block px-4 py-2 rounded-full border border-luxury-gold/30 bg-luxury-gold/5 text-sm uppercase tracking-[0.3em] text-luxury-gold mb-6">Vores Kurser</span>
-          <h2 className="text-5xl md:text-7xl font-display gold-gradient-text font-bold mb-6">Vælg Dit Niveau</h2>
-          <ScrambleText text="Fra Nybegynder til AI-Ekspert" className="text-xl text-luxury-platinum/70" delay={1} duration={1} />
-        </div>
-
-        <div ref={cardsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {courseLevels.map((course) => (
-            <div key={course.level} className="glass-panel p-8 hover:border-luxury-gold/50 transition-all duration-300" data-interactive="true">
-              <div className="flex items-center justify-between mb-6">
-                <span className={`text-lg font-bold px-4 py-2 rounded-full bg-gradient-to-r ${course.color} text-white`}>Niveau {course.level}</span>
-                <span className="text-2xl font-display text-luxury-gold">{course.price}</span>
-              </div>
-              <h3 className="text-2xl font-display text-luxury-platinum mb-3">{course.title}</h3>
-              <p className="text-luxury-platinum/50 mb-6">{course.description}</p>
-              <ul className="space-y-3 mb-8">
-                {course.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-sm text-luxury-platinum/70">
-                    <svg className="w-5 h-5 text-luxury-gold flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <MagneticButton className="w-full text-center">Vælg Kursus</MagneticButton>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-// ============================================================================
-
-// ============================================================================
-// 19. SECTIONS - FooterSection (src/components/sections/FooterSection.tsx)
-// ============================================================================
-export const FooterSection = () => {
-  return (
-    <footer className="relative bg-luxury-obsidian border-t border-white/5">
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[1px] bg-gradient-to-r from-transparent via-luxury-gold/50 to-transparent" />
-      
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-2 md:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-10 h-10 bg-luxury-gold rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-sm">AI</span>
-              </div>
-              <div>
-                <span className="text-xl font-display gold-gradient-text font-bold">AI Kurser</span>
-                <span className="block text-[10px] text-luxury-platinum/50 uppercase tracking-[0.2em]">Premium</span>
-              </div>
-            </div>
-            <p className="text-sm text-luxury-platinum/50 mb-6">Vi skaber fremtidens AI-uddannelse med fokus på praktisk læring og ekspertvejledning.</p>
-            <MagneticButton>Kom I Gang</MagneticButton>
-          </div>
-          
-          {['Kurser', 'Virksomhed', 'Ressourcer'].map((category) => (
-            <div key={category}>
-              <h4 className="text-sm font-bold uppercase tracking-wider text-luxury-gold mb-6">{category}</h4>
-              <ul className="space-y-4">
-                {[1, 2, 3, 4].map((i) => (
-                  <li key={i}>
-                    <a href="#" className="text-sm text-luxury-platinum/50 hover:text-luxury-gold transition-colors duration-300" data-interactive="true">
-                      {category} Link {i}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-          <p className="text-sm text-luxury-platinum/30">© 2024 AI Kurser. Alle rettigheder forbeholdt. • Værløse, Danmark</p>
-          <div className="flex gap-6">
-            {['GitHub', 'LinkedIn', 'Twitter', 'YouTube'].map((social) => (
-              <a key={social} href="#" className="w-10 h-10 rounded-full border border-white/5 flex items-center justify-center text-luxury-platinum/30 hover:text-luxury-gold hover:border-luxury-gold/50 transition-colors duration-300" data-interactive="true">
-                <span className="text-xs font-bold">{social[0]}</span>
-              </a>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-};
-// ============================================================================
-
-// ============================================================================
-// 20. MAIN PAGE - Hovedside (src/app/page.tsx)
-// ============================================================================
-export default function HomePage() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadProgress, setLoadProgress] = useState(0);
-  
-  const assets = ['/models/sculpture.glb', '/models/product.glb', '/textures/environment.hdr', '/shaders/holographic.vert'];
-  
-  const loaderState = useProgressiveLoad({
-    assets,
-    onProgress: setLoadProgress,
-    onComplete: () => setTimeout(() => setIsLoading(false), 1000),
+    if (navigator.sendBeacon) {
+      var payloadStr = JSON.stringify(payload);
+      // sendBeacon has ~64KB limit, truncate if too large
+      var MAX_BEACON_SIZE = 60000; // Leave some margin
+      if (payloadStr.length > MAX_BEACON_SIZE) {
+        // Prioritize: keep recent events, drop older logs
+        var truncatedPayload = {
+          timestamp: Date.now(),
+          consoleLogs: consoleLogs.slice(-50),
+          networkRequests: networkRequests.slice(-20),
+          sessionEvents: uiEvents.slice(-100),
+          uiEvents: uiEvents.slice(-100),
+          _truncated: true,
+        };
+        payloadStr = JSON.stringify(truncatedPayload);
+      }
+      navigator.sendBeacon(CONFIG.reportEndpoint, payloadStr);
+    }
   });
 
-  return (
-    <>
-      <CustomCursor />
-      
-      {isLoading && <ProgressLoader progress={loadProgress} onComplete={() => setIsLoading(false)} />}
-      
-      <main className={`relative min-h-screen ${isLoading ? 'opacity-0' : 'opacity-100'} transition-opacity duration-1000`}>
-        <div className="canvas-container">
-          <Scene />
-        </div>
-        
-        <Navigation />
-        
-        <div className="content-overlay">
-          <HeroSection />
-          <ProductSection />
-          <FooterSection />
-        </div>
-      </main>
-    </>
-  );
-}
-// ============================================================================
+  // ==========================================================================
+  // Initialization
+  // ==========================================================================
 
-// ============================================================================
-// 21. ROOT LAYOUT (src/app/layout.tsx)
-// ============================================================================
-import { Inter, Playfair_Display, JetBrains_Mono } from 'next/font/google';
+  // Install semantic UI listeners ASAP
+  try {
+    installUiEventListeners();
+  } catch (e) {
+    console.warn("[Manus] Failed to install UI listeners:", e);
+  }
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
-const playfairDisplay = Playfair_Display({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
-const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
+  // Mark as initialized
+  window.__MANUS_DEBUG_COLLECTOR__ = {
+    version: "2.0-no-rrweb",
+    store: store,
+    forceReport: reportLogs,
+  };
 
-export const metadata = {
-  title: 'AI Kurser | Luksus AI Uddannelse',
-  description: 'Professionelle AI-kurser med ekspertvejledning. Fra nybegynder til ekspert niveau.',
-  keywords: 'AI, kurser, kunstig intelligens, uddannelse, machine learning',
-};
-
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <html lang="da" className="dark">
-      <head>
-        <style>{globalStyles}</style>
-      </head>
-      <body className={`${inter.variable} ${playfairDisplay.variable} ${jetbrainsMono.variable} font-body bg-luxury-obsidian text-luxury-diamond antialiased`}>
-        {children}
-      </body>
-    </html>
+  console.debug("[Manus] Debug collector initialized (no rrweb, UI events only)");
+})();
