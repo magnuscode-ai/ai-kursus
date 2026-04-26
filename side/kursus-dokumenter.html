@@ -1,0 +1,2938 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Sidekursus: AI til dokumenter</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ───────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Farvevariabler — matcher resten af platformen ──── */
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --blue-mid:    #c8dff5;
+      --green:       #0F6E56;
+      --green-light: #E1F5EE;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #5B2A86;
+      --purple-light:#EFE5FA;
+      --purple-dark: #46206a;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4F7FB;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --gold:        #B8860B;
+      --gold-light:  #FFF8E1;
+      --radius:      14px;
+      --radius-lg:   18px;
+      --shadow:      0 4px 24px rgba(91,42,134,0.10);
+      --shadow-lg:   0 10px 40px rgba(91,42,134,0.18);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* ── Navigation ──────────────────────────────────────── */
+    nav {
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 16px; font-weight: 700;
+      color: var(--text); text-decoration: none;
+    }
+    .logo-icon {
+      width: 30px; height: 30px;
+      background: var(--blue); border-radius: 7px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag {
+      font-size: 13px; color: var(--muted);
+      background: var(--grey); padding: 5px 12px;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* ── Topbar progress (når man er i forløb) ───────────── */
+    .topbar {
+      display: none;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem 1.5rem;
+      position: sticky;
+      top: 56px;
+      z-index: 90;
+    }
+    .topbar.show { display: block; }
+    .topbar-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .topbar-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .topbar-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .topbar-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+    .steps-bar {
+      max-width: 1100px;
+      margin: 0.75rem auto 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .steps-bar::-webkit-scrollbar { height: 4px; }
+    .steps-bar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    .step-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+    .step-dot {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      background: var(--grey);
+      color: var(--muted);
+      border: 2px solid var(--border);
+    }
+    .step-dot.done { background: var(--green); color: white; border-color: var(--green); }
+    .step-dot.active { background: var(--purple); color: white; border-color: var(--purple); box-shadow: 0 0 0 4px rgba(91,42,134,0.18); }
+    .step-dot.next { background: white; color: var(--muted); }
+    .step-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .step-label.done { color: var(--green); }
+    .step-label.active { color: var(--purple); }
+    .step-arrow { color: var(--border); font-size: 14px; flex-shrink: 0; }
+
+    /* ── Indhold-container ───────────────────────────────── */
+    .container {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+
+    /* ── State styring ───────────────────────────────────── */
+    .state { display: none; }
+    .state.active { display: block; animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Hero (lilla) ────────────────────────────────────── */
+    .hero {
+      background: var(--purple);
+      color: white;
+      border-radius: var(--radius-lg);
+      padding: 2.75rem 2rem 2.25rem;
+      margin-bottom: 1.75rem;
+      box-shadow: var(--shadow);
+    }
+    .hero-badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 5px 12px;
+      border-radius: 99px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 38px;
+      font-weight: 400;
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+      letter-spacing: -0.5px;
+    }
+    .hero p {
+      font-size: 16px;
+      opacity: 0.92;
+      max-width: 620px;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+    }
+    .hero-meta-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      opacity: 0.92;
+      font-weight: 500;
+    }
+    .hero-meta-item span { font-size: 16px; }
+
+    /* ── Info-bokse ──────────────────────────────────────── */
+    .info-box {
+      border-radius: var(--radius);
+      padding: 1rem 1.15rem;
+      margin-bottom: 1rem;
+    }
+    .info-box-title {
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.02em;
+    }
+    .info-box p { font-size: 14px; line-height: 1.7; }
+    .info-box code {
+      background: rgba(0,0,0,0.06);
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      font-family: 'Courier New', monospace;
+    }
+    .box-blue   { background: var(--blue-light);  } .box-blue .info-box-title   { color: var(--blue); }
+    .box-green  { background: var(--green-light); } .box-green .info-box-title  { color: var(--green); }
+    .box-yellow { background: var(--yellow-bg);   } .box-yellow .info-box-title { color: var(--yellow-txt); }
+    .box-grey   { background: var(--grey);        } .box-grey .info-box-title   { color: #444; }
+    .box-orange { background: var(--orange-light);} .box-orange .info-box-title { color: var(--orange); }
+    .box-purple { background: var(--purple-light);} .box-purple .info-box-title { color: var(--purple); }
+    .box-red    { background: var(--red-light);   } .box-red .info-box-title    { color: var(--red); }
+
+    /* ── Knapper ─────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 13px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--purple);
+      color: white;
+      box-shadow: 0 4px 14px rgba(91,42,134,0.3);
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: var(--purple-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(91,42,134,0.4);
+    }
+    .btn-primary:disabled {
+      background: var(--border);
+      color: var(--muted);
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+    .btn-secondary {
+      background: white;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+    .btn-secondary:hover { border-color: var(--purple); color: var(--purple); }
+    .btn-large { padding: 16px 36px; font-size: 16px; }
+    .btn-success {
+      background: var(--green);
+      color: white;
+    }
+    .btn-success:hover { background: #0a5640; }
+
+    /* ── Valgkort (state 2) ──────────────────────────────── */
+    .choice-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin: 1.5rem 0;
+    }
+    .choice-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+    .choice-card:hover {
+      border-color: var(--purple);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+    .choice-card.selected {
+      border-color: var(--purple);
+      border-width: 3px;
+      box-shadow: 0 0 0 4px rgba(91,42,134,0.12), var(--shadow);
+    }
+    .choice-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 28px; height: 28px;
+      background: var(--purple);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .choice-icon {
+      width: 56px; height: 56px;
+      margin-bottom: 1rem;
+    }
+    .choice-card h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      color: var(--text);
+    }
+    .choice-card .choice-desc {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+    .program-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 1rem;
+    }
+    .program-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-size: 13px;
+      font-weight: 600;
+      user-select: none;
+    }
+    .program-check:hover:not(.disabled) {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .program-check.checked {
+      border-color: var(--purple);
+      background: var(--purple-light);
+      color: var(--purple);
+    }
+    .program-check.disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .program-check .pc-box {
+      width: 18px; height: 18px;
+      border: 2px solid var(--border);
+      border-radius: 4px;
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: white;
+      transition: all 0.15s;
+    }
+    .program-check.checked .pc-box {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: white;
+    }
+    .program-check .pc-icon {
+      width: 18px; height: 18px;
+      flex-shrink: 0;
+    }
+    .order-row {
+      margin-top: 1rem;
+      display: none;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    .order-row.show { display: flex; }
+    .order-row select {
+      flex: 1;
+      padding: 8px 10px;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      background: white;
+      cursor: pointer;
+    }
+    .pill-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 0.5rem;
+    }
+    .pill-list .pill {
+      background: var(--grey);
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .choice-error {
+      display: none;
+      background: var(--red-light);
+      color: var(--red);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 0.5rem;
+    }
+    .choice-error.show { display: block; }
+    .start-bar {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .lock-warn {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* ── Modul-sektion ───────────────────────────────────── */
+    .module {
+      background: white;
+      border-radius: var(--radius-lg);
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .module-header {
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s;
+    }
+    .module-header:hover { background: var(--bg); }
+    .module-letter {
+      width: 36px; height: 36px;
+      background: var(--purple);
+      color: white;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .module-title-wrap { flex: 1; }
+    .module-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+    .module-sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+    .module-toggle {
+      width: 32px; height: 32px;
+      background: var(--purple-light);
+      color: var(--purple);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      font-weight: 400;
+      transition: transform 0.25s;
+      flex-shrink: 0;
+    }
+    .module.open .module-toggle { transform: rotate(45deg); }
+    .module-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+      padding: 0 1.5rem;
+    }
+    .module.open .module-body {
+      max-height: 12000px;
+      padding: 0.25rem 1.5rem 1.75rem;
+    }
+
+    /* ── Indhold inde i moduler ──────────────────────────── */
+    .prose {
+      font-size: 15px;
+      line-height: 1.75;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .prose strong { color: var(--text); font-weight: 700; }
+    h3.subhead {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 1.25rem 0 0.6rem;
+    }
+    .numbered-list, .bullet-list {
+      padding-left: 1.3rem;
+      margin-bottom: 1.25rem;
+    }
+    .numbered-list li, .bullet-list li {
+      font-size: 14px;
+      line-height: 1.7;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── Kodeblok ────────────────────────────────────────── */
+    .code-block {
+      background: #1e2a3a;
+      color: #e2f0fb;
+      border-radius: 10px;
+      padding: 1rem 1.15rem;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      line-height: 1.65;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+      overflow-x: auto;
+    }
+    .code-label {
+      display: inline-block;
+      background: var(--purple-light);
+      color: var(--purple);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    /* ── Øvelsesboks ─────────────────────────────────────── */
+    .practice {
+      background: var(--orange-light);
+      border-radius: 12px;
+      padding: 1rem 1.15rem;
+      margin-bottom: 1.25rem;
+      border-left: 3px solid var(--orange);
+    }
+    .practice-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--orange);
+      margin-bottom: 0.5rem;
+    }
+    .practice ol { padding-left: 1.2rem; }
+    .practice li, .practice p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+    }
+    .practice li { margin-bottom: 4px; }
+
+    /* ── Opsummering ─────────────────────────────────────── */
+    .summary {
+      background: var(--purple);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.5rem;
+      color: white;
+      margin: 1.5rem 0 1.25rem;
+    }
+    .summary h3 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 19px;
+      font-weight: 400;
+      margin-bottom: 0.75rem;
+    }
+    .summary ul { padding-left: 1.2rem; }
+    .summary li {
+      font-size: 14px;
+      line-height: 1.75;
+      opacity: 0.94;
+      margin-bottom: 4px;
+    }
+
+    /* ── Quiz/Eksamen CTA ────────────────────────────────── */
+    .next-cta {
+      background: white;
+      border: 2px solid var(--purple);
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      margin-top: 1.5rem;
+    }
+    .next-cta-icon { font-size: 36px; margin-bottom: 0.5rem; }
+    .next-cta h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+    .next-cta p {
+      font-size: 14px;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    .next-cta .req {
+      display: inline-block;
+      background: var(--yellow-bg);
+      color: var(--yellow-txt);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Quiz UI ─────────────────────────────────────────── */
+    .quiz-card {
+      background: white;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .quiz-header {
+      background: var(--purple);
+      color: white;
+      padding: 1.75rem 2rem 1.5rem;
+    }
+    .quiz-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.18);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 99px;
+      margin-bottom: 0.5rem;
+    }
+    .quiz-header h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 26px;
+      font-weight: 400;
+      margin-bottom: 0.25rem;
+    }
+    .quiz-header p {
+      font-size: 14px;
+      opacity: 0.85;
+    }
+    .quiz-progress {
+      padding: 1.25rem 2rem 0;
+    }
+    .quiz-prog-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .quiz-prog-track {
+      height: 6px;
+      background: var(--border);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+    .quiz-prog-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 99px;
+      transition: width 0.4s ease;
+    }
+    .quiz-question-wrap { padding: 1.5rem 2rem 0; }
+    .q-number {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--purple);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .q-text {
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--text);
+    }
+    .quiz-options {
+      padding: 1.25rem 2rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 13px 16px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.5;
+      width: 100%;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--purple);
+      background: var(--purple-light);
+      transform: translateY(-1px);
+    }
+    .option-letter {
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--white);
+      border: 2px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      transition: all 0.15s;
+    }
+    .option-btn:hover:not(:disabled) .option-letter {
+      background: var(--purple);
+      border-color: var(--purple);
+      color: white;
+    }
+    .option-btn.correct {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .option-btn.correct .option-letter {
+      background: var(--green);
+      border-color: var(--green);
+      color: white;
+    }
+    .option-btn.wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+    .option-btn.wrong .option-letter {
+      background: var(--red);
+      border-color: var(--red);
+      color: white;
+    }
+    .option-btn.dimmed { opacity: 0.55; }
+    .option-btn:disabled { cursor: default; }
+    .quiz-feedback {
+      display: none;
+      margin: 1rem 2rem 0;
+      padding: 0.85rem 1rem;
+      border-radius: 8px;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .quiz-feedback.show { display: flex; gap: 8px; align-items: flex-start; }
+    .quiz-feedback.correct-fb {
+      background: var(--green-light);
+      color: var(--green);
+      border-left: 3px solid var(--green);
+    }
+    .quiz-feedback.wrong-fb {
+      background: var(--red-light);
+      color: var(--red);
+      border-left: 3px solid var(--red);
+    }
+    .feedback-icon {
+      font-size: 18px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .quiz-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.25rem 2rem 0;
+    }
+    .quiz-next-wrap {
+      padding: 1.25rem 2rem 1.75rem;
+      display: flex;
+      justify-content: flex-end;
+    }
+    .btn-next {
+      display: none;
+      background: var(--purple);
+      color: white;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 11px 24px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-next:hover { background: var(--purple-dark); transform: translateY(-1px); }
+    .btn-next.show { display: inline-flex; gap: 6px; align-items: center; }
+
+    /* ── Quiz resultat ───────────────────────────────────── */
+    .quiz-result {
+      display: none;
+      padding: 2rem;
+      text-align: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    .quiz-result.show { display: flex; }
+    .result-icon {
+      font-size: 56px;
+      margin-bottom: 0.75rem;
+      animation: pop 0.5s cubic-bezier(.36,1.6,.6,1) both;
+    }
+    @keyframes pop {
+      0%   { transform: scale(0.4); opacity: 0; }
+      100% { transform: scale(1);   opacity: 1; }
+    }
+    .result-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+    .result-sub {
+      font-size: 15px;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+      max-width: 380px;
+      line-height: 1.6;
+    }
+    .score-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 24px;
+      border-radius: 99px;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .score-badge.pass { background: var(--green-light); color: var(--green); }
+    .score-badge.fail { background: var(--red-light);   color: var(--red); }
+    .result-message {
+      background: var(--bg);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+      text-align: left;
+      width: 100%;
+      max-width: 520px;
+      margin-bottom: 1.25rem;
+    }
+    .result-message strong { color: var(--text); }
+    .result-btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-retry {
+      background: white;
+      border: 2px solid var(--border);
+      color: var(--text);
+      padding: 11px 24px;
+      border-radius: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .btn-retry:hover { border-color: var(--purple); color: var(--purple); }
+
+    /* ── Eksamen UI (alle spørgsmål synlige) ─────────────── */
+    .exam-intro {
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 1.75rem 1.5rem;
+      box-shadow: var(--shadow);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--purple);
+    }
+    .exam-intro h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 24px;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+    }
+    .exam-intro p { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 0.5rem; }
+    .exam-intro .req-row {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.85rem;
+    }
+    .exam-req-pill {
+      background: var(--purple-light);
+      color: var(--purple);
+      padding: 5px 11px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .exam-question {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 12px rgba(91,42,134,0.06);
+      border: 1px solid var(--border);
+    }
+    .exam-question .q-number {
+      color: var(--purple);
+    }
+    .exam-question .q-text {
+      font-size: 15.5px;
+      margin-bottom: 1rem;
+    }
+    .exam-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .exam-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 13px;
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: white;
+      font-size: 14px;
+      line-height: 1.5;
+      user-select: none;
+    }
+    .exam-option:hover:not(.locked) {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .exam-option.selected {
+      border-color: var(--purple);
+      background: var(--purple-light);
+    }
+    .exam-option.correct {
+      border-color: var(--green);
+      background: var(--green-light);
+    }
+    .exam-option.wrong {
+      border-color: var(--red);
+      background: var(--red-light);
+    }
+    .exam-option .opt-letter {
+      width: 24px; height: 24px;
+      background: var(--grey);
+      color: var(--muted);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .exam-option.selected .opt-letter,
+    .exam-option.correct .opt-letter,
+    .exam-option.wrong .opt-letter {
+      color: white;
+    }
+    .exam-option.selected .opt-letter { background: var(--purple); }
+    .exam-option.correct .opt-letter  { background: var(--green); }
+    .exam-option.wrong .opt-letter    { background: var(--red); }
+    .exam-explanation {
+      display: none;
+      margin-top: 0.85rem;
+      padding: 0.75rem 1rem;
+      background: var(--bg);
+      border-radius: 8px;
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: var(--muted);
+      border-left: 3px solid var(--purple);
+    }
+    .exam-explanation.show { display: block; }
+    .exam-explanation strong { color: var(--text); }
+
+    .exam-submit-bar {
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.25rem;
+      margin-top: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .exam-progress-text {
+      font-size: 14px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .exam-result-card {
+      display: none;
+      background: white;
+      border-radius: var(--radius-lg);
+      padding: 2rem 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow);
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+    .exam-result-card.show { display: block; }
+    .exam-result-card.passed { border-top: 4px solid var(--green); }
+    .exam-result-card.failed { border-top: 4px solid var(--red); }
+
+    /* ── Bevis ───────────────────────────────────────────── */
+    .bevis-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 0;
+    }
+    .bevis-card {
+      background: linear-gradient(135deg, #fdfcf7 0%, #f8f4ed 100%);
+      border: 3px double var(--gold);
+      border-radius: var(--radius-lg);
+      padding: 3rem 2.5rem;
+      max-width: 640px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+      animation: bevisIn 0.7s cubic-bezier(.36,1.6,.6,1) both;
+    }
+    @keyframes bevisIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .bevis-card::before, .bevis-card::after {
+      content: '';
+      position: absolute;
+      width: 40px; height: 40px;
+      border: 2px solid var(--gold);
+    }
+    .bevis-card::before {
+      top: 12px; left: 12px;
+      border-right: none;
+      border-bottom: none;
+    }
+    .bevis-card::after {
+      bottom: 12px; right: 12px;
+      border-left: none;
+      border-top: none;
+    }
+    .bevis-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 1.5rem;
+    }
+    .bevis-logo-icon {
+      width: 36px; height: 36px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .bevis-logo-icon svg { width: 18px; height: 18px; fill: white; }
+    .bevis-logo-text { font-weight: 700; font-size: 17px; }
+    .bevis-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: white;
+      padding: 5px 14px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    .bevis-card h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 32px;
+      font-weight: 400;
+      line-height: 1.2;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .bevis-card h1 .accent {
+      color: var(--purple);
+    }
+    .bevis-programs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.25rem 0;
+    }
+    .bevis-prog-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--green-light);
+      color: var(--green);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .bevis-date {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 1rem 0;
+      letter-spacing: 0.04em;
+    }
+    .bevis-text {
+      font-size: 14px;
+      color: var(--text);
+      line-height: 1.7;
+      max-width: 460px;
+      margin: 0 auto 1.5rem;
+    }
+    .bevis-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+    }
+
+    /* ── Print-styling ───────────────────────────────────── */
+    @media print {
+      nav, .topbar, .bevis-actions { display: none !important; }
+      body { background: white; }
+      .container { padding: 0; max-width: none; }
+      .bevis-wrap { padding: 0; }
+      .bevis-card { box-shadow: none; border-radius: 0; max-width: none; }
+    }
+
+    /* ── Responsivt ──────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .container { padding: 1.25rem 1rem 3rem; }
+      .hero { padding: 2rem 1.25rem 1.75rem; }
+      .hero h1 { font-size: 30px; }
+      .hero p { font-size: 14.5px; }
+      .choice-grid { grid-template-columns: 1fr; }
+      .program-grid { grid-template-columns: 1fr 1fr; }
+      .module-header { padding: 1rem 1.1rem; gap: 0.75rem; }
+      .module.open .module-body { padding: 0.25rem 1.1rem 1.5rem; }
+      .quiz-header { padding: 1.25rem 1.25rem; }
+      .quiz-progress, .quiz-question-wrap, .quiz-options, .quiz-next-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
+      .quiz-feedback { margin-left: 1.25rem; margin-right: 1.25rem; }
+      .quiz-divider { margin-left: 1.25rem; margin-right: 1.25rem; }
+      .quiz-result { padding: 1.5rem 1.25rem; }
+      .step-label { display: none; }
+      .bevis-card { padding: 2rem 1.5rem; }
+      .bevis-card h1 { font-size: 26px; }
+      .exam-question { padding: 1rem 1.1rem; }
+      .exam-submit-bar { padding: 0.85rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">SK8 — AI til dokumenter</span>
+</nav>
+
+<!-- ═══ TOPBAR PROGRESS (skjult indtil forløb starter) ═══ -->
+<div class="topbar" id="topbar">
+  <div class="topbar-inner">
+    <div class="topbar-meta">
+      <span id="topbar-label">Dit forløb</span>
+      <span id="topbar-pct">0%</span>
+    </div>
+    <div class="topbar-track">
+      <div class="topbar-fill" id="topbar-fill" style="width:0%"></div>
+    </div>
+    <div class="steps-bar" id="steps-bar"></div>
+  </div>
+</div>
+
+<!-- ═══ HOVED-INDHOLD ═══ -->
+<div class="container" id="container">
+  <!-- States indsættes her dynamisk -->
+</div>
+
+<script>
+/* =====================================================================
+   GLOBAL STATE
+   ===================================================================== */
+const courseState = {
+  userChoice: null,
+  selectedPrograms: [],
+  programOrder: [],
+  stateQueue: [],
+  currentStateIndex: 0,
+  completedStates: [],
+  quizScores: {},
+  examScores: {},
+  startTime: null,
+  locked: false
+};
+
+const PROGRAM_LABELS = {
+  excel:  'Excel',
+  word:   'Word',
+  ppt:    'PowerPoint',
+  slides: 'Google Slides'
+};
+
+const PROGRAM_SHORT = { excel: 'XL', word: 'W', ppt: 'PP', slides: 'GS' };
+
+/* =====================================================================
+   DEEP-INDHOLD: EXCEL
+   ===================================================================== */
+const DEEP_CONTENT = {
+  excel: {
+    m1: {
+      heroTitle: 'Excel og AI: fra regnearket til din assistent',
+      heroSub: 'Modul 1 af 2 — Få AI til at forstå, debugge og analysere dine data.',
+      heroBadge: 'Excel · Modul 1 af 2',
+      sections: [
+        {
+          title: 'Hvad AI faktisk kan i Excel',
+          subtitle: 'Det handler om mere end formler.',
+          html: `
+            <p class="prose">Mange tror AI til Excel handler om at skrive formler automatisk. Det er kun toppen af isbjerget. AI kan hjælpe dig med at <strong>forstå</strong> hvad en formel gør, foreslå bedre datastrukturer, opdage fejl du ikke selv ser, og forklare resultater på dansk.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Kontekst er alt</div>
+              <p>Kopier altid de relevante kolonneoverskrifter og 2-3 rækker med data ind i din prompt. AI kan ikke se dit regneark medmindre du viser den det.</p>
+            </div>
+            <div class="info-box box-yellow">
+              <div class="info-box-title">⚠ AI laver fejl i Excel</div>
+              <p>Tjek altid output. Særligt komplekse array-formler og <code>LAMBDA</code>-funktioner skal verificeres manuelt — også når formlen "ser rigtig ud".</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Giv AI dit regneark</div>
+              <ol>
+                <li>Åbn et Excel-ark du arbejder med til daglig.</li>
+                <li>Kopier de første 5 rækker inkl. overskrifter.</li>
+                <li>Send det til Claude eller ChatGPT med prompten: <em>"Her er et udsnit af mit regneark: [indsæt]. Hvad er de 3 mest åbenlyse problemer med denne datastruktur, og hvordan vil du anbefale at jeg strukturerer det bedre?"</em></li>
+                <li>Implementér én af anbefalingerne.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Formler og funktioner med AI',
+          subtitle: 'Det handler ikke om at AI skriver dine formler — det handler om at du forstår hvad du beder om.',
+          html: `
+            <p class="prose">Fire teknikker du bruger igen og igen — alle kræver at du giver AI nok kontekst til at svare præcist.</p>
+            <span class="code-label">Teknik 1 — Forklar en formel</span>
+            <div class="code-block">Forklar hvad denne formel gør trin for trin, og fortæl mig hvad der sker hvis en af cellerne er tom: =IFERROR(VLOOKUP(A2,Tabel!$A:$C,3,FALSE),"")</div>
+            <span class="code-label">Teknik 2 — Byg en formel fra en beskrivelse</span>
+            <div class="code-block">Jeg har et ark med kolonnerne: Dato (A), Sælger (B), Region (C), Salg (D). Skriv en formel der summer alt salg fra region 'Nord' i måneden januar 2024. Forklar hvert argument.</div>
+            <span class="code-label">Teknik 3 — Debug en formel der fejler</span>
+            <div class="code-block">Denne formel returnerer #REF! fejl: [indsæt formel]. Her er min datastruktur: [indsæt]. Hvad er problemet og hvordan fixer jeg det?</div>
+            <span class="code-label">Teknik 4 — Omskriv til en mere robust formel</span>
+            <div class="code-block">Denne formel virker men bryder hvis jeg tilføjer rækker: [indsæt]. Omskriv den så den er dynamisk og håndterer nye rækker automatisk.</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Debug en rigtig formel</div>
+              <ol>
+                <li>Find en formel i dit eget regneark du ikke er 100% sikker på hvad gør.</li>
+                <li>Brug Teknik 1 til at få den forklaret.</li>
+                <li>Notér: Var der noget der overraskede dig?</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Dataanalyse og rapporter med AI',
+          subtitle: 'Fra rå tal til indsigter du kan præsentere.',
+          html: `
+            <p class="prose">Når du har data, er det næste spørgsmål altid: <strong>hvad betyder det?</strong> AI kan hjælpe dig med at stille de rigtige spørgsmål til dine data — og formulere svarene på en måde du kan præsentere.</p>
+            <div class="info-box box-green">
+              <div class="info-box-title">Analyse-workflow — kør dette i én samtale</div>
+              <p><strong>Trin 1:</strong> "Her er mine data: [indsæt]. Hvilke 3 mønstre eller tendenser springer ud til dig?"</p>
+              <p style="margin-top:6px;"><strong>Trin 2:</strong> "Hvad er de 2 mest overraskende tal, og hvad kunne forklare dem?"</p>
+              <p style="margin-top:6px;"><strong>Trin 3:</strong> "Skriv en kort executive summary på maks 5 sætninger baseret på disse data til en leder der ikke har tid til at læse tallene selv."</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Analyser dine egne data</div>
+              <ol>
+                <li>Tag et regneark med mindst 10 rækker data.</li>
+                <li>Kør hele analyse-workflowet ovenfor.</li>
+                <li>Mål: Få et executive summary du faktisk ville sende til en kollega.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'AI kan forklare, bygge og debugge formler — men du skal give kontekst',
+        'Kopier altid relevante data og overskrifter ind i prompten',
+        'Brug analyse-workflowet til at trække indsigter ud af dine data',
+        'Tjek altid AI\'s formler manuelt'
+      ]
+    },
+    m2: {
+      heroTitle: 'Excel på ekspertniveau med AI',
+      heroSub: 'Modul 2 af 2 — Pivot, automatisering og avanceret kvalitetssikring.',
+      heroBadge: 'Excel · Modul 2 af 2',
+      sections: [
+        {
+          title: 'Pivot-tabeller og avanceret datamodellering',
+          subtitle: 'Beskriv hvad du vil se — i stedet for at lære alle knapperne udenad.',
+          html: `
+            <p class="prose">Pivot-tabeller er Excel's mest kraftfulde funktion — og den som de fleste undgår fordi den virker kompliceret. Med AI som guide kan du opbygge avancerede pivot-analyser ved at beskrive hvad du vil se frem for at lære alle knapperne udenad.</p>
+            <div class="info-box box-grey">
+              <div class="info-box-title">Prompt-skabelon til pivot-hjælp</div>
+              <p>"Jeg har et ark med kolonnerne [list]. Jeg vil lave en pivot-tabel der viser [hvad du vil se]. Beskriv trin for trin hvordan jeg opsætter den, og forklar hvad jeg skal placere i Rækker, Kolonner, Værdier og Filtre."</p>
+            </div>
+            <div class="info-box box-purple">
+              <div class="info-box-title">Beregnede felter — det næste niveau</div>
+              <p>Bed AI om at hjælpe med beregnede felter (f.eks. <code>Bruttomargin = Salg - Omkostning</code>) når dine standard-felter ikke er nok. Beskriv beregningen i ord; AI oversætter den til pivot-syntaks.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Pivot fra bunden</div>
+              <ol>
+                <li>Tag et datasæt med mindst 3 dimensioner og én værdi.</li>
+                <li>Brug skabelonen ovenfor til at få en trin-for-trin guide.</li>
+                <li>Stil opfølgende spørgsmål til AI når du sidder fast.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Automatisering med AI — fra makro til Power Query',
+          subtitle: 'AI skriver koden. Du forstår hvad den gør.',
+          html: `
+            <p class="prose">VBA-makroer og Power Query er Excel's automatiseringslag. AI kan skrive begge dele — men du skal kunne læse og verificere koden, fordi en forkert makro kan slette data uden at fortryde-knappen virker.</p>
+            <div class="info-box box-red">
+              <div class="info-box-title">⚠ Kør aldrig AI-makro uden review</div>
+              <p>Makroer kan slette data, sende filer eller ændre indstillinger. Bed altid AI forklare koden linje for linje, og test den på en kopi af din fil først.</p>
+            </div>
+            <span class="code-label">Teknik — Skriv en makro</span>
+            <div class="code-block">Skriv en VBA-makro der: (1) løber gennem alle ark, (2) finder rækker hvor kolonne C er tom, (3) sletter dem. Min datastruktur er: [indsæt]. Tilføj fejlhåndtering og en bekræftelsesdialog inden sletning.</div>
+            <span class="code-label">Teknik — Forklar en makro</span>
+            <div class="code-block">Forklar denne VBA-kode linje for linje. Marker særligt steder hvor der er risiko for at slette eller overskrive data: [indsæt kode]</div>
+            <span class="code-label">Teknik — Power Query i stedet for makro</span>
+            <div class="code-block">Jeg vil samle data fra 5 forskellige ark i én tabel. Skriv det som Power Query M-kode i stedet for en makro, og forklar hvordan jeg indsætter koden.</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Erstat en manuel proces</div>
+              <ol>
+                <li>Identificér en manuel Excel-proces du gentager.</li>
+                <li>Beskriv processen for AI og bed om en løsning.</li>
+                <li>Test på en kopi. Få AI til at forklare hver linje.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Kvalitetssikring og fejlsøgning på ekspertniveau',
+          subtitle: 'Få AI til at reviewe hele dit regneark som en revisor.',
+          html: `
+            <p class="prose">På ekspertniveau bruger du AI til at finde fejl du ikke selv kan se: inkonsistente formler, hardcodede værdier, manglende datavalidering, og logiske fejl der først viser sig når data ændres.</p>
+            <div class="info-box box-green">
+              <div class="info-box-title">Regneark-review prompt</div>
+              <p>"Du er en Excel-ekspert og revisor. Find: (1) inkonsistente formler, (2) hardcodede værdier der burde være formler, (3) manglende fejlhåndtering, (4) datastruktur-problemer der kan skabe fejl. Her er regnearket: [indsæt]"</p>
+            </div>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Stress-test prompt</div>
+              <p>"Hvad sker der med min model hvis: (a) en celle bliver tom, (b) en sælger får et nyt navn med stavefejl, (c) jeg tilføjer en række i midten? Identificér de 3 sandsynlige fejlpunkter."</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Review dit vigtigste regneark</div>
+              <ol>
+                <li>Tag det regneark du sender mest til ledelsen.</li>
+                <li>Kør review-prompten på et udsnit.</li>
+                <li>Implementér mindst 2 anbefalinger.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Pivot-tabeller med AI som guide — beskriv resultatet, ikke knapperne',
+        'VBA og Power Query med AI — du skal forstå koden',
+        'Avanceret kvalitetssikring og regneark-review',
+        'Stress-test din model før den når en kunde eller leder'
+      ]
+    },
+    quiz: [
+      { q: "Du vil have AI til at skrive en VLOOKUP-formel. Hvad er det vigtigste du skal give AI ud over selve spørgsmålet?", options: ["Navnet på din Excel-version","Dine kolonneoverskrifter og et par eksempelrækker med data","Et screenshot af dit ark","Formlen du allerede har forsøgt"], correct: 1, explanation: "AI kan ikke se dit regneark. Uden kolonneoverskrifter og eksempeldata er formlen blind gætværk." },
+      { q: "En VLOOKUP returnerer #N/A. Du vil debugge med AI. Hvad er den mest effektive prompt?", options: ["\"Min VLOOKUP virker ikke, hjælp mig\"","\"Hvad betyder #N/A fejl i Excel?\"","\"Denne VLOOKUP returnerer #N/A: [formel]. Min opslagstabel hedder 'Kunder' og ser sådan ud: [indsæt]. Hvad er problemet?\"","\"Skriv en ny VLOOKUP til mig\""], correct: 2, explanation: "Kontekst er afgørende ved debugging. AI har brug for den faktiske formel og datastrukturen." },
+      { q: "Du har et datasæt med 500 rækker salgsdata. Hvordan bruger du AI bedst til at analysere det?", options: ["Kopiér alle 500 rækker ind i prompten","Kopiér de første 10 rækker, overskrifter og et spørgsmål om hvad du vil vide","Bed AI om at åbne filen direkte","Skriv en VBA-makro med AI's hjælp"], correct: 1, explanation: "AI behøver ikke alle rækker. Overskrifter + et repræsentativt udsnit er nok." },
+      { q: "AI skriver en kompleks array-formel til dig. Hvad er dit første skridt?", options: ["Sæt den direkte ind i regnearket og gem","Bed AI forklare hvert argument inden du bruger den","Del den med en kollega","Test den på et tilfældigt celleområde"], correct: 1, explanation: "Du skal forstå hvad du indsætter — bed altid om en trinvis forklaring." },
+      { q: "Hvad er det primære formål med 'analyse-workflowet'?", options: ["At erstatte en dataanalytiker","At lade AI generere automatiske dashboards","At stille de rigtige spørgsmål til dine data og formulere indsigter du kan præsentere","At importere data fra eksterne kilder"], correct: 2, explanation: "AI er en sparringspartner. Workflowet tvinger dig til præcision." },
+      { q: "Du skal skrive et executive summary baseret på salgsdata. Hvad er den mest effektive AI-tilgang?", options: ["'Skriv et executive summary' uden yderligere kontekst","Kopiere alle data ind og bede AI finde mønstre selv","Køre analyse-workflowets tre trin i rækkefølge i én samtale","Bede AI om at lave et PowerPoint-slide"], correct: 2, explanation: "Hvert trin bygger på det forrige — markant bedre end én bred prompt." }
+    ],
+    exam: [
+      { q: "Din pivot-tabel viser forkerte summer. Du har givet AI fejlbeskrivelsen. Hvad er det første du tjekker inden du følger AI's råd?", options: ["Om AI har forstået spørgsmålet","Om din datastruktur matcher det AI har antaget","Om du har den nyeste Excel-version","Om pivot-tabellens formatering er korrekt"], correct: 1, explanation: "AI svarer ud fra hvad du har fortalt den. Verificér antagelserne." },
+      { q: "Du har en LAMBDA-funktion AI har skrevet. Den ser elegant ud, men du forstår den ikke 100%. Hvad er den faglige korrekte tilgang?", options: ["Brug den","Bed AI dele LAMBDA op i mindre, navngivne hjælpeformler du kan teste hver for sig","Kopier den til en kollega","Konvertér den manuelt"], correct: 1, explanation: "Komplekse LAMBDA er svære at debugge. Decomposition gør det testbart." },
+      { q: "Du beder AI skrive en VBA-makro der rydder op. Hvad er det MINDSTE du skal gøre før du kører den?", options: ["Læse koden hurtigt igennem","Få AI til at forklare hver linje OG teste makroen på en kopi","Køre den og se hvad der sker","Sende makroen til IT"], correct: 1, explanation: "Makroer kan slette data uden fortryd. Forklaring + kopi-test er minimum." },
+      { q: "Du skal lave en månedsrapport baseret på 1.200 rækker data. Du har 30 minutter. Hvad er den smarteste AI-strategi?", options: ["Kopiér alle 1.200 rækker til AI","Bed AI skrive en pivot-struktur, byg pivoten, og brug analyse-workflowet på pivotens output","Bed AI skrive en VBA-makro","Lav rapporten manuelt"], correct: 1, explanation: "Pivoten reducerer 1.200 rækker til en håndfuld aggregerede tal AI kan analysere." },
+      { q: "AI's regneark-review påpeger 'inkonsistente formler i kolonne F'. Hvad gør du først?", options: ["Retter alle formler i kolonne F","Beder AI vise præcist hvilke rækker der er inkonsistente og hvad forskellen er","Ignorerer det","Sletter kolonne F"], correct: 1, explanation: "AI's review er en hypotese. Konkrete rækkenumre giver grundlag for at vurdere selv." },
+      { q: "En kollega har lagt mange hardcodede tal ind. Hvordan bruger du bedst AI til at rydde op?", options: ["Bed AI gennemgå arket og finde alle steder hvor et hardcoded tal burde være en formel — med begrundelse","Slet alle tal og lad AI bygge fra bunden","Bed AI skrive én stor formel","Kontakt kollegaen"], correct: 0, explanation: "AI er god til at spotte mønstre. Begrundelsen er kritisk." },
+      { q: "Power Query-forespørgsel fejler ved opdatering af kilden. Den mest effektive debug-prompt?", options: ["\"Min Power Query virker ikke. Fix den.\"","\"Her er M-koden: [indsæt]. Her er fejlbeskeden: [indsæt]. Her er ændringen i kildefilen: [beskriv]. Hvad er årsagen?\"","\"Skriv koden om fra bunden\"","\"Hvilken Excel-version understøtter Power Query bedst?\""], correct: 1, explanation: "Power Query fejler typisk når kilden ændres. Kode + fejl + ændring = hurtig diagnose." },
+      { q: "Hvad er den primære risiko ved at bruge AI til avancerede Excel-opgaver?", options: ["AI er for langsom","Du implementerer kode/formler du ikke selv forstår — og kan ikke opdage fejl","AI tager tid fra at lære Excel","Excel-versioner er forskellige"], correct: 1, explanation: "En formel du ikke forstår er en tikkende bombe." },
+      { q: "Du laver en bonusberegning der bruges af 50 sælgere. AI har skrevet logikken. Hvad er den korrekte verifikationsproces?", options: ["Test med ét eksempel og rul ud","Bed AI generere edge cases (sælger med 0 salg, over loft, negativ retur) og test alle manuelt","Stol på AI når formlen ser logisk ud","Send til revision"], correct: 1, explanation: "Edge cases er der hvor formler bryder. Bonusberegninger har konsekvenser for løn." },
+      { q: "Du sidder med et regneark fra en tidligere medarbejder. Det virker, men du ved ikke hvordan. Optimal AI-workflow?", options: ["Bed AI omskrive hele arket","Brug review-prompten til overblik, og bed derefter AI forklare hver formel i kritiske celler — med fokus på antagelser","Slet det og start forfra","Brug det som det er"], correct: 1, explanation: "Antagelser er nøglen til forståelse af andres regneark." }
+    ]
+  },
+  word: {
+    m1: {
+      heroTitle: 'Word og AI: fra dokument til professionelt output',
+      heroSub: 'Modul 1 af 2 — Få AI til at forstå tone, struktur og formål.',
+      heroBadge: 'Word · Modul 1 af 2',
+      sections: [
+        {
+          title: 'Hvad AI faktisk kan i Word',
+          subtitle: 'Det er ikke en stavekontrol med ekstra dampkraft.',
+          html: `
+            <p class="prose">AI i Word er ikke bare en bedre stavekontrol. Den kan ændre tonen i et helt dokument, omstrukturere kapitler, finde inkonsistenser i terminologi, og skrive resuméer der faktisk fanger pointen. Men hvert af disse skift kræver at du fortæller AI hvilken målgruppe og hvilket formål teksten har.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Tre lag — i denne rækkefølge</div>
+              <p><strong>1. Formål:</strong> Hvad skal læseren gøre efter at have læst det?<br><strong>2. Målgruppe:</strong> Hvad ved de? Hvad bekymrer de sig om?<br><strong>3. Tone:</strong> Formel, varm, teknisk, sælgende?</p>
+            </div>
+            <div class="info-box box-yellow">
+              <div class="info-box-title">⚠ Word kan få AI til at virke for kompetent</div>
+              <p>Et velformatteret dokument med god tone <em>virker</em> autoritativt — også når indholdet er forkert. Faktatjek alt påstandsbaseret indhold før du sender.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tre lag på et eksisterende dokument</div>
+              <ol>
+                <li>Tag et dokument du har skrevet, og kopier det.</li>
+                <li>Bed AI: "Dette dokument skal [formål], til [målgruppe], i en [tone]-tone. Omskriv første afsnit så de tre lag matcher."</li>
+                <li>Sammenlign — kan du mærke forskellen?</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Skriv og omskriv med AI',
+          subtitle: 'Rolleprompts og iterativ forfining giver dokumenter der ikke lyder AI-genererede.',
+          html: `
+            <p class="prose">Det dårlige AI-skrevne Word-dokument lyder generisk fordi det er skrevet til alle. Det gode lyder skrevet af én person til én anden — fordi du har givet AI både en rolle og en relation.</p>
+            <span class="code-label">Teknik — Rolleprompt med relation</span>
+            <div class="code-block">Du er en erfaren projektleder der skriver til en travl direktør I har haft samarbejde med i 3 år. I har en uformel, direkte tone. Skriv et statusbrev der dækker: [punkter]. Maks 200 ord, ingen marketing-sprog.</div>
+            <span class="code-label">Teknik — Tonen-skifter</span>
+            <div class="code-block">Her er teksten: [indsæt]. Omskriv den så den lyder mindre korporat og mere som en person der faktisk bekymrer sig. Behold alle facts og længden cirka samme.</div>
+            <span class="code-label">Teknik — Skæringsprompt</span>
+            <div class="code-block">Skær denne tekst med 40% uden at miste pointen. Identificér først de 3 vigtigste sætninger. Lad alt andet være sekundært.</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Iterativ forfining</div>
+              <ol>
+                <li>Skriv et 1-afsnits dokument med AI på din normale måde.</li>
+                <li>Bed AI: "Identificér 3 ting der får denne tekst til at lyde AI-genereret."</li>
+                <li>Bed AI omskrive med de 3 problemer fixet.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Dokumentstruktur og disposition med AI',
+          subtitle: 'Brug AI til at planlægge dokumentet før du skriver det.',
+          html: `
+            <p class="prose">De fleste skriver dokumenter ved at åbne en blank side og begynde i toppen. Det giver svage strukturer. Brug i stedet AI til at tegne dispositionen først.</p>
+            <div class="info-box box-green">
+              <div class="info-box-title">Disposition-workflow</div>
+              <p><strong>1.</strong> "Jeg skal skrive om [emne] til [målgruppe] med formål [formål]. Foreslå en disposition i 4-6 sektioner."<br><strong>2.</strong> "For hver sektion: hvad er det centrale spørgsmål den skal besvare?"<br><strong>3.</strong> "Hvilken sektion er svagest? Hvad mangler?"</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Disposition før tekst</div>
+              <ol>
+                <li>Vælg et dokument du skal skrive i denne uge.</li>
+                <li>Kør disposition-workflowet før du åbner Word.</li>
+                <li>Skriv først teksten når dispositionen står stærkt.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Tre lag før du skriver: formål, målgruppe, tone',
+        'Rolleprompts med relation fjerner det generiske',
+        'Iterativ forfining: spørg AI hvad der lyder AI-genereret',
+        'Disposition før tekst — strukturen bærer dokumentet'
+      ]
+    },
+    m2: {
+      heroTitle: 'Avanceret Word med AI',
+      heroSub: 'Modul 2 af 2 — Stilguide-enforcement, lange rapporter og review.',
+      heroBadge: 'Word · Modul 2 af 2',
+      sections: [
+        {
+          title: 'Stilguide-enforcement og konsistenstjek',
+          subtitle: 'AI som din interne sprogpolitichef.',
+          html: `
+            <p class="prose">Hvis du arbejder for en organisation har I sandsynligvis en stilguide. AI kan håndhæve den hvis du fodrer den med reglerne.</p>
+            <span class="code-label">Teknik — Stilguide-prompt</span>
+            <div class="code-block">Vores stilguide siger: (1) ingen passive konstruktioner, (2) "kunde" ikke "klient", (3) "vi" ikke "firmaet", (4) maksimum 25 ord per sætning. Gennemgå denne tekst og marker alle overtrædelser med begrundelse: [indsæt]</div>
+            <span class="code-label">Teknik — Konsistenstjek på terminologi</span>
+            <div class="code-block">Find alle steder hvor jeg bruger forskellige ord for det samme begreb (fx "system", "platform", "løsning"). Foreslå én konsistent terminologi.</div>
+            <div class="info-box box-purple">
+              <div class="info-box-title">Brug en gemt prompt-skabelon</div>
+              <p>Hvis du laver dette ofte: gem stilguide-prompten i et notat. Hver gang du skriver et nyt dokument, kører du den som sidste skridt.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Byg din egen stilguide-prompt</div>
+              <ol>
+                <li>Skriv 5 regler ned der gælder for dine dokumenter.</li>
+                <li>Sæt dem ind i prompt-skabelonen.</li>
+                <li>Test på et eksisterende dokument. Gem prompten.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Lange dokumenter og rapporter',
+          subtitle: 'Arbejd afsnit for afsnit — ikke alt på én gang.',
+          html: `
+            <p class="prose">Lange rapporter er der hvor AI laver flest fejl. Konteksten bliver lang, modellen taber tråden, og pludselig skriver den ting der modsiger noget tidligere. Løsningen er at arbejde sektion for sektion.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Rapport-workflow</div>
+              <p><strong>1.</strong> Lav dispositionen i én samtale.<br><strong>2.</strong> For hver sektion: ny samtale, hvor du indsætter dispositionen som kontekst.<br><strong>3.</strong> Til sidst: én samtale hvor du sammenstykker og tjekker for indre modsigelser.</p>
+            </div>
+            <div class="info-box box-yellow">
+              <div class="info-box-title">⚠ Den lange dokuments forbandelse</div>
+              <p>AI begynder ofte at gentage formuleringer i lange dokumenter ("Det er vigtigt at understrege at..."). Bed eksplicit om at undgå genbrug af åbnings- og overgangsfraser.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Sektion-for-sektion</div>
+              <ol>
+                <li>Tag en længere rapport du skal skrive.</li>
+                <li>Lav dispositionen i én samtale.</li>
+                <li>Skriv kun én sektion i den næste samtale.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Review, korrektur og sprogpolitik',
+          subtitle: 'AI som din anden læser — den der ikke har skrevet det selv.',
+          html: `
+            <p class="prose">Det værste ved at korrekturlæse din egen tekst er at du ved hvad der skulle stå. AI har ikke det problem.</p>
+            <span class="code-label">Teknik — Skeptisk reviewer</span>
+            <div class="code-block">Du er en kritisk men konstruktiv reviewer. Læs denne tekst og find: (1) påstande uden belæg, (2) uklare formuleringer, (3) sætninger der kan misforstås, (4) steder hvor jeg taler ned til læseren. Vær konkret med eksempler.</div>
+            <span class="code-label">Teknik — Målgruppe-test</span>
+            <div class="code-block">Læs denne tekst som om du var [målgruppe] der havde 60 sekunder. Hvad er din takeaway? Hvor mister jeg dig?</div>
+            <span class="code-label">Teknik — Faktatjek-flag</span>
+            <div class="code-block">Marker hver faktuel påstand i denne tekst og angiv: kan du verificere det fra teksten alene, eller kræver det ekstern kilde?</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tre reviews i rækkefølge</div>
+              <ol>
+                <li>Tag en tekst du skal sende i denne uge.</li>
+                <li>Kør alle tre teknikker — i rækkefølge.</li>
+                <li>Implementér de vigtigste 5 anbefalinger.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Stilguide som prompt — gem den og kør den hver gang',
+        'Lange rapporter: dispositionen først, så sektion for sektion',
+        'AI som tre forskellige reviewere: skeptiker, målgruppe, faktatjekker',
+        'Konsistenstjek på terminologi inden afsendelse'
+      ]
+    },
+    quiz: [
+      { q: "Hvad er det mest effektive første skridt før du beder AI skrive et Word-dokument?", options: ["Vælge skrifttype og layout","Definere formål, målgruppe og tone","Skrive overskriften først","Vælge dokumentlængden"], correct: 1, explanation: "De tre lag fjerner det generiske." },
+      { q: "Du har skrevet et brev med AI, men det lyder generisk. Mest effektive omskrivnings-prompt?", options: ["\"Gør det bedre\"","\"Identificér 3 ting der får teksten til at lyde AI-genereret, og omskriv med dem fixet\"","\"Skriv det forfra\"","\"Tilføj flere detaljer\""], correct: 1, explanation: "Diagnose før behandling." },
+      { q: "Hvorfor er AI-genereret Word-tekst en risiko?", options: ["AI kan ikke håndtere lange dokumenter","Velformatteret tekst med god tone virker autoritativ — også når indholdet er forkert","Word's stavekontrol slår AI fra","AI kan ikke gemme i .docx"], correct: 1, explanation: "Form lender autoritet til indhold." },
+      { q: "20-siders rapport med AI — mest robuste tilgang?", options: ["Hele rapporten på én gang","Disposition først, derefter sektion for sektion i separate samtaler","Skrive første side selv","Skrive rapporten i Excel"], correct: 1, explanation: "Lange dokumenter er hvor AI taber tråden." },
+      { q: "Styrken ved AI som 'skeptisk reviewer'?", options: ["AI skriver hurtigere","AI har ikke skrevet teksten — den ser fejl du læser over","AI kan oversætte","AI er billigere"], correct: 1, explanation: "Forfatter-blindheden er reel." },
+      { q: "AI markerer 12 stilguide-overtrædelser. Hvad gør du først?", options: ["Implementerer alle 12","Læser hver markering og vurderer — nogle er måske bevidste valg","Beder AI omskrive teksten","Ignorerer markeringerne"], correct: 1, explanation: "Stilguider har undtagelser. Markering er en hypotese." }
+    ],
+    exam: [
+      { q: "En kunde sender en klage. Optimal prompt-struktur?", options: ["\"Skriv et venligt svar på denne klage: [indsæt]\"","\"Du er en kundeservice-leder med 10 års erfaring. Frustreret kunde, 3 års relation. Mål: bevare relation uden at love noget vi ikke kan holde. Tone: empatisk, direkte, ikke undskyldende. Klage: [indsæt]\"","\"Lav et standardsvar til klager\"","\"Gør kunden glad igen\""], correct: 1, explanation: "Rolle, relation, mål, tone og kontekst gør svaret specifikt." },
+      { q: "Et afsnit AI skrev modsiger et tidligere afsnit. Faglig korrekt handling?", options: ["Slet modsigelsen","Bed AI gennemgå hele rapporten for indre modsigelser, og afgør derefter selv","Behold begge sider","Send rapporten"], correct: 1, explanation: "Én modsigelse betyder typisk flere." },
+      { q: "Vigtigste at give videre om stilguide-prompt til ny kollega?", options: ["At de bare skal kopiere den","At AI's markeringer er hypoteser — ikke ordrer. Hver kræver menneskelig vurdering","At de skal opdatere den ofte","At den kun virker på lange dokumenter"], correct: 1, explanation: "Blind implementation er den primære faglige risiko." },
+      { q: "AI skriver faktuelt forkert om en lov. Hvorfor er det farligere i Word end i en chat?", options: ["Word er sværere at redigere","Et formateret dokument bliver arkiveret, sendt videre, og citeret — fejlen lever videre i autoritativ form","Word kan ikke korrigeres","Chat-svar bliver glemt"], correct: 1, explanation: "Outputtet låner autoritet fra sit format." },
+      { q: "Forkort 1.500 ord til 400 — stærkeste AI-tilgang?", options: ["\"Forkort til 400 ord\"","Bed AI først identificere de 5 vigtigste pointer. Bed derefter om en 400-ords version der dækker netop de 5","Slet hvert andet afsnit","Lav et resumé i bunden"], correct: 1, explanation: "Forkortning er et prioriteringsproblem." },
+      { q: "Længere mail til ny chef du ikke kender. Vigtigst at gøre eksplicit?", options: ["Antallet af ord","At du IKKE har en relation endnu — det ændrer fuldstændigt hvad der er passende tone","Tidspunkt for afsendelse","At du vil have et varmt svar"], correct: 1, explanation: "AI antager ofte etableret relation hvis du ikke siger andet." },
+      { q: "Tre AI-reviews peger på modsatrettede ændringer. Faglig tilgang?", options: ["Vælg det første review","Behandl hvert som input fra forskellige interessenter. Skriv ny prompt: 'tre reviewers anbefalinger modsiger hinanden — hjælp mig vurdere hvilken vejer tungest'","Implementér alle tre","Smid dokumentet ud"], correct: 1, explanation: "Modsætninger afslører at to forskellige hensyn trækker hver sin vej." },
+      { q: "Hvilken Word-opgave er DÅRLIGST egnet til AI?", options: ["Omskrivning af eksisterende tekst","Disposition af en ny rapport","Skrivning af tekst der refererer til specifikke tal, navne og citater du ikke har givet AI eksplicit","Korrektur og review"], correct: 2, explanation: "Hallucination er størst på faktuelle detaljer AI ikke har set." },
+      { q: "25-siders rapport — du beder AI om en gennemskrivning. Primære risiko?", options: ["AI vil tage timer","Konteksten er for lang — AI taber tråden, ændrer ting tilfældigt, introducerer modsigelser","Word kan ikke håndtere så mange sider","AI har ikke adgang til Word"], correct: 1, explanation: "Sektion-for-sektion er den robuste tilgang." },
+      { q: "Vigtigste princip når du integrerer AI i din skriveproces?", options: ["AI skriver — du gemmer","AI er en samarbejdspartner med blinde pletter — du ejer kvaliteten","AI er hurtigere end dig","AI virker bedst med korte dokumenter"], correct: 1, explanation: "Du har autoriteten, ansvaret og det sidste ord." }
+    ]
+  },
+  ppt: {
+    m1: {
+      heroTitle: 'PowerPoint og AI: fra dias til fortælling',
+      heroSub: 'Modul 1 af 2 — Struktur, tekst og visuelt indhold med AI som assistent.',
+      heroBadge: 'PowerPoint · Modul 1 af 2',
+      sections: [
+        {
+          title: 'Disposition og struktur — før du åbner PowerPoint',
+          subtitle: 'Det dårligste sted at planlægge en præsentation er i selve præsentations-værktøjet.',
+          html: `
+            <p class="prose">De fleste åbner PowerPoint, vælger en skabelon, og begynder at skrive bullet points. Det er den hurtigste vej til en kedelig præsentation. Brug i stedet AI til at bygge fortællingens struktur før du tænker på dias.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Struktur-prompt</div>
+              <p>"Jeg skal præsentere [emne] for [målgruppe] i [tidsramme]. Mål: [konkret beslutning du vil have publikum til at træffe]. Foreslå en fortællestruktur i 5-7 dias-overskrifter — hvor hver overskrift er en pointe, ikke en tematisk titel."</p>
+            </div>
+            <div class="info-box box-purple">
+              <div class="info-box-title">Pointe-overskrifter er bedre end tema-overskrifter</div>
+              <p>"Salgstal Q3" er en tema-overskrift. "Vi mistede 18% af kunder over 50.000 kr — her er hvorfor" er en pointe-overskrift. Pointe-overskrifter tvinger dig til at vide hvad du faktisk vil sige.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Pointe-overskrifter</div>
+              <ol>
+                <li>Tag en præsentation du for nyligt har lavet.</li>
+                <li>Bed AI omdanne tema-overskrifter til pointe-overskrifter.</li>
+                <li>Spørg dig selv: bliver præsentationen tydeligere?</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Tekst på dias — headlines, bullets og noter',
+          subtitle: 'Mindre tekst, ikke mere — og noter der faktisk er brugbare.',
+          html: `
+            <p class="prose">Tekst på dias har tre niveauer: <strong>headline</strong> (det publikum husker), <strong>bullets</strong> (det de scanner), og <strong>speaker notes</strong> (det du bruger). De tre skal skrives forskelligt.</p>
+            <span class="code-label">Teknik — Slank et dias</span>
+            <div class="code-block">Her er teksten på et dias: [indsæt]. Det er for meget. Reducér til: én headline (max 8 ord), maksimum 3 bullets (max 7 ord hver). Flyt det fjernede til speaker notes.</div>
+            <span class="code-label">Teknik — Speaker notes der virker</span>
+            <div class="code-block">Skriv speaker notes til dette dias der: (1) udvider hver bullet til 1-2 sætninger jeg kan sige højt, (2) inkluderer ét konkret eksempel, (3) markerer hvor publikum forventeligt har spørgsmål.</div>
+            <span class="code-label">Teknik — Headline der bærer pointen</span>
+            <div class="code-block">Min nuværende headline er "Markedsanalyse 2024". Det er en tema-overskrift. Skriv 3 alternative pointe-overskrifter baseret på følgende konklusioner: [indsæt 2-3 sætninger].</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tre niveauer på ét dias</div>
+              <ol>
+                <li>Tag et eksisterende dias der har for meget tekst.</li>
+                <li>Brug de tre teknikker i rækkefølge.</li>
+                <li>Test om du kan præsentere kun fra noter.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Visuelt indhold — beskriv hvad du vil have',
+          subtitle: 'AI kan ikke åbne PowerPoint, men den kan beskrive hvad hver dias skal vise.',
+          html: `
+            <p class="prose">AI kan ikke direkte tegne i PowerPoint, men den kan være en stærk visuel sparringspartner: foreslå hvilken type visualisering der bedst formidler en pointe, beskrive layout, og hjælpe dig vurdere om et eksisterende dias virker.</p>
+            <div class="info-box box-green">
+              <div class="info-box-title">Visualiserings-prompt</div>
+              <p>"Jeg har data der viser [mønster]. Pointen jeg vil formidle er [pointe]. Foreslå 3 forskellige visualiseringer. For hver: hvilken pointe formidler den bedst, og hvilke faldgruber findes der?"</p>
+            </div>
+            <div class="info-box box-yellow">
+              <div class="info-box-title">⚠ Tabeller er ikke visualisering</div>
+              <p>En tabel med 30 tal på et dias er afmagt forklædt som data. Bed altid AI hjælpe dig finde det ene mønster i tabellen og lav en visualisering der viser <em>det</em>.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Vælg den rigtige visualisering</div>
+              <ol>
+                <li>Find et dias hvor du har en tabel eller en uoverskuelig graf.</li>
+                <li>Beskriv pointen for AI og bed om 3 alternativer.</li>
+                <li>Implementér den der bedst matcher pointen.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Bygg strukturen før du åbner PowerPoint — pointe-overskrifter',
+        'Tekst på tre niveauer: headline, bullets, speaker notes',
+        'Skær teksten ned, flyt detaljerne til noter',
+        'Vælg visualisering ud fra pointen — ikke fra hvad der ser flot ud'
+      ]
+    },
+    m2: {
+      heroTitle: 'Avanceret PowerPoint med AI',
+      heroSub: 'Modul 2 af 2 — Strategi, manuskript og kritisk feedback.',
+      heroBadge: 'PowerPoint · Modul 2 af 2',
+      sections: [
+        {
+          title: 'Præsentationsstrategi — målgruppe, budskab, dramaturgi',
+          subtitle: 'Den faglige forskel mellem en god og en mindeværdig præsentation.',
+          html: `
+            <p class="prose">På avanceret niveau handler det ikke om dias — det handler om hvad publikum tager med hjem. AI kan hjælpe dig dramaturgisk: hvor lægger du den vigtigste pointe, hvilken modstand kan publikum have, og hvad er den ene sætning der skal sætte sig fast?</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Strategi-workflow</div>
+              <p><strong>1.</strong> "Hvem er publikum? Hvad ved de allerede? Hvad bekymrer de sig om?"<br><strong>2.</strong> "Hvad er ÉN sætning publikum skal kunne gentage 24 timer senere?"<br><strong>3.</strong> "Hvor i præsentationen lægger jeg den sætning?"</p>
+            </div>
+            <div class="info-box box-purple">
+              <div class="info-box-title">Modstands-test</div>
+              <p>"Forestil dig den hårdeste modstander i salen. Hvilke 3 indvendinger har de mod min pointe? Hvor i præsentationen skal jeg adressere hver?"</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Den ene sætning</div>
+              <ol>
+                <li>Tag din næste præsentation.</li>
+                <li>Find den ene sætning publikum skal huske.</li>
+                <li>Tjek: står den eksplicit på et dias?</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Talerpunkter og manuskript med AI',
+          subtitle: 'Det du siger er ikke det der står på dias.',
+          html: `
+            <p class="prose">Speaker notes er en god start, men hvis du skal performe på scenen har du brug for et manuskript — eller en talersti.</p>
+            <span class="code-label">Teknik — Talersti, ikke ord-for-ord</span>
+            <div class="code-block">Lav en talersti til denne præsentation. For hvert dias: 3-5 stikord, ÉN konkret historie eller eksempel, og ÉN overgang til næste dias. Ikke fuld manuskript-tekst.</div>
+            <span class="code-label">Teknik — Tæt manuskript til kritiske passager</span>
+            <div class="code-block">Til dias [X]: skriv et tæt manuskript på 60-90 sekunder. Det er det centrale dias og jeg vil ikke risikere at famle. Skriv som hvis det var mig der talte.</div>
+            <span class="code-label">Teknik — Tidsbudget</span>
+            <div class="code-block">Min præsentation er 20 minutter med 12 dias. Foreslå et tidsbudget per dias baseret på hvor vægtige de er.</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Talersti</div>
+              <ol>
+                <li>Tag dit næste oplæg.</li>
+                <li>Lav en talersti for hele præsentationen.</li>
+                <li>Identificér de 1-2 kritiske dias der fortjener et tæt manuskript.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Review og feedback — AI som dit publikum',
+          subtitle: 'Den værste fejl er at vide hvad du mener — uden at vide hvad publikum hører.',
+          html: `
+            <p class="prose">Forfatter-blindheden gælder også på scenen. AI kan simulere forskellige typer publikum og give dig feedback før du står foran de rigtige.</p>
+            <span class="code-label">Teknik — Publikum-simulation</span>
+            <div class="code-block">Læs disse dias-overskrifter og noter som om du var [målgruppe]. For hvert dias: hvad er din takeaway? Hvor mister jeg dig?</div>
+            <span class="code-label">Teknik — Den irriterende kollega</span>
+            <div class="code-block">Du er den kollega der altid stiller det skarpe spørgsmål. Hvad er de 5 sværeste spørgsmål jeg får til denne præsentation?</div>
+            <span class="code-label">Teknik — Skæringsrunde</span>
+            <div class="code-block">Hvis jeg skulle skære præsentationen ned med 30%, hvilke 3-4 dias ville du fjerne, og hvorfor?</div>
+            <div class="info-box box-red">
+              <div class="info-box-title">⚠ AI er ikke dit rigtige publikum</div>
+              <p>AI's simulerede feedback er en hypotese. Brug den til at finde åbenlyse svagheder, men <strong>test også på et menneske</strong>.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tre kritikere</div>
+              <ol>
+                <li>Tag din næste vigtige præsentation.</li>
+                <li>Kør alle tre teknikker i rækkefølge.</li>
+                <li>Implementér de 3 vigtigste forbedringer.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Strategi før dias: målgruppe, ÉN sætning, dramaturgi',
+        'Modstands-test: forudse de hårde indvendinger',
+        'Talersti til alle dias, tæt manuskript til de kritiske',
+        'AI som forskellige publikummer — men test også på rigtige mennesker'
+      ]
+    },
+    quiz: [
+      { q: "Hvilken type dias-overskrift er stærkest?", options: ["Tema-overskrifter som 'Markedsanalyse 2024'","Pointe-overskrifter som 'Vi mistede 18% af vores største kunder — her er hvorfor'","Spørgende","Ingen overskrift"], correct: 1, explanation: "Pointe-overskrifter tvinger dig til at vide hvad du vil sige." },
+      { q: "Dias med 30 tal i en tabel. Faglig korrekt tilgang?", options: ["Lade tabellen stå","Identificer pointen og lav en visualisering der viser den ene pointe","Gør tabellen større","Læse tabellen højt"], correct: 1, explanation: "Tabeller er afmagt forklædt som data." },
+      { q: "Primær funktion af speaker notes?", options: ["Gentag dias-tekst","Det du gerne vil sige højt — udvidelse, eksempler, forventede spørgsmål","Tidsforbrug","Statistik"], correct: 1, explanation: "Tekst på dias er for publikum. Tekst i noter er for dig." },
+      { q: "Publikum er uenig i dit forslag. Vigtigst med AI?", options: ["Lave dias der ser overbevisende ud","Køre en modstands-test: hvilke 3 indvendinger og hvor adresseres hver","Forkorte præsentationen","Tilføje flere data"], correct: 1, explanation: "Modstand der ikke er forudset bryder en præsentation." },
+      { q: "AI giver fuld ord-for-ord-manuskript. Faglig risiko?", options: ["Ingen risiko","Du risikerer at læse op fremfor at tale — publikum mærker forskellen","For langt","For formelt"], correct: 1, explanation: "Talersti er typisk bedre." },
+      { q: "Vigtigt at validere ved AI's 'publikum-feedback'?", options: ["At AI roser tilstrækkeligt","At AI's feedback er en hypotese — test stadig på et rigtigt menneske","At AI bruger korrekt grammatik","At feedbacken er kort"], correct: 1, explanation: "AI's publikum er statistisk gennemsnit." }
+    ],
+    exam: [
+      { q: "Præsentere nyt produkt for direktion på 10 min. Første skridt med AI?", options: ["Beder AI generere 15 dias","Definerer i prompten: hvem direktionen er, hvad de allerede ved, hvilken konkret beslutning, hvilken modstand","Beder AI vælge en flot template","Skriver alle bullet points først"], correct: 1, explanation: "Direktion + 10 min + lancering = beslutningskontekst." },
+      { q: "AI foreslår 12 dias til 8-min oplæg. Hvad gør du?", options: ["Bruger alle 12","Beder AI prioritere — hvilke 6-7 bærer fortællingen","Forkorter hver dias","Forhandler 12 minutter"], correct: 1, explanation: "Tidsbudgettet definerer rytmen." },
+      { q: "Hvor lægger du den vigtigste pointe?", options: ["Først","Sidst","Det afhænger: travl direktion vil typisk have pointen først (BLUF), data/historie kan have klimaks-struktur","I midten"], correct: 2, explanation: "Begge dramaturgier virker — konteksten afgør." },
+      { q: "Sidder fast på dias 4 — føles forvirrende. Effektiv prompt?", options: ["\"Lav dias 4 om\"","\"Her er dias 4: [indsæt]. Dias 3's takeaway er [X]. Dias 5's takeaway skal være [Y]. Hvor er forbindelsen utydelig?\"","\"Forkort dias 4\"","\"Skriv hele oplægget om\""], correct: 1, explanation: "Forvirrende dias er typisk forbindelses-problemer." },
+      { q: "Følsomme data (personalereduktion). Central risiko?", options: ["AI er for langsom","AI rammer ofte en tone der er for informativ/let når emnet kræver eftertanke og menneskelighed","AI kan ikke skrive om personale","AI laver for mange grafer"], correct: 1, explanation: "Eksplicit tone-instruktion er nødvendig." },
+      { q: "AI's noter starter altid med 'Det er vigtigt at understrege at...'. Hvad gør du?", options: ["Beholder det","Beder eksplicit om variation, og giver eksempler på hvordan jeg taler","Sletter noterne","Læser dem op alligevel"], correct: 1, explanation: "AI har trænings-tics. Eksplicit variation retter det." },
+      { q: "Samme præsentation til bestyrelse og medarbejdere. Hvad gør du?", options: ["Bruger samme præsentation","Beder AI lave to versioner: bestyrelse får beslutningsfokus, medarbejdere får hvad-betyder-det-for-dig-fokus","Laver to nye fra bunden","Skipper medarbejderne"], correct: 1, explanation: "Samme indhold, anden vinkling." },
+      { q: "Primær fordel ved disposition i AI før PowerPoint?", options: ["Hurtigere","Du tvinges til pointe-baseret struktur før du bliver distraheret af layout","AI er bedre til design","PowerPoint kræver internet"], correct: 1, explanation: "AI er et tekstmedie der tvinger dig til at tænke i pointer." },
+      { q: "AI's review: 'dias 7-8 stærke, dias 5-6 svage'. Først?", options: ["Sletter dias 5 og 6","Beder AI uddybe HVORFOR — struktur, indhold, formidling eller forbindelse?","Bytter rækkefølgen","Ignorerer feedbacken"], correct: 1, explanation: "Diagnose før behandling." },
+      { q: "Vigtigste princip når AI hjælper med præsentation?", options: ["AI's forslag er ordrer","Du har konteksten og relationen — AI har sproglig dygtighed","AI laver præsentationen, du holder","AI er bedst til design"], correct: 1, explanation: "Konteksten ejer du — sproget kan AI hjælpe forme." }
+    ]
+  },
+  slides: {
+    m1: {
+      heroTitle: 'Google Slides og AI: samarbejde og hastighed',
+      heroSub: 'Modul 1 af 2 — AI i et team-workflow med Google\'s økosystem.',
+      heroBadge: 'Google Slides · Modul 1 af 2',
+      sections: [
+        {
+          title: 'Det der er anderledes ved Slides',
+          subtitle: 'Samarbejde er ikke en feature — det er et grundvilkår.',
+          html: `
+            <p class="prose">Google Slides er bygget til samarbejde. Det betyder at AI-assisteret arbejde i Slides skal tage højde for at flere mennesker bygger på samme præsentation. Den prompt-teknik der fungerer i et solo-PowerPoint-arbejde er ikke nok her.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Tre forskelle fra solo-arbejde</div>
+              <p><strong>1. Versionssporing:</strong> Andre kan have ændret slides siden du sidst åbnede.<br><strong>2. Konsistens:</strong> Hvis tre personer bruger AI hver for sig, ender I med tre forskellige toner.<br><strong>3. Kommentarer i stedet for ændringer:</strong> AI-forslag bør lægges som kommentarer.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Aftal stilguide før AI</div>
+              <ol>
+                <li>Find en præsentation du arbejder på i team.</li>
+                <li>Skriv en kort stilguide: tone, headline-format, max-bullets, terminologi.</li>
+                <li>Del den med teamet før nogen bruger AI på den.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Prompt-teknikker specifikke for Slides',
+          subtitle: 'Hastighed og iteration er Slides\' superkraft.',
+          html: `
+            <p class="prose">Slides' åbne dokumentmodel betyder at du kan iterere hurtigere. Skriv prompts så outputtet er klar til copy/paste.</p>
+            <span class="code-label">Teknik — Slide-spec format</span>
+            <div class="code-block">For hvert dias, output i dette format:
+TITEL: [pointe-overskrift, max 8 ord]
+BULLETS: [3 bullets, hver max 10 ord]
+NOTER: [1-2 sætninger til speaker]
+LAYOUT-FORSLAG: [titel + bullets, kun titel + visual, sammenligning, etc.]
+
+Lav 5 dias om: [emne]</div>
+            <span class="code-label">Teknik — Stilguide-baseret generering</span>
+            <div class="code-block">Vi har en stilguide:
+- Tone: [X]
+- Headline-format: pointe, ikke tema
+- Max 4 bullets per dias
+- Vi skriver "vi" ikke "firmaet"
+
+Generer 3 dias om [emne] der overholder alle 4 regler.</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Spec-format</div>
+              <ol>
+                <li>Tag en præsentation du skal lave.</li>
+                <li>Brug spec-formatet til at få 5-7 dias-skitser.</li>
+                <li>Copy/paste hver del ind i Slides.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'AI-forslag som kommentarer, ikke ændringer',
+          subtitle: 'Den faglige forskel mellem at hjælpe og at overtage.',
+          html: `
+            <p class="prose">I et team-workflow er det fristende at få AI til at "rette" en kollegas slides direkte. Det er en god måde at ødelægge samarbejdet på.</p>
+            <span class="code-label">Teknik — Forslag-format</span>
+            <div class="code-block">Læs disse dias og foreslå forbedringer. For hvert forslag, output i format:
+DIAS [nr]: [hvad jeg ser]
+PROBLEM: [hvad der er svagt]
+FORSLAG: [konkret alternativ]
+
+Jeg vil bruge dem som kommentarer i Slides.</div>
+            <div class="info-box box-yellow">
+              <div class="info-box-title">⚠ Den professionelle norm</div>
+              <p>Hvis det ikke er dit slide, er forslag bedre end ændringer — uanset hvor sikker du er på at du har ret.</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tre kommentarer</div>
+              <ol>
+                <li>Tag en kollegas præsentation hvor du har feedback.</li>
+                <li>Brug forslag-formatet til at få 3-5 forslag.</li>
+                <li>Tilføj dem som kommentarer.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Samarbejde er grundvilkåret — versionssporing, konsistens, ejerskab',
+        'Spec-format gør AI-output klar til copy/paste',
+        'Aftal stilguide i teamet før AI-arbejde starter',
+        'Forslag som kommentarer, ikke direkte ændringer'
+      ]
+    },
+    m2: {
+      heroTitle: 'Avanceret Google Slides med AI',
+      heroSub: 'Modul 2 af 2 — Integration på tværs af Google-økosystemet.',
+      heroBadge: 'Google Slides · Modul 2 af 2',
+      sections: [
+        {
+          title: 'Integration med Docs og Sheets',
+          subtitle: 'Slides bliver først kraftfuldt når data og tekst flyder.',
+          html: `
+            <p class="prose">Det er sjældent at en præsentation lever isoleret. Den underliggende historik findes i Google Docs, tallene findes i Sheets, og takeaways skal måske tilbage i Docs.</p>
+            <div class="info-box box-blue">
+              <div class="info-box-title">Tre-vejs-workflow</div>
+              <p><strong>Docs → Slides:</strong> "Her er et notat fra et møde [indsæt]. Skitsér en 5-dias-præsentation der opsummerer beslutningerne."</p>
+              <p style="margin-top:6px;"><strong>Sheets → Slides:</strong> "Her er kvartalstallene [indsæt]. Foreslå 3 dias-fortællinger."</p>
+              <p style="margin-top:6px;"><strong>Slides → Docs:</strong> "Her er en præsentation [indsæt]. Skriv et follow-up-dokument til dem der ikke var i salen."</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Et komplet flow</div>
+              <ol>
+                <li>Tag en kommende præsentation.</li>
+                <li>Brug Docs → Slides på dine forberedelses-noter.</li>
+                <li>Efter præsentationen: brug Slides → Docs.</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Avancerede præsentationsstrukturer',
+          subtitle: 'Når en lineær fortælling ikke er nok.',
+          html: `
+            <p class="prose">Lineære præsentationer virker for de fleste situationer. Men nogle gange har du brug for avancerede strukturer: parallelle spor, scenarie-grening, eller "vælg-din-egen-vinkel".</p>
+            <div class="info-box box-purple">
+              <div class="info-box-title">Parallelle spor</div>
+              <p>"Lav en præsentation hvor de første 3 dias er fælles, og de næste 4 har 2 spor: et til finans-folk (tal, ROI, risiko) og et til operation-folk (proces, ressourcer, tidsplan). Hvert spor afsluttes med et fælles takeaway-dias."</p>
+            </div>
+            <div class="info-box box-green">
+              <div class="info-box-title">Scenarie-grening</div>
+              <p>"Strukturér præsentationen som 'hvis-så': Hvis vi gør X, ser fremtiden sådan ud (3 dias). Hvis vi gør Y, ser den sådan ud (3 dias). Det fælles slut-dias er beslutningsoplægget."</p>
+            </div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Bryd linjen</div>
+              <ol>
+                <li>Find en kommende præsentation med flere interessenttyper.</li>
+                <li>Skitsér en parallel-spor-struktur.</li>
+                <li>Test: bliver det tydeligere hvem hvert dias er til?</li>
+              </ol>
+            </div>
+          `
+        },
+        {
+          title: 'Kvalitetssikring i et team-workflow',
+          subtitle: 'Konsistens er det første publikum lægger mærke til.',
+          html: `
+            <p class="prose">Når flere mennesker har bidraget til samme deck, er den primære kvalitetstrussel inkonsistens.</p>
+            <span class="code-label">Teknik — Konsistens-tjek</span>
+            <div class="code-block">Læs alle dias-overskrifter og bullets. Identificér: (1) inkonsistent terminologi, (2) skift i tone, (3) overskrifter der følger forskellige formater, (4) gentagelser af samme pointe.</div>
+            <span class="code-label">Teknik — Logisk progression</span>
+            <div class="code-block">Læser dias-rækkefølgen sammenhængende? Findes der dias der er ude af rækkefølge? Foreslå en bedre rækkefølge hvis nødvendigt.</div>
+            <span class="code-label">Teknik — Fyld-detektion</span>
+            <div class="code-block">Hvilke 3-4 dias bidrager mindst til den centrale pointe? For hvert: hvad mister præsentationen ved at fjerne det?</div>
+            <div class="practice">
+              <div class="practice-title">🔥 PRØV DET NU — Tjek dit næste team-deck</div>
+              <ol>
+                <li>Tag en præsentation flere har bidraget til.</li>
+                <li>Kør de tre teknikker.</li>
+                <li>Foreslå rettelser som kommentarer.</li>
+              </ol>
+            </div>
+          `
+        }
+      ],
+      summary: [
+        'Tre-vejs-flow: Docs → Slides → Docs holder konteksten samlet',
+        'Avancerede strukturer: parallelle spor og scenarie-grening',
+        'AI som konsistens-detektor på tværs af bidragsydere',
+        'Forslag, ikke ændringer — også på avanceret niveau'
+      ]
+    },
+    quiz: [
+      { q: "Primære forskel når du bruger AI i Slides versus PowerPoint?", options: ["Slides har bedre AI-funktioner","Slides er bygget til samarbejde — versioner, konsistens og ejerskab","PowerPoint er bedre til design","AI virker kun i ét"], correct: 1, explanation: "Solo vs. team ændrer hvordan AI bør integreres." },
+      { q: "AI-forslag til en kollegas dias. Hvordan implementerer du dem?", options: ["Direkte i deres dias","Som kommentarer, så ejeren kan tage stilling","Sender dem som mail","Laver et nyt dias"], correct: 1, explanation: "Kommentarer respekterer ejerskab." },
+      { q: "Fordel ved spec-format-prompten?", options: ["AI svarer hurtigere","Outputtet bliver let at copy/paste — titel, bullets, noter er allerede adskilt","Det er kortere at skrive","Mere kreativitet"], correct: 1, explanation: "Spec-format gør outputtet operationelt." },
+      { q: "Hvorfor stilguide-aftaler FØR teamet bruger AI?", options: ["AI virker ikke uden","Tre personer + AI hver for sig = tre forskellige toner","Stilguider er påkrævet","AI's tone er altid forkert"], correct: 1, explanation: "Konsistens kræver fælles aftale." },
+      { q: "Styrken ved tre-vejs-flow (Docs → Slides → Docs)?", options: ["Eneste måde","Konteksten holdes samlet på tværs af forberedelse, præsentation og opfølgning","Hurtigere","Google kræver det"], correct: 1, explanation: "AI sparer dig fra at gentage tankearbejdet." },
+      { q: "Først at tjekke i et team-deck?", options: ["At alle dias har samme baggrund","Konsistens i terminologi, tone og overskriftsformat","Stavefejl","Antal bullets"], correct: 1, explanation: "Inkonsistens er signal-støj for publikum." }
+    ],
+    exam: [
+      { q: "Tre kolleger har bidraget. Noget virker forkert. Faglig korrekt handling?", options: ["Retter alt med AI så det matcher din stil","Tjekker versionshistorik og bruger kommentarer til at flagge inkonsistenser","Sletter de andres ændringer","Laver din egen version"], correct: 1, explanation: "Versionshistorik + kommentarer er Slides' samarbejdsværktøjer." },
+      { q: "AI har genereret 8 dias i spec-format. To har bullets på 15+ ord. Hvad gør du?", options: ["Bruger dem som de er","Sender tilbage med erindring om max-længde, OG beder AI fortælle hvilke længere bullets der reelt indeholder mere end ét budskab","Skriver dem manuelt","Sletter de to dias"], correct: 1, explanation: "Lange bullets er ofte symptom på flere budskaber." },
+      { q: "Publikum med teknikere og forretningsfolk. Optimal struktur?", options: ["Lineær","Parallelle spor: fælles intro, derefter to spor, fælles afslutning","To separate","Kun forretningsfokus"], correct: 1, explanation: "Lineær mister halvdelen af salen halvdelen af tiden." },
+      { q: "Vigtigt at instruere AI om i follow-up-dokument fra Slides?", options: ["At dokumentet skal være kort","At follow-up er ikke et referat — det er en synthese for fraværende: beslutninger, næste skridt","At det skal være formelt","At det skal indeholde alle billeder"], correct: 1, explanation: "Et referat af dias er stadig dias-prosa." },
+      { q: "Kollega har AI-tekst der lyder helt anderledes. Faglig vej fremad?", options: ["Retter teksten i hemmelighed","Tager initiativ til kort stilguide-aftale, og bruger AI til at omskrive — som forslag","Klager til lederen","Ignorerer det"], correct: 1, explanation: "Konsistens er teamproblem." },
+      { q: "Få AI til at ramme tonen baseret på stilguide og eksisterende deck?", options: ["\"Skriv om det nye produkt\"","\"Her er stilguiden: [indsæt]. To eksisterende dias som tone-eksempel: [indsæt]. Lav 6 dias der matcher begge — marker hvis stilguide og eksempler modsiger hinanden\"","Beder AI gætte tonen","Bruger anden AI-model"], correct: 1, explanation: "Eksempler + regler er stærkere end regler alene." },
+      { q: "Data fra 4 forskellige Sheets. Mest effektivt med AI?", options: ["Send alle 4 sheets på én gang","Bed AI for hver Sheet separat: 'hvad er den ene centrale pointe?' Kombinér derefter","Skip data og brug gætværk","Send alle data og bed AI lave hele præsentationen"], correct: 1, explanation: "Fire datasæt = fire potentielle pointer." },
+      { q: "Vigtigste at huske om AI-genererede 'kommentarer' i Slides?", options: ["AI kan ikke skrive kommentarer","AI's kommentarer er forslag, ikke ekspertvurderinger — ejeren har konteksten","AI's kommentarer er altid korrekte","Skal slettes efter brug"], correct: 1, explanation: "AI mangler den implicitte viden ejeren har." },
+      { q: "AI's konsistens-tjek finder 8 problemer. 3 reelle, 5 bevidste valg. Faglig tilgang?", options: ["Implementerer alle 8","Implementerer de 3 reelle, og noterer i intern note hvorfor de 5 andre er bevidste valg","Ignorerer alle 8","Beder AI prøve igen"], correct: 1, explanation: "AI flagger mønstre; du afgør valg." },
+      { q: "Mest avancerede måde at bruge AI på i Google Slides?", options: ["Lade AI generere alle dias","Integrere AI som kontinuerligt sparringslag på tværs af forberedelse, produktion og follow-up — med team-stilguide og forslag-baseret bidrag","Bruge AI til billeder","Kun til oversættelse"], correct: 1, explanation: "Avanceret brug er bedre integration på tværs af workflow og team." }
+    ]
+  }
+};
+
+/* =====================================================================
+   LIDT-AF-HVERT-INDHOLD
+   ===================================================================== */
+const LIGHT_CONTENT = {
+  excel: {
+    heroTitle: 'Excel og AI — kerneteknikker',
+    heroSub: 'Lidt af hvert · Modul',
+    heroBadge: 'Excel · Kerneteknikker',
+    sections: [{
+      title: 'De tre kerneteknikker i Excel med AI',
+      subtitle: 'Kontekst, forklaring, analyse.',
+      html: `
+        <p class="prose">Tre teknikker dækker 80% af alt AI-arbejde i Excel:</p>
+        <h3 class="subhead">1. Giv altid AI kontekst</h3>
+        <p class="prose">Kopier kolonneoverskrifter og 2-3 eksempelrækker. AI kan ikke se dit ark.</p>
+        <h3 class="subhead">2. Bed om forklaring før implementation</h3>
+        <p class="prose">Når AI skriver en kompleks formel: bed om en trinvis forklaring. Du skal forstå det du indsætter.</p>
+        <h3 class="subhead">3. Analyse-workflow i tre trin</h3>
+        <div class="info-box box-green">
+          <div class="info-box-title">Trin 1-2-3</div>
+          <p>1. "Hvilke 3 mønstre springer ud af disse data?"<br>2. "Hvad er de 2 mest overraskende tal og hvorfor?"<br>3. "Skriv en 5-sætningers executive summary."</p>
+        </div>
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU</div>
+          <ol>
+            <li>Tag et regneark, kør analyse-workflowet på det.</li>
+            <li>Mål: et executive summary du faktisk kan sende.</li>
+          </ol>
+        </div>
+      `
+    }],
+    summary: ['Kontekst først — AI kan ikke se dit ark','Bed om forklaring før du implementerer komplekse formler','Analyse-workflowet trækker indsigter ud af tal']
+  },
+  word: {
+    heroTitle: 'Word og AI — kerneteknikker',
+    heroSub: 'Lidt af hvert · Modul',
+    heroBadge: 'Word · Kerneteknikker',
+    sections: [{
+      title: 'De tre kerneteknikker i Word med AI',
+      subtitle: 'Tre lag, rolleprompt, og review.',
+      html: `
+        <p class="prose">Tre teknikker dækker 80% af AI-arbejde i Word:</p>
+        <h3 class="subhead">1. De tre lag før du skriver</h3>
+        <p class="prose"><strong>Formål</strong> (hvad skal læseren gøre?) → <strong>målgruppe</strong> (hvad ved de?) → <strong>tone</strong> (formel, varm, teknisk?). Uden disse skriver AI til ingen.</p>
+        <h3 class="subhead">2. Rolleprompt med relation</h3>
+        <div class="info-box box-grey">
+          <div class="info-box-title">Eksempel</div>
+          <p>"Du er en projektleder der skriver til en travl direktør I har samarbejdet med i 3 år. Uformel, direkte tone. Skriv et statusbrev der dækker: [punkter]. Maks 200 ord."</p>
+        </div>
+        <h3 class="subhead">3. AI som skeptisk reviewer</h3>
+        <p class="prose">"Du er en kritisk reviewer. Find: påstande uden belæg, uklare formuleringer, sætninger der kan misforstås."</p>
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU</div>
+          <ol>
+            <li>Tag en tekst du har skrevet.</li>
+            <li>Brug review-prompten ovenfor.</li>
+            <li>Implementér de 3 vigtigste anbefalinger.</li>
+          </ol>
+        </div>
+      `
+    }],
+    summary: ['Tre lag — formål, målgruppe, tone — før du skriver','Rolleprompt med relation fjerner det generiske','AI som skeptisk reviewer fanger fejl du læser over']
+  },
+  ppt: {
+    heroTitle: 'PowerPoint og AI — kerneteknikker',
+    heroSub: 'Lidt af hvert · Modul',
+    heroBadge: 'PowerPoint · Kerneteknikker',
+    sections: [{
+      title: 'De tre kerneteknikker i PowerPoint med AI',
+      subtitle: 'Pointe-overskrifter, tre niveauer, modstands-test.',
+      html: `
+        <p class="prose">Tre teknikker hæver kvaliteten af enhver præsentation:</p>
+        <h3 class="subhead">1. Pointe-overskrifter, ikke tema-overskrifter</h3>
+        <p class="prose">"Salgstal Q3" er svag. "Vi mistede 18% af kunder over 50.000 kr — her er hvorfor" er stærk.</p>
+        <h3 class="subhead">2. Tekst på tre niveauer</h3>
+        <p class="prose"><strong>Headline</strong> (det publikum husker), <strong>bullets</strong> (det de scanner), <strong>speaker notes</strong> (det du siger).</p>
+        <h3 class="subhead">3. Modstands-test før dagen X</h3>
+        <div class="info-box box-purple">
+          <div class="info-box-title">Prompt</div>
+          <p>"Forestil dig den hårdeste modstander i salen. Hvilke 3 indvendinger har de mod min pointe? Hvor adresserer jeg hver?"</p>
+        </div>
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU</div>
+          <ol>
+            <li>Tag din næste præsentation.</li>
+            <li>Konvertér tema-overskrifter til pointe-overskrifter.</li>
+            <li>Kør modstands-testen.</li>
+          </ol>
+        </div>
+      `
+    }],
+    summary: ['Pointe-overskrifter tvinger dig til at vide hvad du siger','Tre niveauer: headline, bullets, noter','Forudset modstand er en mulighed, ikke en trussel']
+  },
+  slides: {
+    heroTitle: 'Google Slides og AI — kerneteknikker',
+    heroSub: 'Lidt af hvert · Modul',
+    heroBadge: 'Google Slides · Kerneteknikker',
+    sections: [{
+      title: 'De tre kerneteknikker i Google Slides med AI',
+      subtitle: 'Spec-format, stilguide, forslag.',
+      html: `
+        <p class="prose">Slides er bygget til samarbejde — AI-arbejdet skal afspejle det:</p>
+        <h3 class="subhead">1. Spec-format gør AI-output operationelt</h3>
+        <div class="info-box box-blue">
+          <div class="info-box-title">Format</div>
+          <p>TITEL: [pointe-overskrift, max 8 ord]<br>BULLETS: [3 bullets, max 10 ord]<br>NOTER: [1-2 sætninger]<br>LAYOUT: [type]</p>
+        </div>
+        <h3 class="subhead">2. Stilguide før team-arbejde med AI</h3>
+        <p class="prose">Hvis tre personer bruger AI uden fælles guide, ender I med tre forskellige toner i samme deck.</p>
+        <h3 class="subhead">3. Forslag som kommentarer, ikke direkte ændringer</h3>
+        <p class="prose">På andres dias: AI's forslag bør lægges som kommentarer.</p>
+        <div class="practice">
+          <div class="practice-title">🔥 PRØV DET NU</div>
+          <ol>
+            <li>Tag et team-deck.</li>
+            <li>Brug spec-format til 3 nye dias.</li>
+            <li>Læg AI-forslag på eksisterende dias som kommentarer.</li>
+          </ol>
+        </div>
+      `
+    }],
+    summary: ['Spec-format = output klar til copy/paste','Stilguide-aftale før team bruger AI på samme deck','Forslag, ikke ændringer — respekt for ejerskab']
+  }
+};
+
+const LIGHT_QUIZ = {
+  excel: [
+    { q: "Hvad er det vigtigste at give AI ud over selve spørgsmålet i Excel?", options: ["Excel-version","Kolonneoverskrifter og eksempelrækker","Et screenshot","Den formel du har"], correct: 1, explanation: "AI kan ikke se dit ark." },
+    { q: "Du får en kompleks formel fra AI. Hvad gør du først?", options: ["Sætter den ind","Beder om en trinvis forklaring","Sender til kollega","Tester på tilfældig celle"], correct: 1, explanation: "Du skal forstå det du indsætter." },
+    { q: "Hvad er trin 1 i analyse-workflowet?", options: ["Skriv summary","Spørg AI om de 3 mønstre","Lav graf","Ret formler"], correct: 1, explanation: "Mønstre først, så fortolkning, så formidling." },
+    { q: "Hvor mange rækker af 500 skal du sende til AI?", options: ["Alle 500","Cirka 10 + overskrifter + spørgsmål","Ingen","De sidste 50"], correct: 1, explanation: "Overskrifter + repræsentativt udsnit er nok." },
+    { q: "Hvorfor virker analyse-workflowet bedre end én bred prompt?", options: ["Hurtigere","Hvert trin bygger på det forrige og tvinger præcision","Færre tokens","AI kan lide rækkefølge"], correct: 1, explanation: "Iteration > one-shot." },
+    { q: "Primær risiko ved AI-skrevet VBA-makro du ikke forstår?", options: ["For langsom","Den kan slette eller overskrive data uden fortryd","Fylder for meget","Excel forstår den ikke"], correct: 1, explanation: "Makroer kan ødelægge data permanent." }
+  ],
+  word: [
+    { q: "Hvad er de tre lag du skal definere?", options: ["Format, font, farve","Formål, målgruppe, tone","Længde, sprog, dato","Titel, intro, slut"], correct: 1, explanation: "Disse fjerner det generiske." },
+    { q: "Hvorfor er en velformatteret AI-tekst risikabel?", options: ["Fylder for meget","Virker autoritativ — også når indholdet er forkert","Word kan ikke håndtere","For dyr"], correct: 1, explanation: "Form lender autoritet." },
+    { q: "Styrken ved AI som 'skeptisk reviewer'?", options: ["Hurtigere","AI har ikke skrevet teksten — ser fejl du læser over","Billigere","Kan rette grammatik"], correct: 1, explanation: "Forfatter-blindhed er reel." },
+    { q: "Lang rapport (20+ sider) — hvordan?", options: ["Skriv alt på én gang","Disposition først, så sektion for sektion","Bed AI om hele rapporten","Skriv det selv"], correct: 1, explanation: "Sektion-for-sektion holder AI på sporet." },
+    { q: "AI markerer 12 stilguide-overtrædelser. Hvad gør du?", options: ["Implementer alle","Vurdér hver — nogle er måske bevidste valg","Ignorer dem","Skift stilguide"], correct: 1, explanation: "Markeringer er hypoteser." },
+    { q: "Primær risiko ved AI-Word-tekst med faktuelle påstande?", options: ["For langsom","Hallucinerede facts der lyder rigtige","Forkert font","På engelsk"], correct: 1, explanation: "Hallucination + autoritativt format = farligt." }
+  ],
+  ppt: [
+    { q: "Hvilken type overskrift er stærkest?", options: ["Tema-overskrifter","Pointe-overskrifter","Spørgende","Ingen"], correct: 1, explanation: "Pointe-overskrifter tvinger dig til at vide hvad du siger." },
+    { q: "Dias med 30 tal i en tabel. Hvad gør du?", options: ["Lader det stå","Identificerer pointen og laver visualisering der viser den","Forstørrer tabellen","Læser den højt"], correct: 1, explanation: "Tabeller er ikke visualisering." },
+    { q: "Hvad er speaker notes egentlig?", options: ["Gentag dias-tekst","Det du siger højt — udvidelse, eksempler, spørgsmål","Tidslinje","Statistik"], correct: 1, explanation: "Noter er for dig, dias for publikum." },
+    { q: "Hvad gør modstands-testen?", options: ["Tjekker grammatik","Forudser hårde indvendinger","Forkorter dias","Ændrer farver"], correct: 1, explanation: "Forudset modstand er en mulighed." },
+    { q: "Primær risiko ved AI-genereret fuldt manuskript?", options: ["For langt","Du læser op fremfor at tale","For dyrt","Forkert tone"], correct: 1, explanation: "Talersti er typisk bedre." },
+    { q: "Hvor lægger du den vigtigste pointe?", options: ["Altid først","Altid sidst","Det afhænger af konteksten","I midten"], correct: 2, explanation: "Begge dramaturgier virker — konteksten afgør." }
+  ],
+  slides: [
+    { q: "Hvad adskiller AI-arbejde i Slides fra PowerPoint?", options: ["Bedre AI","Samarbejde er grundvilkåret — versioner, konsistens, ejerskab","Bedre design","Hurtigere"], correct: 1, explanation: "Solo vs. team ændrer hvordan AI bør integreres." },
+    { q: "AI-forslag på en kollegas dias?", options: ["Direkte","Som kommentarer","Per mail","Lav nyt dias"], correct: 1, explanation: "Kommentarer respekterer ejerskab." },
+    { q: "Hvorfor stilguide før AI?", options: ["AI kræver det","Tre personer + tre prompts = tre toner","Stavning","Sprog"], correct: 1, explanation: "Konsistens kræver fælles aftale." },
+    { q: "Fordel ved spec-format-prompt?", options: ["Hurtigere","Output klar til copy/paste","Kortere","Kreativitet"], correct: 1, explanation: "Operationelt output sparer tid." },
+    { q: "Hvad er tre-vejs-flow?", options: ["AI til 3 ting","Docs → Slides → Docs — kontekst holdes samlet","3 versioner","3 personer"], correct: 1, explanation: "Konvertering uden tab af kontekst." },
+    { q: "AI's konsistens-tjek finder 8 problemer. 3 fejl, 5 valg. Hvad gør du?", options: ["Implementer alle","Implementer de 3, dokumenter de 5","Ignorer alle","Prøv igen"], correct: 1, explanation: "Mature team-arbejde dokumenterer valg." }
+  ]
+};
+
+const COMBINED_EXAM = [
+  { q: "Excel — 800 rækker data. Mest effektive AI-tilgang:", options: ["Send alle 800 rækker","Send overskrifter + 10 repræsentative rækker + præcist spørgsmål","Bede AI åbne filen","Skrive en makro"], correct: 1, explanation: "AI behøver ikke alle data for at forstå struktur." },
+  { q: "Excel — AI har skrevet en kompleks LAMBDA. Hvad gør du?", options: ["Bruger den","Beder AI dele den op i mindre, navngivne hjælpeformler du kan teste","Sletter den","Sender til kollega"], correct: 1, explanation: "Decomposition gør komplekse LAMBDA testbare." },
+  { q: "Excel — central styrke ved analyse-workflowet?", options: ["Hurtigt","Hvert trin bygger på det forrige og fører fra rådata til kommunikerbare indsigter","Få tokens","AI kan lide det"], correct: 1, explanation: "Iterativ trinvis analyse er den faglige forskel." },
+  { q: "Word — et afsnit modsiger et tidligere. Faglig tilgang?", options: ["Slet modsigelsen","Bed AI gennemgå hele rapporten for indre modsigelser, og afgør derefter selv","Behold begge sider","Send rapporten"], correct: 1, explanation: "Én modsigelse betyder typisk flere." },
+  { q: "Word — primær risiko ved AI-genereret tekst?", options: ["For kort","Velformateret tekst med god tone virker autoritativ — også når faktuelle påstande er forkerte","For dyr","Word kan ikke gemme"], correct: 1, explanation: "Form lender autoritet til indhold." },
+  { q: "Word — 20+ siders rapport. Optimal AI-strategi?", options: ["Hele rapporten på én gang","Disposition først, så sektion for sektion i separate samtaler","Skrive det selv","En stor prompt"], correct: 1, explanation: "Lange dokumenter er hvor AI taber tråden." },
+  { q: "PPT — 12 dias til 8-min oplæg. Faglig tilgang?", options: ["Bruger alle","Beder AI prioritere de 6-7 der bærer fortællingen","Forkort hver","Forhandl mere tid"], correct: 1, explanation: "Tidsbudget definerer rytme." },
+  { q: "PPT — publikum med teknikere og forretningsfolk. Optimal struktur?", options: ["Lineær","Parallelle spor: fælles intro, derefter to spor, fælles afslutning","To præsentationer","Kun det ene"], correct: 1, explanation: "Lineær mister halvdelen af salen." },
+  { q: "PPT — hvorfor pointe-overskrifter > tema-overskrifter?", options: ["Kortere","Tvinger dig til at vide hvad du faktisk vil sige, og giver publikum takeawayen","Smukkere","Moderne"], correct: 1, explanation: "Tema-overskrifter er rummelige men tomme." },
+  { q: "Slides — kollega har AI-tekst der lyder anderledes. Hvad gør du?", options: ["Retter i hemmelighed","Initiativ til kort stilguide-aftale, og foreslår omskrivning som kommentarer","Klager til lederen","Ignorerer det"], correct: 1, explanation: "Konsistens er teamproblem." },
+  { q: "Slides — vigtigst at huske om AI-forslag på andres dias?", options: ["At de er korrekte","At de er forslag, ikke ordrer — ejeren har kontekst du måske ikke har","At de er gratis","At de er hurtige"], correct: 1, explanation: "Ejerskab er den professionelle norm." },
+  { q: "Slides — fordel ved tre-vejs-flow?", options: ["Det er nyt","Konteksten holdes samlet på tværs af forberedelse, produktion og follow-up","Det er gratis","Google kræver det"], correct: 1, explanation: "AI sparer dig fra at gentage tankearbejdet." }
+];
+
+/* =====================================================================
+   STATE-KØ-GENERERING
+   ===================================================================== */
+function generateStateQueue(choice, programs, order) {
+  const queue = [];
+  if (choice === 'deep') {
+    const ordered = (order && order.length === 2) ? order : programs;
+    ordered.forEach(p => {
+      queue.push(`${p}_m1`);
+      queue.push(`${p}_quiz`);
+      queue.push(`${p}_m2`);
+      queue.push(`${p}_exam`);
+    });
+    queue.push('bevis');
+  } else {
+    const all = ['excel', 'word', 'ppt', 'slides'];
+    all.forEach(p => {
+      queue.push(`${p}_light`);
+      queue.push(`${p}_lightquiz`);
+    });
+    queue.push('combined_exam');
+    queue.push('bevis');
+  }
+  return queue;
+}
+
+function stepInfoFor(stateName) {
+  if (stateName === 'bevis')         return { short: '🏆',  long: 'Bevis' };
+  if (stateName === 'combined_exam') return { short: '🎓',  long: 'Eksamen' };
+  const [prog, kind] = stateName.split('_');
+  const ps = PROGRAM_SHORT[prog] || prog;
+  if (kind === 'm1')        return { short: ps + '·1', long: PROGRAM_LABELS[prog] + ' M1' };
+  if (kind === 'm2')        return { short: ps + '·2', long: PROGRAM_LABELS[prog] + ' M2' };
+  if (kind === 'quiz')      return { short: 'Q',       long: PROGRAM_LABELS[prog] + ' Quiz' };
+  if (kind === 'exam')      return { short: '🏆',      long: PROGRAM_LABELS[prog] + ' Eksamen' };
+  if (kind === 'light')     return { short: ps,        long: PROGRAM_LABELS[prog] };
+  if (kind === 'lightquiz') return { short: 'Q',       long: PROGRAM_LABELS[prog] + ' Quiz' };
+  return { short: '·', long: stateName };
+}
+
+/* =====================================================================
+   PROGRAM-IKONER (SVG)
+   ===================================================================== */
+function progIcon(id) {
+  const c = '#5B2A86';
+  switch (id) {
+    case 'excel':
+      return `<svg class="pc-icon" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>`;
+    case 'word':
+      return `<svg class="pc-icon" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="4" y="3" width="16" height="18" rx="2"/><text x="12" y="16" text-anchor="middle" font-family="serif" font-size="11" font-weight="700" fill="${c}" stroke="none">W</text></svg>`;
+    case 'ppt':
+      return `<svg class="pc-icon" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="3" y="4" width="18" height="13" rx="1.5"/><polygon points="10,8 16,11 10,14" fill="${c}" stroke="none"/><line x1="12" y1="17" x2="12" y2="20"/><line x1="9" y1="20" x2="15" y2="20"/></svg>`;
+    case 'slides':
+      return `<svg class="pc-icon" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2"><rect x="3" y="4" width="18" height="14" rx="1.5"/><line x1="6" y1="9" x2="14" y2="9"/><line x1="6" y1="12" x2="18" y2="12"/><line x1="6" y1="15" x2="12" y2="15"/></svg>`;
+  }
+  return '';
+}
+
+/* =====================================================================
+   TOPBAR PROGRESS UPDATE
+   ===================================================================== */
+function updateTopbar() {
+  if (!courseState.locked) {
+    document.getElementById('topbar').classList.remove('show');
+    return;
+  }
+  document.getElementById('topbar').classList.add('show');
+  const total = courseState.stateQueue.length;
+  const idx = courseState.currentStateIndex;
+  const pct = Math.round((idx / Math.max(total - 1, 1)) * 100);
+  document.getElementById('topbar-fill').style.width = pct + '%';
+  document.getElementById('topbar-pct').textContent = pct + '%';
+  const cur = courseState.stateQueue[idx];
+  document.getElementById('topbar-label').textContent = stepInfoFor(cur).long;
+
+  const sb = document.getElementById('steps-bar');
+  sb.innerHTML = '';
+  courseState.stateQueue.forEach((s, i) => {
+    const info = stepInfoFor(s);
+    let cls = 'next';
+    if (i < idx) cls = 'done';
+    else if (i === idx) cls = 'active';
+    sb.insertAdjacentHTML('beforeend', `
+      <div class="step-item">
+        <div class="step-dot ${cls}">${info.short}</div>
+        <span class="step-label ${cls}">${info.long}</span>
+      </div>
+      ${i < courseState.stateQueue.length - 1 ? '<span class="step-arrow">›</span>' : ''}
+    `);
+  });
+}
+
+/* =====================================================================
+   RENDERING — INTRO
+   ===================================================================== */
+function renderIntro() {
+  const c = document.getElementById('container');
+  c.innerHTML = `
+    <div class="state active">
+      <div class="hero">
+        <div class="hero-badge">Sidekursus · SK8</div>
+        <h1>AI til dokumenter</h1>
+        <p>Lær at bruge AI professionelt i de programmer du allerede arbejder i — og spar timer hver uge.</p>
+        <div class="hero-meta">
+          <div class="hero-meta-item"><span>⏱</span> 2–3 timer</div>
+          <div class="hero-meta-item"><span>📋</span> 4 moduler</div>
+          <div class="hero-meta-item"><span>🏆</span> Bevis efter eksamen</div>
+        </div>
+      </div>
+      <div class="info-box box-yellow">
+        <div class="info-box-title">⚠ Krav</div>
+        <p>Du skal have bestået <strong>Kursus C</strong> for at få fuldt udbytte af dette kursus. Indholdet er markant sværere og forudsætter at du kender til rolleprompts, iterativ forfining og negativ afgrænsning.</p>
+      </div>
+      <div class="info-box box-green">
+        <div class="info-box-title">💡 Inden du starter</div>
+        <p>Åbn det program du vil arbejde med <em>nu</em>. Du skal bruge det aktivt gennem hele kurset — det er der øvelserne flytter dig fra at læse til at kunne.</p>
+      </div>
+      <div class="info-box box-blue">
+        <div class="info-box-title">Hvad er et sidekursus?</div>
+        <p>Sidekurser er specialiserede betalte kurser der bygger ovenpå hovedforløbet (D → C → B → A). De løser et konkret problem i din arbejdsdag i stedet for at lære dig AI generelt. Dette er SK8 — det ottende sidekursus.</p>
+      </div>
+      <div style="text-align:center; margin-top: 2rem;">
+        <button class="btn btn-primary btn-large" onclick="goToValg()">Start kursus →</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('topbar').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   RENDERING — VALG (state 2)
+   ===================================================================== */
+function renderValg() {
+  const c = document.getElementById('container');
+  c.innerHTML = `
+    <div class="state active">
+      <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-family: 'DM Serif Display', serif; font-size: 32px; font-weight: 400; line-height: 1.15; margin-bottom: 0.5rem;">Vælg dit forløb</h1>
+        <p style="font-size: 15px; color: var(--muted);">Dit valg <strong style="color: var(--text);">låses fast</strong> når du starter. Du kan ikke skifte undervejs.</p>
+      </div>
+
+      <div class="choice-grid">
+        <div class="choice-card" id="card-deep" onclick="selectChoice('deep')">
+          <svg class="choice-icon" viewBox="0 0 60 60" fill="none">
+            <circle cx="22" cy="30" r="16" fill="#5B2A86" opacity="0.85"/>
+            <circle cx="38" cy="30" r="16" fill="#5B2A86" opacity="0.55"/>
+          </svg>
+          <h3>Fordyb dig i 2 programmer</h3>
+          <div class="choice-desc">Vælg 2 programmer og få 2 dybe moduler i hvert — med quiz og eksamen per program. Det mest grundige forløb.</div>
+          <div class="program-grid" id="program-grid">
+            <div class="program-check" data-prog="excel" onclick="event.stopPropagation(); toggleProgram('excel')">
+              <div class="pc-box"></div>${progIcon('excel')}<span>Excel</span>
+            </div>
+            <div class="program-check" data-prog="word" onclick="event.stopPropagation(); toggleProgram('word')">
+              <div class="pc-box"></div>${progIcon('word')}<span>Word</span>
+            </div>
+            <div class="program-check" data-prog="ppt" onclick="event.stopPropagation(); toggleProgram('ppt')">
+              <div class="pc-box"></div>${progIcon('ppt')}<span>PowerPoint</span>
+            </div>
+            <div class="program-check" data-prog="slides" onclick="event.stopPropagation(); toggleProgram('slides')">
+              <div class="pc-box"></div>${progIcon('slides')}<span>G. Slides</span>
+            </div>
+          </div>
+          <div class="choice-error" id="choice-error">Du kan kun vælge 2 programmer. Fjern et først.</div>
+          <div class="order-row" id="order-row">
+            <span>Start med:</span>
+            <select id="order-select" onclick="event.stopPropagation()" onchange="event.stopPropagation(); updateStartLabel()"></select>
+          </div>
+        </div>
+
+        <div class="choice-card" id="card-all" onclick="selectChoice('all')">
+          <svg class="choice-icon" viewBox="0 0 60 60" fill="none">
+            <rect x="6" y="6" width="22" height="22" rx="3" fill="#5B2A86" opacity="0.85"/>
+            <rect x="32" y="6" width="22" height="22" rx="3" fill="#5B2A86" opacity="0.65"/>
+            <rect x="6" y="32" width="22" height="22" rx="3" fill="#5B2A86" opacity="0.45"/>
+            <rect x="32" y="32" width="22" height="22" rx="3" fill="#5B2A86" opacity="0.85"/>
+          </svg>
+          <h3>Lidt af hvert</h3>
+          <div class="choice-desc">Ét modul i hvert af de 4 programmer med en mini-quiz efter hvert modul og én samlet eksamen til sidst.</div>
+          <div class="pill-list">
+            <span class="pill">Excel</span>
+            <span class="pill">Word</span>
+            <span class="pill">PowerPoint</span>
+            <span class="pill">G. Slides</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="start-bar">
+        <button class="btn btn-primary btn-large" id="btn-start" disabled onclick="confirmAndStart()">
+          Vælg et forløb først
+        </button>
+        <p class="lock-warn">⚠ Dit valg låses fast og kan ikke ændres efter start.</p>
+      </div>
+    </div>
+  `;
+  document.getElementById('topbar').classList.remove('show');
+  window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   VALG-LOGIK
+   ===================================================================== */
+function goToValg() { renderValg(); }
+
+function selectChoice(choice) {
+  courseState.userChoice = choice;
+  document.getElementById('card-deep').classList.toggle('selected', choice === 'deep');
+  document.getElementById('card-all').classList.toggle('selected', choice === 'all');
+  if (choice === 'all') {
+    courseState.selectedPrograms = ['excel', 'word', 'ppt', 'slides'];
+    courseState.programOrder = ['excel', 'word', 'ppt', 'slides'];
+  } else {
+    courseState.selectedPrograms = [];
+    courseState.programOrder = [];
+  }
+  updateStartLabel();
+}
+
+function toggleProgram(prog) {
+  // Aktivér deep-kortet hvis ikke allerede valgt
+  if (courseState.userChoice !== 'deep') {
+    selectChoice('deep');
+  }
+  const checks = document.querySelectorAll('.program-check');
+  const isChecked = courseState.selectedPrograms.includes(prog);
+  if (isChecked) {
+    courseState.selectedPrograms = courseState.selectedPrograms.filter(p => p !== prog);
+  } else {
+    if (courseState.selectedPrograms.length >= 2) {
+      const err = document.getElementById('choice-error');
+      err.classList.add('show');
+      setTimeout(() => err.classList.remove('show'), 2200);
+      return;
+    }
+    courseState.selectedPrograms.push(prog);
+  }
+  // Opdater UI
+  checks.forEach(el => {
+    const p = el.dataset.prog;
+    const checked = courseState.selectedPrograms.includes(p);
+    el.classList.toggle('checked', checked);
+    if (checked) el.querySelector('.pc-box').textContent = '✓';
+    else el.querySelector('.pc-box').textContent = '';
+  });
+  // Opdater order-dropdown
+  const orderRow = document.getElementById('order-row');
+  const select = document.getElementById('order-select');
+  if (courseState.selectedPrograms.length === 2) {
+    orderRow.classList.add('show');
+    select.innerHTML = courseState.selectedPrograms.map(p => `<option value="${p}">${PROGRAM_LABELS[p]}</option>`).join('');
+    courseState.programOrder = [...courseState.selectedPrograms];
+  } else {
+    orderRow.classList.remove('show');
+  }
+  updateStartLabel();
+}
+
+function updateStartLabel() {
+  const btn = document.getElementById('btn-start');
+  if (!btn) return;
+  if (courseState.userChoice === 'deep') {
+    if (courseState.selectedPrograms.length !== 2) {
+      btn.disabled = true;
+      btn.textContent = 'Vælg 2 programmer';
+      return;
+    }
+    // Sikr at programOrder afspejler dropdown
+    const select = document.getElementById('order-select');
+    if (select && select.value) {
+      const first = select.value;
+      const second = courseState.selectedPrograms.find(p => p !== first);
+      courseState.programOrder = [first, second];
+    } else {
+      courseState.programOrder = [...courseState.selectedPrograms];
+    }
+    btn.disabled = false;
+    btn.innerHTML = `Start med ${PROGRAM_LABELS[courseState.programOrder[0]]} →`;
+  } else if (courseState.userChoice === 'all') {
+    btn.disabled = false;
+    btn.innerHTML = `Start med lidt af hvert →`;
+  } else {
+    btn.disabled = true;
+    btn.textContent = 'Vælg et forløb først';
+  }
+}
+
+function confirmAndStart() {
+  const ok = confirm('Er du sikker? Dit valg kan ikke ændres bagefter.');
+  if (!ok) return;
+  courseState.locked = true;
+  courseState.startTime = new Date();
+  courseState.stateQueue = generateStateQueue(courseState.userChoice, courseState.selectedPrograms, courseState.programOrder);
+  courseState.currentStateIndex = 0;
+  renderCurrentState();
+}
+
+function nextState() {
+  courseState.currentStateIndex++;
+  if (courseState.currentStateIndex >= courseState.stateQueue.length) {
+    return; // Kursus slut
+  }
+  renderCurrentState();
+}
+
+function renderCurrentState() {
+  const cur = courseState.stateQueue[courseState.currentStateIndex];
+  updateTopbar();
+  if (cur === 'bevis') return renderBevis();
+  if (cur === 'combined_exam') return renderCombinedExam();
+  const [prog, kind] = cur.split('_');
+  if (kind === 'm1' || kind === 'm2') return renderModule(prog, kind);
+  if (kind === 'quiz')                return renderQuiz(prog, false);
+  if (kind === 'exam')                return renderExam(prog);
+  if (kind === 'light')               return renderLightModule(prog);
+  if (kind === 'lightquiz')           return renderQuiz(prog, true);
+}
+
+/* =====================================================================
+   RENDERING — DYBE MODULER
+   ===================================================================== */
+function renderModule(prog, kind) {
+  const data = DEEP_CONTENT[prog][kind];
+  const container = document.getElementById('container');
+  const sectionsHtml = data.sections.map((s, i) => `
+    <div class="module ${i === 0 ? 'open' : ''}" id="mod-${i}">
+      <div class="module-header" onclick="toggleModule(${i})">
+        <div class="module-letter">${i+1}</div>
+        <div class="module-title-wrap">
+          <div class="module-title">${s.title}</div>
+          <div class="module-sub">${s.subtitle}</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">
+        ${s.html}
+      </div>
+    </div>
+  `).join('');
+
+  const summaryHtml = `
+    <div class="summary">
+      <h3>${PROGRAM_LABELS[prog]} ${kind === 'm1' ? 'Modul 1' : 'Modul 2'} — Hvad du har lært</h3>
+      <ul>${data.summary.map(li => `<li>${li}</li>`).join('')}</ul>
+    </div>
+  `;
+
+  const ctaHtml = kind === 'm1' ? `
+    <div class="next-cta">
+      <div class="next-cta-icon">📝</div>
+      <h2>Klar til mini-quizzen?</h2>
+      <p>6 spørgsmål om ${PROGRAM_LABELS[prog]} og AI. Du skal have <strong>5 ud af 6</strong> rigtige for at gå videre til Modul 2.</p>
+      <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+      <button class="btn btn-primary" onclick="nextState()">Start mini-quiz →</button>
+    </div>
+  ` : `
+    <div class="next-cta">
+      <div class="next-cta-icon">🏆</div>
+      <h2>Klar til eksamen?</h2>
+      <p>10 spørgsmål der kombinerer stof fra begge moduler. Du skal have <strong>8 ud af 10</strong> rigtige for at bestå.</p>
+      <div class="req">⚠ Du skal bestå eksamen for at gå videre</div><br>
+      <button class="btn btn-primary" onclick="nextState()">Start eksamen →</button>
+    </div>
+  `;
+
+  container.innerHTML = `
+    <div class="state active">
+      <div class="hero">
+        <div class="hero-badge">${data.heroBadge}</div>
+        <h1>${data.heroTitle}</h1>
+        <p>${data.heroSub}</p>
+      </div>
+      ${sectionsHtml}
+      ${summaryHtml}
+      ${ctaHtml}
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+function renderLightModule(prog) {
+  const data = LIGHT_CONTENT[prog];
+  const container = document.getElementById('container');
+  const sectionsHtml = data.sections.map((s, i) => `
+    <div class="module open" id="mod-${i}">
+      <div class="module-header" onclick="toggleModule(${i})">
+        <div class="module-letter">${i+1}</div>
+        <div class="module-title-wrap">
+          <div class="module-title">${s.title}</div>
+          <div class="module-sub">${s.subtitle}</div>
+        </div>
+        <div class="module-toggle">+</div>
+      </div>
+      <div class="module-body">${s.html}</div>
+    </div>
+  `).join('');
+  container.innerHTML = `
+    <div class="state active">
+      <div class="hero">
+        <div class="hero-badge">${data.heroBadge}</div>
+        <h1>${data.heroTitle}</h1>
+        <p>${data.heroSub}</p>
+      </div>
+      ${sectionsHtml}
+      <div class="summary">
+        <h3>${PROGRAM_LABELS[prog]} — Hvad du har lært</h3>
+        <ul>${data.summary.map(li => `<li>${li}</li>`).join('')}</ul>
+      </div>
+      <div class="next-cta">
+        <div class="next-cta-icon">📝</div>
+        <h2>Klar til mini-quizzen?</h2>
+        <p>6 spørgsmål om ${PROGRAM_LABELS[prog]} og AI. Du skal have <strong>5 ud af 6</strong> rigtige.</p>
+        <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
+        <button class="btn btn-primary" onclick="nextState()">Start mini-quiz →</button>
+      </div>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+function toggleModule(idx) {
+  document.getElementById(`mod-${idx}`).classList.toggle('open');
+}
+
+/* =====================================================================
+   RENDERING — QUIZ
+   ===================================================================== */
+let quizState = { questions: [], current: 0, score: 0, answered: false, isLight: false, prog: '', passScore: 5 };
+
+function renderQuiz(prog, isLight) {
+  const questions = isLight ? LIGHT_QUIZ[prog] : DEEP_CONTENT[prog].quiz;
+  quizState = {
+    questions, current: 0, score: 0, answered: false,
+    isLight, prog, passScore: 5
+  };
+  const container = document.getElementById('container');
+  container.innerHTML = `
+    <div class="state active">
+      <div class="quiz-card">
+        <div class="quiz-header">
+          <div class="quiz-tag">${PROGRAM_LABELS[prog]} · Mini-quiz</div>
+          <h1>Tjek din forståelse</h1>
+          <p>6 spørgsmål · Minimum 5 rigtige for at gå videre</p>
+        </div>
+        <div class="quiz-progress">
+          <div class="quiz-prog-meta">
+            <span id="prog-label">Spørgsmål 1 af 6</span>
+            <span id="prog-score">0 rigtige</span>
+          </div>
+          <div class="quiz-prog-track">
+            <div class="quiz-prog-fill" id="quiz-prog-fill" style="width:0%"></div>
+          </div>
+        </div>
+        <div class="quiz-question-wrap">
+          <div class="q-number" id="q-number">Spørgsmål 1</div>
+          <div class="q-text" id="q-text"></div>
+        </div>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-feedback" id="quiz-feedback">
+          <span class="feedback-icon" id="fb-icon"></span>
+          <span id="fb-text"></span>
+        </div>
+        <div class="quiz-divider"></div>
+        <div class="quiz-next-wrap">
+          <button class="btn-next" id="btn-next" onclick="quizNext()">Næste spørgsmål <span>→</span></button>
+        </div>
+        <div class="quiz-result" id="quiz-result">
+          <div class="result-icon" id="result-icon"></div>
+          <h2 class="result-title" id="result-title"></h2>
+          <p class="result-sub" id="result-sub"></p>
+          <div class="score-badge" id="score-badge"></div>
+          <div class="result-message" id="result-message"></div>
+          <div class="result-btn-row">
+            <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
+            <button class="btn btn-success" id="btn-quiz-continue" style="display:none;" onclick="nextState()">Fortsæt →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  renderQuizQuestion();
+  window.scrollTo(0, 0);
+}
+
+function renderQuizQuestion() {
+  const q = quizState.questions[quizState.current];
+  document.getElementById('q-number').textContent = `Spørgsmål ${quizState.current + 1}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('prog-label').textContent = `Spørgsmål ${quizState.current + 1} af ${quizState.questions.length}`;
+  const pct = (quizState.current / quizState.questions.length) * 100;
+  document.getElementById('quiz-prog-fill').style.width = pct + '%';
+  const optsContainer = document.getElementById('quiz-options');
+  const letters = ['A', 'B', 'C', 'D'];
+  optsContainer.innerHTML = q.options.map((opt, i) => `
+    <button class="option-btn" onclick="quizSelect(${i})">
+      <div class="option-letter">${letters[i]}</div>
+      <span>${opt}</span>
+    </button>
+  `).join('');
+  document.getElementById('quiz-feedback').classList.remove('show', 'correct-fb', 'wrong-fb');
+  document.getElementById('btn-next').classList.remove('show');
+  quizState.answered = false;
+  updateQuizScore();
+}
+
+function quizSelect(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  const q = quizState.questions[quizState.current];
+  const isRight = idx === q.correct;
+  if (isRight) quizState.score++;
+  const buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && !isRight) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+  const fb = document.getElementById('quiz-feedback');
+  fb.classList.add('show', isRight ? 'correct-fb' : 'wrong-fb');
+  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = q.explanation;
+  const nextBtn = document.getElementById('btn-next');
+  const isLast = quizState.current === quizState.questions.length - 1;
+  nextBtn.classList.add('show');
+  nextBtn.innerHTML = isLast ? 'Se resultat <span>→</span>' : 'Næste spørgsmål <span>→</span>';
+  updateQuizScore();
+}
+
+function updateQuizScore() {
+  document.getElementById('prog-score').textContent = quizState.score === 1 ? '1 rigtig' : `${quizState.score} rigtige`;
+}
+
+function quizNext() {
+  quizState.current++;
+  if (quizState.current >= quizState.questions.length) {
+    showQuizResult();
+  } else {
+    renderQuizQuestion();
+  }
+}
+
+function showQuizResult() {
+  ['quiz-progress', 'quiz-question-wrap', 'quiz-options', 'quiz-feedback', 'quiz-divider', 'quiz-next-wrap'].forEach(c => {
+    document.querySelector('.' + c).style.display = 'none';
+  });
+  const passed = quizState.score >= quizState.passScore;
+  document.getElementById('result-icon').textContent = passed ? '🎉' : '💪';
+  document.getElementById('result-title').textContent = passed ? 'Godt klaret!' : 'Ikke helt endnu';
+  document.getElementById('result-sub').textContent = passed
+    ? `Du svarede rigtigt på ${quizState.score} ud af ${quizState.questions.length}.`
+    : `Du fik ${quizState.score} ud af ${quizState.questions.length}. Du skal have mindst ${quizState.passScore}. Prøv igen!`;
+  const badge = document.getElementById('score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${quizState.score} / ${quizState.questions.length} rigtige`;
+  document.getElementById('result-message').innerHTML = passed
+    ? `<strong>Næste skridt:</strong> Du har styr på de centrale teknikker. Klik fortsæt for at gå videre i forløbet.`
+    : `<strong>Tip:</strong> Gå tilbage og læs modulet. Du kan tage quizzen ubegrænsede gange — det er meningen at du skal lykkes.`;
+  if (passed) {
+    courseState.quizScores[quizState.prog] = quizState.score;
+    document.getElementById('btn-quiz-continue').style.display = 'inline-flex';
+  }
+  document.getElementById('quiz-result').classList.add('show');
+}
+
+function restartQuiz() {
+  renderQuiz(quizState.prog, quizState.isLight);
+}
+
+/* =====================================================================
+   RENDERING — EKSAMEN (programs-eksamen)
+   ===================================================================== */
+let examState = { questions: [], answers: [], submitted: false, prog: '', passScore: 8, isCombined: false };
+
+function renderExam(prog) {
+  const questions = DEEP_CONTENT[prog].exam;
+  examState = { questions, answers: new Array(questions.length).fill(null), submitted: false, prog, passScore: 8, isCombined: false };
+  renderExamUI(`${PROGRAM_LABELS[prog]} eksamen`, `10 spørgsmål · ${examState.passScore} rigtige for at bestå`, '8/10 for at bestå');
+}
+
+function renderCombinedExam() {
+  examState = { questions: COMBINED_EXAM, answers: new Array(COMBINED_EXAM.length).fill(null), submitted: false, prog: 'combined', passScore: 10, isCombined: true };
+  renderExamUI('Samlet eksamen', `${COMBINED_EXAM.length} spørgsmål · ${examState.passScore} rigtige for at bestå`, '10/12 for at bestå');
+}
+
+function renderExamUI(title, subtitle, reqLabel) {
+  const container = document.getElementById('container');
+  const letters = ['A', 'B', 'C', 'D'];
+  const questionsHtml = examState.questions.map((q, qi) => `
+    <div class="exam-question" id="exq-${qi}">
+      <div class="q-number">Spørgsmål ${qi + 1}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="exam-options">
+        ${q.options.map((opt, oi) => `
+          <div class="exam-option" data-q="${qi}" data-o="${oi}" onclick="examSelect(${qi}, ${oi})">
+            <div class="opt-letter">${letters[oi]}</div>
+            <span>${opt}</span>
+          </div>
+        `).join('')}
+      </div>
+      <div class="exam-explanation" id="exp-${qi}"></div>
+    </div>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="state active">
+      <div class="exam-intro">
+        <h2>${title}</h2>
+        <p>${subtitle}</p>
+        <p>Læs hvert spørgsmål omhyggeligt og vælg det bedste svar. Når du har svaret på alle spørgsmål, klikker du indlevér nederst på siden.</p>
+        <div class="req-row">
+          <span class="exam-req-pill">⚠ ${reqLabel}</span>
+          <span class="exam-req-pill">Ingen tidsbegrænsning</span>
+          <span class="exam-req-pill">Ubegrænsede forsøg</span>
+        </div>
+      </div>
+      ${questionsHtml}
+      <div class="exam-submit-bar">
+        <span class="exam-progress-text" id="exam-progress-text">0 af ${examState.questions.length} besvaret</span>
+        <button class="btn btn-primary" id="exam-submit" disabled onclick="submitExam()">Indlevér eksamen</button>
+      </div>
+      <div class="exam-result-card" id="exam-result-card">
+        <div class="result-icon" id="exam-result-icon"></div>
+        <h2 class="result-title" id="exam-result-title"></h2>
+        <p class="result-sub" id="exam-result-sub"></p>
+        <div class="score-badge" id="exam-score-badge"></div>
+        <div class="result-message" id="exam-result-message"></div>
+        <div class="result-btn-row">
+          <button class="btn-retry" id="exam-retry" onclick="retryExam()">↺ Prøv igen</button>
+          <button class="btn btn-success" id="exam-continue" style="display:none;" onclick="nextState()">Fortsæt →</button>
+        </div>
+      </div>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+function examSelect(qi, oi) {
+  if (examState.submitted) return;
+  examState.answers[qi] = oi;
+  const opts = document.querySelectorAll(`.exam-option[data-q="${qi}"]`);
+  opts.forEach(o => o.classList.remove('selected'));
+  document.querySelector(`.exam-option[data-q="${qi}"][data-o="${oi}"]`).classList.add('selected');
+  const answered = examState.answers.filter(a => a !== null).length;
+  document.getElementById('exam-progress-text').textContent = `${answered} af ${examState.questions.length} besvaret`;
+  document.getElementById('exam-submit').disabled = answered < examState.questions.length;
+}
+
+function submitExam() {
+  examState.submitted = true;
+  let score = 0;
+  examState.questions.forEach((q, qi) => {
+    const ans = examState.answers[qi];
+    const correct = q.correct;
+    const opts = document.querySelectorAll(`.exam-option[data-q="${qi}"]`);
+    opts.forEach(o => {
+      o.classList.add('locked');
+      o.classList.remove('selected');
+      const oi = parseInt(o.dataset.o);
+      if (oi === correct) o.classList.add('correct');
+      else if (oi === ans) o.classList.add('wrong');
+    });
+    if (ans === correct) score++;
+    const exp = document.getElementById(`exp-${qi}`);
+    exp.classList.add('show');
+    exp.innerHTML = `<strong>${ans === correct ? '✓ Rigtigt' : '✗ Ikke rigtigt'}.</strong> ${q.explanation}`;
+  });
+  const passed = score >= examState.passScore;
+  const card = document.getElementById('exam-result-card');
+  card.classList.add('show', passed ? 'passed' : 'failed');
+  document.getElementById('exam-result-icon').textContent = passed ? '🏆' : '💪';
+  document.getElementById('exam-result-title').textContent = passed ? 'Bestået!' : 'Ikke bestået denne gang';
+  document.getElementById('exam-result-sub').textContent = passed
+    ? `Du svarede rigtigt på ${score} ud af ${examState.questions.length} spørgsmål.`
+    : `Du fik ${score} ud af ${examState.questions.length}. Du skal have mindst ${examState.passScore} for at bestå.`;
+  const badge = document.getElementById('exam-score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${score} / ${examState.questions.length} rigtige`;
+  document.getElementById('exam-result-message').innerHTML = passed
+    ? `<strong>Flot klaret!</strong> Du har demonstreret at du kan anvende stoffet i praksis. Klik fortsæt for at gå videre.`
+    : `<strong>Tip:</strong> Læs forklaringerne ved hvert spørgsmål — de viser dig præcis hvor logikken klikkede. Eksamen kan tages ubegrænsede gange.`;
+  if (passed) {
+    courseState.examScores[examState.prog] = score;
+    document.getElementById('exam-continue').style.display = 'inline-flex';
+    document.getElementById('exam-retry').style.display = 'none';
+  }
+  document.getElementById('exam-submit').disabled = true;
+  document.getElementById('exam-submit').textContent = 'Eksamen indleveret';
+  card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function retryExam() {
+  if (examState.isCombined) renderCombinedExam();
+  else renderExam(examState.prog);
+}
+
+/* =====================================================================
+   RENDERING — BEVIS
+   ===================================================================== */
+function renderBevis() {
+  const container = document.getElementById('container');
+  const programs = courseState.userChoice === 'deep' ? courseState.programOrder : ['excel', 'word', 'ppt', 'slides'];
+  const programsHtml = programs.map(p => `<span class="bevis-prog-pill">✓ ${PROGRAM_LABELS[p]}</span>`).join('');
+  const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+  const programsText = programs.map(p => PROGRAM_LABELS[p]).join(', ');
+  container.innerHTML = `
+    <div class="state active">
+      <div class="bevis-wrap">
+        <div class="bevis-card" id="bevis-print">
+          <div class="bevis-logo">
+            <div class="bevis-logo-icon">
+              <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+            </div>
+            <span class="bevis-logo-text">LearnAI DK</span>
+          </div>
+          <div class="bevis-badge">Sidekursus bevis</div>
+          <h1>AI til dokumenter <br><span class="accent">— bestået</span></h1>
+          <div class="bevis-programs">${programsHtml}</div>
+          <div class="bevis-date">${dato}</div>
+          <p class="bevis-text">Du har demonstreret evnen til at bruge AI professionelt i ${programsText} og kan nu spare significante timer i dit daglige arbejde.</p>
+          <div class="bevis-actions">
+            <button class="btn btn-secondary" onclick="window.print()">🖨 Print bevis</button>
+            <a href="platform.html" class="btn btn-success">Tilbage til platformen →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  document.getElementById('topbar-fill').style.width = '100%';
+  document.getElementById('topbar-pct').textContent = '100%';
+  document.getElementById('topbar-label').textContent = 'Forløb gennemført 🎉';
+  window.scrollTo(0, 0);
+}
+
+/* =====================================================================
+   INIT
+   ===================================================================== */
+renderIntro();
+</script>
+
+</body>
+</html>
