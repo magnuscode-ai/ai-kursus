@@ -3,12 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LearnAI | Luksus AI Platform - Sidekurser</title>
-    <meta name="description" content="LearnAI - Professionelle AI-kurser med 3D-oplevelse. Fra nybegynder til ekspert med sidekurser og coin-system.">
+    <title>LearnAI | Luksus AI Platform - 3D Sidekurser</title>
     
-    <!-- Three.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     
@@ -26,17 +23,8 @@
             --ruby: #EF4444;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-            overflow-x: hidden;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; overflow-x: hidden; }
         body {
             background: var(--obsidian);
             color: var(--diamond);
@@ -45,7 +33,6 @@
             -webkit-font-smoothing: antialiased;
             cursor: none;
         }
-
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--obsidian); }
         ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
@@ -53,1101 +40,564 @@
 
         /* 3D CANVAS */
         #canvas-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            pointer-events: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0; pointer-events: none;
         }
 
-        /* LOADING SCREEN */
+        /* LOADING */
         #loading-screen {
-            position: fixed;
-            inset: 0;
-            z-index: 10000;
-            background: var(--obsidian);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: opacity 1s ease-out, visibility 1s ease-out;
+            position: fixed; inset: 0; z-index: 10000; background: var(--obsidian);
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
         }
-
-        #loading-screen.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .loader-content {
-            text-align: center;
-            z-index: 1;
-        }
-
-        .loader-ring {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 30px;
-            position: relative;
-        }
-
+        #loading-screen.hidden { opacity: 0; visibility: hidden; }
+        .loader-content { text-align: center; z-index: 1; }
+        .loader-ring { width: 80px; height: 80px; margin: 0 auto 20px; position: relative; }
         .loader-ring::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 50%;
-            border: 2px solid rgba(198, 169, 98, 0.3);
-            animation: spin 3s linear infinite;
+            content: ''; position: absolute; inset: 0; border-radius: 50%;
+            border: 2px solid rgba(198,169,98,0.3); animation: spin 2s linear infinite;
         }
-
         .loader-ring::after {
-            content: '';
-            position: absolute;
-            inset: 8px;
-            border-radius: 50%;
-            border: 1px solid rgba(198, 169, 98, 0.5);
-            animation: spin 2s linear infinite reverse;
+            content: ''; position: absolute; inset: 8px; border-radius: 50%;
+            border: 1px solid rgba(198,169,98,0.5); animation: spin 1.5s linear infinite reverse;
         }
-
-        .loader-diamond {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
+        .loader-diamond { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
         .loader-diamond::after {
-            content: '';
-            width: 15px;
-            height: 15px;
-            background: var(--gold);
-            transform: rotate(45deg);
-            box-shadow: 0 0 20px rgba(198, 169, 98, 0.5);
-            animation: pulse 2s ease-in-out infinite;
+            content: ''; width: 15px; height: 15px; background: var(--gold);
+            transform: rotate(45deg); box-shadow: 0 0 20px rgba(198,169,98,0.5);
+            animation: pulse 1.5s ease-in-out infinite;
         }
-
         .loader-title {
-            font-size: 32px;
-            font-weight: bold;
+            font-size: 32px; font-weight: bold;
             background: linear-gradient(135deg, #C6A962, #E5C77D, #F3DBA5, #C6A962);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 8px;
-            letter-spacing: 2px;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 8px; letter-spacing: 2px;
         }
-
         .loader-subtitle {
-            color: rgba(229, 228, 226, 0.5);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-bottom: 30px;
+            color: rgba(229,228,226,0.5); font-size: 11px;
+            text-transform: uppercase; letter-spacing: 4px; margin-bottom: 20px;
         }
-
         .progress-bar {
-            width: 280px;
-            height: 2px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 0 auto 20px;
-            position: relative;
+            width: 280px; height: 2px; background: rgba(255,255,255,0.08);
+            border-radius: 2px; overflow: hidden; margin: 0 auto 15px; position: relative;
         }
-
         .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
-            border-radius: 2px;
-            width: 0%;
-            transition: width 0.5s ease-out;
-            box-shadow: 0 0 15px rgba(198, 169, 98, 0.6);
+            height: 100%; background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+            border-radius: 2px; width: 0%; transition: width 0.3s ease-out;
+            box-shadow: 0 0 15px rgba(198,169,98,0.6);
         }
-
         .progress-glow {
-            position: absolute;
-            top: 50%;
-            width: 16px;
-            height: 16px;
-            background: var(--gold);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 25px rgba(198, 169, 98, 0.9);
-            filter: blur(3px);
-            transition: left 0.5s ease-out;
-            left: 0%;
+            position: absolute; top: 50%; width: 16px; height: 16px; background: var(--gold);
+            border-radius: 50%; transform: translate(-50%, -50%);
+            box-shadow: 0 0 25px rgba(198,169,98,0.9); filter: blur(3px);
+            transition: left 0.3s ease-out; left: 0%;
         }
-
-        .loader-percentage {
-            font-size: 48px;
-            font-weight: bold;
-            color: var(--gold);
-        }
-
-        .loader-percentage span {
-            font-size: 28px;
-            color: rgba(229, 228, 226, 0.4);
-        }
-
+        .loader-percentage { font-size: 48px; font-weight: bold; color: var(--gold); }
+        .loader-percentage span { font-size: 28px; color: rgba(229,228,226,0.4); }
         .loader-status {
-            color: rgba(229, 228, 226, 0.25);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            margin-top: 10px;
+            color: rgba(229,228,226,0.25); font-size: 10px;
+            text-transform: uppercase; letter-spacing: 4px; margin-top: 10px;
             font-family: 'Courier New', monospace;
         }
 
-        /* CUSTOM CURSOR */
+        /* CURSOR */
         #cursor {
-            position: fixed;
-            z-index: 9999;
-            pointer-events: none;
-            width: 20px;
-            height: 20px;
-            background: var(--gold);
-            border-radius: 50%;
-            margin-left: -10px;
-            margin-top: -10px;
-            mix-blend-mode: difference;
-            transition: width 0.3s, height 0.3s, margin 0.3s, background 0.3s;
+            position: fixed; z-index: 9999; pointer-events: none;
+            width: 20px; height: 20px; background: var(--gold); border-radius: 50%;
+            margin-left: -10px; margin-top: -10px; mix-blend-mode: difference;
+            transition: width 0.2s, height 0.2s, margin 0.2s, background 0.2s;
         }
-
         #cursor.hover {
-            width: 60px;
-            height: 60px;
-            margin-left: -30px;
-            margin-top: -30px;
-            background: transparent;
-            border: 2px solid var(--gold);
-            mix-blend-mode: normal;
+            width: 60px; height: 60px; margin-left: -30px; margin-top: -30px;
+            background: transparent; border: 2px solid var(--gold); mix-blend-mode: normal;
         }
-
         #cursor-follower {
-            position: fixed;
-            z-index: 9998;
-            pointer-events: none;
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(198, 169, 98, 0.4);
-            border-radius: 50%;
-            margin-left: -20px;
-            margin-top: -20px;
-            backdrop-filter: blur(4px);
-            transition: width 0.3s, height 0.3s, margin 0.3s;
+            position: fixed; z-index: 9998; pointer-events: none;
+            width: 40px; height: 40px; border: 1px solid rgba(198,169,98,0.4);
+            border-radius: 50%; margin-left: -20px; margin-top: -20px;
+            backdrop-filter: blur(4px); transition: width 0.2s, height 0.2s, margin 0.2s;
         }
-
         #cursor-follower.hover {
-            width: 80px;
-            height: 80px;
-            margin-left: -40px;
-            margin-top: -40px;
-            background: radial-gradient(circle, rgba(198, 169, 98, 0.08), transparent 70%);
-            border-color: rgba(198, 169, 98, 0.7);
+            width: 80px; height: 80px; margin-left: -40px; margin-top: -40px;
+            background: radial-gradient(circle, rgba(198,169,98,0.08), transparent 70%);
+            border-color: rgba(198,169,98,0.7);
         }
 
         /* NAVIGATION */
         #navigation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 0 24px;
-            transition: all 0.5s;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 0 24px; transition: all 0.3s;
         }
-
         #navigation.scrolled {
-            background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(30px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(10,10,10,0.9); backdrop-filter: blur(30px);
+            border-bottom: 1px solid rgba(255,255,255,0.04);
         }
-
         .nav-inner {
-            max-width: 1300px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 80px;
+            max-width: 1300px; margin: 0 auto;
+            display: flex; align-items: center; justify-content: space-between; height: 80px;
         }
-
-        .nav-left {
-            display: flex;
-            align-items: center;
-            gap: 30px;
-        }
-
-        .nav-logo {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            color: inherit;
-        }
-
+        .nav-left { display: flex; align-items: center; gap: 30px; }
+        .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit; }
         .nav-logo-icon {
-            width: 42px;
-            height: 42px;
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--obsidian);
-            font-weight: bold;
-            font-size: 16px;
-            box-shadow: 0 4px 15px rgba(198, 169, 98, 0.3);
+            width: 42px; height: 42px; background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            color: var(--obsidian); font-weight: bold; font-size: 16px;
+            box-shadow: 0 4px 15px rgba(198,169,98,0.3);
         }
-
         .nav-logo-text {
-            font-size: 22px;
-            font-weight: bold;
+            font-size: 22px; font-weight: bold;
             background: linear-gradient(135deg, #C6A962, #E5C77D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
         }
-
         .coin-display {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(198, 169, 98, 0.1);
-            border: 1px solid rgba(198, 169, 98, 0.25);
-            border-radius: 50px;
-            padding: 8px 16px;
+            display: flex; align-items: center; gap: 8px;
+            background: rgba(198,169,98,0.1); border: 1px solid rgba(198,169,98,0.25);
+            border-radius: 50px; padding: 8px 16px;
         }
-
-        .coin-amount {
-            font-weight: bold;
-            color: var(--gold);
-            font-size: 16px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .coin-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: rgba(229, 228, 226, 0.4);
-        }
-
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
+        .coin-amount { font-weight: bold; color: var(--gold); font-size: 16px; font-family: 'Courier New', monospace; }
+        .coin-label { font-size: 9px; text-transform: uppercase; letter-spacing: 2px; color: rgba(229,228,226,0.4); }
+        .nav-links { display: flex; align-items: center; gap: 6px; }
         .nav-link {
-            color: rgba(229, 228, 226, 0.65);
-            text-decoration: none;
-            padding: 10px 18px;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            transition: all 0.3s;
+            color: rgba(229,228,226,0.65); text-decoration: none;
+            padding: 10px 18px; font-size: 13px; text-transform: uppercase;
+            letter-spacing: 1.5px; transition: all 0.2s;
         }
-
-        .nav-link:hover {
-            color: var(--gold);
-        }
-
+        .nav-link:hover { color: var(--gold); }
         .nav-cta {
             background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--obsidian);
-            border: none;
-            padding: 14px 28px;
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            cursor: pointer;
-            transition: all 0.3s;
-            box-shadow: 0 4px 20px rgba(198, 169, 98, 0.3);
+            color: var(--obsidian); border: none; padding: 14px 28px;
+            border-radius: 50px; font-size: 14px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer;
+            transition: all 0.2s; box-shadow: 0 4px 20px rgba(198,169,98,0.3);
         }
-
         .nav-cta.side-courses-btn {
             background: linear-gradient(135deg, var(--holographic), #6B5ECD);
-            box-shadow: 0 4px 20px rgba(123, 104, 238, 0.3);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            box-shadow: 0 4px 20px rgba(123,104,238,0.3);
+            display: flex; align-items: center; gap: 8px;
         }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 35px rgba(198, 169, 98, 0.5);
-        }
-
-        .nav-mobile-btn {
-            display: none;
-            background: none;
-            border: none;
-            width: 44px;
-            height: 44px;
-            position: relative;
-            cursor: pointer;
-        }
-
+        .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(198,169,98,0.5); }
+        .nav-mobile-btn { display: none; background: none; border: none; width: 44px; height: 44px; position: relative; cursor: pointer; }
         .nav-mobile-btn span {
-            display: block;
-            width: 24px;
-            height: 2px;
-            background: var(--gold);
-            position: absolute;
-            left: 10px;
-            transition: all 0.3s;
+            display: block; width: 24px; height: 2px; background: var(--gold);
+            position: absolute; left: 10px; transition: all 0.2s;
         }
-
         .nav-mobile-btn span:nth-child(1) { top: 13px; }
         .nav-mobile-btn span:nth-child(2) { top: 21px; }
         .nav-mobile-btn span:nth-child(3) { top: 29px; }
 
         /* MOBILE MENU */
         #mobile-menu {
-            position: fixed;
-            inset: 0;
-            z-index: 99;
-            background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(30px);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 25px;
-            transform: translateX(100%);
-            transition: transform 0.5s;
+            position: fixed; inset: 0; z-index: 99;
+            background: rgba(10,10,10,0.98); backdrop-filter: blur(30px);
+            display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 25px;
+            transform: translateX(100%); transition: transform 0.3s;
         }
-
-        #mobile-menu.open {
-            transform: translateX(0);
-        }
-
-        #mobile-menu a {
-            color: var(--platinum);
-            text-decoration: none;
-            font-size: 26px;
-            transition: color 0.3s;
-        }
-
-        #mobile-menu a:hover {
-            color: var(--gold);
-        }
+        #mobile-menu.open { transform: translateX(0); }
+        #mobile-menu a { color: var(--platinum); text-decoration: none; font-size: 26px; transition: color 0.3s; }
+        #mobile-menu a:hover { color: var(--gold); }
 
         /* ============================================
-           SIDE COURSES OVERLAY - HORIZONTAL SCROLL
+           SIDE COURSES OVERLAY - LIGE FORAN
            ============================================ */
         #side-courses-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 200;
-            background: rgba(10, 10, 10, 0.98);
-            backdrop-filter: blur(30px);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s, visibility 0.5s;
+            position: fixed; inset: 0; z-index: 200;
+            background: rgba(10,10,10,0.97); backdrop-filter: blur(50px);
+            opacity: 0; visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            display: flex; align-items: center; justify-content: center;
         }
+        #side-courses-overlay.active { opacity: 1; visibility: visible; }
 
-        #side-courses-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .side-courses-horizontal {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            overflow-x: auto;
-            overflow-y: hidden;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .side-courses-horizontal::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .side-courses-horizontal::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .side-courses-horizontal::-webkit-scrollbar-thumb {
-            background: var(--gold);
-            border-radius: 2px;
-        }
-
-        .side-course-panel {
-            min-width: 100vw;
-            height: 100vh;
-            scroll-snap-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .side-courses-centered {
+            width: 90%; max-width: 650px;
             position: relative;
+            display: flex; flex-direction: column; align-items: center;
         }
 
-        .side-course-card {
-            width: 90%;
-            max-width: 550px;
-            background: rgba(30, 30, 30, 0.7);
-            backdrop-filter: blur(40px);
-            border: 1px solid rgba(198, 169, 98, 0.2);
+        .side-course-card-front {
+            width: 100%;
+            background: rgba(25,25,25,0.85);
+            backdrop-filter: blur(60px);
+            border: 1px solid rgba(198,169,98,0.2);
             border-radius: 30px;
-            padding: 50px 40px;
+            padding: 55px 50px;
             text-align: center;
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
-            transition: all 0.4s;
-            position: relative;
-        }
-
-        .side-course-card:hover {
-            border-color: rgba(198, 169, 98, 0.5);
-            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.7), 0 0 40px rgba(198, 169, 98, 0.1);
-        }
-
-        .side-course-number {
-            position: absolute;
-            top: 20px;
-            right: 25px;
-            font-size: 12px;
-            color: rgba(229, 228, 226, 0.3);
-            letter-spacing: 2px;
-        }
-
-        .side-course-icon {
-            font-size: 70px;
-            margin-bottom: 20px;
-            animation: float 4s ease-in-out infinite;
-        }
-
-        .side-course-title {
-            font-size: 30px;
-            font-weight: bold;
-            color: var(--gold);
-            margin-bottom: 12px;
-            letter-spacing: 1px;
-        }
-
-        .side-course-desc {
-            color: rgba(229, 228, 226, 0.55);
-            font-size: 15px;
-            line-height: 1.7;
-            margin-bottom: 25px;
-        }
-
-        .side-course-price {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 12px 28px;
-            border-radius: 50px;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 25px;
-        }
-
-        .side-course-price.free {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            color: var(--emerald);
-        }
-
-        .side-course-price.paid {
-            background: rgba(198, 169, 98, 0.1);
-            border: 1px solid rgba(198, 169, 98, 0.4);
-            color: var(--gold);
-        }
-
-        .side-course-btn {
-            padding: 15px 40px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .side-course-btn.unlock {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--obsidian);
-            box-shadow: 0 4px 20px rgba(198, 169, 98, 0.3);
-        }
-
-        .side-course-btn.unlock:hover {
-            box-shadow: 0 6px 30px rgba(198, 169, 98, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .side-course-btn.unlocked {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--emerald);
-            border: 1px solid rgba(16, 185, 129, 0.4);
-            cursor: default;
-        }
-
-        .side-course-btn.locked {
-            background: rgba(239, 68, 68, 0.1);
-            color: var(--ruby);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            cursor: not-allowed;
-        }
-
-        /* Navigation arrows for side courses */
-        .side-nav-arrows {
-            position: fixed;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 15px;
-            z-index: 210;
-        }
-
-        .side-nav-arrow {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(198, 169, 98, 0.3);
-            color: var(--gold);
-            font-size: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-
-        .side-nav-arrow:hover {
-            background: rgba(198, 169, 98, 0.1);
-            border-color: var(--gold);
-            box-shadow: 0 0 25px rgba(198, 169, 98, 0.3);
-        }
-
-        .side-course-counter {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 210;
-            color: rgba(229, 228, 226, 0.4);
-            font-size: 12px;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
-
-        .close-overlay-btn {
-            position: fixed;
-            top: 25px;
-            right: 25px;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--platinum);
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 210;
-            transition: all 0.3s;
-        }
-
-        .close-overlay-btn:hover {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: var(--ruby);
-            color: var(--ruby);
-        }
-
-        /* Scroll hint */
-        .scroll-hint {
-            position: fixed;
-            bottom: 120px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 210;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: rgba(229, 228, 226, 0.3);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            animation: fadeInOut 3s ease-in-out infinite;
-        }
-
-        .scroll-hint-line {
-            width: 60px;
-            height: 1px;
-            background: rgba(198, 169, 98, 0.3);
-        }
-
-        /* SECTIONS */
-        .section {
-            position: relative;
-            z-index: 1;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 100px 24px;
-        }
-
-        .section-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .hero-content {
-            text-align: center;
-            max-width: 900px;
-        }
-
-        .hero-badge {
-            display: inline-block;
-            padding: 10px 24px;
-            border: 1px solid rgba(198, 169, 98, 0.3);
-            border-radius: 50px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--gold);
-            margin-bottom: 30px;
-            background: rgba(198, 169, 98, 0.04);
-        }
-
-        .hero-title {
-            font-size: clamp(50px, 8vw, 110px);
-            font-weight: bold;
-            line-height: 1;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #C6A962 0%, #E5C77D 25%, #F3DBA5 50%, #C6A962 75%, #A88B4A 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            background-size: 200% 200%;
-            animation: goldShimmer 4s ease-in-out infinite;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(16px, 2vw, 22px);
-            color: rgba(229, 228, 226, 0.65);
-            margin-bottom: 45px;
-            font-family: 'Courier New', monospace;
-            letter-spacing: 2px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 70px;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 18px 38px;
-            border-radius: 50px;
-            font-size: 15px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-decoration: none;
-            transition: all 0.3s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-            color: var(--obsidian);
-            box-shadow: 0 6px 30px rgba(198, 169, 98, 0.3);
-        }
-
-        .btn-primary:hover {
-            box-shadow: 0 10px 45px rgba(198, 169, 98, 0.5);
-            transform: translateY(-3px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--platinum);
-            border: 1px solid rgba(229, 228, 226, 0.2);
-        }
-
-        .btn-secondary:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
-
-        .hero-features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero-feature {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 18px;
-            padding: 30px 20px;
-            text-align: center;
-            transition: all 0.4s;
-            backdrop-filter: blur(10px);
-        }
-
-        .hero-feature:hover {
-            background: rgba(255, 255, 255, 0.04);
-            border-color: rgba(198, 169, 98, 0.3);
-            transform: translateY(-6px);
-        }
-
-        .hero-feature-icon {
-            font-size: 35px;
-            margin-bottom: 12px;
-        }
-
-        .hero-feature-text {
-            font-size: 11px;
-            color: rgba(229, 228, 226, 0.55);
-            text-transform: uppercase;
-            letter-spacing: 2.5px;
-        }
-
-        .scroll-indicator {
-            position: absolute;
-            bottom: 40px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 12px;
-            color: rgba(229, 228, 226, 0.25);
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-        }
-
-        .scroll-line {
-            width: 1px;
-            height: 50px;
-            background: linear-gradient(to bottom, rgba(198, 169, 98, 0.5), transparent);
-        }
-
-        .scroll-dot {
-            width: 6px;
-            height: 6px;
-            background: rgba(198, 169, 98, 0.4);
-            border-radius: 50%;
-            animation: bounce 2s ease-in-out infinite;
-        }
-
-        /* COURSES GRID */
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .course-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 22px;
-            padding: 40px 30px;
-            transition: all 0.5s;
-            backdrop-filter: blur(15px);
+            box-shadow: 0 30px 90px rgba(0,0,0,0.7), 0 0 80px rgba(198,169,98,0.08);
             position: relative;
             overflow: hidden;
         }
 
+        .side-course-card-front::before {
+            content: '';
+            position: absolute; inset: -1px; border-radius: 31px;
+            background: linear-gradient(135deg, rgba(198,169,98,0.4), transparent 40%, transparent 60%, rgba(198,169,98,0.4));
+            z-index: -1; opacity: 0.7;
+        }
+
+        .side-course-number-front {
+            font-size: 14px; color: rgba(229,228,226,0.4);
+            letter-spacing: 4px; font-family: 'Courier New', monospace;
+            margin-bottom: 10px;
+        }
+
+        .side-course-icon-front {
+            font-size: 80px; margin-bottom: 15px;
+            animation: float3d 3s ease-in-out infinite;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+        }
+
+        .side-course-title-front {
+            font-size: 32px; font-weight: bold; color: var(--gold);
+            margin-bottom: 12px; letter-spacing: 1px;
+            text-shadow: 0 2px 15px rgba(198,169,98,0.2);
+        }
+
+        .side-course-desc-front {
+            color: rgba(229,228,226,0.6); font-size: 16px;
+            line-height: 1.7; margin-bottom: 20px; max-width: 450px;
+            margin-left: auto; margin-right: auto;
+        }
+
+        .side-course-price-front {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 12px 28px; border-radius: 50px;
+            font-size: 18px; font-weight: bold; margin-bottom: 20px;
+        }
+        .side-course-price-front.free {
+            background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.4); color: var(--emerald);
+        }
+        .side-course-price-front.paid {
+            background: rgba(198,169,98,0.1); border: 1px solid rgba(198,169,98,0.4); color: var(--gold);
+        }
+
+        .side-course-btn-front {
+            padding: 16px 42px; border-radius: 50px;
+            font-size: 16px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px;
+            border: none; cursor: pointer; transition: all 0.2s;
+            position: relative; overflow: hidden;
+        }
+        .side-course-btn-front.unlock {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian); box-shadow: 0 8px 25px rgba(198,169,98,0.35);
+        }
+        .side-course-btn-front.unlock:hover {
+            box-shadow: 0 10px 35px rgba(198,169,98,0.5); transform: translateY(-2px);
+        }
+        .side-course-btn-front.unlocked {
+            background: rgba(16,185,129,0.15); color: var(--emerald);
+            border: 1px solid rgba(16,185,129,0.4); cursor: default;
+        }
+        .side-course-btn-front.locked {
+            background: rgba(239,68,68,0.08); color: var(--ruby);
+            border: 1px solid rgba(239,68,68,0.3); cursor: not-allowed;
+        }
+
+        /* Navigation */
+        .side-nav-bottom {
+            display: flex; align-items: center; gap: 30px;
+            margin-top: 30px;
+        }
+        .side-nav-arrow-front {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(198,169,98,0.3);
+            color: var(--gold); font-size: 20px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s;
+            backdrop-filter: blur(10px);
+        }
+        .side-nav-arrow-front:hover {
+            background: rgba(198,169,98,0.12); border-color: var(--gold);
+            box-shadow: 0 0 25px rgba(198,169,98,0.3); transform: scale(1.05);
+        }
+        .side-nav-dots-front {
+            display: flex; gap: 10px;
+        }
+        .side-nav-dot-front {
+            width: 10px; height: 10px; border-radius: 50%;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            cursor: pointer; transition: all 0.3s;
+        }
+        .side-nav-dot-front.active {
+            background: var(--gold); border-color: var(--gold);
+            box-shadow: 0 0 15px rgba(198,169,98,0.6);
+            transform: scale(1.3);
+        }
+
+        .close-overlay-front {
+            position: fixed; top: 25px; right: 25px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1); color: var(--platinum);
+            font-size: 22px; display: flex; align-items: center; justify-content: center;
+            cursor: pointer; z-index: 210; transition: all 0.2s;
+        }
+        .close-overlay-front:hover {
+            background: rgba(239,68,68,0.1); border-color: var(--ruby); color: var(--ruby);
+        }
+
+        .side-counter-front {
+            position: fixed; top: 30px; left: 50%; transform: translateX(-50%);
+            z-index: 210; color: rgba(229,228,226,0.5);
+            font-size: 13px; letter-spacing: 3px; text-transform: uppercase;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* HERO & SECTIONS */
+        .section {
+            position: relative; z-index: 1; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center; padding: 100px 24px;
+        }
+        .section-inner { max-width: 1200px; margin: 0 auto; width: 100%; }
+        .hero-content { text-align: center; max-width: 900px; }
+        .hero-badge {
+            display: inline-block; padding: 10px 24px;
+            border: 1px solid rgba(198,169,98,0.3); border-radius: 50px;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--gold); margin-bottom: 25px; background: rgba(198,169,98,0.04);
+        }
+        .hero-message {
+            font-size: 1.5rem;
+            color: var(--platinum);
+            margin-bottom: 30px;
+            font-style: italic;
+            line-height: 1.4;
+            max-width: 700px;
+            margin-left: auto; margin-right: auto;
+        }
+        .hero-title {
+            font-size: clamp(50px, 8vw, 110px); font-weight: bold; line-height: 1; margin-bottom: 25px;
+            background: linear-gradient(135deg, #C6A962 0%, #E5C77D 25%, #F3DBA5 50%, #C6A962 75%, #A88B4A 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; background-size: 200% 200%;
+            animation: goldShimmer 4s ease-in-out infinite;
+        }
+        .hero-subtitle {
+            font-size: clamp(16px, 2vw, 22px); color: rgba(229,228,226,0.65);
+            margin-bottom: 35px; font-family: 'Courier New', monospace; letter-spacing: 2px;
+        }
+        .hero-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+        .btn {
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 18px 38px; border-radius: 50px; font-size: 15px;
+            font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;
+            text-decoration: none; transition: all 0.2s; cursor: pointer; border: none;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian); box-shadow: 0 6px 25px rgba(198,169,98,0.3);
+        }
+        .btn-primary:hover { box-shadow: 0 10px 35px rgba(198,169,98,0.45); transform: translateY(-2px); }
+        .btn-secondary { background: transparent; color: var(--platinum); border: 1px solid rgba(229,228,226,0.2); }
+        .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+        .hero-features {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px; max-width: 800px; margin: 0 auto;
+        }
+        .hero-feature {
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 18px; padding: 30px 20px; text-align: center;
+            transition: all 0.3s; backdrop-filter: blur(10px);
+        }
+        .hero-feature:hover {
+            background: rgba(255,255,255,0.04); border-color: rgba(198,169,98,0.3);
+            transform: translateY(-5px);
+        }
+        .hero-feature-icon { font-size: 35px; margin-bottom: 12px; }
+        .hero-feature-text { font-size: 11px; color: rgba(229,228,226,0.55); text-transform: uppercase; letter-spacing: 2.5px; }
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 12px;
+            color: rgba(229,228,226,0.25); font-size: 10px; text-transform: uppercase; letter-spacing: 4px;
+        }
+        .scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, rgba(198,169,98,0.5), transparent); }
+        .scroll-dot { width: 6px; height: 6px; background: rgba(198,169,98,0.4); border-radius: 50%; animation: bounce 2s ease-in-out infinite; }
+
+        /* COURSES GRID */
+        .courses-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px; max-width: 1200px; margin: 0 auto;
+        }
+        .course-card {
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 22px; padding: 40px 30px; transition: all 0.3s;
+            backdrop-filter: blur(15px); position: relative; overflow: hidden;
+        }
         .course-card:hover {
-            border-color: rgba(198, 169, 98, 0.4);
-            transform: translateY(-10px);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            border-color: rgba(198,169,98,0.4); transform: translateY(-8px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
         }
-
-        .course-level {
-            display: inline-block;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: bold;
-            margin-bottom: 18px;
-            color: white;
-        }
-
+        .course-level { display: inline-block; padding: 8px 18px; border-radius: 50px; font-size: 13px; font-weight: bold; margin-bottom: 18px; color: white; }
         .level-d { background: linear-gradient(135deg, #4ade80, #059669); }
         .level-c { background: linear-gradient(135deg, #60a5fa, #4f46e5); }
         .level-b { background: linear-gradient(135deg, #a78bfa, #7c3aed); }
         .level-a { background: linear-gradient(135deg, #fbbf24, #d97706); }
-
         .course-price {
-            font-size: 32px;
-            font-weight: bold;
-            color: var(--gold);
-            margin-bottom: 18px;
+            font-size: 32px; font-weight: bold; color: var(--gold); margin-bottom: 18px;
+            display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
         }
-
-        .course-title {
-            font-size: 26px;
-            color: var(--platinum);
-            margin-bottom: 12px;
-            font-weight: bold;
+        .original-price {
+            text-decoration: line-through; color: var(--ruby); font-size: 20px; margin-right: 5px;
         }
-
-        .course-desc {
-            color: rgba(229, 228, 226, 0.45);
-            font-size: 14px;
-            margin-bottom: 22px;
-            line-height: 1.7;
+        .discount-badge {
+            background: var(--ruby); color: white; font-size: 11px; padding: 3px 10px;
+            border-radius: 20px; letter-spacing: 1px; text-transform: uppercase;
+            animation: pulse-badge 2s infinite;
         }
-
-        .course-features {
-            list-style: none;
-            margin-bottom: 28px;
+        @keyframes pulse-badge {
+            0%, 100% { opacity: 1; } 50% { opacity: 0.7; }
         }
-
+        .course-title { font-size: 26px; color: var(--platinum); margin-bottom: 12px; font-weight: bold; }
+        .course-desc { color: rgba(229,228,226,0.45); font-size: 14px; margin-bottom: 22px; line-height: 1.7; }
+        .course-features { list-style: none; margin-bottom: 28px; }
         .course-features li {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 9px 0;
-            color: rgba(229, 228, 226, 0.55);
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex; align-items: center; gap: 10px;
+            padding: 9px 0; color: rgba(229,228,226,0.55); font-size: 13px;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
         }
-
-        .course-features li::before {
-            content: '✦';
-            color: var(--gold);
-            font-size: 10px;
-        }
-
+        .course-features li::before { content: '✦'; color: var(--gold); font-size: 10px; }
         .course-btn {
-            width: 100%;
-            padding: 16px;
-            background: transparent;
-            border: 1px solid rgba(198, 169, 98, 0.3);
-            color: var(--gold);
-            border-radius: 50px;
-            font-size: 14px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            cursor: pointer;
-            transition: all 0.3s;
+            width: 100%; padding: 16px; background: transparent;
+            border: 1px solid rgba(198,169,98,0.3); color: var(--gold);
+            border-radius: 50px; font-size: 14px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer; transition: all 0.2s;
         }
+        .course-btn:hover { background: var(--gold); color: var(--obsidian); border-color: var(--gold); box-shadow: 0 8px 25px rgba(198,169,98,0.3); }
 
-        .course-btn:hover {
-            background: var(--gold);
-            color: var(--obsidian);
-            border-color: var(--gold);
-            box-shadow: 0 8px 35px rgba(198, 169, 98, 0.35);
+        /* BUNDLE SECTION */
+        .bundle-section {
+            max-width: 700px; margin: 50px auto 0; text-align: center;
+        }
+        .bundle-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(198,169,98,0.3);
+            border-radius: 28px; padding: 40px; position: relative;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        }
+        .bundle-badge {
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            background: var(--ruby); color: white; padding: 6px 20px;
+            border-radius: 30px; font-size: 13px; font-weight: bold;
+            letter-spacing: 2px; text-transform: uppercase;
+            animation: pulse-badge 2s infinite;
+        }
+        .bundle-title {
+            font-size: 30px; font-weight: bold; color: var(--gold); margin-bottom: 10px;
+        }
+        .bundle-price {
+            font-size: 22px; color: var(--platinum); margin-bottom: 20px;
+        }
+        .bundle-price .old {
+            text-decoration: line-through; color: var(--ruby); margin-right: 10px; font-size: 18px;
+        }
+        .bundle-price .new {
+            color: var(--emerald); font-weight: bold; font-size: 28px;
+        }
+        .bundle-desc {
+            color: rgba(229,228,226,0.6); font-size: 15px; line-height: 1.7; margin-bottom: 25px;
+            text-align: left;
+            padding: 20px; background: rgba(0,0,0,0.2); border-radius: 16px;
+        }
+        .bundle-desc ul {
+            list-style: none; padding-left: 0;
+        }
+        .bundle-desc li {
+            padding: 6px 0; display: flex; align-items: center; gap: 8px;
+        }
+        .bundle-desc li::before { content: '✓'; color: var(--emerald); font-weight: bold; }
+        .bundle-btn {
+            background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+            color: var(--obsidian); border: none; padding: 18px 50px;
+            border-radius: 50px; font-size: 18px; font-weight: bold;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+            transition: all 0.2s; box-shadow: 0 8px 30px rgba(198,169,98,0.35);
+        }
+        .bundle-btn:hover {
+            box-shadow: 0 12px 40px rgba(198,169,98,0.55); transform: translateY(-2px);
         }
 
         /* ABOUT */
-        .about-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .about-text {
-            color: rgba(229, 228, 226, 0.55);
-            font-size: 16px;
-            line-height: 1.9;
-            margin-bottom: 30px;
-        }
-
-        .about-text strong {
-            color: var(--gold);
-        }
-
-        .section-header {
-            text-align: center;
-            margin-bottom: 70px;
-        }
-
+        .about-content { max-width: 800px; margin: 0 auto; text-align: center; }
+        .about-text { color: rgba(229,228,226,0.55); font-size: 16px; line-height: 1.9; margin-bottom: 30px; }
+        .about-text strong { color: var(--gold); }
+        .section-header { text-align: center; margin-bottom: 60px; }
         .section-badge {
-            display: inline-block;
-            padding: 10px 24px;
-            border: 1px solid rgba(198, 169, 98, 0.3);
-            border-radius: 50px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--gold);
-            margin-bottom: 20px;
-            background: rgba(198, 169, 98, 0.04);
+            display: inline-block; padding: 10px 24px;
+            border: 1px solid rgba(198,169,98,0.3); border-radius: 50px;
+            font-size: 11px; text-transform: uppercase; letter-spacing: 4px;
+            color: var(--gold); margin-bottom: 20px; background: rgba(198,169,98,0.04);
         }
-
         .section-title {
-            font-size: clamp(38px, 6vw, 70px);
-            font-weight: bold;
+            font-size: clamp(38px, 6vw, 70px); font-weight: bold;
             background: linear-gradient(135deg, #C6A962, #E5C77D);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
         /* FOOTER */
         #footer {
-            position: relative;
-            z-index: 1;
-            background: var(--obsidian);
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 70px 24px 30px;
+            position: relative; z-index: 1; background: var(--obsidian);
+            border-top: 1px solid rgba(255,255,255,0.04); padding: 60px 24px 30px;
         }
-
         .footer-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 40px;
-            margin-bottom: 50px;
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px; margin-bottom: 40px;
         }
-
-        .footer-col h4 {
-            color: var(--gold);
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 22px;
-        }
-
-        .footer-col a {
-            display: block;
-            color: rgba(229, 228, 226, 0.35);
-            text-decoration: none;
-            font-size: 13px;
-            padding: 7px 0;
-            transition: color 0.3s;
-        }
-
-        .footer-col a:hover {
-            color: var(--gold);
-        }
-
+        .footer-col h4 { color: var(--gold); font-size: 11px; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 20px; }
+        .footer-col a { display: block; color: rgba(229,228,226,0.35); text-decoration: none; font-size: 13px; padding: 6px 0; transition: color 0.3s; }
+        .footer-col a:hover { color: var(--gold); }
         .footer-bottom {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.04);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            font-size: 12px;
-            color: rgba(229, 228, 226, 0.25);
+            max-width: 1200px; margin: 0 auto; padding-top: 25px;
+            border-top: 1px solid rgba(255,255,255,0.04);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 20px; font-size: 12px; color: rgba(229,228,226,0.25);
         }
-
-        .footer-social {
-            display: flex;
-            gap: 12px;
-        }
-
+        .footer-social { display: flex; gap: 12px; }
         .footer-social a {
-            width: 36px;
-            height: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(229, 228, 226, 0.35);
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: bold;
-            transition: all 0.3s;
+            width: 36px; height: 36px; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            color: rgba(229,228,226,0.35); text-decoration: none; font-size: 11px;
+            font-weight: bold; transition: all 0.3s;
         }
-
-        .footer-social a:hover {
-            border-color: var(--gold);
-            color: var(--gold);
-        }
+        .footer-social a:hover { border-color: var(--gold); color: var(--gold); }
 
         /* ANIMATIONS */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         @keyframes pulse {
             0%, 100% { opacity: 0.4; transform: rotate(45deg) scale(1); }
-            50% { opacity: 1; transform: rotate(45deg) scale(1.3); }
+            50% { opacity: 1; transform: rotate(45deg) scale(1.2); }
         }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes float3d { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-12px) rotate(2deg); } }
+        @keyframes goldShimmer { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
+        .reveal { opacity: 0; transform: translateY(50px); transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-
-        @keyframes goldShimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
-
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.7; }
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(60px);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* RESPONSIVE */
         @media (max-width: 900px) {
-            .nav-links { display: none; }
-            .nav-mobile-btn { display: block; }
+            .nav-links { display: none; } .nav-mobile-btn { display: block; }
             .coin-display { display: none; }
             .hero-features { grid-template-columns: repeat(2, 1fr); }
             .footer-inner { grid-template-columns: repeat(2, 1fr); }
             .footer-bottom { flex-direction: column; text-align: center; }
-            .side-course-card { padding: 35px 25px; }
+            .side-course-card-front { padding: 35px 25px; }
+            .side-course-icon-front { font-size: 60px; }
+            .side-course-title-front { font-size: 26px; }
+            .side-course-desc-front { font-size: 14px; }
+            .hero-message { font-size: 1.2rem; }
         }
 
         @media (max-width: 480px) {
             .hero-features { grid-template-columns: 1fr; }
             .hero-buttons { flex-direction: column; align-items: center; }
+            .side-course-card-front { padding: 25px 18px; }
+            .hero-message { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-    <!-- LOADING SCREEN -->
     <div id="loading-screen">
         <div class="loader-content">
             <div class="loader-ring"><div class="loader-diamond"></div></div>
@@ -1162,14 +612,10 @@
         </div>
     </div>
 
-    <!-- CURSOR -->
     <div id="cursor"></div>
     <div id="cursor-follower"></div>
-
-    <!-- 3D CANVAS -->
     <div id="canvas-container"></div>
 
-    <!-- NAVIGATION -->
     <nav id="navigation">
         <div class="nav-inner">
             <div class="nav-left">
@@ -1178,9 +624,7 @@
                     <span class="nav-logo-text">LearnAI</span>
                 </a>
                 <div class="coin-display">
-                    <span>🪙</span>
-                    <span class="coin-amount" id="coin-amount">100</span>
-                    <span class="coin-label">Coins</span>
+                    <span>🪙</span><span class="coin-amount" id="coin-amount">100</span><span class="coin-label">Coins</span>
                 </div>
             </div>
             <div class="nav-links">
@@ -1192,45 +636,31 @@
         </div>
     </nav>
 
-    <!-- MOBILE MENU -->
     <div id="mobile-menu">
-        <a href="#kurser">Kurser</a>
-        <a href="#om-os">Om Os</a>
+        <a href="#kurser">Kurser</a><a href="#om-os">Om Os</a>
         <button class="nav-cta side-courses-btn" id="side-courses-btn-mobile">◈ Sidekurser</button>
-        <div style="display:flex;align-items:center;gap:10px;margin-top:20px;padding:12px 24px;background:rgba(198,169,98,0.1);border:1px solid rgba(198,169,98,0.3);border-radius:50px;">
-            <span>🪙</span>
-            <span style="color:var(--gold);font-weight:bold;font-size:20px;">100</span>
-            <span style="color:rgba(229,228,226,0.4);font-size:10px;text-transform:uppercase;letter-spacing:2px;">Coins</span>
-        </div>
     </div>
 
-    <!-- ============================================
-    SIDE COURSES OVERLAY - HORIZONTAL SCROLL
-    ============================================ -->
     <div id="side-courses-overlay">
-        <button class="close-overlay-btn" id="close-overlay-btn">✕</button>
-        <div class="side-course-counter" id="side-course-counter">Kursus 1 / 12</div>
-        
-        <div class="side-courses-horizontal" id="side-courses-horizontal">
-            <!-- Generated by JS -->
-        </div>
-        
-        <div class="side-nav-arrows">
-            <button class="side-nav-arrow" id="side-nav-prev">◂</button>
-            <button class="side-nav-arrow" id="side-nav-next">▸</button>
-        </div>
-        
-        <div class="scroll-hint" id="scroll-hint">
-            <span class="scroll-hint-line"></span>
-            <span>Swipe for at udforske</span>
-            <span class="scroll-hint-line"></span>
+        <button class="close-overlay-front" id="close-overlay-front">✕</button>
+        <div class="side-counter-front" id="side-counter-front">Kursus 1 / 12</div>
+        <div class="side-courses-centered" id="side-courses-centered">
+            <div class="side-course-card-front" id="side-course-card-front"></div>
+            <div class="side-nav-bottom">
+                <button class="side-nav-arrow-front" id="side-nav-prev-front">◂</button>
+                <div class="side-nav-dots-front" id="side-nav-dots-front"></div>
+                <button class="side-nav-arrow-front" id="side-nav-next-front">▸</button>
+            </div>
         </div>
     </div>
 
-    <!-- HERO -->
     <section class="section" id="hero">
         <div class="hero-content">
             <div class="hero-badge reveal">✦ LearnAI Premium ✦</div>
+            <p class="hero-message reveal">
+                "Det er ikke AI, der tager dit job – det er folk, der kan bruge AI, der tager dit job."<br>
+                Så vi har lavet disse kurser til dig, og det bedste er, at du kan starte i dag.
+            </p>
             <h1 class="hero-title reveal">Mestre AI<br>Med Stil</h1>
             <p class="hero-subtitle reveal" id="scramble-text">Fra Begynder til Ekspert - Din AI Rejse</p>
             <div class="hero-buttons reveal">
@@ -1244,14 +674,9 @@
                 <div class="hero-feature reveal"><div class="hero-feature-icon">🏆</div><div class="hero-feature-text">Ekspert</div></div>
             </div>
         </div>
-        <div class="scroll-indicator">
-            <span>Udforsk</span>
-            <div class="scroll-line"></div>
-            <div class="scroll-dot"></div>
-        </div>
+        <div class="scroll-indicator"><span>Udforsk</span><div class="scroll-line"></div><div class="scroll-dot"></div></div>
     </section>
 
-    <!-- COURSES -->
     <section class="section" id="kurser">
         <div class="section-inner">
             <div class="section-header reveal">
@@ -1264,163 +689,119 @@
                     <div class="course-price">Gratis</div>
                     <h3 class="course-title">Amatør</h3>
                     <p class="course-desc">Start din AI-rejse her med grundlæggende koncepter.</p>
-                    <ul class="course-features">
-                        <li>Grundlæggende AI</li><li>Simple Øvelser</li><li>Intro Certifikat</li><li>Gratis Adgang</li>
-                    </ul>
+                    <ul class="course-features"><li>Grundlæggende AI</li><li>Simple Øvelser</li><li>Intro Certifikat</li></ul>
                     <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Start Kursus →</button>
                 </div>
                 <div class="course-card reveal">
                     <span class="course-level level-c">Niveau C</span>
-                    <div class="course-price">499 DKK</div>
+                    <div class="course-price">799 DKK</div>
                     <h3 class="course-title">Avanceret</h3>
-                    <p class="course-desc">Machine learning og avancerede AI-værktøjer.</p>
-                    <ul class="course-features">
-                        <li>Machine Learning</li><li>Data Analyse</li><li>API Integration</li><li>C Certifikat</li>
-                    </ul>
+                    <p class="course-desc">Dyk ned i machine learning og avancerede AI-værktøjer.</p>
+                    <ul class="course-features"><li>Machine Learning</li><li>Data Analyse</li><li>API Integration</li></ul>
                     <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
                 <div class="course-card reveal">
                     <span class="course-level level-b">Niveau B</span>
-                    <div class="course-price">999 DKK</div>
+                    <div class="course-price">1.499 DKK</div>
                     <h3 class="course-title">Professionel</h3>
-                    <p class="course-desc">Professionelle teknikker til AI-udvikling.</p>
-                    <ul class="course-features">
-                        <li>Neurale Netværk</li><li>Deep Learning</li><li>Pro Eksamen</li><li>B Certifikat</li>
-                    </ul>
+                    <p class="course-desc">Professionelle teknikker og værktøjer til AI-udvikling.</p>
+                    <ul class="course-features"><li>Neurale Netværk</li><li>Deep Learning</li><li>Pro Eksamen</li></ul>
                     <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
                 <div class="course-card reveal">
                     <span class="course-level level-a">Niveau A</span>
-                    <div class="course-price">1.999 DKK</div>
+                    <div class="course-price">4.599 DKK</div>
                     <h3 class="course-title">Ekspert</h3>
-                    <p class="course-desc">Mestre avancerede AI-systemer.</p>
-                    <ul class="course-features">
-                        <li>AI Arkitektur</li><li>System Design</li><li>Ekspert Certificering</li><li>A Certifikat</li>
-                    </ul>
+                    <p class="course-desc">Mestre avancerede AI-systemer og bliv certificeret ekspert.</p>
+                    <ul class="course-features"><li>AI Arkitektur</li><li>System Design</li><li>Ekspert Certificering</li></ul>
                     <button class="course-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Vælg Kursus →</button>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- ABOUT -->
-    <section class="section" id="om-os">
-        <div class="about-content">
-            <div class="section-header reveal">
-                <span class="section-badge">Om LearnAI</span>
-                <h2 class="section-title">Vores Historie</h2>
-            </div>
-            <p class="about-text reveal">Vi bor i Værløse og brænder for matematik, business, salg, sport og konkurrence. LearnAI startede som en drøm om at gøre AI-uddannelse tilgængelig for alle.</p>
-            <p class="about-text reveal"><strong>Vores Metode:</strong><br>Start på platformen hvor du kan se alle kurser. Fra niveau D til A. Start gratis og avancer gennem systemet med certificeringer.</p>
-            <p class="about-text reveal"><strong>Vores Mål:</strong><br>At skabe verdens bedste AI-platform - kombineret med en luksus 3D-oplevelse, sidekurser og et belønnende coin-system.</p>
-        </div>
-    </section>
-
-    <!-- FOOTER -->
-    <footer id="footer">
-        <div class="footer-inner">
-            <div class="footer-col">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:15px;">
-                    <div style="width:35px;height:35px;background:var(--gold);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--obsidian);font-weight:bold;">LA</div>
-                    <div><span style="font-size:18px;font-weight:bold;background:linear-gradient(135deg,#C6A962,#E5C77D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">LearnAI</span></div>
+            <div class="bundle-section reveal">
+                <div class="bundle-card">
+                    <div class="bundle-badge">🌟 25% RABAT</div>
+                    <h3 class="bundle-title">Komplet AI Mesterpakke</h3>
+                    <div class="bundle-price">
+                        <span class="old">6.800 DKK</span>
+                        <span class="new">5.100 DKK</span>
+                    </div>
+                    <p style="color: rgba(229,228,226,0.5); margin-bottom: 20px;">Få alle tre betalte kurser (C + B + A) til én samlet lav pris.</p>
+                    <div class="bundle-desc">
+                        <ul>
+                            <li><strong>Varighed:</strong> 30+ timers video indhold</li>
+                            <li><strong>Niveau:</strong> Fra let øvet til ekspert</li>
+                            <li><strong>Indhold:</strong> Machine Learning, Neurale Netværk, Deep Learning, AI Arkitektur, System Design</li>
+                            <li><strong>Certificering:</strong> Samlet eksamensbevis efter bestået prøve</li>
+                            <li><strong>Adgang:</strong> Livstid + alle opdateringer</li>
+                        </ul>
+                    </div>
+                    <button class="bundle-btn" onclick="window.location.href='https://magnuscode-ai.github.io/ai-kursus/kursus-d.html'">Køb Samlet Pakke →</button>
+                    <p style="margin-top: 15px; font-size: 12px; color: rgba(229,228,226,0.4);">Du sparer 1.700 DKK i forhold til enkeltkøb</p>
                 </div>
             </div>
-            <div class="footer-col">
-                <h4>Hovedkurser</h4>
-                <a href="#kurser">Niveau D (Gratis)</a>
-                <a href="#kurser">Niveau C</a>
-                <a href="#kurser">Niveau B</a>
-                <a href="#kurser">Niveau A</a>
-            </div>
-            <div class="footer-col">
-                <h4>Platform</h4>
-                <a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub</a>
-                <a href="#" id="footer-side-courses">Sidekurser</a>
-                <a href="https://magnuscode-ai.github.io/ai-kursus/" target="_blank">Eksamen</a>
-            </div>
         </div>
-        <div class="footer-bottom">
-            <span>© 2024 LearnAI • Værløse, Danmark</span>
-            <div class="footer-social">
-                <a href="https://github.com/magnuscode-ai" target="_blank">G</a>
-                <a href="#">L</a>
-                <a href="#">T</a>
-            </div>
+    </section>
+
+    <section class="section" id="om-os">
+        <div class="about-content">
+            <div class="section-header reveal"><span class="section-badge">Om LearnAI</span><h2 class="section-title">Vores Historie</h2></div>
+            <p class="about-text reveal">Vi bor i Værløse og brænder for matematik, business, salg, sport og konkurrence. LearnAI startede som en drøm om at gøre AI-uddannelse tilgængelig for alle.</p>
+            <p class="about-text reveal"><strong>Vores Metode:</strong><br>Start på platformen. Fra niveau D til A. Start gratis og avancer med certificeringer.</p>
+            <p class="about-text reveal"><strong>Vores Mål:</strong><br>Verdens bedste AI-platform med 3D-oplevelse, sidekurser og coin-system.</p>
         </div>
+    </section>
+
+    <footer id="footer">
+        <div class="footer-inner">
+            <div class="footer-col"><h4>Hovedkurser</h4><a href="#kurser">Niveau D (Gratis)</a><a href="#kurser">Niveau C</a><a href="#kurser">Niveau B</a><a href="#kurser">Niveau A</a></div>
+            <div class="footer-col"><h4>Platform</h4><a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub</a><a href="#" id="footer-side-courses">Sidekurser</a></div>
+        </div>
+        <div class="footer-bottom"><span>© 2024 LearnAI • Værløse, Danmark</span></div>
     </footer>
 
     <script>
-        // ============================================
-        // GLOBAL STATE
-        // ============================================
         let userCoins = 100;
         const sideCourses = [
-            { icon: '🤖', title: 'AI Etik & Sikkerhed', desc: 'Forstå de etiske dilemmaer og sikkerhedsaspekter ved AI.', price: 0, unlocked: false },
-            { icon: '📊', title: 'Data Visualisering', desc: 'Visualiser komplekse data med AI-drevne værktøjer.', price: 0, unlocked: false },
-            { icon: '🎨', title: 'AI Kunst Generation', desc: 'Skab fantastisk kunst med generative AI-modeller.', price: 0, unlocked: false },
-            { icon: '🗣️', title: 'NLP & Sprogmodeller', desc: 'Arbejd med Natural Language Processing.', price: 50, unlocked: false },
+            { icon: '🤖', title: 'AI Etik & Sikkerhed', desc: 'Forstå de etiske dilemmaer og sikkerhedsaspekter ved AI-udvikling.', price: 0, unlocked: false },
+            { icon: '📊', title: 'Data Visualisering', desc: 'Visualiser komplekse datasæt med AI-drevne værktøjer.', price: 0, unlocked: false },
+            { icon: '🎨', title: 'AI Kunst Generation', desc: 'Skab fantastisk digital kunst med generative AI-modeller.', price: 0, unlocked: false },
+            { icon: '🗣️', title: 'NLP & Sprogmodeller', desc: 'Arbejd med Natural Language Processing og sprogmodeller.', price: 50, unlocked: false },
             { icon: '🤖', title: 'Robotik & AI', desc: 'Kombiner robotteknologi med kunstig intelligens.', price: 100, unlocked: false },
-            { icon: '🏥', title: 'AI i Sundhed', desc: 'Udforsk AI-applikationer inden for medicin.', price: 150, unlocked: false },
-            { icon: '💰', title: 'AI til Finans', desc: 'Anvend AI til finansiel analyse og trading.', price: 200, unlocked: false },
-            { icon: '🎮', title: 'AI Spiludvikling', desc: 'Byg intelligente spil med machine learning.', price: 250, unlocked: false },
-            { icon: '🔒', title: 'Cybersikkerhed & AI', desc: 'Beskyt mod cybertrusler med AI.', price: 300, unlocked: false },
-            { icon: '🌍', title: 'AI & Miljø', desc: 'Løs miljøproblemer med kunstig intelligens.', price: 400, unlocked: false },
-            { icon: '🚗', title: 'Autonome Systemer', desc: 'Design selvkørende systemer med AI.', price: 500, unlocked: false },
-            { icon: '🧠', title: 'Advanced Neural Networks', desc: 'Mestre avancerede neurale netværk.', price: 600, unlocked: false }
+            { icon: '🏥', title: 'AI i Sundhed', desc: 'Udforsk AI-applikationer inden for medicin og diagnosticering.', price: 150, unlocked: false },
+            { icon: '💰', title: 'AI til Finans', desc: 'Anvend machine learning til finansiel analyse og trading.', price: 200, unlocked: false },
+            { icon: '🎮', title: 'AI Spiludvikling', desc: 'Byg intelligente spil med adaptiv AI.', price: 250, unlocked: false },
+            { icon: '🔒', title: 'Cybersikkerhed & AI', desc: 'Brug AI til at opdage og forsvare mod cybertrusler.', price: 300, unlocked: false },
+            { icon: '🌍', title: 'AI & Miljø', desc: 'Løs klima- og miljøproblemer med AI-modeller.', price: 400, unlocked: false },
+            { icon: '🚗', title: 'Autonome Systemer', desc: 'Design selvkørende systemer med sensorfusion og AI.', price: 500, unlocked: false },
+            { icon: '🧠', title: 'Advanced Neural Networks', desc: 'Mestre avancerede neurale netværksarkitekturer.', price: 600, unlocked: false }
         ];
+        let currentFrontIndex = 0;
 
-        // ============================================
-        // COINS
-        // ============================================
-        function updateCoinDisplay() {
-            document.getElementById('coin-amount').textContent = userCoins;
-        }
+        function updateCoinDisplay() { document.getElementById('coin-amount').textContent = userCoins; }
+        function spendCoins(amount) { if (userCoins >= amount) { userCoins -= amount; updateCoinDisplay(); return true; } return false; }
 
-        function spendCoins(amount) {
-            if (userCoins >= amount) {
-                userCoins -= amount;
-                updateCoinDisplay();
-                return true;
-            }
-            return false;
-        }
-
-        // ============================================
-        // LOADING
-        // ============================================
         let progress = 0;
-        const progressFill = document.getElementById('progress-fill');
-        const progressGlow = document.getElementById('progress-glow');
-        const progressNumber = document.getElementById('progress-number');
-        const loaderStatus = document.getElementById('loader-status');
-        const loadingScreen = document.getElementById('loading-screen');
-
+        const els = id => document.getElementById(id);
+        const progressFill = els('progress-fill'), progressGlow = els('progress-glow');
+        const progressNumber = els('progress-number'), loaderStatus = els('loader-status');
+        const loadingScreen = els('loading-screen');
         const loadingInterval = setInterval(() => {
-            progress += Math.random() * 12;
-            if (progress > 100) progress = 100;
-            progressFill.style.width = progress + '%';
-            progressGlow.style.left = progress + '%';
+            progress += Math.random() * 20; if (progress > 100) progress = 100;
+            progressFill.style.width = progress + '%'; progressGlow.style.left = progress + '%';
             progressNumber.textContent = Math.round(progress);
-            if (progress < 25) loaderStatus.textContent = 'Initialiserer 3D...';
-            else if (progress < 50) loaderStatus.textContent = 'Genererer Partikler...';
-            else if (progress < 75) loaderStatus.textContent = 'Klargør Platform...';
+            if (progress < 30) loaderStatus.textContent = 'Initialiserer 3D...';
+            else if (progress < 60) loaderStatus.textContent = 'Genererer Partikler...';
+            else if (progress < 90) loaderStatus.textContent = 'Klargør Platform...';
             else loaderStatus.textContent = '✨ Velkommen';
-            if (progress >= 100) {
-                clearInterval(loadingInterval);
-                setTimeout(() => loadingScreen.classList.add('hidden'), 600);
-            }
-        }, 180);
+            if (progress >= 100) { clearInterval(loadingInterval); setTimeout(() => loadingScreen.classList.add('hidden'), 300); }
+        }, 100);
 
-        // ============================================
-        // 3D SCENE
-        // ============================================
         let scene, camera, renderer, particles, sculpture;
         let mouseX = 0, mouseY = 0, targetMouseX = 0, targetMouseY = 0;
-        let scrollProgress = 0;
-        let isFlying = false, flyProgress = 0;
-
+        let scrollProgress = 0, isFlying = false, flyProgress = 0;
         function initThreeJS() {
-            const container = document.getElementById('canvas-container');
+            const container = els('canvas-container');
             scene = new THREE.Scene();
             camera = new THREE.PerspectiveCamera(window.innerWidth < 768 ? 75 : 60, window.innerWidth / window.innerHeight, 0.1, 100);
             camera.position.z = 8;
@@ -1429,332 +810,183 @@
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
             renderer.setClearColor(0x000000, 0);
             container.appendChild(renderer.domElement);
-
-            const pGeo = new THREE.BufferGeometry();
-            const pCount = window.innerWidth < 768 ? 800 : 2500;
-            const posArray = new Float32Array(pCount * 3);
-            for (let i = 0; i < pCount * 3; i += 3) {
-                posArray[i] = (Math.random() - 0.5) * 25;
-                posArray[i + 1] = (Math.random() - 0.5) * 25;
-                posArray[i + 2] = (Math.random() - 0.5) * 25;
-            }
+            const pGeo = new THREE.BufferGeometry(), pCount = window.innerWidth < 768 ? 800 : 2500, posArray = new Float32Array(pCount * 3);
+            for (let i = 0; i < pCount * 3; i += 3) { posArray[i] = (Math.random() - 0.5) * 25; posArray[i + 1] = (Math.random() - 0.5) * 25; posArray[i + 2] = (Math.random() - 0.5) * 25; }
             pGeo.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
             particles = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.04, color: 0xC6A962, transparent: true, opacity: 0.5, blending: THREE.AdditiveBlending, depthWrite: false }));
             scene.add(particles);
-
-            sculpture = new THREE.Mesh(
-                new THREE.IcosahedronGeometry(1.3, 3),
-                new THREE.MeshPhongMaterial({ color: 0xC6A962, emissive: 0x1a1a1a, shininess: 80, transparent: true, opacity: 0.7, wireframe: true })
-            );
+            sculpture = new THREE.Mesh(new THREE.IcosahedronGeometry(1.3, 3), new THREE.MeshPhongMaterial({ color: 0xC6A962, emissive: 0x1a1a1a, shininess: 80, transparent: true, opacity: 0.7, wireframe: true }));
             scene.add(sculpture);
-
             scene.add(new THREE.AmbientLight(0x404040, 0.6));
-            const pl = new THREE.PointLight(0xC6A962, 1.2, 25);
-            pl.position.set(5, 5, 5);
-            scene.add(pl);
-            const pl2 = new THREE.PointLight(0x7B68EE, 0.6, 18);
-            pl2.position.set(-5, -3, 3);
-            scene.add(pl2);
-
-            document.addEventListener('mousemove', e => {
-                targetMouseX = (e.clientX / window.innerWidth) * 2 - 1;
-                targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1;
-            });
-            window.addEventListener('scroll', () => {
-                const max = document.documentElement.scrollHeight - window.innerHeight;
-                scrollProgress = window.scrollY / max;
-            });
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.fov = window.innerWidth < 768 ? 75 : 60;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
-
+            const pl = new THREE.PointLight(0xC6A962, 1.2, 25); pl.position.set(5, 5, 5); scene.add(pl);
+            const pl2 = new THREE.PointLight(0x7B68EE, 0.6, 18); pl2.position.set(-5, -3, 3); scene.add(pl2);
+            document.addEventListener('mousemove', e => { targetMouseX = (e.clientX / window.innerWidth) * 2 - 1; targetMouseY = -(e.clientY / window.innerHeight) * 2 + 1; });
+            window.addEventListener('scroll', () => { const max = document.documentElement.scrollHeight - window.innerHeight; scrollProgress = window.scrollY / max; });
+            window.addEventListener('resize', () => { camera.aspect = window.innerWidth / window.innerHeight; camera.fov = window.innerWidth < 768 ? 75 : 60; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth, window.innerHeight); });
             function animate() {
                 requestAnimationFrame(animate);
-                mouseX += (targetMouseX - mouseX) * 0.04;
-                mouseY += (targetMouseY - mouseY) * 0.04;
-                particles.rotation.y += 0.0002;
-                particles.rotation.x += 0.0001;
+                mouseX += (targetMouseX - mouseX) * 0.08;
+                mouseY += (targetMouseY - mouseY) * 0.08;
+                particles.rotation.y += 0.0004;
+                particles.rotation.x += 0.0002;
                 const t = Date.now() * 0.001;
-                if (isFlying) { flyProgress = Math.min(flyProgress + 0.015, 2); }
-                else { flyProgress = Math.max(flyProgress - 0.02, 0); }
+                if (isFlying) { flyProgress = Math.min(flyProgress + 0.03, 2); } else { flyProgress = Math.max(flyProgress - 0.04, 0); }
                 camera.position.z = 8 - flyProgress * 3;
                 camera.fov = 60 - flyProgress * 15;
                 camera.updateProjectionMatrix();
                 sculpture.scale.setScalar(1 + flyProgress * 2);
                 particles.material.opacity = 0.5 - flyProgress * 0.3;
-                sculpture.rotation.x = Math.sin(t * 0.5) * 0.3 + scrollProgress * Math.PI * 1.5;
-                sculpture.rotation.y = Math.cos(t * 0.4) * 0.4 + scrollProgress * Math.PI;
-                sculpture.position.y = Math.sin(t * 0.6) * 0.3 + scrollProgress * 4;
+                sculpture.rotation.x = Math.sin(t * 0.6) * 0.3 + scrollProgress * Math.PI * 1.5;
+                sculpture.rotation.y = Math.cos(t * 0.5) * 0.4 + scrollProgress * Math.PI;
+                sculpture.position.y = Math.sin(t * 0.7) * 0.3 + scrollProgress * 4;
                 pl.intensity = 1.2 + Math.sin(t) * 0.4;
                 renderer.render(scene, camera);
             }
             animate();
         }
-        setTimeout(initThreeJS, 400);
+        setTimeout(initThreeJS, 200);
 
-        // ============================================
-        // CURSOR
-        // ============================================
-        const cursor = document.getElementById('cursor');
-        const cursorFollower = document.getElementById('cursor-follower');
+        const cursor = els('cursor'), cursorFollower = els('cursor-follower');
         let cursorX = 0, cursorY = 0, followerX = 0, followerY = 0;
         document.addEventListener('mousemove', e => {
             cursorX = e.clientX; cursorY = e.clientY;
             cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
             const t = e.target;
-            const hovering = t.closest('button') || t.closest('a') || t.closest('.course-btn') || t.closest('.side-nav-arrow');
-            cursor.classList.toggle('hover', hovering);
-            cursorFollower.classList.toggle('hover', hovering);
+            const hovering = t.closest('button') || t.closest('a') || t.closest('.course-btn') || t.closest('.side-nav-arrow-front') || t.closest('.side-nav-dot-front');
+            cursor.classList.toggle('hover', hovering); cursorFollower.classList.toggle('hover', hovering);
         });
         function animateFollower() {
-            followerX += (cursorX - followerX) * 0.08;
-            followerY += (cursorY - followerY) * 0.08;
+            followerX += (cursorX - followerX) * 0.15;
+            followerY += (cursorY - followerY) * 0.15;
             cursorFollower.style.transform = `translate(${followerX}px, ${followerY}px)`;
             requestAnimationFrame(animateFollower);
         }
         animateFollower();
 
-        // ============================================
-        // MAGNETIC BUTTONS
-        // ============================================
-        document.querySelectorAll('.nav-cta, .course-btn, .btn-primary, .btn-secondary').forEach(btn => {
+        document.querySelectorAll('.nav-cta, .course-btn, .btn-primary, .btn-secondary, .bundle-btn').forEach(btn => {
             btn.addEventListener('mousemove', e => {
                 const rect = btn.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-                gsap.to(btn, { x: x * 0.25, y: y * 0.25, scale: 1.04, duration: 0.3, ease: 'power2.out' });
+                gsap.to(btn, { x: x * 0.35, y: y * 0.35, scale: 1.06, duration: 0.2, ease: 'power2.out' });
             });
             btn.addEventListener('mouseleave', () => {
-                gsap.to(btn, { x: 0, y: 0, scale: 1, duration: 0.5, ease: 'elastic.out(1, 0.4)' });
+                gsap.to(btn, { x: 0, y: 0, scale: 1, duration: 0.3, ease: 'elastic.out(1, 0.2)' });
             });
         });
 
-        // ============================================
-        // NAVIGATION
-        // ============================================
-        const nav = document.getElementById('navigation');
+        const nav = els('navigation');
         window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
-        
-        const mobileBtn = document.getElementById('mobile-btn');
-        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBtn = els('mobile-btn'), mobileMenu = els('mobile-menu');
         let menuOpen = false;
-        mobileBtn.addEventListener('click', () => {
-            menuOpen = !menuOpen;
-            mobileMenu.classList.toggle('open', menuOpen);
-        });
-        mobileMenu.querySelectorAll('a').forEach(link => {
-            link.addEventListener('click', () => {
-                menuOpen = false;
-                mobileMenu.classList.remove('open');
-            });
-        });
+        mobileBtn.addEventListener('click', () => { menuOpen = !menuOpen; mobileMenu.classList.toggle('open', menuOpen); });
+        mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menuOpen = false; mobileMenu.classList.remove('open'); }));
 
-        // ============================================
-        // SCRAMBLE TEXT
-        // ============================================
-        const scrambleEl = document.getElementById('scramble-text');
-        const originalText = scrambleEl.textContent;
+        const scrambleEl = els('scramble-text'), originalText = scrambleEl.textContent;
         function scrambleText() {
             let iterations = 0;
-            const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
             const interval = setInterval(() => {
                 scrambleEl.textContent = originalText.split('').map((c, i) => c === ' ' ? ' ' : (i < iterations ? originalText[i] : chars[Math.floor(Math.random() * chars.length)])).join('');
                 if (iterations >= originalText.length) { clearInterval(interval); scrambleEl.textContent = originalText; }
-                iterations += 0.4;
-            }, 40);
+                iterations += 0.8;
+            }, 20);
         }
-        setTimeout(scrambleText, 2200);
+        setTimeout(scrambleText, 1200);
         scrambleEl.addEventListener('mouseenter', scrambleText);
 
-        // ============================================
-        // SIDE COURSES - HORIZONTAL SCROLL
-        // ============================================
-        const sideCoursesOverlay = document.getElementById('side-courses-overlay');
-        const sideCoursesHorizontal = document.getElementById('side-courses-horizontal');
-        const sideCourseCounter = document.getElementById('side-course-counter');
-        const scrollHint = document.getElementById('scroll-hint');
+        const sideCoursesOverlay = els('side-courses-overlay');
+        const sideCourseCardFront = els('side-course-card-front');
+        const sideCounterFront = els('side-counter-front');
+        const sideNavDotsFront = els('side-nav-dots-front');
 
-        function buildSideCourses() {
-            sideCoursesHorizontal.innerHTML = '';
-            sideCourses.forEach((course, index) => {
-                const panel = document.createElement('div');
-                panel.className = 'side-course-panel';
-                panel.id = `side-panel-${index}`;
-                
-                const isUnlocked = course.unlocked || course.price === 0;
-                const canAfford = userCoins >= course.price;
-                
-                panel.innerHTML = `
-                    <div class="side-course-card">
-                        <div class="side-course-number">${String(index + 1).padStart(2, '0')} / 12</div>
-                        <div class="side-course-icon">${course.icon}</div>
-                        <h3 class="side-course-title">${course.title}</h3>
-                        <p class="side-course-desc">${course.desc}</p>
-                        <div class="side-course-price ${course.price === 0 ? 'free' : 'paid'}">
-                            ${course.price === 0 ? '🆓 Gratis' : `🪙 ${course.price} Coins`}
-                        </div>
-                        <button class="side-course-btn ${isUnlocked ? 'unlocked' : (canAfford ? 'unlock' : 'locked')}" 
-                                data-course-index="${index}"
-                                ${!isUnlocked && !canAfford ? 'disabled' : ''}>
-                            ${isUnlocked ? '✓ Låst Op' : (canAfford ? 'Lås Op Nu' : `🔒 ${course.price - userCoins} Coins`)}
-                        </button>
-                    </div>
-                `;
-                sideCoursesHorizontal.appendChild(panel);
+        function updateFrontDisplay() {
+            const course = sideCourses[currentFrontIndex];
+            const isUnlocked = course.unlocked || course.price === 0;
+            const canAfford = userCoins >= course.price;
+            sideCourseCardFront.innerHTML = `
+                <div class="side-course-number-front">${String(currentFrontIndex + 1).padStart(2, '0')} / 12</div>
+                <div class="side-course-icon-front">${course.icon}</div>
+                <h3 class="side-course-title-front">${course.title}</h3>
+                <p class="side-course-desc-front">${course.desc}</p>
+                <div class="side-course-price-front ${course.price === 0 ? 'free' : 'paid'}">${course.price === 0 ? '🆓 Gratis' : `🪙 ${course.price} Coins`}</div>
+                <button class="side-course-btn-front ${isUnlocked ? 'unlocked' : (canAfford ? 'unlock' : 'locked')}" data-course-index="${currentFrontIndex}" ${!isUnlocked && !canAfford ? 'disabled' : ''}>${isUnlocked ? '✓ Låst Op' : (canAfford ? 'Lås Op Nu' : `🔒 Mangler ${course.price - userCoins} Coins`)}</button>
+            `;
+            gsap.fromTo(sideCourseCardFront, 
+                { scale: 0.9, opacity: 0.4, y: 10 },
+                { scale: 1, opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }
+            );
+            sideNavDotsFront.innerHTML = '';
+            sideCourses.forEach((_, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'side-nav-dot-front';
+                if (index === currentFrontIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => { currentFrontIndex = index; updateFrontDisplay(); });
+                sideNavDotsFront.appendChild(dot);
             });
-        }
-
-        function updateCounter() {
-            const scrollLeft = sideCoursesHorizontal.scrollLeft;
-            const panelWidth = window.innerWidth;
-            const currentIndex = Math.round(scrollLeft / panelWidth);
-            if (sideCourseCounter) {
-                sideCourseCounter.textContent = `Kursus ${Math.min(currentIndex + 1, 12)} / 12`;
-            }
+            sideCounterFront.textContent = `Kursus ${currentFrontIndex + 1} / 12`;
         }
 
         function openSideCourses() {
             isFlying = true;
-            buildSideCourses();
+            currentFrontIndex = 0;
             sideCoursesOverlay.classList.add('active');
             document.body.style.overflow = 'hidden';
-            sideCoursesHorizontal.scrollLeft = 0;
-            updateCounter();
-            
-            // Animate first card
+            updateFrontDisplay();
             setTimeout(() => {
-                const firstCard = document.querySelector('.side-course-card');
-                if (firstCard) {
-                    gsap.fromTo(firstCard, 
-                        { scale: 1.3, opacity: 0, y: 80 },
-                        { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }
-                    );
-                }
-            }, 300);
-            
-            // Hide scroll hint after 5 seconds
-            setTimeout(() => {
-                if (scrollHint) scrollHint.style.opacity = '0';
-            }, 5000);
+                gsap.fromTo(sideCourseCardFront, 
+                    { scale: 1.1, opacity: 0, y: 30 },
+                    { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: 'back.out(1.5)' }
+                );
+            }, 30);
         }
 
         function closeSideCourses() {
             isFlying = false;
-            sideCoursesOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-            if (scrollHint) scrollHint.style.opacity = '1';
+            gsap.to(sideCourseCardFront, {
+                scale: 0.9, opacity: 0, y: -20, duration: 0.2, ease: 'power2.in',
+                onComplete: () => { sideCoursesOverlay.classList.remove('active'); document.body.style.overflow = ''; }
+            });
         }
 
-        // Event listeners
-        document.getElementById('side-courses-btn').addEventListener('click', openSideCourses);
-        document.getElementById('side-courses-btn-mobile').addEventListener('click', () => {
-            menuOpen = false;
-            mobileMenu.classList.remove('open');
-            openSideCourses();
-        });
-        document.getElementById('hero-side-courses-btn').addEventListener('click', openSideCourses);
-        document.getElementById('footer-side-courses')?.addEventListener('click', e => { e.preventDefault(); openSideCourses(); });
-        document.getElementById('close-overlay-btn').addEventListener('click', closeSideCourses);
-        
-        // Close on ESC
+        els('side-courses-btn').addEventListener('click', openSideCourses);
+        els('side-courses-btn-mobile').addEventListener('click', () => { menuOpen = false; mobileMenu.classList.remove('open'); openSideCourses(); });
+        els('hero-side-courses-btn').addEventListener('click', openSideCourses);
+        els('footer-side-courses')?.addEventListener('click', e => { e.preventDefault(); openSideCourses(); });
+        els('close-overlay-front').addEventListener('click', closeSideCourses);
         document.addEventListener('keydown', e => {
-            if (e.key === 'Escape' && sideCoursesOverlay.classList.contains('active')) {
-                closeSideCourses();
-            }
+            if (!sideCoursesOverlay.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft') { currentFrontIndex = Math.max(0, currentFrontIndex - 1); updateFrontDisplay(); }
+            else if (e.key === 'ArrowRight') { currentFrontIndex = Math.min(sideCourses.length - 1, currentFrontIndex + 1); updateFrontDisplay(); }
+            else if (e.key === 'Escape') { closeSideCourses(); }
         });
-
-        // Horizontal scroll tracking
-        sideCoursesHorizontal.addEventListener('scroll', () => {
-            updateCounter();
-        });
-
-        // Nav arrows
-        document.getElementById('side-nav-prev').addEventListener('click', () => {
-            const panelWidth = window.innerWidth;
-            const currentScroll = sideCoursesHorizontal.scrollLeft;
-            const targetScroll = Math.max(0, currentScroll - panelWidth);
-            sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
-        });
-
-        document.getElementById('side-nav-next').addEventListener('click', () => {
-            const panelWidth = window.innerWidth;
-            const currentScroll = sideCoursesHorizontal.scrollLeft;
-            const maxScroll = sideCoursesHorizontal.scrollWidth - panelWidth;
-            const targetScroll = Math.min(maxScroll, currentScroll + panelWidth);
-            sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
-        });
-
-        // Touch/swipe detection for mobile
-        let touchStartX = 0;
-        sideCoursesHorizontal.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-        });
-
-        sideCoursesHorizontal.addEventListener('touchend', e => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const diff = touchStartX - touchEndX;
-            if (Math.abs(diff) > 50) {
-                const panelWidth = window.innerWidth;
-                const currentScroll = sideCoursesHorizontal.scrollLeft;
-                const targetScroll = diff > 0 
-                    ? Math.min(sideCoursesHorizontal.scrollWidth - panelWidth, currentScroll + panelWidth)
-                    : Math.max(0, currentScroll - panelWidth);
-                sideCoursesHorizontal.scrollTo({ left: targetScroll, behavior: 'smooth' });
-            }
-        });
-
-        // Unlock course
-        sideCoursesHorizontal.addEventListener('click', e => {
-            const btn = e.target.closest('.side-course-btn');
+        els('side-nav-prev-front').addEventListener('click', () => { if (currentFrontIndex > 0) { currentFrontIndex--; updateFrontDisplay(); } });
+        els('side-nav-next-front').addEventListener('click', () => { if (currentFrontIndex < sideCourses.length - 1) { currentFrontIndex++; updateFrontDisplay(); } });
+        sideCourseCardFront.addEventListener('click', e => {
+            const btn = e.target.closest('.side-course-btn-front');
             if (!btn || btn.classList.contains('unlocked') || btn.classList.contains('locked')) return;
-            
-            const index = parseInt(btn.dataset.courseIndex);
-            const course = sideCourses[index];
+            const index = parseInt(btn.dataset.courseIndex), course = sideCourses[index];
             if (!course) return;
-            
-            if (spendCoins(course.price)) {
-                course.unlocked = true;
-                btn.classList.remove('unlock');
-                btn.classList.add('unlocked');
-                btn.textContent = '✓ Låst Op';
-                gsap.fromTo(btn, { scale: 0.8 }, { scale: 1.2, duration: 0.3, yoyo: true, repeat: 1, ease: 'power2.out' });
-            }
+            if (spendCoins(course.price)) { course.unlocked = true; updateFrontDisplay(); }
+        });
+        sideCourseCardFront.addEventListener('mousemove', e => {
+            const rect = sideCourseCardFront.getBoundingClientRect();
+            const x = (e.clientX - rect.left) / rect.width - 0.5;
+            const y = (e.clientY - rect.top) / rect.height - 0.5;
+            gsap.to(sideCourseCardFront, { rotateY: x * 2, rotateX: -y * 2, duration: 0.3, ease: 'power2.out' });
+        });
+        sideCourseCardFront.addEventListener('mouseleave', () => {
+            gsap.to(sideCourseCardFront, { rotateY: 0, rotateX: 0, duration: 0.3, ease: 'power2.out' });
         });
 
-        // ============================================
-        // GSAP SCROLL ANIMATIONS
-        // ============================================
         gsap.registerPlugin(ScrollTrigger);
         document.querySelectorAll('.reveal').forEach((el, i) => {
-            gsap.fromTo(el, { y: 70, opacity: 0 }, {
-                y: 0, opacity: 1, duration: 0.9, delay: i * 0.08, ease: 'power3.out',
-                scrollTrigger: { trigger: el, start: 'top bottom-=80', toggleActions: 'play none none reverse' }
-            });
+            gsap.fromTo(el, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, delay: i * 0.05, ease: 'power2.out', scrollTrigger: { trigger: el, start: 'top bottom-=60', toggleActions: 'play none none reverse' } });
         });
-        gsap.fromTo('.course-card', { y: 100, opacity: 0, rotateX: 25 }, {
-            y: 0, opacity: 1, rotateX: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out',
-            scrollTrigger: { trigger: '.courses-grid', start: 'top center+=80', toggleActions: 'play none none reverse' }
-        });
-        gsap.to('.hero-title', {
-            y: -80, ease: 'none',
-            scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true }
-        });
-
-        // Smooth scroll links
-        document.querySelectorAll('a[href^="#"]').forEach(a => {
-            a.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            });
-        });
-
-        // Easter egg
-        console.log('%c🚀 LearnAI %cPremium Platform', 'color:#C6A962;font-size:28px;font-weight:bold;', 'color:#E5E4E2;font-size:16px;');
-        console.log('%c✦ Sidekurser med futuristisk horisontal scroll ✦', 'color:rgba(229,228,226,0.4);font-size:11px;');
+        gsap.fromTo('.course-card', { y: 60, opacity: 0, rotateX: 15 }, { y: 0, opacity: 1, rotateX: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out', scrollTrigger: { trigger: '.courses-grid', start: 'top center+=60', toggleActions: 'play none none reverse' } });
+        gsap.fromTo('.bundle-card', { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: 'power2.out', scrollTrigger: { trigger: '.bundle-section', start: 'top bottom-=50', toggleActions: 'play none none reverse' } });
+        gsap.to('.hero-title', { y: -60, ease: 'none', scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true } });
+        document.querySelectorAll('a[href^="#"]').forEach(a => { a.addEventListener('click', function(e) { e.preventDefault(); const target = document.querySelector(this.getAttribute('href')); if (target) target.scrollIntoView({ behavior: 'smooth' }); }); });
     </script>
 </body>
 </html>
