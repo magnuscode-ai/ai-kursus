@@ -1,0 +1,2687 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kursus D — Fra nybegynder til AI-bruger | LearnAI DK</title>
+  <meta name="description" content="Lær AI fra bunden på dansk. Kursus D: 5 korte moduler til dig der er helt ny til AI. Gratis kursus med eksamen og bevis.">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-warm: #fbf8f3;
+      --bg-soft: #fefdfa;
+      --ink: #1a1f2e;
+      --ink-soft: #4a5568;
+      --ink-mute: #718096;
+      --primary: #2563eb;
+      --primary-deep: #1d4ed8;
+      --primary-soft: #dbeafe;
+      --primary-glow: #3b82f6;
+      --accent-orange: #ea580c;
+      --accent-orange-soft: #fff1e8;
+      --accent-green: #059669;
+      --accent-green-soft: #dcfce7;
+      --accent-red: #dc2626;
+      --accent-red-soft: #fee2e2;
+      --accent-purple: #7c3aed;
+      --accent-purple-soft: #ede9fe;
+      --accent-amber: #d97706;
+      --accent-amber-soft: #fef3c7;
+      --line: #e8eaf0;
+      --line-soft: #f0f2f7;
+      --shadow-sm: 0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.06);
+      --shadow-md: 0 4px 12px rgba(15,23,42,0.06), 0 2px 6px rgba(15,23,42,0.04);
+      --shadow-lg: 0 12px 32px rgba(15,23,42,0.08), 0 4px 12px rgba(15,23,42,0.05);
+      --shadow-xl: 0 24px 60px rgba(15,23,42,0.10), 0 8px 24px rgba(15,23,42,0.06);
+      --shadow-3d: 0 1px 0 rgba(255,255,255,0.9) inset, 0 -1px 0 rgba(15,23,42,0.04) inset, 0 8px 24px rgba(15,23,42,0.07), 0 2px 6px rgba(15,23,42,0.04);
+      --radius-sm: 10px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-warm);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 17px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* SOFT BACKGROUND BLOBS — gives the page colour without being distracting */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at 10% 0%, rgba(59,130,246,0.08), transparent 60%),
+        radial-gradient(ellipse 700px 500px at 95% 20%, rgba(124,58,237,0.06), transparent 60%),
+        radial-gradient(ellipse 600px 400px at 50% 90%, rgba(5,150,105,0.05), transparent 60%),
+        radial-gradient(ellipse 500px 400px at 0% 70%, rgba(234,88,12,0.04), transparent 60%);
+    }
+
+    .page-wrap { position: relative; z-index: 1; }
+
+    /* ============ TOP BAR ============ */
+    .topbar {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 9px 16px 9px 12px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .home-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .home-btn svg { width: 18px; height: 18px; }
+
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .topbar-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+
+    .topbar-logo-icon svg { width: 18px; height: 18px; fill: white; }
+
+    .topbar-right {
+      font-size: 13px;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+
+    @media (max-width: 600px) {
+      .topbar-logo span { display: none; }
+      .home-btn span.home-btn-text { display: none; }
+      .topbar-right { display: none; }
+    }
+
+    /* ============ SCENES ============ */
+    .scene { display: none; min-height: calc(100vh - 64px); }
+    .scene.active { display: block; }
+
+    /* ============ SCENE: WELCOME (puzzle assembly) ============ */
+    #scene-welcome {
+      padding: 2rem 1.5rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .welcome-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-top: 2rem;
+    }
+
+    .welcome-title {
+      font-size: clamp(32px, 5.5vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+
+    .welcome-title .accent {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .welcome-sub {
+      font-size: clamp(16px, 2.2vw, 19px);
+      color: var(--ink-soft);
+      max-width: 600px;
+      margin: 0 auto 0;
+    }
+
+    /* PUZZLE GRID */
+    .puzzle-stage {
+      max-width: 880px;
+      margin: 0 auto 2.5rem;
+      position: relative;
+    }
+
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      perspective: 1200px;
+    }
+
+    .puzzle-piece {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: var(--shadow-3d);
+      opacity: 0;
+      transform: translate(var(--start-x, -200px), var(--start-y, -100px)) rotate(var(--start-rot, -20deg)) scale(0.5);
+      transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .puzzle-piece::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--tone-from, transparent) 0%, transparent 70%);
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .puzzle-piece.placed {
+      opacity: 1;
+      transform: translate(0, 0) rotate(0deg) scale(1);
+    }
+
+    .puzzle-piece-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 0.75rem;
+      background: var(--tone-bg, var(--primary-soft));
+      color: var(--tone-fg, var(--primary));
+      position: relative;
+      z-index: 1;
+    }
+
+    .puzzle-piece-num {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--ink-mute);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .puzzle-piece-title {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 5px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .puzzle-piece-desc {
+      font-size: 13.5px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* CTA */
+    .welcome-cta-wrap {
+      text-align: center;
+      margin-top: 1rem;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.6s ease 1.4s;
+    }
+
+    .welcome-cta-wrap.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px 38px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(37,99,235,0.35), 0 4px 10px rgba(37,99,235,0.25);
+      transition: all 0.25s;
+      letter-spacing: 0.01em;
+    }
+
+    .btn-start:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 38px rgba(37,99,235,0.42), 0 6px 14px rgba(37,99,235,0.3);
+    }
+
+    .btn-start:active { transform: translateY(0); }
+
+    .btn-start svg { width: 20px; height: 20px; }
+
+    .welcome-meta {
+      display: flex;
+      justify-content: center;
+      gap: 1.75rem;
+      flex-wrap: wrap;
+      margin-top: 1.5rem;
+      font-size: 13.5px;
+      color: var(--ink-mute);
+    }
+
+    .welcome-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    @media (max-width: 700px) {
+      .puzzle-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 480px) {
+      .puzzle-grid { grid-template-columns: 1fr; gap: 10px; }
+      .welcome-meta { gap: 0.75rem; font-size: 12.5px; }
+    }
+
+    /* ============ SCENE: MODULE TRANSITION ============ */
+    #scene-transition {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+    }
+
+    #scene-transition.active { display: flex; }
+
+    .transition-orb-wrap {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 2rem;
+    }
+
+    .transition-orb {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.4), rgba(255,255,255,0.05) 60%, transparent);
+      box-shadow: 0 0 80px rgba(255,255,255,0.4), inset 0 0 60px rgba(255,255,255,0.2);
+      animation: orbPulse 2s ease-in-out infinite;
+    }
+
+    .transition-orb::before, .transition-orb::after {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      animation: ringExpand 2s ease-out infinite;
+    }
+
+    .transition-orb::after { animation-delay: 0.6s; }
+
+    @keyframes orbPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes ringExpand {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .transition-particles {
+      position: absolute;
+      inset: -40px;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      animation: particleFloat 1.6s ease-out infinite;
+    }
+
+    @keyframes particleFloat {
+      0% { transform: translate(0, 0) scale(0); opacity: 1; }
+      100% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
+    }
+
+    .transition-label {
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 0.75rem;
+      animation: fadeUp 0.5s ease-out;
+    }
+
+    .transition-title {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      animation: fadeUp 0.6s ease-out 0.15s backwards;
+    }
+
+    .transition-sub {
+      font-size: 16px;
+      color: rgba(255,255,255,0.85);
+      margin-top: 0.5rem;
+      animation: fadeUp 0.6s ease-out 0.3s backwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ============ COURSE INTRO BANNER (visible inside modules) ============ */
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+
+    .progress-steps {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+      max-width: 600px;
+    }
+
+    .progress-step {
+      height: 5px;
+      flex: 1;
+      border-radius: 3px;
+      background: var(--line);
+      transition: background 0.4s, transform 0.3s;
+    }
+
+    .progress-step.active {
+      background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+      transform: scaleY(1.2);
+    }
+
+    .progress-step.done { background: var(--accent-green); }
+
+    .progress-label {
+      font-size: 13px;
+      color: var(--ink-soft);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* MODULE TABS — for jumping */
+    .module-nav {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 1.5rem;
+      display: flex;
+      gap: 0;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      position: sticky;
+      top: 122px;
+      z-index: 89;
+    }
+
+    .module-nav::-webkit-scrollbar { display: none; }
+
+    .module-tab {
+      padding: 0.95rem 1.1rem;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink-mute);
+      white-space: nowrap;
+      cursor: pointer;
+      border-bottom: 2.5px solid transparent;
+      text-decoration: none;
+      transition: all 0.2s;
+      background: none;
+      border-left: none;
+      border-right: none;
+      border-top: none;
+    }
+
+    .module-tab:hover { color: var(--ink); }
+    .module-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .module-tab.exam { color: var(--accent-green); }
+    .module-tab.exam.active { border-bottom-color: var(--accent-green); }
+
+    /* ============ MODULE CONTENT ============ */
+    .module-section { display: none; }
+    .module-section.active {
+      display: block;
+      animation: moduleEnter 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes moduleEnter {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .content {
+      max-width: 740px;
+      margin: 0 auto;
+      padding: 2.75rem 1.5rem 4rem;
+    }
+
+    .module-header {
+      margin-bottom: 2.25rem;
+      text-align: center;
+    }
+
+    .module-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary-soft);
+      color: var(--primary-deep);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 14px;
+      border-radius: 50px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.85rem;
+    }
+
+    .module-title {
+      font-size: clamp(28px, 4.5vw, 38px);
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+    }
+
+    .module-intro {
+      font-size: 17px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    /* CONTENT BLOCKS */
+    h3 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 2.5rem 0 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    h3.with-tag::before {
+      content: attr(data-tag);
+      display: inline-block;
+      background: var(--primary-soft);
+      color: var(--primary-deep);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-right: 10px;
+      vertical-align: middle;
+      text-transform: uppercase;
+    }
+
+    p {
+      font-size: 16.5px;
+      color: var(--ink-soft);
+      line-height: 1.75;
+      margin-bottom: 1rem;
+    }
+
+    /* TWO-COL CARDS */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.25rem 0 1.5rem;
+    }
+
+    .col-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.15rem 1.25rem;
+      box-shadow: var(--shadow-3d);
+      transition: transform 0.2s;
+    }
+
+    .col-card:hover { transform: translateY(-2px); }
+
+    .col-card.green { border-top: 4px solid var(--accent-green); }
+    .col-card.red { border-top: 4px solid var(--accent-red); }
+    .col-card.blue { border-top: 4px solid var(--primary); }
+    .col-card.orange { border-top: 4px solid var(--accent-orange); }
+    .col-card.amber { border-top: 4px solid var(--accent-amber); }
+    .col-card.purple { border-top: 4px solid var(--accent-purple); }
+
+    .col-card-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 0.7rem;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .col-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .col-card li {
+      font-size: 14.5px;
+      color: var(--ink-soft);
+      padding: 5px 0;
+      line-height: 1.55;
+      padding-left: 1rem;
+      position: relative;
+    }
+
+    .col-card.green li::before { content: '✓'; position: absolute; left: 0; color: var(--accent-green); font-weight: 700; }
+    .col-card.red li::before { content: '✕'; position: absolute; left: 0; color: var(--accent-red); font-weight: 700; }
+    .col-card.blue li::before, .col-card.purple li::before { content: '•'; position: absolute; left: 0; color: var(--primary); font-weight: 700; font-size: 18px; line-height: 1; top: 5px; }
+    .col-card.orange li::before, .col-card.amber li::before { content: '!'; position: absolute; left: 0; color: var(--accent-orange); font-weight: 700; }
+
+    /* AI TABLE */
+    .ai-table {
+      width: 100%;
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--line);
+      margin: 1.25rem 0 1.5rem;
+      font-size: 14px;
+      box-shadow: var(--shadow-3d);
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+
+    .ai-table th {
+      background: linear-gradient(180deg, #f7f8fc 0%, #f1f3f9 100%);
+      padding: 12px 14px;
+      text-align: left;
+      font-weight: 700;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line);
+      font-size: 13.5px;
+    }
+
+    .ai-table th.featured {
+      background: linear-gradient(180deg, #dbeafe 0%, #c7d8f7 100%);
+      color: var(--primary-deep);
+      position: relative;
+    }
+
+    .ai-table td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line-soft);
+      color: var(--ink-soft);
+      vertical-align: top;
+    }
+
+    .ai-table td.featured {
+      background: rgba(219,234,254,0.4);
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .ai-table tr:last-child td { border-bottom: none; }
+    .ai-table a { color: var(--primary); text-decoration: none; font-weight: 600; }
+    .ai-table a:hover { text-decoration: underline; }
+
+    .recommend-star {
+      display: inline-block;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 50px;
+      margin-left: 4px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      box-shadow: 0 2px 4px rgba(245,158,11,0.3);
+    }
+
+    /* CALLOUTS */
+    .callout {
+      border-radius: var(--radius);
+      padding: 1.1rem 1.25rem;
+      margin: 1.25rem 0;
+      display: flex;
+      gap: 0.85rem;
+      align-items: flex-start;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+    }
+
+    .callout-icon {
+      font-size: 22px;
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .callout-body { flex: 1; }
+
+    .callout-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 5px;
+      color: var(--ink);
+    }
+
+    .callout-text {
+      font-size: 15px;
+      color: var(--ink-soft);
+      line-height: 1.65;
+      margin: 0;
+    }
+
+    .callout.tip { background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%); border: 1px solid #bfd5fb; }
+    .callout.warning { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 1px solid #fcd34d; }
+    .callout.reflect { background: linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%); border: 1px solid #c4b5fd; }
+    .callout.try-it { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 1px solid #86efac; }
+    .callout.summary { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); border: 1px solid var(--line); }
+    .callout.safety { background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border: 1px solid #fca5a5; }
+
+    /* EXERCISE callout — bright orange so it stands out */
+    .callout.exercise {
+      background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+      border: 2px solid var(--accent-orange);
+      box-shadow: 0 6px 20px rgba(234,88,12,0.15), var(--shadow-sm);
+    }
+
+    .callout.exercise .callout-icon {
+      background: var(--accent-orange);
+      color: white;
+    }
+
+    .callout.exercise .callout-title {
+      color: var(--accent-orange);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      font-size: 13px;
+    }
+
+    .callout.exercise .callout-text { color: #7c2d12; font-weight: 500; }
+
+    /* STEPS */
+    .steps-box {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem 1.5rem 1.25rem;
+      margin: 1.25rem 0;
+      box-shadow: var(--shadow-3d);
+    }
+
+    .step-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 10px 0;
+      font-size: 15.5px;
+      color: var(--ink);
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .step-item:last-child { border-bottom: none; }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+      box-shadow: 0 4px 10px rgba(37,99,235,0.3);
+    }
+
+    .step-text { line-height: 1.6; padding-top: 4px; }
+    .step-text strong { color: var(--ink); font-weight: 700; }
+
+    /* SCREENSHOT FIGURE with highlight */
+    .screenshot-figure {
+      margin: 1.5rem 0 1.75rem;
+      padding: 0;
+    }
+    .screenshot-frame {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: #f5f5f0;
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-3d);
+    }
+    .screenshot-frame img {
+      display: block;
+      width: 100% !important;
+      height: auto !important;
+    }
+    .highlight-circle {
+      position: absolute;
+      /* Help improve Claude toggle (the grey/off one), bottom-right */
+      right: 5.5%;
+      top: 74.5%;
+      width: 5.5%;
+      aspect-ratio: 1.7 / 1;
+      border: 4px solid #ef4444;
+      border-radius: 999px;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.18), 0 6px 18px rgba(239,68,68,0.25);
+      animation: pulseHighlight 2s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes pulseHighlight {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 3px rgba(239,68,68,0.18), 0 6px 18px rgba(239,68,68,0.25); }
+      50% { transform: scale(1.06); box-shadow: 0 0 0 8px rgba(239,68,68,0.10), 0 8px 22px rgba(239,68,68,0.35); }
+    }
+    .highlight-arrow {
+      position: absolute;
+      right: 12%;
+      top: 65%;
+      width: 13%;
+      color: #ef4444;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .highlight-arrow svg {
+      width: 100%;
+      height: auto;
+      filter: drop-shadow(0 2px 4px rgba(239,68,68,0.25));
+    }
+    .highlight-arrow-label {
+      position: absolute;
+      right: 100%;
+      top: 0;
+      margin-right: 6px;
+      background: #ef4444;
+      color: white;
+      font-size: clamp(10px, 1.1vw, 14px);
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      box-shadow: 0 4px 10px rgba(239,68,68,0.35);
+    }
+    .screenshot-figure figcaption {
+      margin-top: 0.85rem;
+      font-size: 14.5px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      text-align: center;
+      padding: 0 0.5rem;
+    }
+    .screenshot-figure figcaption strong { color: var(--ink); font-weight: 700; }
+
+    /* COPY-PROMPT BOX — central feature */
+    .copy-box {
+      background: white;
+      border: 1.5px solid var(--primary);
+      border-radius: var(--radius-lg);
+      padding: 0;
+      margin: 1.25rem 0;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.12), var(--shadow-3d);
+      position: relative;
+    }
+
+    .copy-box-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+    }
+
+    .copy-box-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .copy-box-body {
+      padding: 1.1rem 1.25rem;
+      font-size: 16px;
+      color: var(--ink);
+      line-height: 1.7;
+      background: linear-gradient(180deg, white 0%, #fafbff 100%);
+      font-style: italic;
+    }
+
+    .copy-btn {
+      background: white;
+      color: var(--primary-deep);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .copy-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
+    .copy-btn.copied { background: var(--accent-green); color: white; }
+    .copy-btn svg { width: 14px; height: 14px; }
+
+    /* BULLET LIST */
+    .bullet-list {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.4rem;
+      margin: 1rem 0;
+      box-shadow: var(--shadow-3d);
+    }
+
+    .bullet-list ul { list-style: none; padding: 0; }
+
+    .bullet-list li {
+      font-size: 15.5px;
+      color: var(--ink-soft);
+      padding: 6px 0 6px 1.5rem;
+      position: relative;
+      line-height: 1.6;
+    }
+
+    .bullet-list li::before {
+      content: "•";
+      position: absolute;
+      left: 0.4rem;
+      color: var(--primary);
+      font-size: 22px;
+      line-height: 1;
+      top: 8px;
+    }
+
+    /* COMPARISON: bad vs good prompt */
+    .compare-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.25rem 0;
+    }
+
+    .compare-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+      box-shadow: var(--shadow-3d);
+      border: 1px solid var(--line);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compare-card.bad {
+      border-top: 4px solid var(--accent-red);
+    }
+
+    .compare-card.good {
+      border-top: 4px solid var(--accent-green);
+    }
+
+    .compare-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .compare-card.bad .compare-tag { background: var(--accent-red-soft); color: var(--accent-red); }
+    .compare-card.good .compare-tag { background: var(--accent-green-soft); color: var(--accent-green); }
+
+    .compare-text {
+      font-size: 14.5px;
+      color: var(--ink);
+      line-height: 1.6;
+      font-style: italic;
+    }
+
+    /* EMBEDDED AI CHAT */
+    .ai-chat-box {
+      background: white;
+      border: 1.5px solid var(--accent-purple);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin: 1.5rem 0;
+      box-shadow: 0 12px 32px rgba(124,58,237,0.15), var(--shadow-3d);
+    }
+
+    .ai-chat-header {
+      background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+      padding: 14px 18px;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .ai-chat-header-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .ai-chat-header-title {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .ai-chat-header-sub {
+      font-size: 12px;
+      opacity: 0.85;
+      font-weight: 500;
+    }
+
+    .ai-chat-messages {
+      padding: 1.25rem;
+      min-height: 100px;
+      max-height: 360px;
+      overflow-y: auto;
+      background: linear-gradient(180deg, #fafbff 0%, white 100%);
+    }
+
+    .ai-msg {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: flex-start;
+      animation: msgFadeUp 0.35s ease-out;
+    }
+
+    @keyframes msgFadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .ai-msg-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .ai-msg.user .ai-msg-avatar { background: var(--primary); color: white; }
+    .ai-msg.bot .ai-msg-avatar { background: var(--accent-purple); color: white; }
+
+    .ai-msg-bubble {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 14px;
+      font-size: 14.5px;
+      color: var(--ink);
+      line-height: 1.6;
+      max-width: 88%;
+      box-shadow: var(--shadow-sm);
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .ai-msg.user { flex-direction: row-reverse; }
+    .ai-msg.user .ai-msg-bubble {
+      background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+      color: white;
+      border-color: transparent;
+    }
+
+    .ai-typing {
+      display: inline-flex;
+      gap: 4px;
+      padding: 4px 0;
+    }
+
+    .ai-typing span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      animation: typingDot 1.2s infinite ease-in-out;
+    }
+
+    .ai-typing span:nth-child(2) { animation-delay: 0.15s; }
+    .ai-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes typingDot {
+      0%, 80%, 100% { opacity: 0.3; transform: translateY(0); }
+      40% { opacity: 1; transform: translateY(-4px); }
+    }
+
+    .ai-chat-input-wrap {
+      border-top: 1px solid var(--line);
+      padding: 12px;
+      display: flex;
+      gap: 8px;
+      background: white;
+    }
+
+    .ai-chat-input {
+      flex: 1;
+      border: 1px solid var(--line);
+      border-radius: 50px;
+      padding: 10px 16px;
+      font-size: 15px;
+      font-family: inherit;
+      color: var(--ink);
+      background: var(--bg-warm);
+      resize: none;
+      outline: none;
+      transition: border 0.2s;
+      max-height: 100px;
+    }
+
+    .ai-chat-input:focus {
+      border-color: var(--accent-purple);
+      background: white;
+    }
+
+    .ai-chat-send {
+      background: linear-gradient(135deg, var(--accent-purple) 0%, #6d28d9 100%);
+      color: white;
+      border: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(124,58,237,0.3);
+    }
+
+    .ai-chat-send:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(124,58,237,0.4); }
+    .ai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .ai-chat-suggest {
+      padding: 0.85rem 1rem;
+      border-top: 1px solid var(--line-soft);
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: #fafbff;
+    }
+
+    .ai-suggest-btn {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 50px;
+      padding: 6px 12px;
+      font-size: 12.5px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+
+    .ai-suggest-btn:hover {
+      border-color: var(--accent-purple);
+      color: var(--accent-purple);
+      background: #faf5ff;
+    }
+
+    /* SUMMARY CHECKLIST */
+    .summary-list { list-style: none; padding: 0; }
+    .summary-list li {
+      font-size: 15px;
+      color: var(--ink-soft);
+      padding: 6px 0 6px 1.75rem;
+      position: relative;
+      line-height: 1.55;
+    }
+
+    .summary-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--accent-green);
+      font-weight: 700;
+      width: 22px;
+      height: 22px;
+      background: var(--accent-green-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      top: 6px;
+    }
+
+    /* MODULE PAGINATION */
+    .module-pagination {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--line);
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 50px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      border: none;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+
+    .btn-prev {
+      background: white;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-sm);
+    }
+    .btn-prev:hover { transform: translateX(-2px); box-shadow: var(--shadow-md); }
+
+    .btn-next {
+      background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+      color: white;
+      box-shadow: 0 6px 16px rgba(37,99,235,0.3);
+    }
+    .btn-next:hover { transform: translateX(2px) translateY(-1px); box-shadow: 0 8px 20px rgba(37,99,235,0.42); }
+
+    .btn-exam {
+      background: linear-gradient(135deg, var(--accent-green), #047857);
+      color: white;
+      box-shadow: 0 6px 16px rgba(5,150,105,0.3);
+    }
+    .btn-exam:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(5,150,105,0.42); }
+
+    /* EXAM HERO */
+    .exam-hero {
+      background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #059669 100%);
+      color: white;
+      text-align: center;
+      padding: 3rem 1.5rem 3rem;
+      border-radius: var(--radius-xl);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-xl);
+    }
+
+    .exam-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.1), transparent 40%);
+      pointer-events: none;
+    }
+
+    .exam-hero-cap {
+      font-size: 50px;
+      margin-bottom: 0.75rem;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    }
+
+    .exam-hero h2 {
+      font-size: clamp(26px, 4vw, 34px);
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: -0.02em;
+      position: relative;
+    }
+
+    .exam-hero p {
+      font-size: 16.5px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 1.5rem;
+      position: relative;
+      max-width: 460px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .btn-exam-big {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      color: var(--primary-deep);
+      font-size: 17px;
+      font-weight: 700;
+      padding: 16px 36px;
+      border-radius: 50px;
+      text-decoration: none;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.2);
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .btn-exam-big:hover { transform: translateY(-2px); box-shadow: 0 18px 36px rgba(0,0,0,0.25); }
+
+    .exam-parts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 1.75rem 0;
+    }
+
+    .exam-part {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.3rem;
+      box-shadow: var(--shadow-3d);
+    }
+
+    .exam-part-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--ink);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .exam-part-desc {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    .score-table {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin: 1rem 0;
+    }
+
+    .score-card {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.25rem 1rem;
+      text-align: center;
+      box-shadow: var(--shadow-3d);
+    }
+
+    .score-range { font-size: 14px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+    .score-icon { font-size: 28px; margin-bottom: 6px; }
+    .score-label { font-size: 13px; color: var(--ink-mute); line-height: 1.45; }
+
+    .final-cta {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 2.25rem 1.5rem;
+      background: white;
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow-3d);
+    }
+
+    .final-cta-icon { font-size: 32px; margin-bottom: 0.75rem; }
+    .final-cta-title { font-size: 20px; font-weight: 700; margin-bottom: 0.5rem; color: var(--ink); }
+    .final-cta-desc { font-size: 15px; color: var(--ink-soft); margin-bottom: 1.5rem; }
+
+    /* PRO TIP / UPSELL — gentle nudge to paid courses */
+    .upsell-card {
+      background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+      border: 1.5px solid #fcd34d;
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem;
+      margin: 1.5rem 0;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      box-shadow: 0 6px 18px rgba(217,119,6,0.1);
+    }
+
+    .upsell-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+      box-shadow: 0 6px 14px rgba(217,119,6,0.3);
+    }
+
+    .upsell-body { flex: 1; }
+    .upsell-title { font-size: 15px; font-weight: 700; color: #78350f; margin-bottom: 3px; }
+    .upsell-text { font-size: 14px; color: #92400e; line-height: 1.55; }
+
+    /* FOCUS NOTE — small badge to remind elderly user */
+    .quiet-note {
+      font-size: 13.5px;
+      color: var(--ink-mute);
+      text-align: center;
+      margin: 0.75rem 0;
+      font-style: italic;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 600px) {
+      .two-col, .compare-row, .exam-parts { grid-template-columns: 1fr; }
+      .score-table { grid-template-columns: 1fr; }
+      .ai-table { font-size: 13px; }
+      .ai-table th, .ai-table td { padding: 9px 10px; }
+      .module-pagination { flex-direction: column-reverse; }
+      .module-pagination .btn-nav { width: 100%; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-wrap">
+
+  <!-- ============ TOP BAR (always visible) ============ -->
+  <div class="topbar">
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="home-btn" aria-label="Tilbage til startsiden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      <span class="home-btn-text">Tilbage til start</span>
+    </a>
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="topbar-logo">
+      <div class="topbar-logo-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2L14.5 8.5L21 9.5L16 14L17.5 21L12 17.5L6.5 21L8 14L3 9.5L9.5 8.5Z"/></svg>
+      </div>
+      <span>LearnAI DK</span>
+    </a>
+    <div class="topbar-right">Kursus D · Gratis</div>
+  </div>
+
+  <!-- ============ SCENE 1: WELCOME with puzzle ============ -->
+  <section class="scene active" id="scene-welcome">
+    <div class="welcome-header">
+      <div class="welcome-badge">
+        <span style="font-size:11px;">●</span>
+        Niveau D · Helt fra bunden
+      </div>
+      <h1 class="welcome-title">Velkommen til <span class="accent">Kursus D</span></h1>
+      <p class="welcome-sub">Brik for brik samler vi din rejse. Klik nedenfor og se hvad du lærer på dette kursus.</p>
+    </div>
+
+    <div class="puzzle-stage">
+      <div class="puzzle-grid" id="puzzleGrid">
+        <!-- 5 modules + "exam" + 2 fillers visually shown as 3 rows of 3? Actually, we have 5 + 1 exam = 6, lets do 3x2 -->
+      </div>
+    </div>
+
+    <div class="welcome-cta-wrap" id="welcomeCtaWrap">
+      <button class="btn-start" id="startCourseBtn">
+        Start kursus D
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+      </button>
+      <div class="welcome-meta">
+        <span>⏱ Ca. 1 time i alt</span>
+        <span>📚 5 korte moduler</span>
+        <span>🆓 Helt gratis</span>
+        <span>🏆 Bevis + coins efter eksamen</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCENE 2: TRANSITION (orb + particles) ============ -->
+  <div id="scene-transition">
+    <div class="transition-orb-wrap">
+      <div class="transition-particles" id="particlesWrap"></div>
+      <div class="transition-orb"></div>
+    </div>
+    <div class="transition-label" id="transitionLabel">Modul 1 starter…</div>
+    <div class="transition-title" id="transitionTitle">Hvad er AI?</div>
+    <div class="transition-sub" id="transitionSub">Tag en dyb indånding — vi tager det helt roligt.</div>
+  </div>
+
+  <!-- ============ SCENE 3: COURSE (modules + exam) ============ -->
+  <section class="scene" id="scene-course">
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar-wrap">
+      <div class="progress-steps">
+        <div class="progress-step active" id="bar-1"></div>
+        <div class="progress-step" id="bar-2"></div>
+        <div class="progress-step" id="bar-3"></div>
+        <div class="progress-step" id="bar-4"></div>
+        <div class="progress-step" id="bar-5"></div>
+        <div class="progress-step" id="bar-6"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">Modul 1 af 5</div>
+    </div>
+
+    <!-- MODULE TABS (jump freely) -->
+    <div class="module-nav">
+      <button class="module-tab active" data-mod="1">Modul 1</button>
+      <button class="module-tab" data-mod="2">Modul 2</button>
+      <button class="module-tab" data-mod="3">Modul 3</button>
+      <button class="module-tab" data-mod="4">Modul 4</button>
+      <button class="module-tab" data-mod="5">Modul 5</button>
+      <button class="module-tab exam" data-mod="6">🎓 Eksamen</button>
+    </div>
+
+    <!-- ===================== MODUL 1: HVAD ER AI ===================== -->
+    <div class="module-section active" id="module-1">
+      <div class="content">
+        <div class="module-header">
+          <div class="module-label">Modul 1 · Ca. 8 minutter</div>
+          <h2 class="module-title">Hvad er AI? 🧠</h2>
+          <p class="module-intro">Kunstig intelligens lyder avanceret — men du møder det allerede hver dag uden at tænke over det. Lad os starte helt blødt.</p>
+        </div>
+
+        <h3>AI er ikke nyt — du bruger det allerede</h3>
+        <div class="two-col">
+          <div class="col-card green">
+            <div class="col-card-title">🤖 Det er AI</div>
+            <ul>
+              <li>Netflix anbefaler film</li>
+              <li>GPS finder hurtigste rute</li>
+              <li>Telefonen genkender dit ansigt</li>
+              <li>Spam-filteret i din mail</li>
+            </ul>
+          </div>
+          <div class="col-card red">
+            <div class="col-card-title">❌ Det er IKKE AI</div>
+            <ul>
+              <li>En lommeregner</li>
+              <li>Et almindeligt skriveprogram</li>
+              <li>Din alarm der ringer kl. 7</li>
+              <li>En statisk hjemmeside</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Der findes mange AI‑chatbots — her er nogle af dem</h3>
+        <p>En AI‑chatbot er et program du kan skrive til ligesom en SMS — og den svarer dig. Der findes mange forskellige. Her er de fem mest brugte i 2026:</p>
+
+        <table class="ai-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th class="featured">Claude <span class="recommend-star">Vi anbefaler</span></th>
+              <th>ChatGPT</th>
+              <th>Gemini</th>
+              <th>DeepSeek</th>
+              <th>Copilot</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Lavet af</strong></td>
+              <td class="featured">Anthropic</td>
+              <td>OpenAI</td>
+              <td>Google</td>
+              <td>DeepSeek</td>
+              <td>Microsoft</td>
+            </tr>
+            <tr>
+              <td><strong>God til</strong></td>
+              <td class="featured">Tekst, forklaringer &amp; trygge svar</td>
+              <td>Generel brug</td>
+              <td>Søgning + AI</td>
+              <td>Tekniske svar</td>
+              <td>Office-programmer</td>
+            </tr>
+            <tr>
+              <td><strong>Gratis?</strong></td>
+              <td class="featured">Ja</td>
+              <td>Ja</td>
+              <td>Ja</td>
+              <td>Ja</td>
+              <td>Ja</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Start med Claude</div>
+            <p class="callout-text">Vi anbefaler <strong>Claude</strong> som den første AI du prøver. Den er kendt for at give rolige, trygge og forståelige svar — perfekt til nye brugere. Du finder den på <strong>claude.ai</strong>. Men de andre virker også godt.</p>
+          </div>
+        </div>
+
+        <h3>Er AI sikkert at bruge?</h3>
+        <p>Ja — for langt de fleste hverdagsbrug er AI helt sikkert. Du behøver ikke være bange for det. Tænk på en AI‑chatbot som en venlig medarbejder bag en skranke: du behøver ikke fortælle dem dit CPR‑nummer for at få hjælp.</p>
+
+        <div class="two-col">
+          <div class="col-card green">
+            <div class="col-card-title">✅ Du kan trygt</div>
+            <ul>
+              <li>Stille generelle spørgsmål</li>
+              <li>Få hjælp til at skrive en mail</li>
+              <li>Bede om opskrifter eller ideer</li>
+              <li>Få noget forklaret enkelt</li>
+            </ul>
+          </div>
+          <div class="col-card amber">
+            <div class="col-card-title">🛡️ Vær opmærksom på</div>
+            <ul>
+              <li>At du selv vælger hvad du deler</li>
+              <li>Aldrig dele CPR eller adgangskoder</li>
+              <li>At dobbelttjekke vigtige fakta</li>
+              <li>Vi lærer mere om sikkerhed i Modul 2 og 3</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <div class="callout-icon">🤝</div>
+          <div class="callout-body">
+            <div class="callout-title">Tænk på AI som en hjælpsom assistent</div>
+            <p class="callout-text">AI bliver aldrig træt, dømmer dig aldrig, og har altid tid til dig. Du kan stille det samme spørgsmål 10 gange uden at den bliver irriteret. Det er din private, tålmodige hjælper — på dansk.</p>
+          </div>
+        </div>
+
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse — find AI i din hverdag</div>
+            <p class="callout-text">Tænk på din dag i går. Skriv 2–3 steder du mødte AI uden at tænke over det — fx Netflix, GPS eller ansigtsgenkendelse. Du kan skrive det på papir eller i din telefon.</p>
+          </div>
+        </div>
+
+        <div class="callout summary">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <div class="callout-title">Det lærte du i dette modul</div>
+            <ul class="summary-list">
+              <li>AI er programmer der løser opgaver intelligent — ikke fysiske robotter</li>
+              <li>Du møder allerede AI hver dag (Netflix, GPS, ansigtsgenkendelse)</li>
+              <li>De 5 mest brugte AI‑chatbots: Claude, ChatGPT, Gemini, DeepSeek, Copilot</li>
+              <li>Vi anbefaler at starte med Claude — den er tryg og god til nybegyndere</li>
+              <li>AI er sikkert at bruge — du bestemmer selv hvad du deler</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="module-pagination">
+          <span></span>
+          <button class="btn-nav btn-next" onclick="showModule(2)">Modul 2 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODUL 2: BESKYT DINE OPLYSNINGER ===================== -->
+    <div class="module-section" id="module-2">
+      <div class="content">
+        <div class="module-header">
+          <div class="module-label">Modul 2 · Ca. 6 minutter</div>
+          <h2 class="module-title">Beskyt dine oplysninger 🔒</h2>
+          <p class="module-intro">Et kort men vigtigt modul. Lær hvordan du holder dine personlige oplysninger sikre, før du starter din første samtale.</p>
+        </div>
+
+        <p>AI‑tjenester gemmer ofte dine samtaler for at forbedre deres systemer. Det er ikke farligt — men det betyder du bør være opmærksom på <em>hvad</em> du skriver. Den simple regel:</p>
+
+        <div class="callout safety">
+          <div class="callout-icon">🛑</div>
+          <div class="callout-body">
+            <div class="callout-title">Husk denne enkle regel</div>
+            <p class="callout-text">Skriv ikke noget til en AI som du ikke ville sige højt i en café. AI er <strong>ikke</strong> en bank, en læge eller en advokat — så behandl den ikke som én.</p>
+          </div>
+        </div>
+
+        <h3>Det skal du ALDRIG dele med en AI</h3>
+        <div class="two-col">
+          <div class="col-card red">
+            <div class="col-card-title">🔴 Del ALDRIG</div>
+            <ul>
+              <li>CPR‑nummer</li>
+              <li>Adgangskoder &amp; pinkoder</li>
+              <li>Kreditkort &amp; bankoplysninger</li>
+              <li>NemID/MitID‑oplysninger</li>
+              <li>Fulde navne på familie eller kollegaer uden samtykke</li>
+              <li>Sundhedsoplysninger med navn på</li>
+            </ul>
+          </div>
+          <div class="col-card green">
+            <div class="col-card-title">🟢 Det er fint at dele</div>
+            <ul>
+              <li>Dit fornavn (hvis du vil)</li>
+              <li>Din alder (groft sagt, fx "i 70'erne")</li>
+              <li>En tekst du vil have hjælp til</li>
+              <li>En opskrift eller ide</li>
+              <li>Generelle hverdagsspørgsmål</li>
+              <li>Din interesse eller hobby</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>Sådan vælger du selv at "slukke" for at AI bruger dine samtaler</h3>
+        <p>De fleste AI‑tjenester har en knap hvor du kan vælge om dine samtaler må bruges til at træne fremtidige modeller. Du kan slå det fra — det er din ret. Vi viser præcis hvor knappen er i Modul 3.</p>
+
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">God tommelfingerregel</div>
+            <p class="callout-text">Når du vil have hjælp til noget personligt — fx et brev til lægen — kan du sagtens skrive: <em>"Jeg er en kvinde i 70'erne der vil bede min læge om en tid"</em>. Du behøver ikke skrive dit fulde navn eller CPR for at få et godt svar.</p>
+          </div>
+        </div>
+
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse — sikkerhedstjek</div>
+            <p class="callout-text">Læs disse 3 sætninger og afgør hvilken der IKKE er sikker at sende til en AI:<br><br>1. "Hjælp mig med at skrive en fødselsdagshilsen til min søn."<br>2. "Mit CPR er 010150‑1234, kan du tjekke om jeg får pension?"<br>3. "Forklar mig hvad et abonnement er."<br><br><strong>Svar:</strong> Nummer 2 — du må aldrig dele dit CPR‑nummer.</p>
+          </div>
+        </div>
+
+        <div class="callout summary">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <div class="callout-title">Det lærte du i dette modul</div>
+            <ul class="summary-list">
+              <li>Behandl AI som en café — del ikke det du ikke vil sige højt</li>
+              <li>Del ALDRIG: CPR, adgangskoder, kreditkort, MitID</li>
+              <li>Du kan trygt dele tekst, ideer og generelle spørgsmål</li>
+              <li>De fleste AI'er kan slå "brug min samtale til træning" fra</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="module-pagination">
+          <button class="btn-nav btn-prev" onclick="showModule(1)">← Modul 1</button>
+          <button class="btn-nav btn-next" onclick="showModule(3)">Modul 3 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODUL 3: SIKKER LOGIN + FØRSTE SAMTALE ===================== -->
+    <div class="module-section" id="module-3">
+      <div class="content">
+        <div class="module-header">
+          <div class="module-label">Modul 3 · Ca. 10 minutter</div>
+          <h2 class="module-title">Log sikkert ind &amp; din første samtale 💬</h2>
+          <p class="module-intro">Nu er du klar! Vi går step for step gennem hvordan du opretter en konto, slår dataindsamling fra, og sender din allerførste besked. Tag det i dit eget tempo.</p>
+        </div>
+
+        <h3 class="with-tag" data-tag="Del 1">Opret konto hos Claude</h3>
+        <p>Claude er den AI vi anbefaler at starte med. Følg disse trin præcist — der er ingen forhastning.</p>
+
+        <div class="steps-box">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">Åbn din browser (Chrome, Safari, Edge — den du normalt bruger).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">Skriv <strong>claude.ai</strong> i adresselinjen øverst og tryk Enter.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">Klik på den blå knap der hedder <strong>"Sign up"</strong> (det betyder "opret bruger").</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">Skriv din e‑mail‑adresse. Det er den samme du bruger til andre ting.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-text">Vælg en adgangskode du kan huske. <strong>Skriv den ned</strong> et sikkert sted.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">6</div>
+            <div class="step-text">Åbn din e‑mail. Du har fået en mail fra Claude med en bekræftelseskode — klik på linket eller indtast koden.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">7</div>
+            <div class="step-text">Færdig! Du er logget ind. Tag et øjeblik og pust ud — du klarede det.</div>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Del 2">Slå dataindsamling fra (valgfrit, men anbefalet)</h3>
+        <p>Hvis du ikke vil have at Claude bruger dine samtaler til at lære af, kan du slå det fra. Det tager 30 sekunder:</p>
+
+        <div class="steps-box">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">Klik på din profil helt nederst i venstre hjørne.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">Vælg <strong>"Settings"</strong> (indstillinger).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">Find afsnittet <strong>"Privacy"</strong> (privatliv).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">Slå <strong>"Help improve Claude"</strong> fra (sæt knappen til grå/off).</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-text">Færdig — luk vinduet. Claude bruger nu ikke dine samtaler til træning.</div>
+          </div>
+        </div>
+
+        <figure class="screenshot-figure">
+          <div class="screenshot-frame">
+            <img src="images/claude-privacy-settings.png" alt="Claude Settings - Privacy side med Help improve Claude knap markeret" style="width: 699.667px" />
+            <span class="highlight-circle" aria-hidden="true"></span>
+            <span class="highlight-arrow" aria-hidden="true">
+              <svg viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 20 Q 50 10, 95 50" />
+                <path d="M85 38 L 95 50 L 82 52" />
+              </svg>
+              <span class="highlight-arrow-label">Slå denne fra</span>
+            </span>
+          </div>
+          <figcaption>Sådan ser Privacy‑siden ud i Claude. Toggle‑knappen ved <strong>"Help improve Claude"</strong> skal være grå/off — så bruger Claude ikke dine samtaler til træning.</figcaption>
+        </figure>
+
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Hvis det ser anderledes ud</div>
+            <p class="callout-text">AI‑tjenester opdaterer ofte deres design. Hvis knapperne hedder lidt noget andet — kig efter ord som <strong>"Settings", "Privacy"</strong> eller <strong>"Data"</strong>. Du kan også bare spørge AI'en: <em>"Hvor finder jeg dataindstillinger?"</em></p>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Del 3">Send din allerførste besked</h3>
+        <p>Nu er du klar til den sjove del. Du ser en stor tekstboks midt på skærmen — det er der du skriver. Brug denne første besked. Du kan kopiere den direkte med knappen herunder, så du ikke skal taste den ind:</p>
+
+        <div class="copy-box">
+          <div class="copy-box-header">
+            <span class="copy-box-label">📋 Din første besked</span>
+            <button class="copy-btn" onclick="copyText(this, 'Hej! Jeg er helt ny til AI. Kan du fortælle mig kort, hvad du kan hjælpe mig med?')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Kopier tekst
+            </button>
+          </div>
+          <div class="copy-box-body">Hej! Jeg er helt ny til AI. Kan du fortælle mig kort, hvad du kan hjælpe mig med?</div>
+        </div>
+
+        <div class="steps-box">
+          <div class="step-item">
+            <div class="step-num">1</div>
+            <div class="step-text">Klik på <strong>"Kopier tekst"</strong> ovenfor — du får en lille besked om at det er kopieret.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">2</div>
+            <div class="step-text">Gå tilbage til Claude og klik én gang i den store tekstboks midt på skærmen.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">3</div>
+            <div class="step-text">Højreklik (eller hold fingeren nede på telefonen) → vælg <strong>"Sæt ind"</strong>.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">4</div>
+            <div class="step-text">Tryk på den blå pil ➤ eller tryk Enter på tastaturet.</div>
+          </div>
+          <div class="step-item">
+            <div class="step-num">5</div>
+            <div class="step-text">Læs Claudes svar i ro og mag — der er ingen tidsgrænse.</div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <div class="callout-icon">💬</div>
+          <div class="callout-body">
+            <div class="callout-title">Du kan stille opfølgende spørgsmål</div>
+            <p class="callout-text">Når Claude har svaret, kan du bare skrive videre i samme tekstboks — fx <em>"Forklar punkt 2 lidt mere"</em>. Den husker hvad I har talt om i samme samtale.</p>
+          </div>
+        </div>
+
+        <h3>Sådan fungerer en samtale</h3>
+        <div class="two-col">
+          <div class="col-card green">
+            <div class="col-card-title">✅ Sådan fungerer det</div>
+            <ul>
+              <li>Du skriver → AI svarer</li>
+              <li>Du kan stille flere spørgsmål</li>
+              <li>AI husker hvad I taler om i denne chat</li>
+              <li>Du kan bede om at få det forklaret enklere</li>
+            </ul>
+          </div>
+          <div class="col-card red">
+            <div class="col-card-title">❌ Sådan fungerer det IKKE</div>
+            <ul>
+              <li>AI husker dig ikke fra gang til gang</li>
+              <li>AI har ikke adgang til dine filer</li>
+              <li>AI er ikke en søgemaskine som Google</li>
+              <li>AI kender ikke til dagens nyheder</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse — gør det lige nu</div>
+            <p class="callout-text">Åbn claude.ai i en ny fane, log ind, og send beskeden ovenfor. Læs Claudes svar. Stil derefter ét opfølgende spørgsmål — fx <em>"Kan du give mig 3 eksempler?"</em>. Det er din første rigtige AI‑samtale!</p>
+          </div>
+        </div>
+
+        <div class="callout summary">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <div class="callout-title">Det lærte du i dette modul</div>
+            <ul class="summary-list">
+              <li>Du opretter gratis konto på claude.ai med din e‑mail</li>
+              <li>Du kan slå dataindsamling fra under Settings → Privacy</li>
+              <li>Du kan kopiere din første besked og sætte den ind i Claude</li>
+              <li>AI husker samtalen i samme vindue — men starter forfra næste gang</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="module-pagination">
+          <button class="btn-nav btn-prev" onclick="showModule(2)">← Modul 2</button>
+          <button class="btn-nav btn-next" onclick="showModule(4)">Modul 4 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODUL 4: GODT PROMPT ===================== -->
+    <div class="module-section" id="module-4">
+      <div class="content">
+        <div class="module-header">
+          <div class="module-label">Modul 4 · Ca. 12 minutter</div>
+          <h2 class="module-title">Skriv et godt prompt ✍️</h2>
+          <p class="module-intro">Et "prompt" er den besked du skriver til AI'en. Jo bedre prompt, jo bedre svar. Det er den vigtigste færdighed du lærer på dette kursus.</p>
+        </div>
+
+        <h3>Tænk på det som at bestille mad</h3>
+        <p>Hvis du siger til en tjener "jeg vil have mad", får du noget — men måske ikke det du havde forestillet dig. Hvis du siger præcis hvad du vil have, får du præcis det. AI fungerer på nøjagtig samme måde.</p>
+
+        <div class="compare-row">
+          <div class="compare-card bad">
+            <div class="compare-tag">✕ Mindre godt</div>
+            <p class="compare-text">"Jeg vil have mad"</p>
+          </div>
+          <div class="compare-card good">
+            <div class="compare-tag">✓ Godt</div>
+            <p class="compare-text">"En stor pizza med skinke og champignon — uden løg, tak"</p>
+          </div>
+        </div>
+
+        <h3>De 3 enkle regler</h3>
+
+        <h3 class="with-tag" data-tag="Regel 1">Vær specifik 🎯</h3>
+        <p>Fortæl præcis hvad du vil have hjælp til:</p>
+
+        <div class="compare-row">
+          <div class="compare-card bad">
+            <div class="compare-tag">✕ Mindre godt</div>
+            <p class="compare-text">"Hjælp mig med en mail"</p>
+          </div>
+          <div class="compare-card good">
+            <div class="compare-tag">✓ Godt</div>
+            <p class="compare-text">"Hjælp mig med en mail til min nabo om fødselsdag næste lørdag"</p>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Regel 2">Giv kontekst 📋</h3>
+        <p>Fortæl hvem du er, og hvad situationen er:</p>
+
+        <div class="compare-row">
+          <div class="compare-card bad">
+            <div class="compare-tag">✕ Mindre godt</div>
+            <p class="compare-text">"Skriv et klagebrev til kommunen"</p>
+          </div>
+          <div class="compare-card good">
+            <div class="compare-tag">✓ Godt</div>
+            <p class="compare-text">"Jeg er pensionist og vil klage til kommunen over byggestøj. Skriv et formelt brev"</p>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Regel 3">Bed om et format 📄</h3>
+        <p>Fortæl hvordan du vil have svaret — som en liste, et brev, eller bare to sætninger:</p>
+
+        <div class="bullet-list">
+          <ul>
+            <li>"Lav en punktliste med 5 tips til…"</li>
+            <li>"Forklar det i to korte sætninger"</li>
+            <li>"Skriv det som et formelt brev"</li>
+            <li>"Giv mig kun et ja eller nej"</li>
+          </ul>
+        </div>
+
+        <h3>Prøv disse prompts — kopier og indsæt i Claude</h3>
+        <p>Klik på kopier‑knapperne herunder og indsæt i Claude. Prøv dem ét efter ét og se hvor godt det fungerer:</p>
+
+        <div class="copy-box">
+          <div class="copy-box-header">
+            <span class="copy-box-label">🛒 Indkøbsliste</span>
+            <button class="copy-btn" onclick="copyText(this, 'Lav en indkøbsliste til en hyggelig 3-retters middag for 4 personer med pasta som hovedret. Skriv den som en punktliste sorteret efter butikkens afdelinger (frugt, kød, mejeri, osv.).')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Kopier
+            </button>
+          </div>
+          <div class="copy-box-body">Lav en indkøbsliste til en hyggelig 3-retters middag for 4 personer med pasta som hovedret. Skriv den som en punktliste sorteret efter butikkens afdelinger (frugt, kød, mejeri, osv.).</div>
+        </div>
+
+        <div class="copy-box">
+          <div class="copy-box-header">
+            <span class="copy-box-label">❓ Forklaring</span>
+            <button class="copy-btn" onclick="copyText(this, 'Forklar hvad en podcast er, i to korte sætninger, som om jeg aldrig har hørt ordet før. Brug et hverdagseksempel.')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Kopier
+            </button>
+          </div>
+          <div class="copy-box-body">Forklar hvad en podcast er, i to korte sætninger, som om jeg aldrig har hørt ordet før. Brug et hverdagseksempel.</div>
+        </div>
+
+        <div class="copy-box">
+          <div class="copy-box-header">
+            <span class="copy-box-label">💌 Fødselsdagshilsen</span>
+            <button class="copy-btn" onclick="copyText(this, 'Hjælp mig med at skrive en varm og personlig fødselsdagshilsen til mit barnebarn der fylder 10 år. Hold det kort — 4-5 sætninger — og brug et venligt sprog.')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Kopier
+            </button>
+          </div>
+          <div class="copy-box-body">Hjælp mig med at skrive en varm og personlig fødselsdagshilsen til mit barnebarn der fylder 10 år. Hold det kort — 4-5 sætninger — og brug et venligt sprog.</div>
+        </div>
+
+        <!-- THE BIG ORANGE EXERCISE -->
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse — skriv dit eget prompt</div>
+            <p class="callout-text">Tænk på noget du vil have hjælp til i hverdagen. Skriv et godt prompt — husk de 3 regler: <strong>hvem du er</strong>, <strong>hvad du vil have</strong>, og <strong>hvilket format</strong>. Prøv det i Claude eller en anden chatbot.</p>
+          </div>
+        </div>
+
+        <h3>Få AI til at give feedback på dit eget prompt</h3>
+        <p>Det her er et fantastisk trick: bed AI'en om at give dig <strong>ærlig feedback</strong> på dit prompt. På den måde lærer du hurtigt hvor du kan blive bedre. Kopier dette prompt og udfyld det med dit eget:</p>
+
+        <div class="copy-box">
+          <div class="copy-box-header">
+            <span class="copy-box-label">🎓 Få feedback på dit prompt</span>
+            <button class="copy-btn" onclick="copyText(this, 'Giv ærlig feedback på dette prompt som en nybegynder har skrevet. Fortæl hvad der er godt, hvad der mangler, og giv et forslag til hvordan det kunne blive bedre. Hold det kort og venligt.\n\nPromptet:\n(skriv dit prompt her)')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              Kopier
+            </button>
+          </div>
+          <div class="copy-box-body">Giv ærlig feedback på dette prompt som en nybegynder har skrevet. Fortæl hvad der er godt, hvad der mangler, og giv et forslag til hvordan det kunne blive bedre. Hold det kort og venligt.
+
+Promptet:
+(skriv dit prompt her)</div>
+        </div>
+
+        <h3>Eller prøv det direkte her — uden at logge ind</h3>
+        <p>Som ekstra hjælp har vi indbygget en lille AI direkte i kurset. Skriv dit prompt herunder, og få feedback med det samme:</p>
+
+        <div class="ai-chat-box">
+          <div class="ai-chat-header">
+            <div class="ai-chat-header-icon">✨</div>
+            <div>
+              <div class="ai-chat-header-title">Prompt‑coach</div>
+              <div class="ai-chat-header-sub">Få ærlig feedback på dit prompt — direkte her</div>
+            </div>
+          </div>
+          <div class="ai-chat-messages" id="aiChatMessages">
+            <div class="ai-msg bot">
+              <div class="ai-msg-avatar">✨</div>
+              <div class="ai-msg-bubble">Hej! Jeg er din prompt‑coach. Skriv et prompt herunder, så giver jeg dig venlig og ærlig feedback. Du kan også klikke på et af forslagene under feltet 👇</div>
+            </div>
+          </div>
+          <div class="ai-chat-suggest">
+            <button class="ai-suggest-btn" onclick="setAiInput('Hjælp mig med at skrive en mail')">Hjælp mig med en mail</button>
+            <button class="ai-suggest-btn" onclick="setAiInput('Forklar hvad en computer er')">Forklar en computer</button>
+            <button class="ai-suggest-btn" onclick="setAiInput('Jeg er pensionist og vil bede min boligforening om at fjerne en gammel cykel der har stået i kælderen i over et år. Skriv en venlig mail til formanden, ca. 5 sætninger.')">Et godt prompt</button>
+          </div>
+          <div class="ai-chat-input-wrap">
+            <textarea id="aiChatInput" class="ai-chat-input" rows="1" placeholder="Skriv dit prompt her — jeg giver feedback…"></textarea>
+            <button class="ai-chat-send" id="aiChatSend" onclick="sendAiMsg()" aria-label="Send">➤</button>
+          </div>
+        </div>
+
+        <div class="callout summary">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <div class="callout-title">Det lærte du i dette modul</div>
+            <ul class="summary-list">
+              <li>Et prompt er den besked du sender — bedre prompt = bedre svar</li>
+              <li>Regel 1: Vær specifik — fortæl præcis hvad du vil have</li>
+              <li>Regel 2: Giv kontekst — fortæl hvem du er og situationen</li>
+              <li>Regel 3: Bed om et format — liste, brev, to sætninger</li>
+              <li>Du kan bede AI om feedback på dit eget prompt</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="module-pagination">
+          <button class="btn-nav btn-prev" onclick="showModule(3)">← Modul 3</button>
+          <button class="btn-nav btn-next" onclick="showModule(5)">Modul 5 →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== MODUL 5: UNDGÅ FALDGRUBER ===================== -->
+    <div class="module-section" id="module-5">
+      <div class="content">
+        <div class="module-header">
+          <div class="module-label">Modul 5 · Ca. 10 minutter</div>
+          <h2 class="module-title">Undgå faldgruber ⚠️</h2>
+          <p class="module-intro">AI er fantastisk — men det er ikke perfekt. Lær de 4 mest almindelige faldgruber, så du bruger AI klogt og trygt.</p>
+        </div>
+
+        <h3 class="with-tag" data-tag="Faldgrube 1">AI kan tage fejl — det hedder "hallucination" 🌫️</h3>
+        <p>AI kan finde på fakta der lyder helt korrekte, men som er forkerte. Det er ikke fordi AI lyver — den prøver bare at hjælpe og kommer nogle gange til at gætte. Det sker oftest med specifikke detaljer.</p>
+
+        <div class="two-col">
+          <div class="col-card red">
+            <div class="col-card-title">🔴 AI fejler ofte med</div>
+            <ul>
+              <li>Specifikke tal og statistikker</li>
+              <li>Navne på personer og deres titler</li>
+              <li>Datoer for begivenheder</li>
+              <li>Citater og kilder</li>
+              <li>Medicinske og juridiske detaljer</li>
+              <li>Aktuelle nyheder</li>
+            </ul>
+          </div>
+          <div class="col-card green">
+            <div class="col-card-title">🟢 AI er pålidelig til</div>
+            <ul>
+              <li>Generelle forklaringer</li>
+              <li>Grammatik og sproghjælp</li>
+              <li>Brainstorming og ideer</li>
+              <li>Opskrifter og hverdagstips</li>
+              <li>At opsummere tekster du selv giver den</li>
+              <li>At omformulere noget</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <div class="callout-title">Den vigtigste regel</div>
+            <p class="callout-text"><strong>Dobbelttjek altid vigtige oplysninger</strong> fra AI med en pålidelig kilde — din læge, en officiel hjemmeside (borger.dk), en avis, eller en advokat. AI er en hjælper, ikke en autoritet.</p>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Faldgrube 2">AI er ikke aktuel 📅</h3>
+        <p>De fleste AI'er er trænet på data der stopper på et bestemt tidspunkt. De kender altså ikke til de seneste nyheder, ny lovgivning eller dagens vejr. Hvis du spørger om noget der er sket for nylig, kan AI komme med et forældet eller forkert svar.</p>
+
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Sådan undgår du det</div>
+            <p class="callout-text">Til aktuelle ting — nyheder, vejr, åbningstider — brug Google eller den officielle hjemmeside. Brug AI til alt det andet: skrive, forklare, opsummere, brainstorme.</p>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Faldgrube 3">AI kan virke meget overbevisende — selv når den tager fejl 🎭</h3>
+        <p>Det her er måske den sværeste faldgrube. AI svarer altid med stor selvtillid. Den siger ikke "jeg er ikke sikker" — den siger bare et svar. Du skal selv lære at mærke efter hvornår noget måske er forkert.</p>
+
+        <div class="bullet-list">
+          <ul>
+            <li><strong>Røde flag:</strong> meget specifikke tal, navne på fagfolk, datoer langt tilbage i tiden</li>
+            <li><strong>Tjek altid:</strong> hvis det handler om dit helbred, din økonomi eller juridiske spørgsmål</li>
+            <li><strong>Spørg AI igen:</strong> "Er du helt sikker på det?" — så bliver svaret ofte mere ærligt</li>
+            <li><strong>Kig efter forbehold:</strong> AI siger nogle gange "jeg kan tage fejl" — tag det alvorligt</li>
+          </ul>
+        </div>
+
+        <h3 class="with-tag" data-tag="Faldgrube 4">Brug ikke AI til kritiske beslutninger ❤️</h3>
+        <p>AI er en hjælper — ikke en erstatning for fagfolk. Brug aldrig AI som eneste kilde til:</p>
+
+        <div class="two-col">
+          <div class="col-card red">
+            <div class="col-card-title">🚫 Brug ALDRIG AI til</div>
+            <ul>
+              <li>Medicinske diagnoser — gå til lægen</li>
+              <li>Juridisk rådgivning — kontakt advokat</li>
+              <li>Investering &amp; pensionsråd — bank/rådgiver</li>
+              <li>Mentale kriser — ring 1813 eller læge</li>
+              <li>Vigtige livsbeslutninger</li>
+            </ul>
+          </div>
+          <div class="col-card green">
+            <div class="col-card-title">✓ Brug gerne AI til</div>
+            <ul>
+              <li>Forberede spørgsmål til lægen</li>
+              <li>Forstå et brev fra kommunen</li>
+              <li>Skrive en mail eller besked</li>
+              <li>Opskrifter og hverdagsplaner</li>
+              <li>Lære noget nyt</li>
+            </ul>
+          </div>
+        </div>
+
+        <h3 class="with-tag" data-tag="Faldgrube 5">Du behøver ikke være "høflig" — men gerne tydelig 🗣️</h3>
+        <p>Mange ældre bekymrer sig om at "være sød" mod AI. Det er fint — men du behøver ikke at undskylde eller forklare dig. AI bliver ikke fornærmet. Vær hellere <strong>tydelig og direkte</strong>:</p>
+
+        <div class="compare-row">
+          <div class="compare-card bad">
+            <div class="compare-tag">✕ For omstændeligt</div>
+            <p class="compare-text">"Undskyld jeg forstyrrer, men hvis det ikke er for meget besvær, kunne du måske eventuelt hjælpe mig lidt med…"</p>
+          </div>
+          <div class="compare-card good">
+            <div class="compare-tag">✓ Tydeligt</div>
+            <p class="compare-text">"Skriv en mail til min forsikring om at jeg vil opsige min husforsikring."</p>
+          </div>
+        </div>
+
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse — find en hallucination</div>
+            <p class="callout-text">Spørg Claude eller en anden AI: <em>"Hvornår blev Roskilde Domkirke grundlagt og hvem er den nuværende biskop?"</em> Tjek derefter svaret på <strong>roskildedomkirke.dk</strong>. Stemmer alle detaljer? Er noget måske gættet?</p>
+          </div>
+        </div>
+
+        <div class="callout reflect">
+          <div class="callout-icon">🤔</div>
+          <div class="callout-body">
+            <div class="callout-title">Tænk over det inden eksamen</div>
+            <p class="callout-text">1. Hvilken faldgrube tror du selv vil være sværest at huske?<br>2. Kan du komme i tanke om en gang du har stolet på noget der viste sig at være forkert? Hvad lærte du?</p>
+          </div>
+        </div>
+
+        <div class="callout summary">
+          <div class="callout-icon">✅</div>
+          <div class="callout-body">
+            <div class="callout-title">Det lærte du i dette modul</div>
+            <ul class="summary-list">
+              <li>AI kan "hallucere" — finde på troværdige men forkerte svar</li>
+              <li>AI er ikke aktuel — brug Google til nyheder og dagsdata</li>
+              <li>AI lyder altid sikker — vær selv kritisk, særligt med tal og navne</li>
+              <li>Brug aldrig AI til medicin, jura, økonomi eller kriser</li>
+              <li>Vær tydelig og direkte — du behøver ikke "være høflig"</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Gentle upsell to paid courses -->
+        <div class="upsell-card">
+          <div class="upsell-icon">🚀</div>
+          <div class="upsell-body">
+            <div class="upsell-title">Klar til mere? Kursus C venter</div>
+            <div class="upsell-text">Når du har bestået eksamen, kan du gå videre til <strong>Kursus C</strong> hvor du lærer machine learning, dataanalyse og avancerede AI‑værktøjer. De næste kurser bygger ovenpå alt det du lige har lært.</div>
+          </div>
+        </div>
+
+        <div class="module-pagination">
+          <button class="btn-nav btn-prev" onclick="showModule(4)">← Modul 4</button>
+          <button class="btn-nav btn-next btn-exam" onclick="showModule(6)">Gå til eksamen 🎓</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== EKSAMEN ===================== -->
+    <div class="module-section" id="module-6">
+      <div class="content">
+
+        <div class="exam-hero">
+          <div class="exam-hero-cap">🎓</div>
+          <h2>Tillykke — du er klar til eksamen!</h2>
+          <p>Du har gennemført alle 5 moduler. Nu er det tid til at bevise hvad du har lært — og få dit officielle bevis.</p>
+          <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-d.html" class="btn-exam-big">
+            Start eksamen
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+
+        <h3>Eksamen er opdelt i 2 dele</h3>
+        <div class="exam-parts">
+          <div class="exam-part">
+            <div class="exam-part-title">📝 Del 1 — Multiple choice</div>
+            <div class="exam-part-desc">10 spørgsmål om det du har lært. Du får øjeblikkelig feedback på hvert svar og kan se en gennemgang bagefter.</div>
+          </div>
+          <div class="exam-part">
+            <div class="exam-part-title">💻 Del 2 — Praktisk opgave</div>
+            <div class="exam-part-desc">Du skriver dit eget prompt, og AI'en bedømmer dit svar og giver dig en beståelseskode, hvis det er godt nok (hvis ikke kan du bare prøve igen).</div>
+          </div>
+        </div>
+
+        <h3>Hvad sker der trin for trin?</h3>
+        <div class="steps-box">
+          <div class="step-item"><div class="step-num">1</div><div class="step-text">Du besvarer på 10 spørgsmål om alt det du har arbejdet med.</div></div>
+          <div class="step-item"><div class="step-num">2</div><div class="step-text">Du ser din score og kan gennemgå alle spørgsmål — og prøve igen.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Hvis du har 8+ rigtige, låses den praktiske del op automatisk.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Du skriver et prompt til en Indbygget Chat-bot og den bedømmer om det er godt nok.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Du får en beståelseskode og dit officielle kursusbevis + nogle coins du kan bruge til at købe sidekurser (hvis du har lyst).</div></div>
+        </div>
+
+        <h3>Din score</h3>
+        <div class="score-table">
+          <div class="score-card">
+            <div class="score-range">0–7 rigtige</div>
+            <div class="score-icon">📚</div>
+            <div class="score-label">Læs kurset igen — du klarer det næste gang</div>
+          </div>
+          <div class="score-card" style="border-color: var(--accent-green); box-shadow: 0 8px 24px rgba(5,150,105,0.15);">
+            <div class="score-range">8 rigtige</div>
+            <div class="score-icon">✅</div>
+            <div class="score-label">Bestået! Du er klar til Kursus C</div>
+          </div>
+          <div class="score-card">
+            <div class="score-range">9–10 rigtige</div>
+            <div class="score-icon">🏆</div>
+            <div class="score-label">Fremragende — du er et naturtalent!</div>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <div class="callout-icon">📖</div>
+          <div class="callout-body">
+            <div class="callout-title">Du kan prøve så mange gange du vil</div>
+            <p class="callout-text">Eksamen er ikke en prøve du kun har én chance på. Du må gerne kigge tilbage i kursusmaterialet — det er en del af læringen.</p>
+          </div>
+        </div>
+
+        <div class="upsell-card">
+          <div class="upsell-icon">🚀</div>
+          <div class="upsell-body">
+            <div class="upsell-title">Næste skridt: Kursus C — Avanceret</div>
+            <div class="upsell-text">Når du har bevist du har styr på det grundlæggende, åbner Kursus C op for machine learning, dataanalyse og API-integration. Du får meget mere ud af AI med et betalt kursus.</div>
+          </div>
+        </div>
+
+        <div class="final-cta">
+          <div class="final-cta-icon">🍀</div>
+          <div class="final-cta-title">Held og lykke!</div>
+          <div class="final-cta-desc">Du har gjort dig fortjent til det. Klik nedenfor og kom i gang.</div>
+          <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-d.html" class="btn-nav btn-exam" style="display: inline-flex; text-decoration: none;">
+            Åbn eksamen →
+          </a>
+        </div>
+
+        <div class="module-pagination">
+          <button class="btn-nav btn-prev" onclick="showModule(5)">← Modul 5</button>
+          <span></span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+</div>
+
+<script>
+  /* ============ PUZZLE MODULES ============ */
+  const PIECES = [
+    { num: '01', icon: '🧠', title: 'Hvad er AI?',
+      desc: 'Forstå hvad AI er og hvilke chatbots du kan vælge imellem.',
+      bg: '#dbeafe', fg: '#1d4ed8', from: 'rgba(37,99,235,0.10)',
+      sx: -260, sy: -120, sr: -25 },
+    { num: '02', icon: '🔒', title: 'Beskyt dig selv',
+      desc: 'Lær hvilke oplysninger du aldrig skal dele med AI.',
+      bg: '#fee2e2', fg: '#b91c1c', from: 'rgba(220,38,38,0.10)',
+      sx: 280, sy: -100, sr: 22 },
+    { num: '03', icon: '🚀', title: 'Sikker login',
+      desc: 'Step for step: opret konto og send din første besked.',
+      bg: '#ede9fe', fg: '#6d28d9', from: 'rgba(124,58,237,0.10)',
+      sx: -220, sy: 140, sr: 18 },
+    { num: '04', icon: '✍️', title: 'Skriv et godt prompt',
+      desc: 'Få meget bedre svar med 3 enkle regler — og prøv det live.',
+      bg: '#fff1e8', fg: '#c2410c', from: 'rgba(234,88,12,0.10)',
+      sx: 240, sy: 130, sr: -18 },
+    { num: '05', icon: '⚠️', title: 'Undgå faldgruber',
+      desc: 'Kend AI\'s svagheder, så du bruger den klogt og trygt.',
+      bg: '#fef3c7', fg: '#a16207', from: 'rgba(217,119,6,0.10)',
+      sx: -180, sy: -200, sr: 30 },
+    { num: '🎓', icon: '🏆', title: 'Eksamen &amp; bevis',
+      desc: 'Test din viden, få din beståelseskode og dit kursusbevis.',
+      bg: '#dcfce7', fg: '#047857', from: 'rgba(5,150,105,0.10)',
+      sx: 200, sy: 200, sr: -30 },
+  ];
+
+  function buildPuzzle() {
+    const grid = document.getElementById('puzzleGrid');
+    grid.innerHTML = '';
+    PIECES.forEach(p => {
+      const el = document.createElement('div');
+      el.className = 'puzzle-piece';
+      el.style.setProperty('--start-x', p.sx + 'px');
+      el.style.setProperty('--start-y', p.sy + 'px');
+      el.style.setProperty('--start-rot', p.sr + 'deg');
+      el.style.setProperty('--tone-bg', p.bg);
+      el.style.setProperty('--tone-fg', p.fg);
+      el.style.setProperty('--tone-from', p.from);
+      el.innerHTML = `
+        <div class="puzzle-piece-icon">${p.icon}</div>
+        <div class="puzzle-piece-num">Modul ${p.num}</div>
+        <div class="puzzle-piece-title">${p.title}</div>
+        <div class="puzzle-piece-desc">${p.desc}</div>
+      `;
+      grid.appendChild(el);
+    });
+    // animate in, one by one
+    setTimeout(() => {
+      const pieces = grid.querySelectorAll('.puzzle-piece');
+      pieces.forEach((piece, i) => {
+        setTimeout(() => piece.classList.add('placed'), 200 + i * 180);
+      });
+      // show CTA after pieces
+      setTimeout(() => {
+        document.getElementById('welcomeCtaWrap').classList.add('show');
+      }, 200 + pieces.length * 180 + 200);
+    }, 200);
+  }
+
+  /* ============ TRANSITION TO MODULE 1 ============ */
+  function spawnParticles() {
+    const wrap = document.getElementById('particlesWrap');
+    wrap.innerHTML = '';
+    for (let i = 0; i < 20; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const angle = (i / 20) * Math.PI * 2;
+      const dist = 120 + Math.random() * 60;
+      p.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+      p.style.animationDelay = (i * 0.05) + 's';
+      wrap.appendChild(p);
+    }
+  }
+
+  document.getElementById('startCourseBtn').addEventListener('click', () => {
+    // hide welcome, show transition
+    document.getElementById('scene-welcome').classList.remove('active');
+    const trans = document.getElementById('scene-transition');
+    trans.classList.add('active');
+    spawnParticles();
+    // after 2.2s, hide transition, show course
+    setTimeout(() => {
+      trans.classList.remove('active');
+      document.getElementById('scene-course').classList.add('active');
+      // ensure module 1 visible and scroll top
+      showModule(1, true);
+    }, 2200);
+  });
+
+  /* ============ MODULE NAV ============ */
+  const MODULE_TITLES = [
+    { label: 'Modul 1 starter…', title: 'Hvad er AI?' },
+    { label: 'Modul 2 starter…', title: 'Beskyt dine oplysninger' },
+    { label: 'Modul 3 starter…', title: 'Sikker login &amp; første samtale' },
+    { label: 'Modul 4 starter…', title: 'Skriv et godt prompt' },
+    { label: 'Modul 5 starter…', title: 'Undgå faldgruber' },
+    { label: 'Eksamen', title: 'Du er klar! 🎓' },
+  ];
+
+  function showModule(num, skipTransition) {
+    document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('module-' + num).classList.add('active');
+    const tab = document.querySelector(`.module-tab[data-mod="${num}"]`);
+    if (tab) tab.classList.add('active');
+
+    for (let i = 1; i <= 6; i++) {
+      const bar = document.getElementById('bar-' + i);
+      if (!bar) continue;
+      if (i < num) bar.className = 'progress-step done';
+      else if (i === num) bar.className = 'progress-step active';
+      else bar.className = 'progress-step';
+    }
+
+    const labels = ['Modul 1 af 5', 'Modul 2 af 5', 'Modul 3 af 5', 'Modul 4 af 5', 'Modul 5 af 5', 'Eksamen'];
+    document.getElementById('progressLabel').textContent = labels[num - 1];
+
+    window.scrollTo({ top: 0, behavior: skipTransition ? 'auto' : 'smooth' });
+    return false;
+  }
+
+  document.querySelectorAll('.module-tab').forEach(tab => {
+    tab.addEventListener('click', e => {
+      e.preventDefault();
+      const num = parseInt(tab.dataset.mod);
+      showModule(num);
+    });
+  });
+
+  /* ============ COPY-TO-CLIPBOARD ============ */
+  function copyText(btn, text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const orig = btn.innerHTML;
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Kopieret!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = orig;
+      }, 2000);
+    }).catch(() => {
+      // fallback for older browsers
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+      btn.classList.add('copied');
+      btn.innerHTML = '✓ Kopieret!';
+      setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Kopier'; }, 2000);
+    });
+  }
+
+  /* ============ EMBEDDED PROMPT-COACH AI ============ */
+  function setAiInput(text) {
+    const inp = document.getElementById('aiChatInput');
+    inp.value = text;
+    inp.focus();
+    autoGrow(inp);
+  }
+
+  function autoGrow(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+  }
+
+  document.getElementById('aiChatInput').addEventListener('input', e => autoGrow(e.target));
+  document.getElementById('aiChatInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendAiMsg();
+    }
+  });
+
+  function appendMsg(role, text) {
+    const wrap = document.getElementById('aiChatMessages');
+    const msg = document.createElement('div');
+    msg.className = 'ai-msg ' + role;
+    msg.innerHTML = `
+      <div class="ai-msg-avatar">${role === 'user' ? '👤' : '✨'}</div>
+      <div class="ai-msg-bubble"></div>
+    `;
+    msg.querySelector('.ai-msg-bubble').textContent = text;
+    wrap.appendChild(msg);
+    wrap.scrollTop = wrap.scrollHeight;
+    return msg.querySelector('.ai-msg-bubble');
+  }
+
+  function appendTyping() {
+    const wrap = document.getElementById('aiChatMessages');
+    const msg = document.createElement('div');
+    msg.className = 'ai-msg bot';
+    msg.id = 'typingMsg';
+    msg.innerHTML = `
+      <div class="ai-msg-avatar">✨</div>
+      <div class="ai-msg-bubble"><span class="ai-typing"><span></span><span></span><span></span></span></div>
+    `;
+    wrap.appendChild(msg);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+
+  function removeTyping() {
+    const t = document.getElementById('typingMsg');
+    if (t) t.remove();
+  }
+
+  async function sendAiMsg() {
+    const inp = document.getElementById('aiChatInput');
+    const sendBtn = document.getElementById('aiChatSend');
+    const text = inp.value.trim();
+    if (!text) return;
+
+    appendMsg('user', text);
+    inp.value = '';
+    autoGrow(inp);
+    sendBtn.disabled = true;
+    appendTyping();
+
+    const coachPrompt = `Du er en venlig prompt-coach på dansk for ældre nybegyndere til AI. Brugeren har skrevet et prompt og vil have ærlig, kort, opmuntrende feedback. Svar på dansk i 4-6 sætninger. Strukturer som:
+1. Hvad fungerer godt (start positivt)
+2. Hvad mangler (vær specifik men venlig)
+3. Et konkret forslag til forbedring (omskriv kort hvis du kan)
+
+Brug et varmt, tålmodigt sprog. Brugeren er måske 65+ og helt ny til AI.
+
+Brugerens prompt:
+"""
+${text}
+"""`;
+
+    try {
+      const reply = await window.claude.complete(coachPrompt);
+      removeTyping();
+      appendMsg('bot', reply);
+    } catch (err) {
+      removeTyping();
+      appendMsg('bot', 'Beklager — jeg kunne ikke svare lige nu. Prøv igen om et øjeblik, eller kopier dit prompt og prøv det direkte i Claude på claude.ai.');
+    }
+    sendBtn.disabled = false;
+  }
+
+  /* ============ INIT ============ */
+  buildPuzzle();
+</script>
+
+</body>
+</html>
