@@ -344,7 +344,7 @@
         }
         .hero-message {
             font-size: 1.5rem;
-            color: var(--platinum);
+            color: rgba(198, 169, 98, 0.85); /* gennemsigtig guld */
             margin-bottom: 30px;
             font-style: italic;
             line-height: 1.4;
@@ -377,8 +377,11 @@
         .btn-secondary { background: transparent; color: var(--platinum); border: 1px solid rgba(229,228,226,0.2); }
         .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
         .hero-features {
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px; max-width: 800px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* fire kolonner */
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto 40px;
         }
         .hero-feature {
             background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
@@ -391,6 +394,16 @@
         }
         .hero-feature-icon { font-size: 35px; margin-bottom: 12px; }
         .hero-feature-text { font-size: 11px; color: rgba(229,228,226,0.55); text-transform: uppercase; letter-spacing: 2.5px; }
+        .coin-info {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 40px;
+        }
+        .coin-info small {
+            color: var(--gold);
+            font-size: 1rem;
+            letter-spacing: 1px;
+        }
         .scroll-indicator {
             position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
             display: flex; flex-direction: column; align-items: center; gap: 12px;
@@ -868,20 +881,34 @@
             <div class="hero-badge reveal">✦ LearnAI Premium ✦</div>
             <p class="hero-message reveal">
                 "Det er ikke AI, der tager dit job – det er folk, der kan bruge AI, der tager dit job."<br>
-                Så vi har lavet disse kurser til dig, og det bedste er, at du kan starte i dag.<br>
-                <small style="color: var(--gold);">Optjen op til 1000 coins ved at gennemføre kurser!</small>
+                Så vi har lavet disse kurser til dig, og det bedste er, at du kan starte i dag.
             </p>
             <h1 class="hero-title reveal">Mestre AI<br>Med Stil</h1>
-            <p class="hero-subtitle reveal" id="scramble-text">Fra Begynder til Ekspert - Din AI Rejse</p>
+            <p class="hero-subtitle reveal">Fra Begynder til Ekspert - Din AI Rejse</p>
             <div class="hero-buttons reveal">
                 <a href="#kurser" class="btn btn-primary">Start Din Rejse <span>→</span></a>
                 <button class="btn btn-secondary" id="hero-side-courses-btn">◈ Sidekurser</button>
             </div>
             <div class="hero-features">
-                <div class="hero-feature reveal"><div class="hero-feature-icon">🎓</div><div class="hero-feature-text">Certificering</div></div>
-                <div class="hero-feature reveal"><div class="hero-feature-icon">🚀</div><div class="hero-feature-text">AI-Drevet</div></div>
-                <div class="hero-feature reveal"><div class="hero-feature-icon">💎</div><div class="hero-feature-text">Premium</div></div>
-                <div class="hero-feature reveal"><div class="hero-feature-icon">🏆</div><div class="hero-feature-text">Ekspert</div></div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🎓</div>
+                    <div class="hero-feature-text">Certificering</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">💎</div>
+                    <div class="hero-feature-text">Premium</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🏆</div>
+                    <div class="hero-feature-text">Ekspert</div>
+                </div>
+                <div class="hero-feature reveal">
+                    <div class="hero-feature-icon">🌐</div>
+                    <div class="hero-feature-text">100% online</div>
+                </div>
+            </div>
+            <div class="coin-info reveal">
+                <small>Optjen op til 1000 coins ved at gennemføre kurser!</small>
             </div>
         </div>
         <div class="scroll-indicator"><span>Udforsk</span><div class="scroll-line"></div><div class="scroll-dot"></div></div>
@@ -977,7 +1004,7 @@
     <footer id="footer">
         <div class="footer-inner">
             <div class="footer-col"><h4>Hovedkurser</h4><a href="#kurser">Niveau D (Gratis)</a><a href="#kurser">Niveau C</a><a href="#kurser">Niveau B</a><a href="#kurser">Niveau A</a></div>
-            <div class="footer-col"><h4>Platform</h4><a href="https://github.com/magnuscode-ai/ai-kursus" target="_blank">GitHub</a><a href="#" id="footer-side-courses">Sidekurser</a></div>
+            <div class="footer-col"><h4>Platform</h4><a href="#" id="footer-side-courses">Sidekurser</a></div>
         </div>
         <div class="footer-bottom"><span>© 2024 LearnAI • Værløse, Danmark</span></div>
     </footer>
@@ -1142,20 +1169,6 @@
         mobileBtn.addEventListener('click', () => { menuOpen = !menuOpen; mobileMenu.classList.toggle('open', menuOpen); });
         mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => { menuOpen = false; mobileMenu.classList.remove('open'); }));
 
-        // Scramble text
-        const scrambleEl = els('scramble-text'), originalText = scrambleEl.textContent;
-        function scrambleText() {
-            let iterations = 0;
-            const chars = '!@#$%^&*()_+-=[]{}|;:,.<>?/~`';
-            const interval = setInterval(() => {
-                scrambleEl.textContent = originalText.split('').map((c, i) => c === ' ' ? ' ' : (i < iterations ? originalText[i] : chars[Math.floor(Math.random() * chars.length)])).join('');
-                if (iterations >= originalText.length) { clearInterval(interval); scrambleEl.textContent = originalText; }
-                iterations += 0.8;
-            }, 20);
-        }
-        setTimeout(scrambleText, 1200);
-        scrambleEl.addEventListener('mouseenter', scrambleText);
-
         // Side courses overlay
         const sideCoursesOverlay = els('side-courses-overlay');
         const sideCourseCardFront = els('side-course-card-front');
@@ -1261,7 +1274,6 @@
         const chatbotSend = document.getElementById('chatbot-send');
         const quickQuestions = document.querySelectorAll('.quick-question-btn');
 
-        // Stor vidensbase med naturlige svar
         const knowledgeBase = [
             {
                 keywords: ["komme i gang", "start", "begynde", "hvordan starter jeg", "første skridt", "introduktion"],
@@ -1326,7 +1338,7 @@
                 let score = 0;
                 for (const kw of entry.keywords) {
                     if (lowerQ.includes(kw)) {
-                        score += kw.length; // længere nøgleord giver højere score
+                        score += kw.length;
                     }
                 }
                 if (score > bestScore) {
