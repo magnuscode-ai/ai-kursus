@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI DK — Mini-quiz A3</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue:        #185FA5;
+      --blue-light:  #E6F1FB;
+      --green:       #14532D;
+      --green-deep:  #0B3A1F;
+      --green-light: #DCFCE7;
+      --orange:      #C45000;
+      --orange-light:#FFF0E6;
+      --yellow-bg:   #FFF3CD;
+      --yellow-txt:  #856404;
+      --purple:      #14532D;
+      --purple-light:#DCFCE7;
+      --red:         #B42318;
+      --red-light:   #FEE4E2;
+      --grey:        #F5F5F5;
+      --border:      #E2E8F0;
+      --bg:          #F4FAF6;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --shadow:      0 4px 24px rgba(20,83,45,0.10);
+    }
+
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.7; }
+
+    nav { background: white; border-bottom: 1px solid var(--border); padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 9px; font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none; }
+    .logo-icon { width: 30px; height: 30px; background: var(--green); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 13px; color: var(--muted); background: var(--grey); padding: 5px 12px; border-radius: 20px; }
+
+    .hero { background: var(--green); color: white; padding: 2.5rem 1.5rem 2rem; text-align: center; }
+    .hero-badge { display: inline-block; background: rgba(255,255,255,0.18); font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem; }
+    .hero h1 { font-family: 'DM Serif Display', serif; font-size: clamp(26px, 4vw, 36px); font-weight: 400; margin-bottom: 0.75rem; line-height: 1.2; }
+    .hero p { font-size: 15px; opacity: 0.92; max-width: 640px; margin: 0 auto; }
+
+    .steps-bar { background: white; border-bottom: 1px solid var(--border); padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: center; gap: 4px; overflow-x: auto; flex-wrap: nowrap; }
+    .step-item { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .step-dot { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+    .step-dot.done { background: var(--green); color: white; }
+    .step-dot.active { background: var(--green); color: white; box-shadow: 0 0 0 4px var(--green-light); }
+    .step-dot.next { background: var(--grey); color: var(--muted); }
+    .step-label { font-size: 12px; color: var(--muted); white-space: nowrap; }
+    .step-label.done { color: var(--green); font-weight: 600; }
+    .step-label.active { color: var(--green); font-weight: 700; }
+    .step-arrow { color: var(--border); font-size: 14px; flex-shrink: 0; margin: 0 4px; }
+
+    .content { max-width: 760px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    .progress-info { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; font-size: 13px; color: var(--muted); }
+    .progress-bar-wrap { flex: 1; height: 6px; background: var(--grey); border-radius: 3px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.25s ease; }
+
+    .question { background: white; border: 1px solid var(--border); border-radius: 18px; padding: 1.5rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
+    .q-num { display: inline-block; background: var(--green); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+    .q-text { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+    .q-context { font-size: 14px; color: var(--muted); margin-bottom: 1rem; padding: 0.75rem 1rem; background: var(--grey); border-radius: 8px; font-style: italic; }
+    .q-code { background: #1e2a3a; color: #e2f0fb; border-radius: 8px; padding: 0.85rem 1rem; font-size: 13px; font-family: 'Courier New', monospace; line-height: 1.6; margin-bottom: 1rem; white-space: pre-wrap; overflow-x: auto; }
+
+    .options { display: flex; flex-direction: column; gap: 0.5rem; }
+    .option { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.85rem 1rem; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.15s; background: white; }
+    .option:hover { border-color: var(--green); background: var(--green-light); }
+    .option.selected { border-color: var(--green); background: var(--green-light); }
+    .option input { display: none; }
+    .option-letter { width: 26px; height: 26px; border-radius: 50%; background: var(--grey); color: var(--text); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .option.selected .option-letter { background: var(--green); color: white; }
+    .option-text { font-size: 14px; color: var(--text); line-height: 1.5; }
+
+    .option.correct { border-color: #16a34a; background: #DCFCE7; }
+    .option.correct .option-letter { background: #16a34a; color: white; }
+    .option.wrong { border-color: #dc2626; background: #fee2e2; }
+    .option.wrong .option-letter { background: #dc2626; color: white; }
+
+    .feedback { display: none; margin-top: 1rem; padding: 0.85rem 1rem; border-radius: 10px; font-size: 13px; line-height: 1.6; }
+    .feedback.show { display: block; }
+    .feedback.correct { background: #DCFCE7; color: #14532D; border-left: 4px solid #16a34a; }
+    .feedback.wrong { background: #fee2e2; color: #7f1d1d; border-left: 4px solid #dc2626; }
+    .feedback strong { display: block; margin-bottom: 4px; }
+
+    .submit-bar { position: sticky; bottom: 1rem; background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1rem 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; box-shadow: 0 8px 32px rgba(20,83,45,0.15); margin-top: 1.5rem; }
+    .answered-count { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .btn-submit { background: var(--green); color: white; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; padding: 12px 28px; border: none; border-radius: 10px; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+    .btn-submit:hover:not(:disabled) { background: var(--green-deep); transform: translateY(-1px); }
+    .btn-submit:disabled { background: var(--border); cursor: not-allowed; color: var(--muted); }
+
+    .result { background: white; border: 2px solid var(--green); border-radius: 20px; padding: 2.5rem 2rem; text-align: center; box-shadow: var(--shadow); }
+    .result.fail { border-color: #dc2626; }
+    .result-icon { font-size: 56px; margin-bottom: 0.75rem; }
+    .result h2 { font-family: 'DM Serif Display', serif; font-size: 28px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
+    .result-score { font-size: 18px; color: var(--green); font-weight: 700; margin-bottom: 1rem; }
+    .result.fail .result-score { color: #dc2626; }
+    .result-msg { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .btn-next { display: inline-block; background: var(--green); color: white; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; padding: 14px 36px; border-radius: 12px; text-decoration: none; transition: background 0.15s, transform 0.1s; border: none; cursor: pointer; }
+    .btn-next:hover { background: var(--green-deep); transform: translateY(-1px); }
+    .btn-retry { display: inline-block; background: var(--grey); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; padding: 10px 22px; border-radius: 10px; text-decoration: none; margin-left: 0.75rem; border: none; cursor: pointer; transition: background 0.15s; }
+    .btn-retry:hover { background: var(--border); }
+
+    @media (max-width: 600px) {
+      .hero { padding: 2rem 1rem 1.75rem; }
+      .content { padding: 1.5rem 1rem 3rem; }
+      .question { padding: 1.15rem; }
+      .submit-bar { flex-direction: column; align-items: stretch; gap: 0.75rem; padding: 1rem; }
+      .btn-submit { width: 100%; }
+      .answered-count { text-align: center; }
+      .steps-bar { gap: 0; padding: 0.75rem 0.5rem; }
+      .step-label { display: none; }
+      .step-arrow { margin: 0 2px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="platform.html" class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+    </div>
+    LearnAI DK
+  </a>
+  <span class="nav-tag">Mini-quiz A3</span>
+</nav>
+
+<div class="steps-bar">
+  <div class="step-item"><div class="step-dot done">A1</div><span class="step-label done">Reasoning</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">Q1</div><span class="step-label done">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">A2</div><span class="step-label done">Fine-tuning</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">Q2</div><span class="step-label done">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot done">A3</div><span class="step-label done">Multi-agent</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot active">Q3</div><span class="step-label active">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">A4</div><span class="step-label next">Arkitektur</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">Q4</div><span class="step-label next">Mini-quiz</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">A5</div><span class="step-label next">Mastery</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 1</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 2</span></div>
+  <span class="step-arrow">›</span>
+  <div class="step-item"><div class="step-dot next">🏆</div><span class="step-label next">Eksamen 3</span></div>
+</div>
+
+<div class="hero">
+  <div class="hero-badge">Mini-quiz A3</div>
+  <h1>Mini-quiz: Multi-agent og system-arkitektur</h1>
+  <p>8 case-baserede spørgsmål om multi-agent vs. workflow, debate-mønstre, model routing, cascading-økonomi, async-arkitektur, idempotens og TCO. Flere svar kan virke rigtige — kun ét er <em>bedst</em>. Du skal have minimum 7 ud af 8 rigtige for at låse A4 op.</p>
+</div>
+
+<div class="content" id="quiz-content">
+
+  <div class="progress-info">
+    <span id="answered-text">0 / 8 besvaret</span>
+    <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+    <span>Krav: 7 / 8</span>
+  </div>
+
+  <!-- Q0 — KORT er rigtig (B) -->
+  <div class="question" id="q0">
+    <span class="q-num">Spørgsmål 1 af 8</span>
+    <div class="q-text">Et team har bygget et "multi-agent" system med fire agenter (researcher, writer, editor, publisher) der altid kører i samme rækkefølge, og hver agent har en fast prompt uden tool-brug. Hvad er den mest præcise diagnose?</div>
+    <div class="options">
+      <label class="option" data-q="0" data-opt="0"><input type="radio" name="q0"><div class="option-letter">A</div><div class="option-text">Et veldesignet supervisor-mønster der følger best practice for moderne multi-agent-systemer på A-niveau.</div></label>
+      <label class="option" data-q="0" data-opt="1"><input type="radio" name="q0"><div class="option-letter">B</div><div class="option-text">Det er en sekventiel workflow forklædt som multi-agent.</div></label>
+      <label class="option" data-q="0" data-opt="2"><input type="radio" name="q0"><div class="option-letter">C</div><div class="option-text">Et debate-mønster fordi flere agenter er involveret i samme output.</div></label>
+      <label class="option" data-q="0" data-opt="3"><input type="radio" name="q0"><div class="option-letter">D</div><div class="option-text">Korrekt arkitektur men forkert antal agenter — burde være tre.</div></label>
+    </div>
+    <div class="feedback" id="fb0"></div>
+  </div>
+
+  <!-- Q1 — MELLEM er rigtig (C) -->
+  <div class="question" id="q1">
+    <span class="q-num">Spørgsmål 2 af 8</span>
+    <div class="q-text">Du har debate-arkitektur med tre agenter (finans, marketing, produkt) til strategiske beslutninger. Efter 6 ugers brug ser ledelsen at 80% af outputs ender med samme anbefaling som CEO'en allerede havde inden mødet. Hvad er den mest sandsynlige forklaring?</div>
+    <div class="options">
+      <label class="option" data-q="1" data-opt="0"><input type="radio" name="q1"><div class="option-letter">A</div><div class="option-text">Tre agenter er for få til ægte debate.</div></label>
+      <label class="option" data-q="1" data-opt="1"><input type="radio" name="q1"><div class="option-letter">B</div><div class="option-text">Modellerne er for små til den slags reasoning.</div></label>
+      <label class="option" data-q="1" data-opt="2"><input type="radio" name="q1"><div class="option-letter">C</div><div class="option-text">Agenterne deler base-model og prompts har for meget overlap — de konvergerer mod samme fortolkning i stedet for at argumentere fra adskilte perspektiver.</div></label>
+      <label class="option" data-q="1" data-opt="3"><input type="radio" name="q1"><div class="option-letter">D</div><div class="option-text">Resultatet beviser at AI'en har lært virksomhedens strategi godt.</div></label>
+    </div>
+    <div class="feedback" id="fb1"></div>
+  </div>
+
+  <!-- Q2 — KORT er rigtig (A) -->
+  <div class="question" id="q2">
+    <span class="q-num">Spørgsmål 3 af 8</span>
+    <div class="q-text">Cascading-pipeline: 70% løses billigt, 30% eskalerer til dyr model. P50-latency er fin, men p95 er fordoblet siden cascading blev rullet ud. Hvad peger problemet stærkest på?</div>
+    <div class="options">
+      <label class="option" data-q="2" data-opt="0"><input type="radio" name="q2"><div class="option-letter">A</div><div class="option-text">Eskalerede requests betaler latency for begge modeller i serie.</div></label>
+      <label class="option" data-q="2" data-opt="1"><input type="radio" name="q2"><div class="option-letter">B</div><div class="option-text">Den dyre model er 2× langsommere end før cascading blev introduceret.</div></label>
+      <label class="option" data-q="2" data-opt="2"><input type="radio" name="q2"><div class="option-letter">C</div><div class="option-text">Klassifikatoren ruter de 30% komplekse forkert og sender dem retur.</div></label>
+      <label class="option" data-q="2" data-opt="3"><input type="radio" name="q2"><div class="option-letter">D</div><div class="option-text">Self-reported confidence er upålidelig på alle modeller uanset størrelse.</div></label>
+    </div>
+    <div class="feedback" id="fb2"></div>
+  </div>
+
+  <!-- Q3 — MELLEM er rigtig (B) -->
+  <div class="question" id="q3">
+    <span class="q-num">Spørgsmål 4 af 8</span>
+    <div class="q-text">En agent skal trække penge på et betalings-API. Netværket fejler under svaret, og din retry-logik kører igen. Hvad er den arkitekturelt korrekte primær-defens mod dobbeltopkrævning?</div>
+    <div class="options">
+      <label class="option" data-q="3" data-opt="0"><input type="radio" name="q3"><div class="option-letter">A</div><div class="option-text">Sæt timeouts kort så hængende kald aldrig dobbeltkører.</div></label>
+      <label class="option" data-q="3" data-opt="1"><input type="radio" name="q3"><div class="option-letter">B</div><div class="option-text">Idempotency keys kombineret med exponential backoff på retries.</div></label>
+      <label class="option" data-q="3" data-opt="2"><input type="radio" name="q3"><div class="option-letter">C</div><div class="option-text">Logge hver request og deduplikere bagud i en daglig batch-job.</div></label>
+      <label class="option" data-q="3" data-opt="3"><input type="radio" name="q3"><div class="option-letter">D</div><div class="option-text">Bed brugeren bekræfte hver opkrævning manuelt før gennemførelse.</div></label>
+    </div>
+    <div class="feedback" id="fb3"></div>
+  </div>
+
+  <!-- Q4 — LANG er rigtig (D) -->
+  <div class="question" id="q4">
+    <span class="q-num">Spørgsmål 5 af 8</span>
+    <div class="q-text">CTO påstår: "Vi sparer 50% ved at self-hoste Llama i stedet for at bruge en frontier-API til vores nuværende 80.000 kr/måned." Hvilken indvending er mest professionel — uden at være afvisende?</div>
+    <div class="options">
+      <label class="option" data-q="4" data-opt="0"><input type="radio" name="q4"><div class="option-letter">A</div><div class="option-text">Self-host taber altid på pris.</div></label>
+      <label class="option" data-q="4" data-opt="1"><input type="radio" name="q4"><div class="option-letter">B</div><div class="option-text">Kun frontier-API'er kan levere produktionskvalitet.</div></label>
+      <label class="option" data-q="4" data-opt="2"><input type="radio" name="q4"><div class="option-letter">C</div><div class="option-text">Beregningen burde inkludere GPU-leje for at være retvisende.</div></label>
+      <label class="option" data-q="4" data-opt="3"><input type="radio" name="q4"><div class="option-letter">D</div><div class="option-text">Selve API-prisen er kun en brøkdel af TCO — GPU-omkostning eller -afskrivning, MLOps-bemandning, oppetidsgaranti, evals-pipeline og kvalitets-gap til frontier-modellen i vores faktiske use case skal ind i regnestykket før break-even kan beregnes troværdigt.</div></label>
+    </div>
+    <div class="feedback" id="fb4"></div>
+  </div>
+
+  <!-- Q5 — MELLEM er rigtig (C) -->
+  <div class="question" id="q5">
+    <span class="q-num">Spørgsmål 6 af 8</span>
+    <div class="q-text">Du skal klassificere 50.000 dokumenter natten over. Hvilken arkitektur er mest sandsynligt at give lavest pris uden at sprænge providerens rate limits?</div>
+    <div class="options">
+      <label class="option" data-q="5" data-opt="0"><input type="radio" name="q5"><div class="option-letter">A</div><div class="option-text">Send alle 50.000 dokumenter samlet i én meget lang prompt.</div></label>
+      <label class="option" data-q="5" data-opt="1"><input type="radio" name="q5"><div class="option-letter">B</div><div class="option-text">Spawn 50.000 parallelle requests for at minimere wall-clock tid.</div></label>
+      <label class="option" data-q="5" data-opt="2"><input type="radio" name="q5"><div class="option-letter">C</div><div class="option-text">Brug Batch API hvor det understøttes, ellers en job queue med worker-pool tunet til provider-limits.</div></label>
+      <label class="option" data-q="5" data-opt="3"><input type="radio" name="q5"><div class="option-letter">D</div><div class="option-text">Synkron loop fra én proces så du undgår race conditions.</div></label>
+    </div>
+    <div class="feedback" id="fb5"></div>
+  </div>
+
+  <!-- Q6 — LANG er rigtig (B) -->
+  <div class="question" id="q6">
+    <span class="q-num">Spørgsmål 7 af 8</span>
+    <div class="q-text">Du orkestrerer 5 worker-agenter parallelt. Worker 3 fejler 8% af gangene pga. en flaky downstream-API. Hvilket state-design holder pipelinen stabil <em>og</em> billig?</div>
+    <div class="options">
+      <label class="option" data-q="6" data-opt="0"><input type="radio" name="q6"><div class="option-letter">A</div><div class="option-text">Hold al state in-memory hos supervisoren for laveste latency.</div></label>
+      <label class="option" data-q="6" data-opt="1"><input type="radio" name="q6"><div class="option-letter">B</div><div class="option-text">Persistér delresultater fra hver worker når de færdiggør, gem en korrelations-ID pr. logisk operation, og lad supervisoren kun retrye de specifikke workers der fejlede — så undgår du at genkøre de 4 succesfulde og betale for det samme arbejde to gange.</div></label>
+      <label class="option" data-q="6" data-opt="2"><input type="radio" name="q6"><div class="option-letter">C</div><div class="option-text">Reducér til én worker så fejlraten samles ét sted.</div></label>
+      <label class="option" data-q="6" data-opt="3"><input type="radio" name="q6"><div class="option-letter">D</div><div class="option-text">Sæt timeout højt nok til at workers altid lykkes.</div></label>
+    </div>
+    <div class="feedback" id="fb6"></div>
+  </div>
+
+  <!-- Q7 — MELLEM er rigtig (B) -->
+  <div class="question" id="q7">
+    <span class="q-num">Spørgsmål 8 af 8</span>
+    <div class="q-text">En PM vil bygge "AI der booker flybilletter, hotel og leje af bil ud fra en ferieplan". Hvilken arkitektur er det rigtige startpunkt — før du overhovedet overvejer multi-agent?</div>
+    <div class="options">
+      <label class="option" data-q="7" data-opt="0"><input type="radio" name="q7"><div class="option-letter">A</div><div class="option-text">Tre specialiserede agenter — én pr. domæne — koordineret af en supervisor.</div></label>
+      <label class="option" data-q="7" data-opt="1"><input type="radio" name="q7"><div class="option-letter">B</div><div class="option-text">Single agent med tools til hvert booking-system, drevet af en plan-act-loop.</div></label>
+      <label class="option" data-q="7" data-opt="2"><input type="radio" name="q7"><div class="option-letter">C</div><div class="option-text">Debate-arkitektur så agenterne kan forhandle prioriteter mellem fly og hotel.</div></label>
+      <label class="option" data-q="7" data-opt="3"><input type="radio" name="q7"><div class="option-letter">D</div><div class="option-text">Fast workflow chaining fly → hotel → bil uden dynamiske beslutninger.</div></label>
+    </div>
+    <div class="feedback" id="fb7"></div>
+  </div>
+
+  <div class="submit-bar">
+    <span class="answered-count" id="answered-count">Besvar alle 8 spørgsmål (0/8)</span>
+    <button class="btn-submit" id="submit-btn" disabled>Indsend svar</button>
+  </div>
+
+</div>
+
+<div class="content" id="result-content" style="display:none;">
+  <div class="result" id="result-box">
+    <div class="result-icon" id="result-icon"></div>
+    <h2 id="result-title"></h2>
+    <div class="result-score" id="result-score"></div>
+    <p class="result-msg" id="result-msg"></p>
+    <a href="kursus-a4.html" id="btn-next" class="btn-next" style="display:none;">Fortsæt til Kursus A4 →</a>
+    <button onclick="location.reload()" class="btn-retry">↺ Prøv igen</button>
+  </div>
+</div>
+
+<script>
+const CORRECT = [1, 2, 0, 1, 3, 2, 1, 1];
+
+const EXPLAIN = [
+  "Sekventiel kæde med faste prompts og uden dynamiske beslutninger eller tool-brug er definitionen af en workflow — ikke et agent-system. Multi-agent navngivning gør den ikke til multi-agent. Det er den dyreste arkitektur-fejl beskrevet i A3: cargo-cult-multi-agent. Konsekvensen er højere kompleksitet, langsommere kørsel og dyrere drift uden den fleksibilitet rigtige agenter giver.",
+  "Når debate-agenter deler base-model og har overlappende prompts, konvergerer de mod samme fortolkning af problemet — de \"argumenterer\" overfladisk men når samme konklusion. Ægte debate kræver enten forskellige modeller, modsatrettede prompts (\"argumentér imod\"), eller eksplicitte rolle-constraints. Confirmation bias er en reel arkitektur-risiko, ikke et tegn på god alignment.",
+  "Cascading koster latency for begge modeller på de eskalerede sager — billig først, dyr bagefter. Selv hvis kun 30% eskalerer, betaler de gennemsnitlige sværeste cases (hale-distributionen) for begge runs. Det er præcis grunden til p95 lider mens p50 ser fint ud. Den dyre model er ikke blevet langsommere (B), klassifikatoren ville sende komplekse sager den rigtige vej (C), og confidence-pålidelighed (D) påvirker accuracy, ikke latency.",
+  "Idempotency keys er industri-standarden hos Stripe, Adyen og alle seriøse betalings-API'er: en unik nøgle pr. logisk handling lader serveren genkende et retry og kun udføre operationen én gang. Kort timeout (A) løser ikke race conditions — det skaber dem. Batch-deduplikering (C) er for sent når pengene allerede er trukket. Manuel bekræftelse (D) ødelægger automation.",
+  "TCO-fælden er den klassiske fejl. Bare API-prisen er ikke et retvisende sammenligningsgrundlag: GPU-leje (eller afskrivning), MLOps-bemandning, oppetidsgaranti, evals-pipeline og kvalitets-gap til frontier-modellen skal alle ind. Break-even ligger ofte langt over 80k DKK/måned før self-host vinder. (A) og (B) er for kategoriske; (C) er på rette spor men for overfladisk.",
+  "Batch API'er giver typisk ~50% rabat for asynkron levering — det er den klare vinder ved 50k dokumenter natten over. Hvis batch ikke understøttes: en job queue med worker-pool tunet til rate limits. (A) sprænger context window og fejler. (B) rammer rate limits og koster det samme. (D) er for langsom og udnytter ikke parallelisme overhovedet.",
+  "State checkpoints + idempotente workers + korrelations-ID er det robuste mønster. Når worker 3 fejler, retries kun den ene — de 4 succesfulde delresultater er allerede persisteret. (A) taber alt ved crash. (C) ofrer parallelisme uden at fjerne fejl-risikoen. (D) maskerer fejl i stedet for at håndtere dem; flaky downstream-API'er bliver ikke mindre flaky af længere timeout.",
+  "Single agent med tools er standard-startpunkt for opgaver hvor én model kan ræsonnere over hele rejseplanen og kalde booking-API'er som tools (B4-mønster 3). Multi-agent (A) er overkill når der ikke er ægte konkurrerende perspektiver. Debate (C) giver ingen mening — fly og hotel forhandler ikke. Fast workflow (D) bryder sammen ved dynamiske beslutninger som \"hotel udsolgt — find alternativ dato og opdatér flybillet\"."
+];
+
+const PASS_SCORE = 7;
+const TOTAL = 8;
+
+const answers = new Array(TOTAL).fill(null);
+
+document.querySelectorAll('.option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const q = parseInt(opt.dataset.q);
+    const o = parseInt(opt.dataset.opt);
+    answers[q] = o;
+    document.querySelectorAll(`.option[data-q="${q}"]`).forEach(x => x.classList.remove('selected'));
+    opt.classList.add('selected');
+    updateProgress();
+  });
+});
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('answered-text').textContent = answered + ' / ' + TOTAL + ' besvaret';
+  document.getElementById('progress-fill').style.width = (answered / TOTAL * 100) + '%';
+  const btn = document.getElementById('submit-btn');
+  const lbl = document.getElementById('answered-count');
+  if (answered === TOTAL) {
+    btn.disabled = false;
+    lbl.textContent = 'Klar til at indsende';
+  } else {
+    btn.disabled = true;
+    lbl.textContent = 'Besvar alle ' + TOTAL + ' spørgsmål (' + answered + '/' + TOTAL + ')';
+  }
+}
+
+document.getElementById('submit-btn').addEventListener('click', () => {
+  let score = 0;
+  for (let i = 0; i < TOTAL; i++) {
+    const opts = document.querySelectorAll(`.option[data-q="${i}"]`);
+    opts.forEach(o => o.style.pointerEvents = 'none');
+    const userAns = answers[i];
+    const correct = CORRECT[i];
+    if (userAns === correct) {
+      score++;
+      opts[userAns].classList.add('correct');
+      opts[userAns].classList.remove('selected');
+    } else {
+      opts[userAns].classList.add('wrong');
+      opts[userAns].classList.remove('selected');
+      opts[correct].classList.add('correct');
+    }
+    const fb = document.getElementById('fb' + i);
+    if (userAns === correct) {
+      fb.className = 'feedback correct show';
+      fb.innerHTML = '<strong>Rigtigt</strong>' + EXPLAIN[i];
+    } else {
+      fb.className = 'feedback wrong show';
+      fb.innerHTML = '<strong>Forkert — det rigtige svar er ' + String.fromCharCode(65 + correct) + '</strong>' + EXPLAIN[i];
+    }
+  }
+
+  document.querySelector('.submit-bar').style.display = 'none';
+  const result = document.getElementById('result-content');
+  result.style.display = 'block';
+  result.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-score').textContent = score + ' / ' + TOTAL;
+  const resultBox = document.getElementById('result-box');
+
+  if (passed) {
+    resultBox.classList.remove('fail');
+    document.getElementById('result-icon').textContent = '🎉';
+    document.getElementById('result-title').textContent = 'Bestået!';
+    document.getElementById('result-msg').innerHTML = 'Du fik ' + score + ' ud af ' + TOTAL + ' rigtige. Du kan vurdere multi-agent vs. workflow på case-niveau, designe cascading-pipelines med realistisk TCO, og bygge robuste async-systemer med idempotens og state checkpoints. Du er klar til Kursus A4 — governance, sikkerhed og enterprise-arkitektur.';
+    document.getElementById('btn-next').style.display = 'inline-block';
+  } else {
+    resultBox.classList.add('fail');
+    document.getElementById('result-icon').textContent = '💪';
+    document.getElementById('result-title').textContent = 'Ikke helt endnu';
+    document.getElementById('result-msg').innerHTML = 'Du fik ' + score + ' ud af ' + TOTAL + ' rigtige. Du skal have mindst ' + PASS_SCORE + ' for at låse A4 op. Multi-agent og system-arkitektur er hvor de fleste 6-cifrede budget-fejl bliver lavet — gå tilbage og læs de moduler hvor du var usikker. Ubegrænsede forsøg.';
+  }
+});
+</script>
+
+</body>
+</html>
