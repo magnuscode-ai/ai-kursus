@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="da" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LearnAI DK | Lær AI på dansk</title>
+    <meta name="description" content="LearnAI DK — Lær AI på dansk fra nybegynder til ekspert.">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* ==========================================
+           1. DESIGN SYSTEM & VARIABLES
+           ========================================== */
+        :root {
+            --bg-dark: #000000;
+            --bg-gradient: #0a0a1f;
+            --accent-cyan: #00eaff;
+            --accent-cyan-dim: rgba(0, 234, 255, 0.15);
+            
+            --lvl-d: #10b981; /* Grøn */
+            --lvl-c: #3b82f6; /* Blå */
+            --lvl-b: #8b5cf6; /* Lilla */
+            --lvl-a: #fbbf24; /* Guld */
+
+            --text-main: #ffffff;
+            --text-muted: #888899;
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --bg-glass: rgba(255, 255, 255, 0.02);
+
+            font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at top center, #0d0d2b 0%, var(--bg-dark) 100%);
+            color: var(--text-main);
+            overflow-x: hidden;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ==========================================
+           2. TYPOGRAPHY & UTILITIES
+           ========================================== */
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            line-height: 1.2;
+            letter-spacing: -0.03em;
+        }
+
+        h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; }
+        h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        p { color: var(--text-muted); margin-bottom: 1.5rem; }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--text-main);
+            color: var(--bg-dark);
+            box-shadow: 0 0 20px var(--accent-cyan-dim);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border-color: var(--border-glass);
+        }
+
+        .btn-outline:hover {
+            background: var(--bg-glass);
+            border-color: var(--accent-cyan);
+        }
+
+        .glass-panel {
+            background: var(--bg-glass);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: 16px;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ==========================================
+           3. THREE.JS CANVAS
+           ========================================== */
+        #webgl-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+            pointer-events: none; /* Lader musen interagere med DOM under */
+        }
+
+        /* ==========================================
+           4. SECTIONS
+           ========================================== */
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 1.5rem 0;
+            z-index: 100;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+        nav.scrolled {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-glass);
+            padding: 1rem 0;
+        }
+        .nav-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+            letter-spacing: -0.05em;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 5rem;
+        }
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            margin-bottom: 1.5rem;
+        }
+        .hero-content {
+            max-width: 800px;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: -4rem auto 4rem;
+        }
+        .stat-card {
+            padding: 2rem;
+            text-align: center;
+            transition: border-color 0.3s ease;
+        }
+        .stat-card:hover {
+            border-color: var(--accent-cyan);
+        }
+        .stat-val {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Hovedkurser (Med 3D integration via DOM placering) */
+        section {
+            padding: 6rem 0;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        .course-card {
+            position: relative;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            overflow: hidden;
+            cursor: default;
+        }
+        /* 3D placeholder div - definerer hvor 3D krystallen skal tegnes */
+        .crystal-placeholder {
+            width: 100%;
+            height: 180px;
+            margin-bottom: 1rem;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-10px);
+        }
+        .course-card[data-level="D"]:hover { box-shadow: 0 10px 40px rgba(16, 185, 129, 0.15); border-color: var(--lvl-d); }
+        .course-card[data-level="C"]:hover { box-shadow: 0 10px 40px rgba(59, 130, 246, 0.15); border-color: var(--lvl-c); }
+        .course-card[data-level="B"]:hover { box-shadow: 0 10px 40px rgba(139, 92, 246, 0.15); border-color: var(--lvl-b); }
+        .course-card[data-level="A"]:hover { box-shadow: 0 10px 40px rgba(251, 191, 36, 0.15); border-color: var(--lvl-a); }
+
+        .course-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 99px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .course-card[data-level="D"] .course-badge { background: rgba(16, 185, 129, 0.1); color: var(--lvl-d); }
+        .course-card[data-level="C"] .course-badge { background: rgba(59, 130, 246, 0.1); color: var(--lvl-c); }
+        .course-card[data-level="B"] .course-badge { background: rgba(139, 92, 246, 0.1); color: var(--lvl-b); }
+        .course-card[data-level="A"] .course-badge { background: rgba(251, 191, 36, 0.1); color: var(--lvl-a); }
+
+        .price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+        .req {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-glass);
+        }
+
+        /* Sidekurser */
+        .side-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .side-card {
+            padding: 1.5rem;
+            transition: border-color 0.3s;
+        }
+        .side-card:hover {
+            border-color: var(--accent-cyan);
+        }
+        .side-card h3 { font-size: 1.2rem; }
+
+        /* Kursus Indhold Preview (Tabs) */
+        .tabs-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        @media(min-width: 768px) {
+            .tabs-container { flex-direction: row; }
+        }
+        .tab-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            min-width: 200px;
+        }
+        .tab-btn {
+            background: transparent;
+            border: 1px solid var(--border-glass);
+            color: var(--text-muted);
+            padding: 1rem;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { background: var(--bg-glass); color: var(--text-main); }
+        .tab-btn.active {
+            background: var(--bg-glass);
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+        .tab-content {
+            flex-grow: 1;
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active { display: block; }
+        .module-list { list-style: none; }
+        .module-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-glass);
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .module-list li:last-child { border-bottom: none; }
+        .module-icon { color: var(--accent-cyan); font-weight: bold; }
+
+        /* Sådan virker det */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            position: relative;
+        }
+        .step {
+            text-align: left;
+            position: relative;
+            padding: 2rem;
+        }
+        .step-num {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--border-glass);
+            position: absolute;
+            top: 0.5rem;
+            right: 1.5rem;
+            z-index: -1;
+            transition: color 0.3s;
+        }
+        .step:hover .step-num { color: var(--accent-cyan-dim); }
+
+        /* Eksamen Info */
+        .exam-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .exam-details { flex: 1; min-width: 300px; }
+        .exam-scores {
+            flex: 1;
+            min-width: 300px;
+            background: rgba(0,0,0,0.5);
+            padding: 2rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-glass);
+        }
+        .score-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px dashed var(--border-glass);
+        }
+        .score-row:last-child { border: none; }
+
+        /* FAQ Accordion */
+        details {
+            background: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        summary {
+            padding: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            outline: none;
+        }
+        summary::-webkit-details-marker { display: none; }
+        summary::after {
+            content: '+';
+            color: var(--accent-cyan);
+            font-size: 1.5rem;
+            transition: transform 0.3s;
+        }
+        details[open] summary::after { transform: rotate(45deg); }
+        .faq-content {
+            padding: 0 1.5rem 1.5rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid var(--border-glass);
+            padding: 4rem 0 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .hero-buttons { flex-direction: column; }
+            .hero h1 { line-height: 1.1; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+
+    <nav id="navbar">
+        <div class="container nav-inner">
+            <a href="#" class="logo">LearnAI DK</a>
+            <div>
+                <a href="#kurser" class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">Start gratis</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero container">
+        <div class="hero-content reveal">
+            <h1>Lær AI på dansk <br><span class="text-gradient">fra nybegynder til ekspert</span></h1>
+            <p style="font-size: 1.25rem; max-width: 600px;">
+                En premium uddannelsesplatform designet til at give dig praktiske AI-færdigheder. Tag kontrol over fremtidens værktøjer i dit eget tempo.
+            </p>
+            <div class="hero-buttons">
+                <a href="#kurser" class="btn btn-primary">Start gratis med Kursus D</a>
+                <a href="#indhold" class="btn btn-outline">Se pensum</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="container stats-grid reveal">
+        <div class="glass-panel stat-card">
+            <div class="stat-val">4</div>
+            <p class="m-0">Klargjorte niveauer</p>
+        </div>
+        <div class="glass-panel stat-card">
+            <div class="stat-val text-gradient">100%</div>
+            <p class="m-0">På dansk</p>
+        </div>
+        <div class="glass-panel stat-card">
+            <div class="stat-val" style="color: var(--lvl-d)">Gratis</div>
+            <p class="m-0">At starte rejsen</p>
+        </div>
+        <div class="glass-panel stat-card">
+            <div class="stat-val">Bevis</div>
+            <p class="m-0">Efter endt eksamen</p>
+        </div>
+    </div>
+
+    <section id="kurser" class="container">
+        <div class="section-header reveal">
+            <h2 class="text-gradient">Hovedkurser</h2>
+            <p>Din strukturerede vej mod AI-mesterskab. Vælg dit startpunkt.</p>
+        </div>
+        
+        <div class="course-grid">
+            <div class="glass-panel course-card reveal" data-level="D">
+                <div class="crystal-placeholder"></div>
+                <span class="course-badge">Niveau D</span>
+                <h3>Nybegynder</h3>
+                <p>Fra nul til at bruge AI i hverdagen og forstå de grundlæggende koncepter.</p>
+                <div class="price" style="color: var(--lvl-d)">Gratis</div>
+                <a href="#" class="btn btn-outline" style="width: 100%;">Tilmeld</a>
+                <div class="req">Ingen konto krævet</div>
+            </div>
+
+            <div class="glass-panel course-card reveal" data-level="C" style="transition-delay: 0.1s;">
+                <div class="crystal-placeholder"></div>
+                <span class="course-badge">Niveau C</span>
+                <h3>Mellemniveau</h3>
+                <p>Gå fra average til en stærk og bevidst bruger af AI i dit arbejde.</p>
+                <div class="price">99 kr</div>
+                <a href="#" class="btn btn-outline" style="width: 100%;">Lås op</a>
+                <div class="req">Krav: Bestået Kursus D</div>
+            </div>
+
+            <div class="glass-panel course-card reveal" data-level="B" style="transition-delay: 0.2s;">
+                <div class="crystal-placeholder"></div>
+                <span class="course-badge">Niveau B</span>
+                <h3>Øvet</h3>
+                <p>Lær avancerede workflows, RAG, og agenter. Bliv den lokale AI-specialist.</p>
+                <div class="price">199 kr</div>
+                <a href="#" class="btn btn-outline" style="width: 100%;">Lås op</a>
+                <div class="req">Krav: Bestået Kursus C</div>
+            </div>
+
+            <div class="glass-panel course-card reveal" data-level="A" style="transition-delay: 0.3s;">
+                <div class="crystal-placeholder"></div>
+                <span class="course-badge">Niveau A</span>
+                <h3>Ekspert</h3>
+                <p>Forstå modellerne i dybden, sikkerhed, og enterprise-implementering.</p>
+                <div class="price">299 kr</div>
+                <a href="#" class="btn btn-outline" style="width: 100%;">Lås op</a>
+                <div class="req">Krav: Bestået Kursus B</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="section-header reveal">
+            <h2>Specialiseringer</h2>
+            <p>Dyk ned i specifikke niche-værktøjer med vores sidekurser.</p>
+        </div>
+        <div class="side-grid">
+            <div class="glass-panel side-card reveal">
+                <h3>AI-værktøjer niv. 1</h3>
+                <p style="font-size: 0.9rem;">De vigtigste apps udover ChatGPT.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-weight: 700;">79 kr</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Anbefalet: Kursus C</span>
+                </div>
+            </div>
+            <div class="glass-panel side-card reveal">
+                <h3>AI-værktøjer niv. 2</h3>
+                <p style="font-size: 0.9rem;">Avancerede værktøjer for nørder.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-weight: 700;">99 kr</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Anbefalet: Kursus C</span>
+                </div>
+            </div>
+            <div class="glass-panel side-card reveal">
+                <h3>Tjene penge på AI</h3>
+                <p style="font-size: 0.9rem;">Monetisering og forretningsmodeller.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-weight: 700;">149 kr</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Anbefalet: Kursus B</span>
+                </div>
+            </div>
+            <div class="glass-panel side-card reveal">
+                <h3>Lær andre AI</h3>
+                <p style="font-size: 0.9rem;">Pædagogik og AI i organisationer.</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+                    <span style="font-weight: 700;">99 kr</span>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Anbefalet: Kursus C</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="indhold" class="container">
+        <div class="section-header reveal">
+            <h2>Kursusindhold</h2>
+            <p>Interaktivt pensum. Klik på niveauerne for at se detaljer.</p>
+        </div>
+        <div class="tabs-container reveal">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-target="tab-d">Kursus D (Gratis)</button>
+                <button class="tab-btn" data-target="tab-c">Kursus C</button>
+                <button class="tab-btn" data-target="tab-b">Kursus B</button>
+                <button class="tab-btn" data-target="tab-a">Kursus A</button>
+            </div>
+            
+            <div class="glass-panel tab-content active" id="tab-d">
+                <h3 style="color: var(--lvl-d)">Niveau D: Nybegynder</h3>
+                <p>4 moduler · Ca. 1 time læsning</p>
+                <ul class="module-list">
+                    <li><span class="module-icon">01</span><div><strong>Hvad er AI?</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">En simpel, ikke-teknisk introduktion.</span></div></li>
+                    <li><span class="module-icon">02</span><div><strong>Din første AI-samtale</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Sådan opretter du en konto og starter.</span></div></li>
+                    <li><span class="module-icon">03</span><div><strong>Gode prompts</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">De 3 gyldne regler: Vær specifik, giv kontekst, bed om format.</span></div></li>
+                    <li><span class="module-icon">04</span><div><strong>Sikkerhed & Faldgruber</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Hallucinationer, privatliv og dobbelttjek af fakta.</span></div></li>
+                </ul>
+            </div>
+
+            <div class="glass-panel tab-content" id="tab-c">
+                <h3 style="color: var(--lvl-c)">Niveau C: Mellemniveau</h3>
+                <p>3 dele · 45 min - 1,5 time</p>
+                <ul class="module-list">
+                    <li><span class="module-icon">C1</span><div><strong>Prompt-teknik</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Rolleprompt, kædetænkning, iterativ forfining og negativ afgrænsning.</span></div></li>
+                    <li><span class="module-icon">C2</span><div><strong>Emails og produktivitet</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Automatisering af tekstarbejde i hverdagen.</span></div></li>
+                    <li><span class="module-icon">C3</span><div><strong>AI til rapporter og møder</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Syntese af store mængder data på sekunder.</span></div></li>
+                </ul>
+            </div>
+
+            <div class="glass-panel tab-content" id="tab-b">
+                <h3 style="color: var(--lvl-b)">Niveau B: Øvet</h3>
+                <p>5 dele · Avanceret brug</p>
+                <ul class="module-list">
+                    <li><span class="module-icon">B1</span><div><strong>Avanceret prompting</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">System prompts og struktureret output.</span></div></li>
+                    <li><span class="module-icon">B2</span><div><strong>RAG (Retrieval Augmented Generation)</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Giv AI adgang til din egen viden.</span></div></li>
+                    <li><span class="module-icon">B3</span><div><strong>Tool use og MCP</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Forbind AI til API'er og eksterne værktøjer.</span></div></li>
+                    <li><span class="module-icon">B4</span><div><strong>Workflows og agenter</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Autonome processer.</span></div></li>
+                    <li><span class="module-icon">B5</span><div><strong>Produktion og sikkerhed</strong><br><span style="font-size:0.9rem; color:var(--text-muted)">Prompt injection, guardrails og cost-optimization.</span></div></li>
+                </ul>
+            </div>
+
+            <div class="glass-panel tab-content" id="tab-a">
+                <h3 style="color: var(--lvl-a)">Niveau A: Ekspert</h3>
+                <p>Kommer snart</p>
+                <p>Dette modul er under intensiv udvikling. Det vil dække fine-tuning, evaluering af LLM'er (Evals), opsætning af egne open-source modeller lokalt, og komplekse multi-agent systemer.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container">
+        <div class="section-header reveal">
+            <h2 class="text-gradient">Sådan virker det</h2>
+            <p>En friktionsfri læringsoplevelse fra start til bevis.</p>
+        </div>
+        <div class="steps-grid reveal">
+            <div class="glass-panel step">
+                <div class="step-num">1</div>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Download</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Få kursusmaterialet som PDF direkte på din enhed med alle moduler og øvelser.</p>
+            </div>
+            <div class="glass-panel step">
+                <div class="step-num">2</div>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Læs & Lær</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Studer i dit helt eget tempo. Der er ingen irriterende tidsbegrænsning.</p>
+            </div>
+            <div class="glass-panel step">
+                <div class="step-num">3</div>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Eksamen</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Tag den online prøve. Multiple choice og en praktisk AI-opgave. Ubegrænsede forsøg.</p>
+            </div>
+            <div class="glass-panel step">
+                <div class="step-num">4</div>
+                <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;">Dit Bevis</h3>
+                <p style="font-size: 0.9rem; margin: 0;">Modtag dit flotte, digitale bevis med navn og dato, lige til at dele på LinkedIn.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container reveal">
+        <div class="glass-panel exam-info" style="padding: 3rem;">
+            <div class="exam-details">
+                <h2 style="font-size: 2rem; margin-bottom: 1rem;">Online Eksamen</h2>
+                <p>For at sikre kvaliteten afsuttes hvert niveau med en todelt eksamen på vores platform.</p>
+                <ul style="list-style-position: inside; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 2;">
+                    <li><strong>Del 1:</strong> Multiple choice (10 spørgsmål, øjeblikkelig feedback).</li>
+                    <li><strong>Del 2:</strong> Praktisk opgave (Skriv et prompt, AI bedømmer resultatet).</li>
+                </ul>
+                <a href="https://magnuscode-ai.github.io/ai-kursus" target="_blank" class="btn btn-outline">Gå til Eksamensportal ↗</a>
+            </div>
+            <div class="exam-scores">
+                <h3 style="margin-bottom: 1rem; color: var(--accent-cyan);">Score System</h3>
+                <div class="score-row">
+                    <span>0 – 6 point</span>
+                    <span style="color: #ef4444;">Ikke bestået</span>
+                </div>
+                <div class="score-row">
+                    <span>7 – 8 point</span>
+                    <span style="color: #10b981;">Bestået</span>
+                </div>
+                <div class="score-row">
+                    <span>9 – 10 point</span>
+                    <span style="color: var(--lvl-a);">Fremragende</span>
+                </div>
+                <p style="font-size: 0.8rem; margin-top: 1rem; text-align: center; margin-bottom:0;">Beståelseskoden låser dit bevis op.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="container reveal">
+        <div class="section-header">
+            <h2>Ofte stillede spørgsmål</h2>
+        </div>
+        <div style="max-width: 800px; margin: 0 auto;">
+            <details>
+                <summary>Er Kursus D virkelig gratis?</summary>
+                <div class="faq-content">Ja, fuldstændig. Der kræves ingen konto-oprettelse for at downloade PDF'en, og du skal ikke indtaste kreditkortoplysninger. Vi tror på at gøre AI tilgængeligt for alle.</div>
+            </details>
+            <details>
+                <summary>Hvad får jeg efter eksamen?</summary>
+                <div class="faq-content">Når du består, udløser systemet et flot digitalt eksamensbevis i dit navn og med dags dato. Du kan downloade det og dele det direkte på din LinkedIn-profil.</div>
+            </details>
+            <details>
+                <summary>Kan jeg prøve eksamen flere gange?</summary>
+                <div class="faq-content">Ja. Hvis du ikke består i første forsøg (under 7 point), kan du gennemgå materialet igen og tage eksamenen om. Der er ingen tidsbegrænsning og ubegrænsede forsøg.</div>
+            </details>
+            <details>
+                <summary>Hvornår kommer Kursus C, B og A?</summary>
+                <div class="faq-content">Disse avancerede kurser er i øjeblikket under udvikling for at sikre den absolut højeste kvalitet. Start med Kursus D nu, så er du klar, når de næste niveauer åbner.</div>
+            </details>
+            <details>
+                <summary>Hvad skal jeg bruge for at deltage?</summary>
+                <div class="faq-content">Du behøver kun en computer, tablet eller telefon med internetadgang. Desuden skal du oprette en gratis konto på enten Claude.ai eller ChatGPT for at kunne løse de praktiske opgaver.</div>
+            </details>
+        </div>
+    </section>
+
+    <section class="container reveal" style="text-align: center; padding-top: 2rem;">
+        <h2 class="text-gradient">Klar til at lære AI?</h2>
+        <p style="margin-bottom: 2rem;">Fremtiden venter ikke. Tag det første skridt i dag.</p>
+        <a href="#kurser" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Start Kursus D nu</a>
+    </section>
+
+    <footer>
+        <div class="container">
+            <h3 style="font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--text-main);">LearnAI DK</h3>
+            <p style="font-size: 0.9rem; margin-bottom: 0;">Dansk AI-uddannelse · Alle kurser på dansk</p>
+            <p style="font-size: 0.8rem; margin-top: 1.5rem; opacity: 0.5;">&copy; 2026 LearnAI DK. Alle rettigheder forbeholdes.</p>
+        </div>
+    </footer>
+
+    <script>
+        // ==============================================================
+        // 1. DOM Interactions (Tabs, Reveal, Scroll Navbar)
+        // ==============================================================
+        
+        // Navbar Scrolled State
+        const nav = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) nav.classList.add('scrolled');
+            else nav.classList.remove('scrolled');
+        });
+
+        // Tabs Logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                document.getElementById(btn.dataset.target).classList.add('active');
+            });
+        });
+
+        // Scroll Reveal Observer
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        revealElements.forEach(el => revealObserver.observe(el));
+
+
+        // ==============================================================
+        // 2. THREE.JS 3D Environment
+        // ==============================================================
+        
+        // Safety check for reduced motion
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        
+        if (!prefersReducedMotion && typeof THREE !== 'undefined') {
+            const canvas = document.getElementById('webgl-canvas');
+            const scene = new THREE.Scene();
+            
+            // Camera Setup
+            const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.z = 20;
+
+            // Renderer Setup
+            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // ------------- A. Background Particles -------------
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = window.innerWidth < 768 ? 400 : 1000;
+            const posArray = new Float32Array(particlesCount * 3);
+            
+            for(let i = 0; i < particlesCount * 3; i++) {
+                // Spread widely in background
+                posArray[i] = (Math.random() - 0.5) * 60;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.05,
+                color: 0x00eaff,
+                transparent: true,
+                opacity: 0.3,
+                blending: THREE.AdditiveBlending
+            });
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // ------------- B. Hero Neural Network -------------
+            const heroGroup = new THREE.Group();
+            
+            // Icosahedron logic creates a nice "connected nodes" look
+            const networkGeo = new THREE.IcosahedronGeometry(3.5, 1);
+            
+            // Nodes (Points)
+            const nodeMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15 });
+            const nodes = new THREE.Points(networkGeo, nodeMat);
+            
+            // Connections (Wireframe)
+            const edgeMat = new THREE.LineBasicMaterial({ color: 0x00eaff, transparent: true, opacity: 0.25 });
+            const edges = new THREE.LineSegments(new THREE.WireframeGeometry(networkGeo), edgeMat);
+            
+            heroGroup.add(nodes);
+            heroGroup.add(edges);
+            scene.add(heroGroup);
+
+            // ------------- C. Course Crystals -------------
+            // Vi mapper disse til specifikke DOM elementer for perfekt responsivitet
+            const crystalData = [
+                { id: 'D', color: 0x10b981 }, // Grøn
+                { id: 'C', color: 0x3b82f6 }, // Blå
+                { id: 'B', color: 0x8b5cf6 }, // Lilla
+                { id: 'A', color: 0xfbbf24 }  // Guld
+            ];
+            
+            const crystals = [];
+            const crystalTargets = []; // DOM placeholders
+
+            // Belysning for materialerne
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+            const dirLight = new THREE.DirectionalLight(0xffffff, 1);
+            dirLight.position.set(5, 5, 5);
+            scene.add(dirLight);
+
+            // Henter placeholders fra DOM
+            document.querySelectorAll('.course-card').forEach((card) => {
+                const level = card.getAttribute('data-level');
+                const conf = crystalData.find(c => c.id === level);
+                const placeholder = card.querySelector('.crystal-placeholder');
+                
+                if (conf && placeholder) {
+                    // Geometri: Octahedron ser ud som krystaller
+                    const geo = new THREE.OctahedronGeometry(1.2, 0);
+                    const mat = new THREE.MeshStandardMaterial({ 
+                        color: 0x111111,
+                        emissive: conf.color,
+                        emissiveIntensity: 0.4,
+                        roughness: 0.1,
+                        metalness: 0.8,
+                        wireframe: true
+                    });
+                    const mesh = new THREE.Mesh(geo, mat);
+                    
+                    // Gem baseline scale til hover effekter
+                    mesh.userData = { 
+                        baseScale: 1,
+                        targetScale: 1,
+                        domElement: placeholder 
+                    };
+                    
+                    scene.add(mesh);
+                    crystals.push(mesh);
+
+                    // Mouse interactions for the CSS card triggering the 3D mesh
+                    card.addEventListener('mouseenter', () => mesh.userData.targetScale = 1.3);
+                    card.addEventListener('mouseleave', () => mesh.userData.targetScale = 1);
+                }
+            });
+
+
+            // ------------- Interactive State -------------
+            let mouseX = 0;
+            let mouseY = 0;
+            let targetX = 0;
+            let targetY = 0;
+            const windowHalfX = window.innerWidth / 2;
+            const windowHalfY = window.innerHeight / 2;
+
+            document.addEventListener('mousemove', (event) => {
+                mouseX = (event.clientX - windowHalfX);
+                mouseY = (event.clientY - windowHalfY);
+            });
+
+            // Handle Resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+
+            // ------------- Animation Loop -------------
+            const clock = new THREE.Clock();
+
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const time = clock.getElapsedTime();
+
+                // 1. Smooth mouse follow for Hero Object
+                targetX = mouseX * 0.001;
+                targetY = mouseY * 0.001;
+                
+                heroGroup.rotation.y += 0.002;
+                heroGroup.rotation.x += 0.001;
+                
+                // Tilt hero based on mouse
+                heroGroup.rotation.x += 0.05 * (targetY - heroGroup.rotation.x);
+                heroGroup.rotation.y += 0.05 * (targetX - heroGroup.rotation.y);
+
+                // Background subtle movement
+                particlesMesh.rotation.y = time * 0.02;
+
+                // 2. Project 3D Crystals precisely to DOM Placeholders
+                // Vi bruger en Vector3 og unproject til at finde verdens-koordinater
+                crystals.forEach((mesh, index) => {
+                    const el = mesh.userData.domElement;
+                    const rect = el.getBoundingClientRect();
+                    
+                    // Tjek om kortet overhovedet er på skærmen med lidt margin
+                    const isVisible = rect.bottom > -200 && rect.top < window.innerHeight + 200;
+                    mesh.visible = isVisible;
+
+                    if (isVisible) {
+                        // Find center af DOM elementet
+                        const centerX = rect.left + rect.width / 2;
+                        const centerY = rect.top + rect.height / 2;
+
+                        // Konverter til Normalized Device Coordinates (NDC) -1 til +1
+                        const ndcX = (centerX / window.innerWidth) * 2 - 1;
+                        const ndcY = -(centerY / window.innerHeight) * 2 + 1;
+
+                        // Lav en vektor i NDC plan (z = 0.5 arbitrært)
+                        const vector = new THREE.Vector3(ndcX, ndcY, 0.5);
+                        vector.unproject(camera);
+
+                        // Retning fra kamera til punktet
+                        vector.sub(camera.position).normalize();
+                        
+                        // Definer en fast afstand fra kameraet hvor vi vil tegne krystallerne
+                        const distance = 10; 
+                        
+                        // Sæt position
+                        mesh.position.copy(camera.position).add(vector.multiplyScalar(distance));
+
+                        // Rotation & Hover animation
+                        mesh.rotation.y += 0.01;
+                        mesh.rotation.x = Math.sin(time * 2 + index) * 0.2;
+                        mesh.rotation.z = Math.cos(time * 1.5 + index) * 0.2;
+
+                        // Smooth lerp scale
+                        const currentScale = mesh.scale.x;
+                        const targetScale = mesh.userData.targetScale;
+                        const newScale = currentScale + (targetScale - currentScale) * 0.1;
+                        mesh.scale.set(newScale, newScale, newScale);
+                        
+                        // Forøg glow på hover
+                        mesh.material.emissiveIntensity = 0.4 + ((newScale - 1) * 2);
+                    }
+                });
+
+                // Fade out hero if scrolled way past it
+                const scrollY = window.scrollY;
+                if (scrollY > window.innerHeight) {
+                    heroGroup.visible = false;
+                } else {
+                    heroGroup.visible = true;
+                    // Parallax hero upwards
+                    heroGroup.position.y = (scrollY * 0.01);
+                }
+
+                renderer.render(scene, camera);
+            }
+
+            // Start loop
+            animate();
+        }
+    </script>
+</body>
+</html>
