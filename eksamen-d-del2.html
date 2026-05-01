@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Eksamen D — Del 2 (Praktisk opgave) · LearnAI</title>
+<title>Eksamen D — Del 2 · LearnAI</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -33,7 +33,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 /* SCENES */
 .scene{display:none;position:relative;z-index:1}
 .scene.active{display:block}
-#scene-results.active,#scene-gate.active,#scene-passed.active,#scene-certificate.active{display:flex}
 
 /* GATE */
 #scene-gate{min-height:calc(100vh - 62px);display:none;align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column}
@@ -46,31 +45,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* MAIN LAYOUT */
 #scene-task{padding:2rem 1.5rem 6rem}
-#scene-task.active{animation:rocketUp .6s cubic-bezier(0.22,1,0.36,1)}
-@keyframes rocketUp{
-  0%{opacity:0;transform:translateY(60px) scale(0.97)}
-  60%{opacity:1;transform:translateY(-8px) scale(1.01)}
-  100%{opacity:1;transform:translateY(0) scale(1)}
-}
-.part2-launch-banner{
-  background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(240,192,64,.1));
-  border:1px solid rgba(34,197,94,.3);
-  border-radius:14px;padding:1rem 1.5rem;
-  margin:0 auto 1.5rem;max-width:760px;
-  display:flex;align-items:center;gap:12px;
-  animation:bannerSlide .5s cubic-bezier(0.22,1,0.36,1) .2s both;
-}
-@keyframes bannerSlide{
-  from{opacity:0;transform:translateX(-20px)}
-  to{opacity:1;transform:translateX(0)}
-}
-.launch-emoji{font-size:1.8rem;animation:rocketFly 1s ease-out .3s both}
-@keyframes rocketFly{
-  0%{transform:translateX(-40px) translateY(10px) rotate(-30deg);opacity:0}
-  50%{transform:translateX(4px) translateY(-4px) rotate(5deg);opacity:1}
-  100%{transform:translateX(0) translateY(0) rotate(0deg);opacity:1}
-}
-.launch-text{font-size:.95rem;font-weight:700;color:#22c55e}
 .task-wrap{max-width:760px;margin:0 auto}
 
 /* HEADER */
@@ -236,119 +210,26 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   .cert-actions{flex-direction:column;align-items:center}
 }
 
-/* ====== QUIZ SCENES ====== */
-#scene-intro{padding:3rem 1.5rem 5rem}
-.intro-wrap,.results-wrap{max-width:720px;margin:0 auto}
-.exam-hero{background:linear-gradient(135deg,#0d1928,#111428);border:1px solid #253650;border-radius:24px;padding:3rem 2.5rem;margin-bottom:2rem;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
-.exam-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(240,192,64,.06),transparent 60%);pointer-events:none}
-.exam-hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.25);color:#f0c040;font-size:.75rem;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.25rem}
-.exam-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#f0c040 0%,#fff 60%,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-.exam-hero-sub{color:#6b84a0;font-size:1rem;line-height:1.7;max-width:520px;margin-bottom:2rem}
-.exam-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:2rem}
-.exam-info-card{background:rgba(255,255,255,.03);border:1px solid #1e2d47;border-radius:12px;padding:1.1rem 1rem;text-align:center}
-.exam-info-val{font-size:1.4rem;font-weight:800;color:#f0c040;margin-bottom:3px}
-.exam-info-label{font-size:.75rem;color:#6b84a0;font-weight:500}
-.exam-rules{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:1.75rem}
-.exam-rules-title{font-size:.85rem;font-weight:700;color:#3b82f6;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.04em}
-.exam-rules ul{list-style:none;display:flex;flex-direction:column;gap:8px}
-.exam-rules li{font-size:.88rem;color:#6b84a0;display:flex;align-items:flex-start;gap:9px;line-height:1.55}
-.exam-rules li::before{content:'';width:6px;height:6px;border-radius:50%;background:#3b82f6;flex-shrink:0;margin-top:6px}
-.btn-start-exam{width:100%;padding:16px;background:linear-gradient(135deg,#f0c040,#c89a20);color:#000;font-weight:700;font-size:1.05rem;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;font-family:inherit;box-shadow:0 8px 24px rgba(240,192,64,.25)}
-.btn-start-exam:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(240,192,64,.35)}
-#scene-quiz{padding:0}
-.quiz-progress-bar{background:rgba(8,12,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid #1e2d47;padding:1rem 2rem;position:sticky;top:60px;z-index:90}
-.quiz-progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
-.quiz-progress-label{font-size:.82rem;font-weight:600;color:#6b84a0}
-.quiz-progress-count{font-size:.82rem;font-weight:700;color:#f0c040}
-.quiz-track{height:5px;background:#1e2d47;border-radius:3px;overflow:hidden}
-.quiz-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#f0c040,#3b82f6);transition:width .5s cubic-bezier(.4,0,.2,1)}
-.question-wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
-.q-module-tag{display:inline-flex;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b84a0;background:#0f1928;border:1px solid #1e2d47;padding:4px 12px;border-radius:20px;margin-bottom:1.5rem}
-.q-number{font-size:.8rem;font-weight:700;color:#f0c040;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.65rem}
-.q-text{font-size:clamp(1.2rem,2.5vw,1.5rem);line-height:1.45;color:#e8edf5;margin-bottom:2rem;font-weight:500}
-.options{display:flex;flex-direction:column;gap:11px;margin-bottom:2rem}
-.option{position:relative;background:#0f1928;border:1.5px solid #1e2d47;border-radius:13px;padding:1rem 1.25rem 1rem 3.5rem;cursor:pointer;transition:all .2s;user-select:none}
-.option:hover:not(.locked){border-color:#253650;background:#131f30;transform:translateX(3px)}
-.option.selected:not(.locked){border-color:#3b82f6;background:rgba(59,130,246,.12)}
-.option.correct{border-color:#22c55e!important;background:rgba(34,197,94,.12)!important;animation:cpop .4s cubic-bezier(.34,1.56,.64,1)}
-.option.wrong{border-color:#ef4444!important;background:rgba(239,68,68,.12)!important;animation:shake .4s ease}
-.option.locked{cursor:default}
-.option.faded{opacity:.4}
-@keyframes cpop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
-@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
-.option-letter{position:absolute;left:1.1rem;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:7px;background:#111827;border:1px solid #253650;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#6b84a0;transition:all .2s}
-.option.selected .option-letter{background:#3b82f6;border-color:#3b82f6;color:#fff}
-.option.correct .option-letter{background:#22c55e;border-color:#22c55e;color:#fff}
-.option.wrong .option-letter{background:#ef4444;border-color:#ef4444;color:#fff}
-.option-text{font-size:.95rem;color:#e8edf5;line-height:1.55;padding-top:2px}
-.feedback-box{border-radius:13px;padding:1.1rem 1.25rem;margin-bottom:1.75rem;display:none}
-.feedback-box.show{display:flex;gap:.85rem;align-items:flex-start;animation:fsu .3s ease}
-@keyframes fsu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.feedback-box.cfb{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
-.feedback-box.wfb{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
-.feedback-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
-.feedback-title{font-size:.88rem;font-weight:700;margin-bottom:3px}
-.feedback-box.cfb .feedback-title{color:#22c55e}
-.feedback-box.wfb .feedback-title{color:#ef4444}
-.feedback-text{font-size:.85rem;color:#6b84a0;line-height:1.6}
-.q-nav{display:flex;justify-content:flex-end;gap:12px}
-.btn-check{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;font-weight:700;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;font-size:.92rem;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:8px}
-.btn-check:disabled{opacity:.4;cursor:not-allowed}
-.btn-qnext{background:linear-gradient(135deg,#f0c040,#c89a20);color:#000;font-weight:700;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;font-size:.92rem;font-family:inherit;transition:all .2s;display:none}
-.btn-qnext:hover{transform:translateY(-1px)}
-#scene-results{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 60px);padding:2rem 1.5rem}
-.score-hero{background:#0f1928;border:1px solid #1e2d47;border-radius:24px;padding:2.75rem 2.5rem;text-align:center;margin-bottom:1.5rem}
-.score-circle{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;position:relative}
-.score-circle-inner{width:84px;height:84px;border-radius:50%;background:#0f1928;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
-.score-num{font-size:1.5rem;font-weight:800;line-height:1}
-.score-denom{font-size:.7rem;color:#6b84a0;margin-top:2px}
-.score-hero h2{font-size:1.75rem;margin-bottom:.5rem}
-.score-hero p{color:#6b84a0;font-size:.95rem;line-height:1.65;max-width:420px;margin:0 auto 1.5rem}
-.score-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.75rem}
-.score-stat{background:#111827;border:1px solid #1e2d47;border-radius:11px;padding:1rem;text-align:center}
-.score-stat-num{font-size:1.3rem;font-weight:800;margin-bottom:3px}
-.score-stat-label{font-size:.72rem;color:#6b84a0}
-.btn-retry-quiz{width:100%;padding:14px;background:#131f30;border:1.5px solid #253650;color:#e8edf5;font-weight:700;font-size:.95rem;border-radius:11px;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.btn-retry-quiz:hover{border-color:#3b82f6;color:#3b82f6}
-.btn-to-part2{width:100%;padding:15px;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700;font-size:1rem;border-radius:12px;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(34,197,94,.25);margin-bottom:12px}
-.btn-to-part2:hover{transform:translateY(-2px)}
-.review-section{margin-top:1.5rem}
-.review-title{font-size:.8rem;font-weight:700;color:#6b84a0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem}
-.review-item{background:#0f1928;border:1px solid #1e2d47;border-radius:12px;padding:1rem 1.2rem;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
-.review-q{font-size:.85rem;color:#e8edf5;margin-bottom:4px;font-weight:500}
-.review-a{font-size:.8rem;color:#6b84a0;line-height:1.5}
-.rev-ok{color:#22c55e;font-weight:600}
-.rev-bad{color:#ef4444;font-weight:600}
-
-.part2-welcome-banner{
-  max-width:760px;margin:0 auto 1.5rem;
-  background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(240,192,64,.12));
-  border:1px solid rgba(34,197,94,.4);
-  border-radius:14px;padding:1rem 1.25rem;
+/* VELKOMST BANNER DEL 2 */
+.part2-welcome{
+  background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(240,192,64,.08));
+  border:1px solid rgba(34,197,94,.35);border-radius:16px;
+  padding:1.1rem 1.5rem;margin-bottom:2rem;
   display:flex;align-items:center;gap:14px;
-  animation:pwbSlide .7s cubic-bezier(.22,1,.36,1) .3s both;
+  animation:welcomeSlide .7s cubic-bezier(.22,1,.36,1) .2s both;
 }
-@keyframes pwbSlide{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
-.pwb-emoji{font-size:1.6rem;animation:pwbBounce 1.2s ease-out .6s both}
-@keyframes pwbBounce{0%,100%{transform:rotate(0)}25%{transform:rotate(-15deg) scale(1.2)}50%{transform:rotate(10deg)}75%{transform:rotate(-5deg)}}
-.pwb-text{flex:1;font-size:.92rem;font-weight:600;color:#22c55e;line-height:1.5}
-.pwb-close{background:none;border:none;color:#22c55e;font-size:1.4rem;cursor:pointer;line-height:1;padding:4px 10px;border-radius:6px;transition:all .2s;opacity:.6}
-.pwb-close:hover{opacity:1;background:rgba(34,197,94,.15)}
+@keyframes welcomeSlide{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
+.pw-icon{font-size:1.8rem;animation:pwBounce 1s ease-out .5s both}
+@keyframes pwBounce{0%{transform:scale(.5) rotate(-20deg)}70%{transform:scale(1.15) rotate(5deg)}100%{transform:scale(1) rotate(0)}}
+.pw-text{flex:1;font-size:.92rem;font-weight:600;color:#22c55e;line-height:1.5}
+.pw-close{background:none;border:none;color:#22c55e;font-size:1.4rem;cursor:pointer;opacity:.6;padding:4px 8px;border-radius:6px;transition:.2s}
+.pw-close:hover{opacity:1;background:rgba(34,197,94,.12)}
+/* ALLEREDE BESTAAET */
+#scene-passed2{display:none;align-items:center;justify-content:center;min-height:calc(100vh - 62px);text-align:center;padding:2rem}
+#scene-passed2.active{display:flex}
 </style>
 </head>
 <body>
-<script>
-// Tjek at del 1 er bestaaet
-try {
-  if (sessionStorage.getItem('learnai_part1_passed') !== '1') {
-    // Hvis ikke kommet fra del 1, send tilbage
-    if (!window.location.hash.includes('skip')) {
-      window.location.href = 'eksamen-d.html';
-    }
-  }
-} catch(e){}
-</script>
-
 
 <!-- TOPBAR -->
 <div class="topbar">
@@ -360,89 +241,39 @@ try {
     <div class="topbar-logo-icon">LA</div>
     LearnAI DK
   </a>
-  <div class="topbar-tag">Eksamen D · Del 2 af 2</div>
+  <div style="font-size:.78rem;color:var(--muted);font-weight:500">Eksamen D · Del 2 af 2</div>
+</div>
+    LearnAI DK
+  </a>
+  <div class="topbar-tag">Eksamen D · Del 2</div>
 </div>
 
 <!-- SCENE: GATE -->
-
-      <div class="exam-rules">
-        <div class="exam-rules-title">&#128203; S&aring;dan fungerer eksamen</div>
-        <ul>
-          <li>Del 1 har 15 sp&oslash;rgsm&aring;l om alt du har l&aelig;rt i Kursus D. Du skal have mindst 12 rigtige for at best&aring;.</li>
-          <li>Hvert sp&oslash;rgsm&aring;l har 4 svarmuligheder &mdash; kun &eacute;n er rigtig. Du f&aring;r forklaring p&aring; hvert svar.</li>
-          <li>Del 2 er en praktisk opgave: skriv et godt prompt der viser du kan bruge de 3 regler fra Modul 4.</li>
-          <li>N&aring;r du har best&aring;et begge dele, f&aring;r du dit personlige bevis med navn, email og dato &mdash; og 100 coins.</li>
-          <li>Du kan pr&oslash;ve igen hvis du ikke klarer det &mdash; men du kan kun best&aring; og f&aring; beviset &eacute;n gang.</li>
-        </ul>
-      </div>
-      <button class="btn-start-exam" onclick="startQuiz()">
-        Start del 1 &mdash; Multiple choice
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-  </div>
-</div>
-
-  <div class="question-wrap">
-    <div class="q-module-tag" id="qModuleTag"></div>
-    <div class="q-number" id="qNumber"></div>
-    <div class="q-text" id="qText"></div>
-    <div class="options" id="optionsWrap"></div>
-    <div class="feedback-box" id="feedbackBox">
-      <div class="feedback-icon" id="feedbackIcon"></div>
-      <div>
-        <div class="feedback-title" id="feedbackTitle"></div>
-        <div class="feedback-text" id="feedbackText"></div>
-      </div>
-    </div>
-    <div class="q-nav">
-      <button class="btn-check" id="btnCheck" onclick="checkAnswer()" disabled>Tjek svar</button>
-      <button class="btn-qnext" id="btnQNext" onclick="nextQuestion()">N&aelig;ste &rarr;</button>
-    </div>
-  </div>
-</div>
-
-      <h2 id="resultsTitle"></h2>
-      <p id="resultsDesc"></p>
-      <div class="score-breakdown">
-        <div class="score-stat"><div class="score-stat-num" id="statOk" style="color:#22c55e">0</div><div class="score-stat-label">Rigtige</div></div>
-        <div class="score-stat"><div class="score-stat-num" id="statBad" style="color:#ef4444">0</div><div class="score-stat-label">Forkerte</div></div>
-        <div class="score-stat"><div class="score-stat-num" id="statPct" style="color:#f0c040">0%</div><div class="score-stat-label">Point</div></div>
-      </div>
-      <button class="btn-to-part2" id="btnToPart2" style="display:none" onclick="goToPart2()">
-        Forts&aelig;t til Del 2 &mdash; Praktisk opgave &rarr;
-      </button>
-      <button class="btn-retry-quiz" id="btnRetryQuiz" onclick="startQuiz()">&#8634; Pr&oslash;v del 1 igen</button>
-    </div>
-    <div class="review-section" id="reviewSection"></div>
-  </div>
-</div>
-
 <div class="scene" id="scene-gate">
   <div class="gate-icon">🔐</div>
-  <div class="gate-title">Log ind for at starte eksamen</div>
-  <div class="gate-sub">Du skal v&#230;re logget ind p&#229; LearnAI for at tage eksamen og gemme dit personlige bevis p&#229; din profil.</div>
-  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">G&#229; til LearnAI og log ind</a>
-</div>
 
 <!-- SCENE: ALREADY PASSED -->
-<div class="scene" id="scene-passed">
-  <div class="gate-icon">&#127942;</div>
-  <div class="gate-title">Du har allerede best&#229;et!</div>
-  <div class="gate-sub">Du har allerede best&#229;et Kursus D og dit bevis er gemt p&#229; din profil. Du kan ikke tage eksamen igen med samme bruger.</div>
-  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">Se mit bevis p&#229; platformen</a>
+<div class="scene" id="scene-passed2">
+  <div style="max-width:460px">
+    <div style="font-size:3rem;margin-bottom:1rem">🏆</div>
+    <h2 style="font-family:serif;font-size:1.6rem;margin-bottom:.75rem">Du har allerede bestået!</h2>
+    <p style="color:var(--muted);font-size:.92rem;line-height:1.7;margin-bottom:1.75rem">Du har allerede bestået Kursus D og dit bevis er gemt på din profil.</p>
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-weight:700;padding:13px 28px;border-radius:50px;text-decoration:none;font-size:.95rem">Se mit bevis på platformen</a>
+  </div>
+</div>
+
+
+  <div class="gate-title">Adgang nægtet</div>
+  <div class="gate-sub">Du skal bestå del 1 af eksamen før du kan komme hertil. Gå tilbage og gennemfør del 1 først.</div>
+  <a href="eksamen-d.html" class="btn-gate">← Gå til del 1</a>
 </div>
 
 <!-- SCENE: TASK -->
-<div class="scene active" id="scene-task">
-  <div class="part2-launch-banner" id="part2LaunchBanner" style="display:none">
-    <span class="launch-emoji" id="launchEmoji">🚀</span>
-    <span class="launch-text">Del 1 bestået — velkommen til del 2!</span>
-  </div>
-  <div class="part2-welcome-banner" id="part2Welcome">
-    <span class="pwb-emoji">🎉</span>
-    <span class="pwb-text">Del 1 bestået! Velkommen til del 2 — den praktiske opgave.</span>
-    <button class="pwb-close" onclick="document.getElementById('part2Welcome').style.display='none'">×</button>
+<div class="scene" id="scene-task">
+  <div class="part2-welcome" id="part2Welcome">
+    <span class="pw-icon">🎉</span>
+    <span class="pw-text">Del 1 bestået! Velkommen til del 2 — skriv nu et godt prompt.</span>
+    <button class="pw-close" onclick="this.parentElement.style.display='none'">×</button>
   </div>
   <div class="task-wrap">
     <div class="task-header">
@@ -654,7 +485,7 @@ try {
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
@@ -679,27 +510,16 @@ if (!part1Passed) {
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    showScene('scene-gate');
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    document.getElementById('scene-gate').classList.add('active');
     return;
   }
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
     if (snap.exists()) {
-      const data = snap.data();
-      window._user = { uid: user.uid, email: user.email, ...data };
-      // Tjek om allerede bestaet
-      if ((data.completedCourses || []).includes('D')) {
-        showScene('scene-passed');
-        return;
-      }
-    } else {
-      window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
+      window._user = { uid: user.uid, email: user.email, ...snap.data() };
     }
-  } catch(e) {
-    window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
-    console.error(e);
-  }
-  showScene('scene-intro');
+  } catch(e) { console.error(e); }
 });
 
 // Gem bestået + coins + badge i Firebase
@@ -728,10 +548,7 @@ window.saveCertificate = async function() {
 window._fb = { db, doc, updateDoc, arrayUnion, serverTimestamp };
 </script>
 
-
-
 <script>
-// ============================================
 // ============================================
 // PROMPT BEDØMMELSE — JavaScript-baseret
 // ============================================
@@ -1039,6 +856,64 @@ window.toggleHelpChat = toggleHelpChat;
 window.askHelp = askHelp;
 window.sendHelp = sendHelp;
 window.showScene = showScene;
+</script>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const app = initializeApp({
+  apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain:"learnai-dk.firebaseapp.com",
+  projectId:"learnai-dk",
+  storageBucket:"learnai-dk.firebasestorage.app",
+  messagingSenderId:"3073076360",
+  appId:"1:3073076360:web:b853d118e943395de4833d"
+});
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+    return;
+  }
+  // Hjælpefunktion der virker på tværs af script-typer
+  const goToScene = (id) => {
+    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById(id);
+    if (el) { el.classList.add('active'); window.scrollTo({top:0}); }
+  };
+  try {
+    const snap = await getDoc(doc(db,'users',user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      window._user = { uid:user.uid, email:user.email, ...data };
+      if ((data.completedCourses||[]).includes('D')) {
+        goToScene('scene-passed2');
+        return;
+      }
+    } else {
+      window._user = { uid:user.uid, email:user.email, firstName:'', lastName:'', coins:0 };
+    }
+  } catch(e) {
+    window._user = { uid:user.uid, email:user.email, firstName:'', lastName:'', coins:0 };
+  }
+  goToScene('scene-task');
+});
+
+window.saveCertToFirebase = async function() {
+  if (!window._user) return;
+  const today = new Date().toLocaleDateString('da-DK',{day:'2-digit',month:'long',year:'numeric'});
+  try {
+    await updateDoc(doc(db,'users',window._user.uid),{
+      coins: increment(100),
+      completedCourses: arrayUnion('D'),
+      badges: arrayUnion({level:'D',date:today,course:'Kursus D — Fra nybegynder til AI-bruger'})
+    });
+  } catch(e){console.error(e);}
+};
 </script>
 </body>
 </html>
