@@ -1,1006 +1,1143 @@
-{
-  "name": "learnai",
-  "version": "1.0.0",
-  "type": "module",
-  "license": "MIT",
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist",
-    "start": "NODE_ENV=production node dist/index.js",
-    "preview": "vite preview --host",
-    "check": "tsc --noEmit",
-    "format": "prettier --write ."
-  },
-  "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
-    "@radix-ui/react-accordion": "^1.2.12",
-    "@radix-ui/react-alert-dialog": "^1.1.15",
-    "@radix-ui/react-aspect-ratio": "^1.1.7",
-    "@radix-ui/react-avatar": "^1.1.10",
-    "@radix-ui/react-checkbox": "^1.3.3",
-    "@radix-ui/react-collapsible": "^1.1.12",
-    "@radix-ui/react-context-menu": "^2.2.16",
-    "@radix-ui/react-dialog": "^1.1.15",
-    "@radix-ui/react-dropdown-menu": "^2.1.16",
-    "@radix-ui/react-hover-card": "^1.1.15",
-    "@radix-ui/react-label": "^2.1.7",
-    "@radix-ui/react-menubar": "^1.1.16",
-    "@radix-ui/react-navigation-menu": "^1.2.14",
-    "@radix-ui/react-popover": "^1.1.15",
-    "@radix-ui/react-progress": "^1.1.7",
-    "@radix-ui/react-radio-group": "^1.3.8",
-    "@radix-ui/react-scroll-area": "^1.2.10",
-    "@radix-ui/react-select": "^2.2.6",
-    "@radix-ui/react-separator": "^1.1.7",
-    "@radix-ui/react-slider": "^1.3.6",
-    "@radix-ui/react-slot": "^1.2.3",
-    "@radix-ui/react-switch": "^1.2.6",
-    "@radix-ui/react-tabs": "^1.1.13",
-    "@radix-ui/react-toggle": "^1.1.10",
-    "@radix-ui/react-toggle-group": "^1.1.11",
-    "@radix-ui/react-tooltip": "^1.2.8",
-    "axios": "^1.12.0",
-    "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
-    "cmdk": "^1.1.1",
-    "embla-carousel-react": "^8.6.0",
-    "express": "^4.21.2",
-    "framer-motion": "^12.23.22",
-    "input-otp": "^1.4.2",
-    "lucide-react": "^0.453.0",
-    "nanoid": "^5.1.5",
-    "next-themes": "^0.4.6",
-    "react": "^19.2.1",
-    "react-day-picker": "^9.11.1",
-    "react-dom": "^19.2.1",
-    "react-hook-form": "^7.64.0",
-    "react-resizable-panels": "^3.0.6",
-    "recharts": "^2.15.2",
-    "sonner": "^2.0.7",
-    "streamdown": "^1.4.0",
-    "tailwind-merge": "^3.3.1",
-    "tailwindcss-animate": "^1.0.7",
-    "vaul": "^1.1.2",
-    "wouter": "^3.3.5",
-    "zod": "^4.1.12"
-  },
-  "devDependencies": {
-    "@builder.io/vite-plugin-jsx-loc": "^0.1.1",
-    "@tailwindcss/typography": "^0.5.15",
-    "@tailwindcss/vite": "^4.1.3",
-    "@types/express": "4.17.21",
-    "@types/node": "^24.7.0",
-    "@types/react": "^19.2.1",
-    "@types/react-dom": "^19.2.1",
-    "@vitejs/plugin-react": "^5.0.4",
-    "autoprefixer": "^10.4.20",
-    "esbuild": "^0.25.0",
-    "pnpm": "^10.15.1",
-    "postcss": "^8.4.47",
-    "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.19.1",
-    "typescript": "5.6.3",
-    "vite": "^7.1.7",
-    "vitest": "^2.1.4"
-  },
-  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af"
-}<!doctype html>
+<!DOCTYPE html>
 <html lang="da">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>LearnAI – Lær Kunstig Intelligens</title>
-    <meta name="description" content="Lær kunstig intelligens fra nybegynder til ekspert. Gratis startkursus, strukturerede niveauer og eksamensbevis." />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Source+Serif+4:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eksamen D · Del 2 — LearnAI DK</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#f0c040;--gold2:#e8a820;
+  --bg:#080c14;--bg2:#0d1320;--bg3:#111827;
+  --card:#131c2e;--card2:#1a2540;--border:#1e2d47;
+  --text:#e8edf5;--muted:#7a90b0;
+  --blue:#3b82f6;--blue2:#1d4ed8;
+  --green:#22c55e;--green2:#15803d;
+  --red:#ef4444;--purple:#8b5cf6;--amber:#f59e0b;
+  --r:14px;--r2:20px;--r3:28px;
+}
+html{scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 900px 700px at 15% 0%,rgba(59,130,246,.07),transparent 60%),
+             radial-gradient(ellipse 700px 600px at 90% 30%,rgba(139,92,246,.05),transparent 60%)}
 
-ReactDOM.createRoot(document.getElementById("root" )!).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import NotFound from "@/pages/NotFound";
-import { Route, Switch } from "wouter";
-import ErrorBoundary from "./components/ErrorBoundary";
-import { ThemeProvider } from "./contexts/ThemeContext";
-import Home from "./pages/Home";
-import Sidekurser from "./pages/Sidekurser";
+/* TOPBAR */
+.topbar{position:sticky;top:0;z-index:100;height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 5%;background:rgba(8,12,20,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+.topbar-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--gold);font-weight:700;font-size:1rem}
+.topbar-logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:#000}
+.topbar-back{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:50px;font-size:.82rem;font-weight:600;text-decoration:none;transition:all .2s}
+.topbar-back:hover{border-color:var(--blue);color:var(--text)}
+.topbar-tag{font-size:.78rem;color:var(--muted);font-weight:500}
 
-function Router() {
-  return (
-    <Switch>
-      <Route path={"/"} component={Home} />
-      <Route path={"/sidekurser"} component={Sidekurser} />
-      <Route path={"/404"} component={NotFound} />
-      <Route component={NotFound} />
-    </Switch>
-  );
+/* SCENES */
+.scene{display:none;position:relative;z-index:1}
+.scene.active{display:block}
+
+/* GATE */
+#scene-gate{min-height:calc(100vh - 62px);display:none;align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column}
+#scene-gate.active{display:flex}
+.gate-icon{font-size:3.5rem;margin-bottom:1rem}
+.gate-title{font-size:1.6rem;font-weight:800;margin-bottom:.6rem}
+.gate-sub{color:var(--muted);font-size:.95rem;max-width:420px;margin:0 auto 1.5rem;line-height:1.7}
+.btn-gate{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--blue),var(--blue2));color:#fff;font-weight:700;padding:13px 28px;border-radius:50px;text-decoration:none;font-size:.95rem;transition:all .2s;border:none;cursor:pointer}
+.btn-gate:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(59,130,246,.35)}
+
+/* MAIN LAYOUT */
+#scene-task{padding:2rem 1.5rem 6rem}
+.task-wrap{max-width:760px;margin:0 auto}
+
+/* HEADER */
+.task-header{text-align:center;margin-bottom:2.5rem}
+.task-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:50px;padding:6px 16px;font-size:.78rem;color:var(--green);font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin-bottom:1.2rem}
+.task-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:800;letter-spacing:-.02em;margin-bottom:.75rem}
+.task-title span{background:linear-gradient(135deg,var(--green),#fff 70%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.task-sub{color:var(--muted);font-size:.95rem;line-height:1.75;max-width:540px;margin:0 auto}
+
+/* GUIDE BOX */
+.guide-box{background:var(--card);border:1px solid var(--border);border-radius:var(--r2);padding:1.75rem;margin:1.75rem 0}
+.guide-title{font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:1.1rem;display:flex;align-items:center;gap:8px}
+.guide-step{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.04);align-items:flex-start}
+.guide-step:last-child{border-bottom:none}
+.guide-step-num{width:28px;height:28px;border-radius:8px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;font-size:.75rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.guide-step-text{font-size:.9rem;color:var(--muted);line-height:1.6}
+.guide-step-text strong{color:var(--text)}
+
+/* CRITERIA */
+.criteria-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:1.5rem 0}
+.criteria-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;display:flex;gap:10px;align-items:flex-start}
+.criteria-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.criteria-icon.blue{background:rgba(59,130,246,.15)}
+.criteria-icon.green{background:rgba(34,197,94,.15)}
+.criteria-icon.amber{background:rgba(245,158,11,.15)}
+.criteria-body h4{font-size:.85rem;font-weight:700;margin-bottom:3px}
+.criteria-body p{font-size:.78rem;color:var(--muted);line-height:1.5}
+
+/* EXAMPLE */
+.example-box{background:linear-gradient(135deg,rgba(34,197,94,.06),rgba(59,130,246,.04));border:1px solid rgba(34,197,94,.2);border-radius:var(--r);padding:1.1rem 1.2rem;margin:1.25rem 0}
+.example-label{font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--green);margin-bottom:.5rem}
+.example-text{font-size:.9rem;color:var(--text);line-height:1.6;font-style:italic}
+
+/* PROMPT INPUT AREA */
+.prompt-area-wrap{margin:2rem 0}
+.prompt-area-label{font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:.6rem;display:flex;align-items:center;justify-content:space-between}
+.prompt-char-count{font-size:.75rem;color:var(--muted);font-weight:400}
+.prompt-textarea{width:100%;background:var(--card2);border:1.5px solid var(--border);border-radius:var(--r);padding:1.1rem 1.2rem;color:var(--text);font-size:.95rem;font-family:inherit;line-height:1.65;resize:vertical;min-height:140px;outline:none;transition:border-color .2s,box-shadow .2s}
+.prompt-textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(59,130,246,.1)}
+.prompt-textarea::placeholder{color:var(--muted2)}
+
+/* SUBMIT BUTTON */
+.btn-submit{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green2));color:#fff;font-size:1rem;font-weight:700;padding:15px 36px;border-radius:50px;border:none;cursor:pointer;transition:all .25s;box-shadow:0 8px 22px rgba(34,197,94,.3);margin-top:.75rem}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(34,197,94,.42)}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.btn-submit.loading::after{content:'';width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+
+/* FEEDBACK RESULT */
+.feedback-result{margin:1.5rem 0;border-radius:var(--r2);overflow:hidden;display:none;animation:fadeUp .4s ease}
+.feedback-result.show{display:block}
+.feedback-result-header{padding:1rem 1.2rem;display:flex;align-items:center;gap:10px}
+.feedback-result-header.pass{background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(34,197,94,.08));border-bottom:1px solid rgba(34,197,94,.2)}
+.feedback-result-header.fail{background:linear-gradient(135deg,rgba(239,68,68,.12),rgba(239,68,68,.06));border-bottom:1px solid rgba(239,68,68,.2)}
+.feedback-result-icon{font-size:1.5rem}
+.feedback-result-title{font-size:1rem;font-weight:700}
+.feedback-result-body{background:var(--card);padding:1.2rem}
+.feedback-score-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1rem}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:700}
+.chip.ok{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.chip.miss{background:rgba(239,68,68,.1);color:#fca5a5;border:1px solid rgba(239,68,68,.2)}
+.feedback-text-area{font-size:.88rem;color:var(--muted);line-height:1.7}
+.feedback-text-area strong{color:var(--text)}
+.btn-retry-prompt{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);color:var(--text);padding:11px 22px;border-radius:50px;font-size:.88rem;font-weight:600;cursor:pointer;transition:all .2s;margin-top:1rem;font-family:inherit}
+.btn-retry-prompt:hover{border-color:var(--blue);color:var(--blue)}
+.btn-to-certificate{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;padding:14px 32px;border-radius:50px;font-size:.95rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;box-shadow:0 8px 22px rgba(240,192,64,.3);margin-top:1rem;font-family:inherit}
+.btn-to-certificate:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(240,192,64,.42)}
+
+/* ATTEMPT WARNING */
+.attempt-warning{background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.25);border-radius:var(--r);padding:1rem 1.2rem;margin:1rem 0;font-size:.85rem;color:var(--muted);line-height:1.6;display:none}
+.attempt-warning.show{display:block}
+.attempt-warning strong{color:var(--gold)}
+
+/* ===== CERTIFICATE SCENE ===== */
+#scene-certificate{padding:2rem 1.5rem 5rem}
+.cert-wrap{max-width:720px;margin:0 auto}
+.cert-success-banner{background:linear-gradient(135deg,#0a2010,#0d2a1a);border:1px solid rgba(34,197,94,.3);border-radius:var(--r2);padding:2rem;text-align:center;margin-bottom:2rem}
+.cert-success-icon{font-size:3rem;margin-bottom:.75rem}
+.cert-success-title{font-size:1.8rem;font-weight:800;margin-bottom:.5rem}
+.cert-success-sub{color:rgba(255,255,255,.75);font-size:.95rem;line-height:1.65}
+.cert-coins{display:inline-flex;align-items:center;gap:8px;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.3);border-radius:50px;padding:8px 20px;font-size:.9rem;font-weight:700;color:var(--gold);margin-top:1rem}
+
+/* THE CERTIFICATE CARD */
+.certificate-card{background:linear-gradient(160deg,#0f1c30 0%,#0a1520 50%,#0d1a28 100%);border:2px solid rgba(240,192,64,.4);border-radius:24px;padding:3rem 2.5rem;margin:1.5rem 0;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 0 1px rgba(240,192,64,.1) inset}
+.cert-corner{position:absolute;width:80px;height:80px;opacity:.3}
+.cert-corner.tl{top:0;left:0;border-top:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:20px 0 0 0}
+.cert-corner.tr{top:0;right:0;border-top:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 20px 0 0}
+.cert-corner.bl{bottom:0;left:0;border-bottom:3px solid var(--gold);border-left:3px solid var(--gold);border-radius:0 0 0 20px}
+.cert-corner.br{bottom:0;right:0;border-bottom:3px solid var(--gold);border-right:3px solid var(--gold);border-radius:0 0 20px 0}
+.cert-watermark{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:8rem;opacity:.03;user-select:none;pointer-events:none}
+.cert-logo-row{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:2rem}
+.cert-logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:800;color:#000}
+.cert-logo-text{font-size:1.1rem;font-weight:700;color:var(--gold)}
+.cert-divider{height:1px;background:linear-gradient(90deg,transparent,rgba(240,192,64,.4),transparent);margin:1.5rem 0}
+.cert-headline{text-align:center;font-size:.78rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:.6rem}
+.cert-name{text-align:center;font-size:clamp(1.6rem,4vw,2.4rem);font-weight:800;color:var(--gold);letter-spacing:-.01em;margin-bottom:.3rem}
+.cert-email{text-align:center;font-size:.82rem;color:var(--muted);margin-bottom:1.5rem}
+.cert-body-text{text-align:center;font-size:.95rem;color:rgba(232,237,245,.75);line-height:1.8;max-width:480px;margin:0 auto 1.5rem}
+.cert-course-name{text-align:center;font-size:1.2rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.cert-level-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.3);border-radius:50px;padding:5px 16px;font-size:.8rem;font-weight:700;color:var(--gold);margin-bottom:1.5rem}
+.cert-meta-row{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin-top:1.5rem}
+.cert-meta-item{text-align:center}
+.cert-meta-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+.cert-meta-value{font-size:.85rem;font-weight:600;color:var(--text)}
+.cert-seal{position:absolute;bottom:2rem;right:2rem;width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,rgba(240,192,64,.15),rgba(240,192,64,.05));border:2px solid rgba(240,192,64,.3);display:flex;align-items:center;justify-content:center;font-size:1.8rem}
+
+/* CERT ACTIONS */
+.cert-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:1.5rem 0}
+.btn-download-cert{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;padding:13px 28px;border-radius:50px;font-size:.9rem;font-weight:800;border:none;cursor:pointer;transition:all .2s;box-shadow:0 6px 18px rgba(240,192,64,.3);font-family:inherit}
+.btn-download-cert:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(240,192,64,.42)}
+.btn-to-platform{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);color:var(--text);padding:13px 24px;border-radius:50px;font-size:.9rem;font-weight:600;text-decoration:none;transition:all .2s}
+.btn-to-platform:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ===== HELP CHAT WIDGET ===== */
+.help-chat-btn{position:fixed;bottom:24px;right:24px;z-index:400;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#6d28d9);color:#fff;font-size:1.4rem;border:none;cursor:pointer;box-shadow:0 8px 24px rgba(139,92,246,.45);transition:all .25s;display:flex;align-items:center;justify-content:center}
+.help-chat-btn:hover{transform:scale(1.1);box-shadow:0 12px 32px rgba(139,92,246,.55)}
+.help-chat-btn .chat-label{position:absolute;bottom:calc(100% + 8px);right:0;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:5px 12px;font-size:.75rem;font-weight:600;color:var(--text);white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);opacity:0;transform:translateY(4px);transition:all .2s;pointer-events:none}
+.help-chat-btn:hover .chat-label{opacity:1;transform:translateY(0)}
+
+.help-chat-box{position:fixed;bottom:92px;right:24px;z-index:400;width:340px;max-height:480px;background:var(--card2);border:1px solid var(--border);border-radius:var(--r2);box-shadow:0 20px 60px rgba(0,0,0,.5);display:none;flex-direction:column;overflow:hidden;animation:scaleIn .25s ease}
+.help-chat-box.open{display:flex}
+.help-chat-header{background:linear-gradient(135deg,var(--purple),#6d28d9);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.help-chat-header-left{display:flex;align-items:center;gap:8px}
+.help-chat-avatar{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:.85rem}
+.help-chat-header-title{font-size:.88rem;font-weight:700;color:#fff}
+.help-chat-header-sub{font-size:.7rem;color:rgba(255,255,255,.75)}
+.help-close{background:rgba(255,255,255,.15);border:none;color:#fff;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.help-close:hover{background:rgba(255,255,255,.3)}
+.help-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
+.help-msg{display:flex;gap:6px;align-items:flex-end}
+.help-msg.user{flex-direction:row-reverse}
+.help-msg-bubble{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:8px 11px;font-size:.8rem;color:var(--text);line-height:1.55;max-width:80%;word-break:break-word}
+.help-msg.user .help-msg-bubble{background:linear-gradient(135deg,var(--purple),#6d28d9);border-color:transparent;color:#fff;border-radius:12px 12px 2px 12px}
+.help-msg.bot .help-msg-bubble{border-radius:12px 12px 12px 2px}
+.help-typing span{display:inline-block;width:5px;height:5px;background:var(--muted);border-radius:50%;animation:typeDot 1.2s infinite ease-in-out}
+.help-typing span:nth-child(2){animation-delay:.15s}
+.help-typing span:nth-child(3){animation-delay:.3s}
+@keyframes typeDot{0%,80%,100%{opacity:.3;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+.help-suggestions{padding:8px 10px;border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0}
+.help-sugg-btn{background:var(--card);border:1px solid var(--border);border-radius:50px;padding:4px 10px;font-size:.72rem;color:var(--muted);cursor:pointer;transition:all .2s;font-family:inherit}
+.help-sugg-btn:hover{border-color:var(--purple);color:var(--purple)}
+.help-input-row{border-top:1px solid var(--border);padding:8px;display:flex;gap:6px;flex-shrink:0}
+.help-input{flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:50px;padding:7px 12px;font-size:.8rem;color:var(--text);outline:none;font-family:inherit;transition:border .2s}
+.help-input:focus{border-color:var(--purple)}
+.help-send{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#6d28d9);border:none;color:#fff;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .2s}
+.help-send:hover{transform:scale(1.1)}
+.help-send:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOAST */
+.toast-wrap{position:fixed;bottom:92px;left:24px;z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--card2);border:1px solid var(--border);border-radius:12px;padding:11px 15px;font-size:.82rem;font-weight:500;color:var(--text);box-shadow:0 8px 28px rgba(0,0,0,.4);animation:fadeUp .3s ease;display:flex;align-items:center;gap:8px;max-width:280px}
+.toast.success{border-color:rgba(34,197,94,.4)}
+.toast.out{animation:fadeUp .3s ease reverse forwards}
+
+@media(max-width:600px){
+  .criteria-grid{grid-template-columns:1fr}
+  .cert-meta-row{gap:20px}
+  .help-chat-box{width:calc(100vw - 32px);right:16px}
+  .cert-actions{flex-direction:column;align-items:center}
 }
 
-function App() {
-  return (
-    <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
-}
+/* ====== QUIZ SCENES ====== */
+#scene-intro{padding:3rem 1.5rem 5rem}
+.intro-wrap,.results-wrap{max-width:720px;margin:0 auto}
+.exam-hero{background:linear-gradient(135deg,#0d1928,#111428);border:1px solid #253650;border-radius:24px;padding:3rem 2.5rem;margin-bottom:2rem;position:relative;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4)}
+.exam-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 20% 20%,rgba(240,192,64,.06),transparent 60%);pointer-events:none}
+.exam-hero-badge{display:inline-flex;align-items:center;gap:7px;background:rgba(240,192,64,.12);border:1px solid rgba(240,192,64,.25);color:#f0c040;font-size:.75rem;font-weight:700;padding:5px 14px;border-radius:20px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:1.25rem}
+.exam-hero h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.15;margin-bottom:.75rem;background:linear-gradient(135deg,#f0c040 0%,#fff 60%,#3b82f6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.exam-hero-sub{color:#6b84a0;font-size:1rem;line-height:1.7;max-width:520px;margin-bottom:2rem}
+.exam-info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:2rem}
+.exam-info-card{background:rgba(255,255,255,.03);border:1px solid #1e2d47;border-radius:12px;padding:1.1rem 1rem;text-align:center}
+.exam-info-val{font-size:1.4rem;font-weight:800;color:#f0c040;margin-bottom:3px}
+.exam-info-label{font-size:.75rem;color:#6b84a0;font-weight:500}
+.exam-rules{background:rgba(59,130,246,.06);border:1px solid rgba(59,130,246,.15);border-radius:14px;padding:1.25rem 1.4rem;margin-bottom:1.75rem}
+.exam-rules-title{font-size:.85rem;font-weight:700;color:#3b82f6;margin-bottom:.75rem;text-transform:uppercase;letter-spacing:.04em}
+.exam-rules ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.exam-rules li{font-size:.88rem;color:#6b84a0;display:flex;align-items:flex-start;gap:9px;line-height:1.55}
+.exam-rules li::before{content:'';width:6px;height:6px;border-radius:50%;background:#3b82f6;flex-shrink:0;margin-top:6px}
+.btn-start-exam{width:100%;padding:16px;background:linear-gradient(135deg,#f0c040,#c89a20);color:#000;font-weight:700;font-size:1.05rem;border:none;border-radius:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .25s;font-family:inherit;box-shadow:0 8px 24px rgba(240,192,64,.25)}
+.btn-start-exam:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(240,192,64,.35)}
+#scene-quiz{padding:0}
+.quiz-progress-bar{background:rgba(8,12,20,.95);backdrop-filter:blur(12px);border-bottom:1px solid #1e2d47;padding:1rem 2rem;position:sticky;top:60px;z-index:90}
+.quiz-progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.65rem}
+.quiz-progress-label{font-size:.82rem;font-weight:600;color:#6b84a0}
+.quiz-progress-count{font-size:.82rem;font-weight:700;color:#f0c040}
+.quiz-track{height:5px;background:#1e2d47;border-radius:3px;overflow:hidden}
+.quiz-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,#f0c040,#3b82f6);transition:width .5s cubic-bezier(.4,0,.2,1)}
+.question-wrap{max-width:720px;margin:0 auto;padding:2.5rem 1.5rem 5rem}
+.q-module-tag{display:inline-flex;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b84a0;background:#0f1928;border:1px solid #1e2d47;padding:4px 12px;border-radius:20px;margin-bottom:1.5rem}
+.q-number{font-size:.8rem;font-weight:700;color:#f0c040;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.65rem}
+.q-text{font-size:clamp(1.2rem,2.5vw,1.5rem);line-height:1.45;color:#e8edf5;margin-bottom:2rem;font-weight:500}
+.options{display:flex;flex-direction:column;gap:11px;margin-bottom:2rem}
+.option{position:relative;background:#0f1928;border:1.5px solid #1e2d47;border-radius:13px;padding:1rem 1.25rem 1rem 3.5rem;cursor:pointer;transition:all .2s;user-select:none}
+.option:hover:not(.locked){border-color:#253650;background:#131f30;transform:translateX(3px)}
+.option.selected:not(.locked){border-color:#3b82f6;background:rgba(59,130,246,.12)}
+.option.correct{border-color:#22c55e!important;background:rgba(34,197,94,.12)!important;animation:cpop .4s cubic-bezier(.34,1.56,.64,1)}
+.option.wrong{border-color:#ef4444!important;background:rgba(239,68,68,.12)!important;animation:shake .4s ease}
+.option.locked{cursor:default}
+.option.faded{opacity:.4}
+@keyframes cpop{0%{transform:scale(1)}50%{transform:scale(1.02)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.option-letter{position:absolute;left:1.1rem;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:7px;background:#111827;border:1px solid #253650;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;color:#6b84a0;transition:all .2s}
+.option.selected .option-letter{background:#3b82f6;border-color:#3b82f6;color:#fff}
+.option.correct .option-letter{background:#22c55e;border-color:#22c55e;color:#fff}
+.option.wrong .option-letter{background:#ef4444;border-color:#ef4444;color:#fff}
+.option-text{font-size:.95rem;color:#e8edf5;line-height:1.55;padding-top:2px}
+.feedback-box{border-radius:13px;padding:1.1rem 1.25rem;margin-bottom:1.75rem;display:none}
+.feedback-box.show{display:flex;gap:.85rem;align-items:flex-start;animation:fsu .3s ease}
+@keyframes fsu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.feedback-box.cfb{background:rgba(34,197,94,.12);border:1px solid rgba(34,197,94,.3)}
+.feedback-box.wfb{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3)}
+.feedback-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.feedback-title{font-size:.88rem;font-weight:700;margin-bottom:3px}
+.feedback-box.cfb .feedback-title{color:#22c55e}
+.feedback-box.wfb .feedback-title{color:#ef4444}
+.feedback-text{font-size:.85rem;color:#6b84a0;line-height:1.6}
+.q-nav{display:flex;justify-content:flex-end;gap:12px}
+.btn-check{background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;font-weight:700;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;font-size:.92rem;font-family:inherit;transition:all .2s;display:flex;align-items:center;gap:8px}
+.btn-check:disabled{opacity:.4;cursor:not-allowed}
+.btn-qnext{background:linear-gradient(135deg,#f0c040,#c89a20);color:#000;font-weight:700;padding:12px 28px;border-radius:10px;border:none;cursor:pointer;font-size:.92rem;font-family:inherit;transition:all .2s;display:none}
+.btn-qnext:hover{transform:translateY(-1px)}
+#scene-results{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 60px);padding:2rem 1.5rem}
+.score-hero{background:#0f1928;border:1px solid #1e2d47;border-radius:24px;padding:2.75rem 2.5rem;text-align:center;margin-bottom:1.5rem}
+.score-circle{width:110px;height:110px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;position:relative}
+.score-circle-inner{width:84px;height:84px;border-radius:50%;background:#0f1928;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:1}
+.score-num{font-size:1.5rem;font-weight:800;line-height:1}
+.score-denom{font-size:.7rem;color:#6b84a0;margin-top:2px}
+.score-hero h2{font-size:1.75rem;margin-bottom:.5rem}
+.score-hero p{color:#6b84a0;font-size:.95rem;line-height:1.65;max-width:420px;margin:0 auto 1.5rem}
+.score-breakdown{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:1.75rem}
+.score-stat{background:#111827;border:1px solid #1e2d47;border-radius:11px;padding:1rem;text-align:center}
+.score-stat-num{font-size:1.3rem;font-weight:800;margin-bottom:3px}
+.score-stat-label{font-size:.72rem;color:#6b84a0}
+.btn-retry-quiz{width:100%;padding:14px;background:#131f30;border:1.5px solid #253650;color:#e8edf5;font-weight:700;font-size:.95rem;border-radius:11px;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-retry-quiz:hover{border-color:#3b82f6;color:#3b82f6}
+.btn-to-part2{width:100%;padding:15px;background:linear-gradient(135deg,#22c55e,#15803d);color:#fff;font-weight:700;font-size:1rem;border-radius:12px;border:none;cursor:pointer;font-family:inherit;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px rgba(34,197,94,.25);margin-bottom:12px}
+.btn-to-part2:hover{transform:translateY(-2px)}
+.review-section{margin-top:1.5rem}
+.review-title{font-size:.8rem;font-weight:700;color:#6b84a0;letter-spacing:.08em;text-transform:uppercase;margin-bottom:1rem}
+.review-item{background:#0f1928;border:1px solid #1e2d47;border-radius:12px;padding:1rem 1.2rem;margin-bottom:10px;display:flex;gap:12px;align-items:flex-start}
+.review-q{font-size:.85rem;color:#e8edf5;margin-bottom:4px;font-weight:500}
+.review-a{font-size:.8rem;color:#6b84a0;line-height:1.5}
+.rev-ok{color:#22c55e;font-weight:600}
+.rev-bad{color:#ef4444;font-weight:600}
+</style>
+</head>
+<body>
 
-export default App;@import "tailwindcss";
-@import "tw-animate-css";
+<!-- TOPBAR -->
+<div class="topbar">
+  <a href="eksamen-d.html" class="topbar-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Del 1
+  </a>
+  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="topbar-logo">
+    <div class="topbar-logo-icon">LA</div>
+    LearnAI DK
+  </a>
+  <div class="topbar-tag">Eksamen D · Del 2</div>
+</div>
 
-@custom-variant dark (&:is(.dark *));
+<!-- SCENE: GATE -->
 
-@theme inline {
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-}
-
-:root {
-  --radius: 0.5rem;
-  --background: oklch(0.975 0.008 75);
-  --foreground: oklch(0.18 0.03 240);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.03 240);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.03 240);
-  --primary: oklch(0.28 0.08 240);
-  --primary-foreground: oklch(0.97 0.005 75);
-  --secondary: oklch(0.93 0.008 75);
-  --secondary-foreground: oklch(0.28 0.08 240);
-  --muted: oklch(0.94 0.006 75);
-  --muted-foreground: oklch(0.52 0.03 240);
-  --accent: oklch(0.75 0.15 75);
-  --accent-foreground: oklch(0.18 0.03 240);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.88 0.01 240);
-  --input: oklch(0.88 0.01 240);
-  --ring: oklch(0.28 0.08 240);
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-    font-family: 'Source Serif 4', Georgia, serif;
-  }
-  h1, h2, h3, h4, h5, h6 {
-    font-family: 'Sora', sans-serif;
-  }
-  button:not(:disabled),
-  [role="button"]:not([aria-disabled="true"]),
-  [type="button"]:not(:disabled),
-  [type="submit"]:not(:disabled),
-  a[href],
-  select:not(:disabled) {
-    @apply cursor-pointer;
-  }
-}
-
-@layer components {
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1280px;
-    }
-  }
-
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  .animate-fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
-  }
-
-  .stagger-1 { animation-delay: 0.1s; opacity: 0; }
-  .stagger-2 { animation-delay: 0.2s; opacity: 0; }
-}import React, { createContext, useContext, useEffect, useState } from "react";
-
-type Theme = "light" | "dark";
-
-interface ThemeContextType {
-  theme: Theme;
-  toggleTheme: () => void;
-}
-
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
-
-export function ThemeProvider({
-  children,
-  defaultTheme = "light",
-  switchable = false,
-}: {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  switchable?: boolean;
-}) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    if (switchable) {
-      setTheme((prev) => (prev === "light" ? "dark" : "light"));
-    }
-  };
-
-  return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-}
-
-export function useTheme() {
-  const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider");
-  }
-  return context;
-}import React from "react";
-
-interface Props {
-  children: React.ReactNode;
-}
-
-interface State {
-  hasError: boolean;
-  error?: Error;
-}
-
-export default class ErrorBoundary extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError(error: Error): State {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error: Error) {
-    console.error("Error caught by boundary:", error);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="min-h-screen flex items-center justify-center bg-background p-4">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-foreground mb-2">
-              Noget gik galt
-            </h1>
-            <p className="text-muted-foreground mb-4">
-              {this.state.error?.message}
-            </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90"
-            >
-              Genindlæs siden
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}import { useState } from "react";
-import { ExternalLink, BookOpen, Trophy, ChevronDown, ChevronUp, Brain, Star, ArrowRight } from "lucide-react";
-import { useLocation } from "wouter";
-
-const HERO_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/futuristic-3d-workspace-8MDAEsBmBmR2BoGC3W6ikv.webp";
-const PROGRESSION_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663596136209/BQT73JkTNuR4wefQuwc6jG/progression-illustration-csmR3p9s6c9RDBAgWPixGr.webp";
-
-interface CourseItem {
-  title: string;
-  type: "kursus" | "quiz" | "eksamen";
-  publicUrl?: string;
-  note?: string;
-  comingSoon?: boolean;
-}
-
-interface Level {
-  id: string;
-  label: string;
-  sublabel: string;
-  description: string;
-  color: string;
-  bgColor: string;
-  borderColor: string;
-  textColor: string;
-  badgeClass: string;
-  price: string;
-  items: CourseItem[];
-}
-
-const levels: Level[] = [
-  {
-    id: "D",
-    label: "Niveau D",
-    sublabel: "Nybegynder",
-    description: "Det perfekte startpunkt. Gratis og tilgængeligt for alle – ingen forkundskaber nødvendige. Lær de grundlæggende principper i kunstig intelligens og bestå din første eksamen.",
-    color: "#2d8a4e",
-    bgColor: "bg-emerald-50",
-    borderColor: "border-emerald-300",
-    textColor: "text-emerald-800",
-    badgeClass: "level-badge-d",
-    price: "Gratis",
-    items: [
-      {
-        title: "D Kursus",
-        type: "kursus",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-d.html",
-      },
-      {
-        title: "D Eksamen",
-        type: "eksamen",
-        publicUrl: "https://magnuscode-ai.github.io/ai-kursus/",
-        note: "Skal muligvis gøres nemmere",
-      },
-    ],
-  },
-  {
-    id: "C",
-    label: "Niveau C",
-    sublabel: "Øvet",
-    description: "Tag det næste skridt. Tre moduler med mini-quizzer undervejs og to afsluttende eksamener. Du bygger videre på grundlaget fra niveau D og dykker dybere ned i AI-koncepter.",
-    color: "#1e5fa8",
-    bgColor: "bg-blue-50",
-    borderColor: "border-blue-300",
-    textColor: "text-blue-800",
-    badgeClass: "level-badge-c",
-    price: "Kommende",
-    items: [
-      { title: "C1 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c1.html" },
-      { title: "C1 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c1.html" },
-      { title: "C2 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c2.html" },
-      { title: "C2 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-c2.html" },
-      { title: "C3 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-c3.html" },
-      { title: "C Eksamen 1", type: "eksamen", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c.html" },
-      { title: "C Eksamen 2", type: "eksamen", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/eksamen-c2.html" },
-    ],
-  },
-  {
-    id: "B",
-    label: "Niveau B",
-    sublabel: "Avanceret",
-    description: "Fem intensive moduler med tilhørende quizzer og tre afsluttende eksamener. På dette niveau arbejder du med avancerede AI-teknikker og begynder at anvende AI professionelt.",
-    color: "#c05c10",
-    bgColor: "bg-orange-50",
-    borderColor: "border-orange-300",
-    textColor: "text-orange-800",
-    badgeClass: "level-badge-b",
-    price: "Kommende",
-    items: [
-      { title: "B1 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b1.html" },
-      { title: "B1 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b1.html" },
-      { title: "B2 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b2.html" },
-      { title: "B2 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b2.html" },
-      { title: "B3 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b3.html" },
-      { title: "B3 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b3.html" },
-      { title: "B4 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b4.html" },
-      { title: "B4 Mini Quiz", type: "quiz", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/quiz-b4.html" },
-      { title: "B5 Kursus", type: "kursus", publicUrl: "https://magnuscode-ai.github.io/ai-kursus/kursus-b5.html" },
-      { title: "B Eksamen 1", type: "eksamen", comingSoon: true },
-      { title: "B Eksamen 2", type: "eksamen", comingSoon: true },
-      { title: "B Eksamen 3", type: "eksamen", comingSoon: true },
-    ],
-  },
-  {
-    id: "A",
-    label: "Niveau A",
-    sublabel: "Ekspert",
-    description: "Det ultimative niveau. Bliv en certificeret AI-ekspert med dybdegående viden og praktiske færdigheder. Niveau A er under udvikling og lanceres snart.",
-    color: "#a07010",
-    bgColor: "bg-amber-50",
-    borderColor: "border-amber-300",
-    textColor: "text-amber-800",
-    badgeClass: "level-badge-a",
-    price: "Kommende",
-    items: [],
-  },
-];
-
-function TypeIcon({ type }: { type: CourseItem["type"] } ) {
-  if (type === "kursus") return <BookOpen className="w-4 h-4" />;
-  if (type === "quiz") return <Brain className="w-4 h-4" />;
-  return <Trophy className="w-4 h-4" />;
-}
-
-function TypeLabel({ type }: { type: CourseItem["type"] }) {
-  if (type === "kursus") return "Kursus";
-  if (type === "quiz") return "Quiz";
-  return "Eksamen";
-}
-
-function CourseCard({ item, levelColor }: { item: CourseItem; levelColor: string }) {
-  const typeColors: Record<CourseItem["type"], string> = {
-    kursus: "bg-slate-100 text-slate-700",
-    quiz: "bg-violet-100 text-violet-700",
-    eksamen: "bg-rose-100 text-rose-700",
-  };
-
-  return (
-    <div className={`flex items-center justify-between gap-3 p-3 rounded-lg border border-border bg-white hover:shadow-md transition-all duration-200 group ${item.comingSoon ? "opacity-60" : "hover:-translate-y-0.5"}`}>
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="w-8 h-8 rounded-md flex items-center justify-center flex-shrink-0 text-white" style={{ backgroundColor: levelColor }}>
-          <TypeIcon type={item.type} />
-        </div>
-        <div className="min-w-0">
-          <p className="font-semibold text-sm text-foreground truncate" style={{ fontFamily: "'Sora', sans-serif" }}>
-            {item.title}
-          </p>
-          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[item.type]}`}>
-            <TypeLabel type={item.type} />
-          </span>
-        </div>
+<!-- SCENE: INTRO -->
+<div class="scene" id="scene-intro">
+  <div class="intro-wrap">
+    <div class="exam-hero">
+      <div class="exam-hero-badge">&#127891; Eksamen D &middot; Kursusbevis</div>
+      <h1>Du er klar til eksamen!</h1>
+      <p class="exam-hero-sub">Du har gennemg&aring;et alle 5 moduler i Kursus D. Nu er det tid til at bevise hvad du har l&aelig;rt og f&aring; dit officielle personlige bevis.</p>
+      <div class="exam-info-grid">
+        <div class="exam-info-card"><div class="exam-info-val">15</div><div class="exam-info-label">Sp&oslash;rgsm&aring;l i del 1</div></div>
+        <div class="exam-info-card"><div class="exam-info-val">12/15</div><div class="exam-info-label">Kr&aelig;ves for at best&aring;</div></div>
+        <div class="exam-info-card"><div class="exam-info-val">100</div><div class="exam-info-label">Coins ved best&aring;else</div></div>
       </div>
-      <div className="flex-shrink-0">
-        {item.comingSoon ? (
-          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">Snart</span>
-        ) : item.publicUrl ? (
-          <a href={item.publicUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full text-white transition-all hover:opacity-90 hover:shadow-sm" style={{ backgroundColor: levelColor }}>
-            Åbn <ExternalLink className="w-3 h-3" />
-          </a>
-        ) : null}
+      <div class="exam-rules">
+        <div class="exam-rules-title">&#128203; S&aring;dan fungerer eksamen</div>
+        <ul>
+          <li>Del 1 har 15 sp&oslash;rgsm&aring;l om alt du har l&aelig;rt i Kursus D. Du skal have mindst 12 rigtige for at best&aring;.</li>
+          <li>Hvert sp&oslash;rgsm&aring;l har 4 svarmuligheder &mdash; kun &eacute;n er rigtig. Du f&aring;r forklaring p&aring; hvert svar.</li>
+          <li>Del 2 er en praktisk opgave: skriv et godt prompt der viser du kan bruge de 3 regler fra Modul 4.</li>
+          <li>N&aring;r du har best&aring;et begge dele, f&aring;r du dit personlige bevis med navn, email og dato &mdash; og 100 coins.</li>
+          <li>Du kan pr&oslash;ve igen hvis du ikke klarer det &mdash; men du kan kun best&aring; og f&aring; beviset &eacute;n gang.</li>
+        </ul>
+      </div>
+      <button class="btn-start-exam" onclick="startQuiz()">
+        Start del 1 &mdash; Multiple choice
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SCENE: QUIZ -->
+<div class="scene" id="scene-quiz">
+  <div class="quiz-progress-bar">
+    <div class="quiz-progress-top">
+      <span class="quiz-progress-label">Del 1 &mdash; Multiple choice</span>
+      <span class="quiz-progress-count" id="progressCount">1 / 15</span>
+    </div>
+    <div class="quiz-track"><div class="quiz-fill" id="quizFill" style="width:0%"></div></div>
+  </div>
+  <div class="question-wrap">
+    <div class="q-module-tag" id="qModuleTag"></div>
+    <div class="q-number" id="qNumber"></div>
+    <div class="q-text" id="qText"></div>
+    <div class="options" id="optionsWrap"></div>
+    <div class="feedback-box" id="feedbackBox">
+      <div class="feedback-icon" id="feedbackIcon"></div>
+      <div>
+        <div class="feedback-title" id="feedbackTitle"></div>
+        <div class="feedback-text" id="feedbackText"></div>
       </div>
     </div>
-  );
-}
+    <div class="q-nav">
+      <button class="btn-check" id="btnCheck" onclick="checkAnswer()" disabled>Tjek svar</button>
+      <button class="btn-qnext" id="btnQNext" onclick="nextQuestion()">N&aelig;ste &rarr;</button>
+    </div>
+  </div>
+</div>
 
-function LevelSection({ level }: { level: Level }) {
-  const [expanded, setExpanded] = useState(level.id === "D");
+<!-- SCENE: RESULTS -->
+<div class="scene" id="scene-results">
+  <div class="results-wrap">
+    <div class="score-hero">
+      <div class="score-circle" id="scoreCircle">
+        <div class="score-circle-inner">
+          <div class="score-num" id="scoreNum">0</div>
+          <div class="score-denom">af 15</div>
+        </div>
+      </div>
+      <h2 id="resultsTitle"></h2>
+      <p id="resultsDesc"></p>
+      <div class="score-breakdown">
+        <div class="score-stat"><div class="score-stat-num" id="statOk" style="color:#22c55e">0</div><div class="score-stat-label">Rigtige</div></div>
+        <div class="score-stat"><div class="score-stat-num" id="statBad" style="color:#ef4444">0</div><div class="score-stat-label">Forkerte</div></div>
+        <div class="score-stat"><div class="score-stat-num" id="statPct" style="color:#f0c040">0%</div><div class="score-stat-label">Point</div></div>
+      </div>
+      <button class="btn-to-part2" id="btnToPart2" style="display:none" onclick="goToPart2()">
+        Forts&aelig;t til Del 2 &mdash; Praktisk opgave &rarr;
+      </button>
+      <button class="btn-retry-quiz" id="btnRetryQuiz" onclick="startQuiz()">&#8634; Pr&oslash;v del 1 igen</button>
+    </div>
+    <div class="review-section" id="reviewSection"></div>
+  </div>
+</div>
 
-  return (
-    <div className={`rounded-2xl border-2 ${level.borderColor} overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300`}>
-      <div className={`${level.bgColor} p-6`}>
-        <div className="flex items-start justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl shadow-md flex-shrink-0" style={{ backgroundColor: level.color, fontFamily: "'Sora', sans-serif" }}>
-              {level.id}
-            </div>
-            <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="text-xl font-bold" style={{ fontFamily: "'Sora', sans-serif", color: level.color }}>
-                  {level.label}
-                </h3>
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${level.textColor} bg-white/60`}>
-                  {level.sublabel}
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground mt-1 max-w-lg">{level.description}</p>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-2 flex-shrink-0">
-            <span className="text-sm font-bold px-3 py-1 rounded-full text-white" style={{ backgroundColor: level.color }}>
-              {level.price}
-            </span>
-            {level.items.length > 0 && (
-              <button onClick={() => setExpanded(!expanded)} className={`flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border-2 transition-all ${level.borderColor} ${level.textColor} bg-white/80 hover:bg-white`}>
-                {expanded ? <><ChevronUp className="w-3 h-3" /> Skjul</> : <><ChevronDown className="w-3 h-3" /> Vis {level.items.length} moduler</>}
-              </button>
-            )}
-            {level.items.length === 0 && <span className="text-xs text-muted-foreground italic">Under udvikling</span>}
-          </div>
+<div class="scene" id="scene-gate">
+  <div class="gate-icon">🔐</div>
+  <div class="gate-title">Log ind for at starte eksamen</div>
+  <div class="gate-sub">Du skal v&#230;re logget ind p&#229; LearnAI for at tage eksamen og gemme dit personlige bevis p&#229; din profil.</div>
+  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">G&#229; til LearnAI og log ind</a>
+</div>
+
+<!-- SCENE: ALREADY PASSED -->
+<div class="scene" id="scene-passed">
+  <div class="gate-icon">&#127942;</div>
+  <div class="gate-title">Du har allerede best&#229;et!</div>
+  <div class="gate-sub">Du har allerede best&#229;et Kursus D og dit bevis er gemt p&#229; din profil. Du kan ikke tage eksamen igen med samme bruger.</div>
+  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">Se mit bevis p&#229; platformen</a>
+</div>
+
+<!-- SCENE: TASK -->
+<div class="scene" id="scene-task">
+  <div class="task-wrap">
+    <div class="task-header">
+      <div class="task-badge">✅ Del 1 bestået · Nu del 2</div>
+      <h1 class="task-title">Skriv et <span>godt prompt</span></h1>
+      <p class="task-sub">Nu skal du vise at du kan bruge det du har lært. Skriv et prompt der følger de 3 regler fra Kursus D — og få det bedømt med det samme.</p>
+    </div>
+
+    <!-- GUIDE -->
+    <div class="guide-box">
+      <div class="guide-title">📋 Sådan klarer du opgaven — læs dette grundigt</div>
+      <div class="guide-step">
+        <div class="guide-step-num">1</div>
+        <div class="guide-step-text"><strong>Vælg en situation fra din hverdag</strong> — noget du faktisk kunne have brug for hjælp til. Det kan fx være at skrive en mail, planlægge noget, få en forklaring eller lave en liste.</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">2</div>
+        <div class="guide-step-text"><strong>Skriv hvem du er</strong> — giv AI kontekst om dig selv. Fx: "Jeg er pensionist", "Jeg er lærer", "Jeg er ny til AI" eller "Jeg har en lille virksomhed".</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">3</div>
+        <div class="guide-step-text"><strong>Beskriv præcis hvad du vil have hjælp til</strong> — ikke bare "hjælp mig med en mail" men "skriv en mail til min nabo om at vi er nødt til at flytte vores fælles container".</div>
+      </div>
+      <div class="guide-step">
+        <div class="guide-step-num">4</div>
+        <div class="guide-step-text"><strong>Bed om et bestemt format</strong> — fx "skriv det som et kort brev", "lav en punktliste", "forklar det i to sætninger" eller "giv mig 5 forslag".</div>
+      </div>
+    </div>
+
+    <!-- CRITERIA -->
+    <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Hvad bedømmelsen kigger efter</div>
+    <div class="criteria-grid">
+      <div class="criteria-card">
+        <div class="criteria-icon blue">🎯</div>
+        <div class="criteria-body">
+          <h4>Specifikt emne</h4>
+          <p>Promptet skal handle om noget konkret — ikke bare "hjælp mig" eller "skriv noget"</p>
+        </div>
+      </div>
+      <div class="criteria-card">
+        <div class="criteria-icon green">👤</div>
+        <div class="criteria-body">
+          <h4>Kontekst om dig</h4>
+          <p>Du skal fortælle hvem du er, eller hvad situationen er — giv AI noget at arbejde med</p>
+        </div>
+      </div>
+      <div class="criteria-card">
+        <div class="criteria-icon amber">📄</div>
+        <div class="criteria-body">
+          <h4>Ønsket format</h4>
+          <p>Sig hvordan du vil have svaret — liste, brev, kort forklaring, antal sætninger osv.</p>
+        </div>
+      </div>
+      <div class="criteria-card">
+        <div class="criteria-icon blue">📏</div>
+        <div class="criteria-body">
+          <h4>Tilpas længde</h4>
+          <p>Dit prompt skal være mindst 30 tegn og vise at du har tænkt over det</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- EXAMPLE -->
+    <div class="example-box">
+      <div class="example-label">✓ Eksempel på et godt prompt</div>
+      <div class="example-text">"Jeg er pensionist og vil gerne invitere mine naboer til kaffe på lørdag. Hjælp mig med at skrive en venlig og kort invitation — ca. 3-4 sætninger."</div>
+    </div>
+
+    <!-- PROMPT INPUT -->
+    <div class="prompt-area-wrap">
+      <div class="prompt-area-label">
+        Skriv dit prompt her
+        <span class="prompt-char-count" id="charCount">0 tegn</span>
+      </div>
+      <textarea class="prompt-textarea" id="promptInput" placeholder="Skriv dit prompt her — husk de 3 regler: hvem du er, hvad du vil have, og hvilket format..." oninput="updateCharCount()" rows="5"></textarea>
+    </div>
+
+    <div class="attempt-warning" id="attemptWarning"></div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitPrompt()">
+      Bedøm mit prompt
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+    </button>
+
+    <!-- FEEDBACK RESULT -->
+    <div class="feedback-result" id="feedbackResult"></div>
+  </div>
+</div>
+
+<!-- SCENE: CERTIFICATE -->
+<div class="scene" id="scene-certificate">
+  <div class="cert-wrap">
+    <div class="cert-success-banner">
+      <div class="cert-success-icon">🎉</div>
+      <div class="cert-success-title">Du har bestået Kursus D!</div>
+      <div class="cert-success-sub">Du har gennemført begge dele af eksamen og bevist at du kan bruge AI trygt og klogt. Tillykke!</div>
+      <div class="cert-coins">🪙 +100 coins tilføjet til din konto</div>
+    </div>
+
+    <!-- THE CERTIFICATE -->
+    <div class="certificate-card" id="certificateCard">
+      <div class="cert-corner tl"></div>
+      <div class="cert-corner tr"></div>
+      <div class="cert-corner bl"></div>
+      <div class="cert-corner br"></div>
+      <div class="cert-watermark">🎓</div>
+      <div class="cert-seal">🏅</div>
+
+      <div class="cert-logo-row">
+        <div class="cert-logo-icon">LA</div>
+        <div class="cert-logo-text">LearnAI DK</div>
+      </div>
+
+      <div class="cert-divider"></div>
+
+      <div class="cert-headline">Dette er at bekræfte at</div>
+      <div class="cert-name" id="certName">—</div>
+      <div class="cert-email" id="certEmail">—</div>
+
+      <div class="cert-body-text">
+        har bestået den officielle eksamen og hermed opnået certifikatet for
+      </div>
+
+      <div style="text-align:center;margin-bottom:.5rem">
+        <div class="cert-course-name">Kursus D — Fra nybegynder til AI-bruger</div>
+        <div style="text-align:center">
+          <div class="cert-level-badge">🥉 Niveau D · Amatør</div>
         </div>
       </div>
 
-      {expanded && level.items.length > 0 && (
-        <div className="p-6 bg-white">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {level.items.map((item, idx) => (
-              <CourseCard key={idx} item={item} levelColor={level.color} />
-            ))}
-          </div>
+      <div class="cert-body-text" style="font-size:.82rem">
+        Kursisten har demonstreret kendskab til grundlæggende AI-koncepter, sikker brug af AI-chatbots, beskyttelse af personlige oplysninger samt evnen til at skrive effektive prompts.
+      </div>
+
+      <div class="cert-divider"></div>
+
+      <div class="cert-meta-row">
+        <div class="cert-meta-item">
+          <div class="cert-meta-label">Udstedt af</div>
+          <div class="cert-meta-value">LearnAI DK</div>
         </div>
-      )}
-    </div>
-  );
-}
-
-export default function Home() {
-  const [, setLocation] = useLocation();
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }}>
-      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(15,23,41,0.95)", borderColor: "rgba(0,212,255,0.3)" }}>
-        <div className="container flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-bold" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
-              AI
-            </div>
-            <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-              LearnAI
-            </span>
-          </div>
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#kurser" className="text-sm font-medium transition-colors" style={{ color: "#b0b8d4" }}>
-              Kurser
-            </a>
-            <button onClick={() => setLocation("/sidekurser")} className="text-sm font-medium transition-colors cursor-pointer" style={{ color: "#b0b8d4" }}>
-              Sidekurser
-            </button>
-            <a href="#om-os" className="text-sm font-medium transition-colors" style={{ color: "#b0b8d4" }}>
-              Om os
-            </a>
-          </div>
-          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1.5 text-sm font-semibold px-4 py-2 rounded-full text-white transition-all hover:opacity-90" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
-            Start gratis <ArrowRight className="w-3.5 h-3.5" />
-          </a>
+        <div class="cert-meta-item">
+          <div class="cert-meta-label">Dato</div>
+          <div class="cert-meta-value" id="certDate">—</div>
         </div>
-      </nav>
-
-      <section className="relative overflow-hidden py-16 md:py-24">
-        <div className="container">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in-up stagger-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold mb-6 border" style={{ backgroundColor: "rgba(0,212,255,0.1 )", borderColor: "#00d4ff", color: "#00d4ff" }}>
-                <Star className="w-3 h-3" fill="currentColor" />
-                Gratis startkursus – ingen forkundskaber nødvendige
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight mb-6" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
-                Lær kunstig  
-
-                <span style={{ color: "#00d4ff" }}>intelligens</span>  
-
-                trin for trin
-              </h1>
-              <p className="text-lg leading-relaxed mb-8 max-w-lg" style={{ color: "#b0b8d4" }}>
-                Fra nybegynder til ekspert – strukturerede AI-kurser med quizzer, eksamener og kursusbeviser. Inspireret af Duolingo, bygget til den danske lærende.
-              </p>
-              <div className="flex flex-wrap gap-3">
-                <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 px-6 py-3 rounded-full font-bold text-white text-base transition-all hover:opacity-90" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
-                  Start niveau D – gratis <ArrowRight className="w-4 h-4" />
-                </a>
-                <a href="#kurser" className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-base border-2 transition-all" style={{ borderColor: "#00d4ff", color: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
-                  Se alle kurser
-                </a>
-              </div>
-            </div>
-
-            <div className="relative animate-fade-in-up stagger-2">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl" style={{ boxShadow: "0 0 40px rgba(0,212,255,0.3 )" }}>
-                <img src={HERO_IMG} alt="AI neural network illustration" className="w-full h-auto object-cover" style={{ maxHeight: "420px" }} />
-              </div>
-              <div className="absolute -bottom-4 -left-4 rounded-2xl shadow-xl p-4 border-2" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold" style={{ backgroundColor: "#2d8a4e" }}>
-                    D
-                  </div>
-                  <div>
-                    <p className="text-xs" style={{ color: "#b0b8d4" }}>Start her</p>
-                    <p className="text-sm font-bold" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>Niveau D – Gratis</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div class="cert-meta-item">
+          <div class="cert-meta-label">Niveau</div>
+          <div class="cert-meta-value">D · Amatør</div>
         </div>
-      </section>
-
-      <section id="kurser" className="py-16 md:py-24">
-        <div className="container">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-              Alle kurser
-            </h2>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: "#b0b8d4" }}>
-              Klik på et niveau for at se modulerne. Hvert modul åbner direkte i kursusplatformen.
-            </p>
-          </div>
-
-          <div className="space-y-6 max-w-4xl mx-auto">
-            {levels.map((level) => (
-              <LevelSection key={level.id} level={level} />
-            ))}
-          </div>
+        <div class="cert-meta-item">
+          <div class="cert-meta-label">Del 1 score</div>
+          <div class="cert-meta-value" id="certScore">—</div>
         </div>
-      </section>
-
-      <section id="om-os" className="py-16 md:py-20 border-t" style={{ backgroundColor: "#0f1535", borderColor: "#00d4ff" }}>
-        <div className="container">
-          <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-extrabold mb-8 text-center" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-              Om os
-            </h2>
-            <div className="rounded-3xl p-8 md:p-10 shadow-sm border-2" style={{ backgroundColor: "#0a0e27", borderColor: "#00d4ff" }}>
-              <p className="text-lg leading-relaxed mb-6" style={{ color: "#b0b8d4" }}>
-                Vi bor begge i Værløse og deler en passion for matematik, business, salg, sport, konkurrence og alt der har med penge at gøre. Engang var jeg lidt af en IT-idiot, men nu er jeg begyndt at blive bedre og ønsker at blive endnu bedre.
-              </p>
-              <p className="text-lg leading-relaxed mb-8" style={{ color: "#b0b8d4" }}>
-                Jeg elsker AI – og det er netop derfor, at jeg drømmer om at lave AI-kurser og sælge dem. Dette projekt er vores første skridt mod at gøre AI tilgængeligt for alle danskere.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16" style={{ backgroundColor: "#00d4ff" }}>
-        <div className="container text-center">
-          <h2 className="text-3xl md:text-4xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#0f1729" }}>
-            Klar til at starte?
-          </h2>
-          <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "#0f1729" }}>
-            Niveau D er helt gratis. Ingen tilmelding, ingen kreditkort – bare åbn kurset og kom i gang.
-          </p>
-          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold text-lg transition-all hover:opacity-90" style={{ backgroundColor: "#0f1729", color: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
-            Start niveau D nu – det er gratis <ArrowRight className="w-5 h-5" />
-          </a>
-        </div>
-      </section>
-
-      <footer className="py-8 border-t" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold" style={{ backgroundColor: "#00d4ff", fontFamily: "'Sora', sans-serif" }}>
-              AI
-            </div>
-            <span className="font-bold" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-              LearnAI
-            </span>
-          </div>
-          <p className="text-sm text-center" style={{ color: "#b0b8d4" }}>
-            Bygget med passion i Værløse, Danmark · {new Date( ).getFullYear()}
-          </p>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setLocation("/sidekurser")} className="text-sm transition-colors font-medium" style={{ color: "#b0b8d4" }}>
-              Sidekurser
-            </button>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}import { useLocation } from "wouter";
-import { ArrowLeft, BookOpen, Zap, Palette, Code, Briefcase, Brain, Lightbulb, Users } from "lucide-react";
-
-const sideCourses = [
-  {
-    id: 1,
-    title: "Prompt Engineering",
-    description: "Lær at skrive effektive prompts til ChatGPT, Claude og andre AI-modeller. Få maksimal værdi ud af dine AI-værktøjer.",
-    icon: Zap,
-    color: "#ff6b6b",
-  },
-  {
-    id: 2,
-    title: "AI til Business",
-    description: "Hvordan implementerer du AI i din virksomhed? Strategier, værktøjer og best practices for business leaders.",
-    icon: Briefcase,
-    color: "#4ecdc4",
-  },
-  {
-    id: 3,
-    title: "Machine Learning Basics",
-    description: "En praktisk introduktion til machine learning. Byg dine første modeller med Python og scikit-learn.",
-    icon: Brain,
-    color: "#45b7d1",
-  },
-  {
-    id: 4,
-    title: "DALL-E & Midjourney",
-    description: "Lær at generere fantastiske billeder med AI. Fra prompt til professionel output.",
-    icon: Palette,
-    color: "#f9ca24",
-  },
-  {
-    id: 5,
-    title: "ChatGPT for Creators",
-    description: "Brug ChatGPT til at skabe indhold. Copywriting, videoer, podcasts og meget mere.",
-    icon: Lightbulb,
-    color: "#6c5ce7",
-  },
-  {
-    id: 6,
-    title: "AI-Etik & Sikkerhed",
-    description: "Vigtige emner omkring AI-etik, bias, sikkerhed og ansvar. Bliv en responsible AI-bruger.",
-    icon: Users,
-    color: "#a29bfe",
-  },
-  {
-    id: 7,
-    title: "Python for AI",
-    description: "Lær Python fra bunden og op til avanceret AI-programmering. Perfekt for alle niveauer.",
-    icon: Code,
-    color: "#00b894",
-  },
-  {
-    id: 8,
-    title: "AI-værktøjer til Freelancers",
-    description: "Automatiser dit arbejde som freelancer. Værktøjer der sparer tid og øger indtjening.",
-    icon: BookOpen,
-    color: "#fdcb6e",
-  },
-];
-
-export default function Sidekurser() {
-  const [, setLocation] = useLocation();
-
-  return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0f1729" }}>
-      <nav className="sticky top-0 z-50 border-b border-border/60 backdrop-blur-md" style={{ backgroundColor: "rgba(15,23,41,0.95)", borderColor: "rgba(0,212,255,0.3)" }}>
-        <div className="container flex items-center justify-between h-16">
-          <button
-            onClick={() => setLocation("/")}
-            className="flex items-center gap-2 text-sm font-semibold transition-colors"
-            style={{ color: "#00d4ff" }}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Tilbage
-          </button>
-          <span className="font-bold text-lg" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-            LearnAI Sidekurser
-          </span>
-          <div className="w-12" />
-        </div>
-      </nav>
-
-      <section className="py-16 md:py-24">
-        <div className="container">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
-              Specialiserede <span style={{ color: "#00d4ff" }}>Sidekurser</span>
-            </h1>
-            <p className="text-lg max-w-2xl mx-auto" style={{ color: "#b0b8d4" }}>
-              Gå dybere ned i specifikke AI-emner. Disse kurser er designet til at give dig praktiske færdigheder du kan bruge med det samme.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {sideCourses.map((course) => {
-              const IconComponent = course.icon;
-              return (
-                <div
-                  key={course.id}
-                  className="rounded-2xl p-6 border-2 transition-all hover:shadow-lg hover:-translate-y-1"
-                  style={{ backgroundColor: "#0a0e27", borderColor: course.color }}
-                >
-                  <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-white"
-                    style={{ backgroundColor: course.color }}
-                  >
-                    <IconComponent className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-lg font-bold mb-2" style={{ fontFamily: "'Sora', sans-serif", color: "#ffffff" }}>
-                    {course.title}
-                  </h3>
-                  <p className="text-sm leading-relaxed" style={{ color: "#b0b8d4" }}>
-                    {course.description}
-                  </p>
-                  <button
-                    className="mt-4 w-full py-2 rounded-lg font-semibold text-sm transition-all text-white"
-                    style={{ backgroundColor: course.color }}
-                  >
-                    Snart tilgængelig
-                  </button>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 border-t" style={{ backgroundColor: "#0f1535", borderColor: "#00d4ff" }}>
-        <div className="container text-center">
-          <h2 className="text-3xl font-extrabold mb-4" style={{ fontFamily: "'Sora', sans-serif", color: "#00d4ff" }}>
-            Vil du blive notificeret når de er klar?
-          </h2>
-          <p className="text-lg mb-8 max-w-xl mx-auto" style={{ color: "#b0b8d4" }}>
-            Tilmeld dig vores venteliste og få beskeden når de første sidekurser bliver tilgængelige.
-          </p>
-          <button
-            className="px-8 py-3 rounded-full font-bold text-white transition-all hover:opacity-90"
-            style={{ backgroundColor: "#00d4ff", color: "#0f1729", fontFamily: "'Sora', sans-serif" }}
-          >
-            Tilmeld venteliste
-          </button>
-        </div>
-      </section>
-
-      <footer className="py-8 border-t" style={{ backgroundColor: "#0f1729", borderColor: "#00d4ff" }}>
-        <div className="container text-center">
-          <p className="text-sm" style={{ color: "#b0b8d4" }}>
-            LearnAI © {new Date().getFullYear()} · Alle rettigheder forbeholdt
-          </p>
-        </div>
-      </footer>
-    </div>
-  );
-}import { useLocation } from "wouter";
-
-export default function NotFound() {
-  const [, setLocation] = useLocation();
-
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <div className="text-center">
-        <div className="text-6xl font-bold text-foreground mb-4">404</div>
-        <h1 className="text-2xl font-bold text-foreground mb-2">Side ikke fundet</h1>
-        <p className="text-muted-foreground mb-8">
-          Beklager, siden du søgte efter findes ikke.
-        </p>
-        <button
-          onClick={() => setLocation("/")}
-          className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 font-semibold"
-        >
-          Tilbage til forsiden
-        </button>
       </div>
     </div>
-  );
-}import express from "express";
-import { createServer } from "http";
-import path from "path";
-import { fileURLToPath } from "url";
 
-const __filename = fileURLToPath(import.meta.url );
-const __dirname = path.dirname(__filename);
+    <div class="cert-actions">
+      <button class="btn-download-cert" onclick="downloadCertificate()">
+        ⬇️ Download som PDF
+      </button>
+      <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-to-platform">
+        🏠 Gå til platformen →
+      </a>
+    </div>
 
-async function startServer() {
-  const app = express();
-  const server = createServer(app);
+    <div style="text-align:center;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-top:1rem">
+      <p style="font-size:.85rem;color:var(--muted);line-height:1.65">🚀 <strong style="color:var(--text)">Næste skridt:</strong> Dit badge er nu gemt på din profil på platformen. Klar til Kursus C?</p>
+    </div>
+  </div>
+</div>
 
-  const staticPath =
-    process.env.NODE_ENV === "production"
-      ? path.resolve(__dirname, "public")
-      : path.resolve(__dirname, "..", "dist", "public");
+<!-- HELP CHAT -->
+<button class="help-chat-btn" onclick="toggleHelpChat()" id="helpChatBtn" aria-label="Hjælp">
+  💬
+  <span class="chat-label">Brug for hjælp?</span>
+</button>
 
-  app.use(express.static(staticPath));
+<div class="help-chat-box" id="helpChatBox">
+  <div class="help-chat-header">
+    <div class="help-chat-header-left">
+      <div class="help-chat-avatar">🤖</div>
+      <div>
+        <div class="help-chat-header-title">Eksamens-hjælper</div>
+        <div class="help-chat-header-sub">Spørg om alt vedr. eksamen</div>
+      </div>
+    </div>
+    <button class="help-close" onclick="toggleHelpChat()">✕</button>
+  </div>
+  <div class="help-messages" id="helpMessages">
+    <div class="help-msg bot">
+      <div class="help-msg-bubble">Hej! 👋 Jeg hjælper dig med eksamen. Du kan spørge om hvad som helst — hvad er et prompt, hvad skal du skrive, hvad kigger bedømmelsen efter, osv.</div>
+    </div>
+  </div>
+  <div class="help-suggestions">
+    <button class="help-sugg-btn" onclick="askHelp('Hvad er et godt prompt?')">Hvad er et godt prompt?</button>
+    <button class="help-sugg-btn" onclick="askHelp('Hvad kigger bedømmelsen efter?')">Hvad bedømmes der?</button>
+    <button class="help-sugg-btn" onclick="askHelp('Giv mig et eksempel på et prompt jeg kan lade mig inspirere af')">Giv mig inspiration</button>
+    <button class="help-sugg-btn" onclick="askHelp('Hvad er de 3 regler for et godt prompt?')">De 3 regler</button>
+  </div>
+  <div class="help-input-row">
+    <input class="help-input" id="helpInput" placeholder="Skriv dit spørgsmål..." onkeydown="if(event.key==='Enter')sendHelp()">
+    <button class="help-send" id="helpSendBtn" onclick="sendHelp()">➤</button>
+  </div>
+</div>
 
-  app.get("*", (_req, res) => {
-    res.sendFile(path.join(staticPath, "index.html"));
-  });
+<div class="toast-wrap" id="toastWrap"></div>
 
-  const port = process.env.PORT || 3000;
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
-  server.listen(port, () => {
-    console.log(`Server running on http://localhost:${port}/` );
-  });
-}
-
-startServer().catch(console.error);export const APP_NAME = "LearnAI";
-export const APP_DESCRIPTION = "Lær kunstig intelligens fra nybegynder til ekspert";{
-  "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["./client/src/*"]
-    }
-  },
-  "include": ["client/src", "server"],
-  "exclude": ["node_modules", "dist"]
-}{
-  "compilerOptions": {
-    "composite": true,
-    "skipLibCheck": true,
-    "module": "ESNext",
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["vite.config.ts"]
-}import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-
-export default defineConfig({
-  plugins: [react()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "./client/src"),
-    },
-  },
-  server: {
-    middlewareMode: true,
-  },
-});import type { Config } from "tailwindcss";
-
-const config: Config = {
-  content: ["./client/index.html", "./client/src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
 };
 
-export default config;node_modules/
-dist/
-.env
-.env.local
-.env.*.local
-*.log
-.DS_Store
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Tjek session + login
+const part1Passed = sessionStorage.getItem('part1Passed');
+if (!part1Passed) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('scene-gate').classList.add('active');
+}
+
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    showScene('scene-gate');
+    return;
+  }
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      window._user = { uid: user.uid, email: user.email, ...data };
+      // Tjek om allerede bestaet
+      if ((data.completedCourses || []).includes('D')) {
+        showScene('scene-passed');
+        return;
+      }
+    } else {
+      window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
+    }
+  } catch(e) {
+    window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
+    console.error(e);
+  }
+  showScene('scene-intro');
+});
+
+// Gem bestået + coins + badge i Firebase
+window.saveCertificate = async function() {
+  if (!window._user || !window._fb) return;
+  const { db, doc: fbDoc, updateDoc, arrayUnion, serverTimestamp } = window._fb;
+  const today = new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+  try {
+    await updateDoc(fbDoc(db, 'users', window._user.uid), {
+      completedCourses: arrayUnion('D'),
+      coins: (window._user.coins || 0) + 100,
+      badges: arrayUnion({
+        level: 'D',
+        title: 'Kursus D bestået',
+        date: today,
+        earnedAt: new Date().toISOString()
+      })
+    });
+    return true;
+  } catch(e) {
+    console.error(e);
+    return false;
+  }
+};
+
+window._fb = { db, doc, updateDoc, arrayUnion, serverTimestamp };
+</script>
+
+<script>
+
+// ====== SPØRGSMÅL ======
+const QUESTIONS = [
+  {mod:'Modul 1 · Hvad er AI', q:'Din telefon bruger ansigtsgenkendelse til at låse op. Hvad er dette et eksempel på?', opts:['En simpel alarm der er programmeret til at reagere på dit ansigt','Et traditionelt kodeord der er gemt som et billede','Kunstig intelligens der har lært at genkende dit ansigt','En funktion der kun virker med internetforbindelse'], c:2, exp:'Ansigtsgenkendelse er AI — systemet har lært at genkende dit ansigt ud fra mønstre, ikke fulgt en simpel programmeret regel.'},
+  {mod:'Modul 1 · Hvad er AI', q:'Hvad er den vigtigste forskel på en lommeregner og en AI-chatbot?', opts:['En lommeregner kan kun bruge tal, mens en chatbot kan bruge alle bogstaver','En lommeregner følger faste regler, mens en AI-chatbot har lært at forstå naturligt sprog','En lommeregner er altid gratis, mens en AI-chatbot koster penge','En lommeregner er ældre og derfor mindre præcis end en AI'], c:1, exp:'En lommeregner følger præcist programmerede regler. En AI-chatbot er trænet på tekst og kan forstå og generere naturligt sprog.'},
+  {mod:'Modul 1 · Hvad er AI', q:'Hvilken AI anbefaler LearnAI til nye brugere og hvad er grunden?', opts:['ChatGPT fordi den er den ældste og mest kendte chatbot','Gemini fordi den er lavet af Google og bedst til søgninger','Claude fordi den er kendt for rolige, trygge og forståelige svar der passer til nye brugere','Copilot fordi den er gratis og integreret i Windows'], c:2, exp:'LearnAI anbefaler Claude fra Anthropic. Den er særligt god til at give rolige og trygge svar — vigtigt når man er ny til AI.'},
+  {mod:'Modul 2 · Beskyt dig selv', q:'Du vil bede en AI om hjælp til at skrive et brev til din læge. Hvad er den rigtige fremgangsmåde?', opts:['Skrive dit fulde navn, CPR og diagnose så AI\'en kan lave et præcist brev','Skrive at du er en kvinde i 60\'erne der vil bede din læge om en tid, uden personlige detaljer','Aldrig bede en AI om hjælp til lægerelaterede breve da det er farligt','Kun bruge AI til det hvis du betaler for et abonnement'], c:1, exp:'Du kan sagtens bruge AI til breve — men du behøver aldrig dele dit navn, CPR eller diagnose. Generelle beskrivelser er nok.'},
+  {mod:'Modul 2 · Beskyt dig selv', q:'Hvilke oplysninger må du ALDRIG dele med en AI-chatbot?', opts:['Din alder og dit postnummer','Dit fornavn og din hobby','CPR-nummer, adgangskoder og bankoplysninger','Hvad du spiste til morgenmad og hvilken by du bor i'], c:2, exp:'CPR-nummer, adgangskoder og bankoplysninger deles aldrig med en AI. AI-tjenester er ikke bygget til at håndtere disse oplysninger sikkert.'},
+  {mod:'Modul 2 · Beskyt dig selv', q:'Hvad betyder det at slå dataindsamling fra i AI-indstillingerne?', opts:['At AI\'en bliver dårligere og svarer forkert på dine spørgsmål','At dine samtaler ikke bruges til at forbedre AI-modellen fremover','At du ikke længere kan bruge tjenesten gratis','At AI\'en glemmer alt hvad den ved fra sin uddannelse'], c:1, exp:'Når du slår træning fra, vælger du at dine samtaler ikke bruges som data til fremtidige versioner. Det ændrer intet ved din brugsoplevelse.'},
+  {mod:'Modul 3 · Login og samtale', q:'Du har haft en god samtale med Claude. Hvad sker der hvis du lukker browseren og åbner Claude igen næste dag?', opts:['Claude husker præcist hvad I talte om og fortsætter automatisk','Claude husker dit navn men ikke den specifikke samtale','Samtalen er væk og Claude starter forfra uden erindring om jeres chat','Claude sender dig en mail med et resumé af samtalen'], c:2, exp:'AI-chatbots husker ikke fra session til session. Næste gang du åbner Claude starter du på en frisk. Kun i den aktive samtale husker Claude hvad I har talt om.'},
+  {mod:'Modul 3 · Login og samtale', q:'Hvad er den vigtigste forskel på at bruge Claude og at søge på Google?', opts:['Google er gratis mens Claude altid koster penge','Google finder eksisterende sider på nettet, mens Claude genererer svar baseret på sin træning og ikke kender dagens nyheder','Claude er bedre til at finde specifikke hjemmesider end Google','Der er ingen forskel da de kan begge det samme'], c:1, exp:'Google finder og viser eksisterende indhold fra nettet. Claude genererer svar baseret på sin træning — men kender ikke aktuelle nyheder og kan tage fejl på specifikke fakta.'},
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvilket prompt vil give det bedste og mest præcise svar fra en AI?', opts:['Hjælp mig','Hjælp mig med en mail til min nabo om støj fra hans have om aftenen — skriv den venligt og hold den under 5 sætninger','Skriv noget til mig','Lav en mail'], c:1, exp:'Et godt prompt er specifikt, giver kontekst og beder om et bestemt format. Hjælp mig er for uspecifikt — AI\'en ved ikke hvad du har brug for.'},
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvad betyder kontekst i sammenhæng med et godt prompt?', opts:['En teknisk kode du skal bruge for at AI\'en forstår dig','Oplysninger om hvem du er og hvad situationen er, så AI\'en kan give et relevant svar','En liste over alle de ord du bruger i din besked','Det antal tegn dit prompt indeholder'], c:1, exp:'Kontekst er baggrundsinformationen du giver AI\'en — fx jeg er pensionist eller det er til min chef. Det giver AI\'en mulighed for at skræddersy sit svar til din situation.'},
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Du vil have AI\'en til at forklare hvad streaming er på en enkel måde. Hvilken formulering er bedst?', opts:['Streaming','Forklar streaming','Forklar hvad streaming er i to korte sætninger som om jeg aldrig har hørt ordet. Brug et hverdagseksempel','Hvad ved du om streaming og kan du forklare det på mange måder med eksempler og historik'], c:2, exp:'Den tredje mulighed indeholder alle tre elementer: hvad du vil have, format (to korte sætninger) og niveau (aldrig hørt det). Det giver præcist det svar du ønsker.'},
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvad kan du gøre hvis AI\'en giver dig et svar du ikke forstår?', opts:['Lukke samtalen og starte en ny da du ikke kan ændre et svar der er givet','Skrive videre i samme samtale og bede om at det forklares enklere eller uddybes','Slette din konto og oprette en ny for at få et bedre svar','Vente 24 timer da AI\'en forbedrer automatisk sit svar over tid'], c:1, exp:'Du kan altid stille opfølgende spørgsmål i samme samtale — fx Kan du forklare det enklere? AI\'en husker hvad I talte om og kan bygge videre på det.'},
+  {mod:'Modul 5 · Undgå faldgruber', q:'Hvad betyder det at en AI hallucerer?', opts:['At AI\'en laver grafiske billeder i stedet for at svare med tekst','At AI\'en genererer overbevisende svar der lyder korrekte men faktisk er forkerte eller opdigtede','At AI\'en taler i metaforer i stedet for præcise svar','At AI\'en kun kan svare om emner den lærte om inden 2020'], c:1, exp:'Hallucination er når en AI finder på fakta der lyder troværdige men er forkerte. Sker især med specifikke tal, navne og datoer — dobbelttjek altid vigtige oplysninger.'},
+  {mod:'Modul 5 · Undgå faldgruber', q:'Du spørger en AI om vejret i morgen i København. Hvad er problemet med det?', opts:['AI\'en kan ikke forstå navne på byer','AI\'en har ikke adgang til aktuelle vejrdata — brug vejr.dk eller en vejr-app i stedet','AI\'en er for upræcis til at give nyttige svar om vejret','Der er intet problem da AI-chatbots er perfekte til vejrudsigter'], c:1, exp:'AI-chatbots er ikke forbundet til internettet og kender ikke aktuelle data som vejr eller nyheder. Brug en søgemaskine eller dedikeret app til den slags.'},
+  {mod:'Modul 5 · Undgå faldgruber', q:'Du har ondt i maven og overvejer at spørge en AI om det er noget alvorligt. Hvad er den rigtige brug af AI her?', opts:['Stole fuldt på AI\'ens svar da den har adgang til al medicinsk viden og er mere pålidelig end din læge','Bruge AI til at forberede spørgsmål til lægen eller forstå termer, men aldrig som erstatning for en rigtig læge','Aldrig bruge AI til noget sundhedsrelateret da det altid er farligt','Kun bruge AI hvis symptomerne har stået på i mere end en uge'], c:1, exp:'AI er god til at forberede sig til et lægebesøg — forstå termer, formulere spørgsmål. Men AI erstatter aldrig en rigtig læge og må ikke bruges til selvdiagnose.'},
+];
+
+let currentQ=0,selectedOption=null,answered=false,score=0,userAnswers=[];
+
+function startQuiz(){
+  currentQ=0;score=0;userAnswers=[];
+  showScene('scene-quiz');renderQuestion();
+}
+
+function shuffleOpts(opts,c){
+  const idx=opts.map((o,i)=>({t:o,orig:i}));
+  for(let i=idx.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[idx[i],idx[j]]=[idx[j],idx[i]];}
+  return{opts:idx.map(o=>o.t),c:idx.findIndex(o=>o.orig===c)};
+}
+
+function renderQuestion(){
+  const q=QUESTIONS[currentQ];
+  document.getElementById('qModuleTag').textContent=q.mod;
+  document.getElementById('qNumber').textContent='Sp\u00f8rgsm\u00e5l '+(currentQ+1)+' af '+QUESTIONS.length;
+  document.getElementById('qText').textContent=q.q;
+  document.getElementById('progressCount').textContent=(currentQ+1)+' / '+QUESTIONS.length;
+  document.getElementById('quizFill').style.width=((currentQ/QUESTIONS.length)*100)+'%';
+  const sh=shuffleOpts(q.opts,q.c);
+  const wrap=document.getElementById('optionsWrap');
+  wrap.innerHTML='';wrap.dataset.c=sh.c;
+  const lb=['A','B','C','D'];
+  sh.opts.forEach((opt,i)=>{
+    const d=document.createElement('div');d.className='option';d.dataset.i=i;
+    d.innerHTML='<div class="option-letter">'+lb[i]+'</div><div class="option-text">'+opt+'</div>';
+    d.addEventListener('click',()=>selectOpt(i));
+    wrap.appendChild(d);
+  });
+  selectedOption=null;answered=false;
+  const fb=document.getElementById('feedbackBox');fb.className='feedback-box';
+  document.getElementById('btnCheck').disabled=true;
+  document.getElementById('btnCheck').style.display='flex';
+  document.getElementById('btnQNext').style.display='none';
+}
+
+function selectOpt(idx){
+  if(answered)return;selectedOption=idx;
+  document.querySelectorAll('.option').forEach((o,i)=>o.classList.toggle('selected',i===idx));
+  document.getElementById('btnCheck').disabled=false;
+}
+
+function checkAnswer(){
+  if(selectedOption===null||answered)return;answered=true;
+  const c=parseInt(document.getElementById('optionsWrap').dataset.c);
+  const ok=selectedOption===c;
+  if(ok)score++;
+  userAnswers.push({q:QUESTIONS[currentQ].q,ok});
+  document.querySelectorAll('.option').forEach((o,i)=>{
+    o.classList.add('locked');
+    if(i===c)o.classList.add('correct');
+    else if(i===selectedOption&&!ok)o.classList.add('wrong');
+    else if(i!==c)o.classList.add('faded');
+  });
+  const fb=document.getElementById('feedbackBox');
+  fb.className='feedback-box show '+(ok?'cfb':'wfb');
+  document.getElementById('feedbackIcon').textContent=ok?'\u2705':'\u274C';
+  document.getElementById('feedbackTitle').textContent=ok?'Rigtigt svar!':'Ikke helt rigtigt';
+  document.getElementById('feedbackText').textContent=QUESTIONS[currentQ].exp;
+  document.getElementById('btnCheck').style.display='none';
+  const bn=document.getElementById('btnQNext');
+  bn.style.display='block';
+  bn.textContent=currentQ<QUESTIONS.length-1?'N\u00e6ste sp\u00f8rgsm\u00e5l \u2192':'Se resultat \u2192';
+}
+
+function nextQuestion(){
+  currentQ++;
+  if(currentQ<QUESTIONS.length){renderQuestion();window.scrollTo({top:0,behavior:'smooth'});}
+  else showResults();
+}
+
+function showResults(){
+  showScene('scene-results');
+  const pct=Math.round((score/QUESTIONS.length)*100);
+  const passed=score>=12;
+  document.getElementById('scoreNum').textContent=score;
+  document.getElementById('statOk').textContent=score;
+  document.getElementById('statBad').textContent=QUESTIONS.length-score;
+  document.getElementById('statPct').textContent=pct+'%';
+  const circle=document.getElementById('scoreCircle');
+  const color=passed?'#22c55e':score>=9?'#f97316':'#ef4444';
+  circle.style.background='conic-gradient('+color+' '+pct*3.6+'deg, #1e2d47 0deg)';
+  document.getElementById('scoreNum').style.color=color;
+  if(passed){
+    document.getElementById('resultsTitle').textContent='Fantastisk \u2014 del 1 best\u00e5et! \uD83C\uDF89';
+    document.getElementById('resultsDesc').textContent='Du fik '+score+' ud af 15 rigtige ('+pct+'%). Over gr\u00e6nsen p\u00e5 12. Nu er du klar til del 2.';
+    document.getElementById('btnToPart2').style.display='flex';
+    document.getElementById('btnRetryQuiz').style.display='none';
+  }else{
+    document.getElementById('resultsTitle').textContent=score>=9?'N\u00e6sten \u2014 pr\u00f8v igen!':'Ikke best\u00e5et denne gang';
+    document.getElementById('resultsDesc').textContent='Du fik '+score+' ud af 15 rigtige ('+pct+'%). Du skal bruge mindst 12 for at best\u00e5. Kig gennemgangen og pr\u00f8v igen.';
+    document.getElementById('btnToPart2').style.display='none';
+    document.getElementById('btnRetryQuiz').style.display='flex';
+  }
+  const rev=document.getElementById('reviewSection');
+  rev.innerHTML='<div class="review-title">Gennemgang af dine svar</div>';
+  userAnswers.forEach((a,i)=>{
+    const d=document.createElement('div');d.className='review-item';
+    d.innerHTML='<div style="font-size:1.1rem;flex-shrink:0;margin-top:1px">'+(a.ok?'\u2705':'\u274C')+'</div><div><div class="review-q">Sp. '+(i+1)+': '+QUESTIONS[i].q.substring(0,72)+(QUESTIONS[i].q.length>72?'\u2026':'')+'</div><div class="review-a">'+(a.ok?'<span class=\"rev-ok\">\u2713 Rigtigt svar</span>':'<span class=\"rev-bad\">\u2717 Forkert</span> \u2014 se det rigtige svar i forklaringen herover.')+'</div></div>';
+    rev.appendChild(d);
+  });
+}
+
+function goToPart2(){
+  showScene('scene-task');
+}
+
+
+</script>
+
+<script>
+// ============================================
+// ============================================
+// PROMPT BEDØMMELSE — JavaScript-baseret
+// ============================================
+let promptAttempts = 0;
+
+function updateCharCount() {
+  const val = document.getElementById('promptInput').value;
+  document.getElementById('charCount').textContent = val.length + ' tegn';
+}
+
+function submitPrompt() {
+  const prompt = document.getElementById('promptInput').value.trim();
+  if (prompt.length < 20) {
+    showToast('error', '⚠️ Promptet er for kort. Skriv mindst 20 tegn.');
+    return;
+  }
+
+  promptAttempts++;
+  setBtnLoading('submitBtn', true);
+
+  // Simuler kort "tænke-tid" for bedre UX
+  setTimeout(() => {
+    setBtnLoading('submitBtn', false);
+    const result = evaluatePrompt(prompt);
+    showFeedback(result, prompt);
+  }, 900);
+}
+
+function evaluatePrompt(prompt) {
+  const p = prompt.toLowerCase();
+  const results = { passed: false, checks: {}, score: 0, total: 4 };
+
+  // CHECK 1: Tilpas længde (min 30 tegn)
+  results.checks.length = prompt.length >= 30;
+
+  // CHECK 2: Specifikt emne — ikke bare generiske ord
+  const genericOnly = /^(hjælp|skriv|lav|fortæl|forklar|giv)\s*\w{0,6}\.?$/i.test(prompt);
+  const hasSpecific = prompt.length > 40 || /mail|brev|liste|opskrift|plan|invitation|klage|opsigelse|referat|besked|sms|tekst|rapport|opsummering|forklaring|vejledning|oversigt|program|menu|tale|hilsen/i.test(p);
+  results.checks.specific = hasSpecific && !genericOnly;
+
+  // CHECK 3: Kontekst om hvem personen er
+  const contextWords = /jeg er|som|jeg arbejder|jeg har|jeg vil|jeg ønsker|jeg bor|min|mit|vores|vi er|jeg hedder|pensionist|lærer|studerende|leder|forælder|medarbejder|sygeplejerske|chef|ejer|iværksætter|frivillig|elev|deltager/i;
+  results.checks.context = contextWords.test(p);
+
+  // CHECK 4: Ønsket format
+  const formatWords = /punktliste|liste|brev|mail|sætning|afsnit|kort|lang|formelt?|uformelt?|venlig|professionel|bullet|trin|steps?|nummereret|ca\.|cirka|ord|linjer?|format|resumé|opsummering|overskrift|tegn/i;
+  results.checks.format = formatWords.test(p);
+
+  // Score
+  results.score = Object.values(results.checks).filter(Boolean).length;
+  results.passed = results.score >= 3; // 3 ud af 4 checks skal være OK
+
+  return results;
+}
+
+function showFeedback(result, prompt) {
+  const fb = document.getElementById('feedbackResult');
+  fb.className = `feedback-result show`;
+
+  const checkLabels = {
+    length: 'Tilpas længde (min. 30 tegn)',
+    specific: 'Specifikt emne',
+    context: 'Kontekst om dig selv',
+    format: 'Ønsket format'
+  };
+
+  const chips = Object.entries(result.checks).map(([key, ok]) =>
+    `<div class="chip ${ok ? 'ok' : 'miss'}">${ok ? '✓' : '✗'} ${checkLabels[key]}</div>`
+  ).join('');
+
+  let feedbackText = '';
+  let buttons = '';
+
+  if (result.passed) {
+    feedbackText = `
+      <strong>Godt klaret!</strong> Dit prompt opfylder kriterierne for et godt prompt. 
+      Du har vist at du ved hvordan man bruger de 3 regler fra Kursus D. 
+      Nu kan du hente dit officielle bevis!
+    `;
+    buttons = `
+      <button class="btn-to-certificate" onclick="completePart2()">
+        🏆 Hent mit bevis og coins!
+      </button>
+    `;
+  } else {
+    const missing = Object.entries(result.checks)
+      .filter(([_, ok]) => !ok)
+      .map(([key]) => checkLabels[key]);
+
+    let advice = '';
+    if (!result.checks.context) advice += '<br>👤 <strong>Hvem er du?</strong> Tilføj noget om dig selv — fx "Jeg er pensionist" eller "Jeg arbejder som lærer".';
+    if (!result.checks.specific) advice += '<br>🎯 <strong>Hvad vil du have?</strong> Vær mere konkret — ikke bare "skriv noget" men præcis hvad og om hvad.';
+    if (!result.checks.format) advice += '<br>📄 <strong>Hvilket format?</strong> Sig fx "skriv det som et brev", "lav en liste med 5 punkter" eller "forklar det kort".';
+    if (!result.checks.length) advice += '<br>📏 <strong>For kort:</strong> Dit prompt er for kort. Uddyb gerne lidt mere.';
+
+    feedbackText = `
+      <strong>Næsten!</strong> Dit prompt mangler ${missing.length === 1 ? 'ét element' : 'nogle elementer'} for at bestå. 
+      Ret det du mangler og prøv igen — du er tæt på!
+      ${advice}
+    `;
+
+    const showCourseWarning = promptAttempts >= 3;
+    const warningHtml = showCourseWarning ? `
+      <div style="margin-top:1rem;padding:1rem;background:rgba(240,192,64,.08);border:1px solid rgba(240,192,64,.2);border-radius:10px;font-size:.83rem;color:var(--muted);line-height:1.6">
+        💡 Du har prøvet ${promptAttempts} gange. Vil du gennemgå Kursus D forfra? 
+        <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" style="color:var(--gold);font-weight:600">Tag kursus D forfra →</a>
+      </div>
+    ` : '';
+
+    buttons = `
+      <button class="btn-retry-prompt" onclick="retryPrompt()">🔄 Ret og prøv igen</button>
+      ${warningHtml}
+    `;
+  }
+
+  fb.innerHTML = `
+    <div class="feedback-result-header ${result.passed ? 'pass' : 'fail'}">
+      <div class="feedback-result-icon">${result.passed ? '🎉' : '📝'}</div>
+      <div class="feedback-result-title">${result.passed ? 'Promptet er godkendt!' : `${result.score} ud af ${result.total} kriterier opfyldt`}</div>
+    </div>
+    <div class="feedback-result-body">
+      <div class="feedback-score-chips">${chips}</div>
+      <div class="feedback-text-area">${feedbackText}</div>
+      ${buttons}
+    </div>
+  `;
+
+  // Scroll til feedback
+  setTimeout(() => fb.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function retryPrompt() {
+  document.getElementById('feedbackResult').className = 'feedback-result';
+  document.getElementById('promptInput').focus();
+  window.scrollTo({ top: document.getElementById('promptInput').offsetTop - 100, behavior: 'smooth' });
+}
+
+async function completePart2() {
+  const part1Score = sessionStorage.getItem('part1Score') || '?';
+  const userName = sessionStorage.getItem('userName') || (window._user ? `${window._user.firstName || ''} ${window._user.lastName || ''}`.trim() : 'Ukendt');
+  const userEmail = sessionStorage.getItem('userEmail') || (window._user?.email || '');
+  const today = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  // Gem i Firebase
+  const saved = await window.saveCertificate?.();
+
+  // Udfyld bevis
+  document.getElementById('certName').textContent = userName || 'Dit navn';
+  document.getElementById('certEmail').textContent = userEmail;
+  document.getElementById('certDate').textContent = today;
+  document.getElementById('certScore').textContent = `${part1Score}/15`;
+
+  showScene('scene-certificate');
+  showToast('success', '🏆 Tillykke! +100 coins tilføjet til din konto!');
+}
+
+function downloadCertificate() {
+  window.print();
+}
+
+// ============================================
+// HELP CHAT
+// ============================================
+let helpChatOpen = false;
+
+const HELP_ANSWERS = {
+  'prompt': 'Et prompt er den besked du skriver til AI. Jo bedre prompt, jo bedre svar. Tænk på det som at bestille mad — jo mere præcis du er, jo mere får du hvad du vil have.',
+  'regler': 'De 3 regler er: 1️⃣ Vær specifik — fortæl præcis hvad du vil. 2️⃣ Giv kontekst — fortæl hvem du er og situationen. 3️⃣ Bed om et format — liste, brev, to sætninger osv.',
+  'bedøm': 'Bedømmelsen tjekker 4 ting: (1) At promptet er langt nok, (2) at det handler om noget specifikt, (3) at du har givet kontekst om dig selv, og (4) at du beder om et bestemt format.',
+  'eksempel': 'Her er et godt eksempel: "Jeg er pensionist og vil invitere mine naboer til kaffe på lørdag. Hjælp mig med en venlig invitation — ca. 3-4 sætninger." Det er specifikt, har kontekst og beder om et format!',
+  'format': 'Format betyder hvordan du vil have svaret. Fx: "som et brev", "som en punktliste", "i to sætninger", "på 5 linjer", "formelt" eller "kort og venligt".',
+  'kontekst': 'Kontekst betyder at du fortæller hvem du er eller hvad situationen er. Fx "Jeg er pensionist", "Jeg arbejder som lærer", "Jeg er ny til AI" eller "Jeg har en lille butik".',
+  'bestå': 'For at bestå del 2 skal dit prompt opfylde mindst 3 ud af 4 kriterier: tilpas længde, specifikt emne, kontekst om dig og ønsket format. Du kan prøve så mange gange du vil!',
+  'prøve': 'Ja, du kan prøve så mange gange du vil! Der er ingen grænse. Bare ret det du mangler og send igen. Læs feedbacken — den fortæller dig præcis hvad du skal forbedre.',
+  'coins': 'Når du består begge dele af eksamen, får du automatisk 100 coins tilføjet til din konto. Du kan bruge dem til sidekurser på platformen.',
+  'bevis': 'Når du har bestået, genereres dit personlige bevis automatisk med dit navn, email og dato. Det gemmes på din profil og kan downloades som PDF.'
+};
+
+function toggleHelpChat() {
+  const box = document.getElementById('helpChatBox');
+  helpChatOpen = !helpChatOpen;
+  if (helpChatOpen) {
+    box.classList.add('open');
+    document.getElementById('helpInput').focus();
+  } else {
+    box.classList.remove('open');
+  }
+}
+
+function askHelp(question) {
+  document.getElementById('helpInput').value = question;
+  sendHelp();
+}
+
+function sendHelp() {
+  const input = document.getElementById('helpInput');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
+
+  addHelpMsg('user', q);
+  const sendBtn = document.getElementById('helpSendBtn');
+  sendBtn.disabled = true;
+  addHelpTyping();
+
+  setTimeout(() => {
+    removeHelpTyping();
+    const answer = getHelpAnswer(q);
+    addHelpMsg('bot', answer);
+    sendBtn.disabled = false;
+  }, 700);
+}
+
+function getHelpAnswer(q) {
+  const lower = q.toLowerCase();
+  if (lower.includes('prompt') && lower.includes('god')) return HELP_ANSWERS['prompt'];
+  if (lower.includes('3 regler') || lower.includes('tre regler') || lower.includes('regler')) return HELP_ANSWERS['regler'];
+  if (lower.includes('bedøm') || lower.includes('kriterier') || lower.includes('kigger')) return HELP_ANSWERS['bedøm'];
+  if (lower.includes('eksempel') || lower.includes('inspir') || lower.includes('eksempel')) return HELP_ANSWERS['eksempel'];
+  if (lower.includes('format')) return HELP_ANSWERS['format'];
+  if (lower.includes('kontekst') || lower.includes('hvem er jeg')) return HELP_ANSWERS['kontekst'];
+  if (lower.includes('bestå') || lower.includes('klare')) return HELP_ANSWERS['bestå'];
+  if (lower.includes('prøve igen') || lower.includes('forsøg')) return HELP_ANSWERS['prøve'];
+  if (lower.includes('coin') || lower.includes('mønt')) return HELP_ANSWERS['coins'];
+  if (lower.includes('bevis') || lower.includes('certifikat') || lower.includes('pdf')) return HELP_ANSWERS['bevis'];
+  if (lower.includes('prompt')) return HELP_ANSWERS['prompt'];
+  return 'Godt spørgsmål! 😊 Kort sagt: skriv hvem du er, hvad du præcist vil have hjælp til, og hvilket format du ønsker svaret i. Brug guiden øverst på siden — den forklarer det trin for trin. Du klarer det!';
+}
+
+function addHelpMsg(role, text) {
+  const wrap = document.getElementById('helpMessages');
+  const div = document.createElement('div');
+  div.className = `help-msg ${role}`;
+  div.innerHTML = `<div class="help-msg-bubble">${text}</div>`;
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function addHelpTyping() {
+  const wrap = document.getElementById('helpMessages');
+  const div = document.createElement('div');
+  div.className = 'help-msg bot';
+  div.id = 'helpTyping';
+  div.innerHTML = '<div class="help-msg-bubble help-typing"><span></span><span></span><span></span></div>';
+  wrap.appendChild(div);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function removeHelpTyping() {
+  const t = document.getElementById('helpTyping');
+  if (t) t.remove();
+}
+
+// ============================================
+// CERTIFICATE DOWNLOAD
+// ============================================
+function downloadCertificate() {
+  const style = `
+    @media print {
+      body * { visibility: hidden; }
+      #certificateCard, #certificateCard * { visibility: visible; }
+      #certificateCard { position: fixed; top: 0; left: 0; width: 100%; margin: 0; padding: 3rem 2.5rem; background: #0f1c30 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .help-chat-btn, .help-chat-box, .topbar, .toast-wrap { display: none !important; }
+    }
+  `;
+  const s = document.createElement('style');
+  s.textContent = style;
+  document.head.appendChild(s);
+  window.print();
+  setTimeout(() => s.remove(), 1000);
+}
+
+// ============================================
+// UTILS
+// ============================================
+function showScene(id) {
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setBtnLoading(id, loading) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  btn.disabled = loading;
+  if (loading) btn.classList.add('loading');
+  else btn.classList.remove('loading');
+}
+
+function showToast(type, msg) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+// Global expose
+window.submitPrompt = submitPrompt;
+window.retryPrompt = retryPrompt;
+window.completePart2 = completePart2;
+window.downloadCertificate = downloadCertificate;
+window.toggleHelpChat = toggleHelpChat;
+window.askHelp = askHelp;
+window.sendHelp = sendHelp;
+window.showScene = showScene;
+</script>
+</body>
+</html>
