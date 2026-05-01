@@ -33,6 +33,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 /* SCENES */
 .scene{display:none;position:relative;z-index:1}
 .scene.active{display:block}
+#scene-results.active,#scene-gate.active,#scene-passed.active,#scene-certificate.active{display:flex}
 
 /* GATE */
 #scene-gate{min-height:calc(100vh - 62px);display:none;align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column}
@@ -45,6 +46,31 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 /* MAIN LAYOUT */
 #scene-task{padding:2rem 1.5rem 6rem}
+#scene-task.active{animation:rocketUp .6s cubic-bezier(0.22,1,0.36,1)}
+@keyframes rocketUp{
+  0%{opacity:0;transform:translateY(60px) scale(0.97)}
+  60%{opacity:1;transform:translateY(-8px) scale(1.01)}
+  100%{opacity:1;transform:translateY(0) scale(1)}
+}
+.part2-launch-banner{
+  background:linear-gradient(135deg,rgba(34,197,94,.15),rgba(240,192,64,.1));
+  border:1px solid rgba(34,197,94,.3);
+  border-radius:14px;padding:1rem 1.5rem;
+  margin:0 auto 1.5rem;max-width:760px;
+  display:flex;align-items:center;gap:12px;
+  animation:bannerSlide .5s cubic-bezier(0.22,1,0.36,1) .2s both;
+}
+@keyframes bannerSlide{
+  from{opacity:0;transform:translateX(-20px)}
+  to{opacity:1;transform:translateX(0)}
+}
+.launch-emoji{font-size:1.8rem;animation:rocketFly 1s ease-out .3s both}
+@keyframes rocketFly{
+  0%{transform:translateX(-40px) translateY(10px) rotate(-30deg);opacity:0}
+  50%{transform:translateX(4px) translateY(-4px) rotate(5deg);opacity:1}
+  100%{transform:translateX(0) translateY(0) rotate(0deg);opacity:1}
+}
+.launch-text{font-size:.95rem;font-weight:700;color:#22c55e}
 .task-wrap{max-width:760px;margin:0 auto}
 
 /* HEADER */
@@ -299,15 +325,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 <!-- TOPBAR -->
 <div class="topbar">
-  <a href="eksamen-d.html" class="topbar-back">
+  <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d.html" class="topbar-back">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
-    Del 1
+    Kursus D
   </a>
   <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="topbar-logo">
     <div class="topbar-logo-icon">LA</div>
     LearnAI DK
   </a>
-  <div class="topbar-tag">Eksamen D · Del 2</div>
+  <div class="topbar-tag">Eksamen D · Del 1 af 2</div>
 </div>
 
 <!-- SCENE: GATE -->
@@ -409,178 +435,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="gate-title">Du har allerede best&#229;et!</div>
   <div class="gate-sub">Du har allerede best&#229;et Kursus D og dit bevis er gemt p&#229; din profil. Du kan ikke tage eksamen igen med samme bruger.</div>
   <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">Se mit bevis p&#229; platformen</a>
-</div>
-
-<!-- SCENE: TASK -->
-<div class="scene" id="scene-task">
-  <div class="task-wrap">
-    <div class="task-header">
-      <div class="task-badge">✅ Del 1 bestået · Nu del 2</div>
-      <h1 class="task-title">Skriv et <span>godt prompt</span></h1>
-      <p class="task-sub">Nu skal du vise at du kan bruge det du har lært. Skriv et prompt der følger de 3 regler fra Kursus D — og få det bedømt med det samme.</p>
-    </div>
-
-    <!-- GUIDE -->
-    <div class="guide-box">
-      <div class="guide-title">📋 Sådan klarer du opgaven — læs dette grundigt</div>
-      <div class="guide-step">
-        <div class="guide-step-num">1</div>
-        <div class="guide-step-text"><strong>Vælg en situation fra din hverdag</strong> — noget du faktisk kunne have brug for hjælp til. Det kan fx være at skrive en mail, planlægge noget, få en forklaring eller lave en liste.</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">2</div>
-        <div class="guide-step-text"><strong>Skriv hvem du er</strong> — giv AI kontekst om dig selv. Fx: "Jeg er pensionist", "Jeg er lærer", "Jeg er ny til AI" eller "Jeg har en lille virksomhed".</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">3</div>
-        <div class="guide-step-text"><strong>Beskriv præcis hvad du vil have hjælp til</strong> — ikke bare "hjælp mig med en mail" men "skriv en mail til min nabo om at vi er nødt til at flytte vores fælles container".</div>
-      </div>
-      <div class="guide-step">
-        <div class="guide-step-num">4</div>
-        <div class="guide-step-text"><strong>Bed om et bestemt format</strong> — fx "skriv det som et kort brev", "lav en punktliste", "forklar det i to sætninger" eller "giv mig 5 forslag".</div>
-      </div>
-    </div>
-
-    <!-- CRITERIA -->
-    <div style="font-size:.82rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:.75rem">Hvad bedømmelsen kigger efter</div>
-    <div class="criteria-grid">
-      <div class="criteria-card">
-        <div class="criteria-icon blue">🎯</div>
-        <div class="criteria-body">
-          <h4>Specifikt emne</h4>
-          <p>Promptet skal handle om noget konkret — ikke bare "hjælp mig" eller "skriv noget"</p>
-        </div>
-      </div>
-      <div class="criteria-card">
-        <div class="criteria-icon green">👤</div>
-        <div class="criteria-body">
-          <h4>Kontekst om dig</h4>
-          <p>Du skal fortælle hvem du er, eller hvad situationen er — giv AI noget at arbejde med</p>
-        </div>
-      </div>
-      <div class="criteria-card">
-        <div class="criteria-icon amber">📄</div>
-        <div class="criteria-body">
-          <h4>Ønsket format</h4>
-          <p>Sig hvordan du vil have svaret — liste, brev, kort forklaring, antal sætninger osv.</p>
-        </div>
-      </div>
-      <div class="criteria-card">
-        <div class="criteria-icon blue">📏</div>
-        <div class="criteria-body">
-          <h4>Tilpas længde</h4>
-          <p>Dit prompt skal være mindst 30 tegn og vise at du har tænkt over det</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- EXAMPLE -->
-    <div class="example-box">
-      <div class="example-label">✓ Eksempel på et godt prompt</div>
-      <div class="example-text">"Jeg er pensionist og vil gerne invitere mine naboer til kaffe på lørdag. Hjælp mig med at skrive en venlig og kort invitation — ca. 3-4 sætninger."</div>
-    </div>
-
-    <!-- PROMPT INPUT -->
-    <div class="prompt-area-wrap">
-      <div class="prompt-area-label">
-        Skriv dit prompt her
-        <span class="prompt-char-count" id="charCount">0 tegn</span>
-      </div>
-      <textarea class="prompt-textarea" id="promptInput" placeholder="Skriv dit prompt her — husk de 3 regler: hvem du er, hvad du vil have, og hvilket format..." oninput="updateCharCount()" rows="5"></textarea>
-    </div>
-
-    <div class="attempt-warning" id="attemptWarning"></div>
-
-    <button class="btn-submit" id="submitBtn" onclick="submitPrompt()">
-      Bedøm mit prompt
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-    </button>
-
-    <!-- FEEDBACK RESULT -->
-    <div class="feedback-result" id="feedbackResult"></div>
-  </div>
-</div>
-
-<!-- SCENE: CERTIFICATE -->
-<div class="scene" id="scene-certificate">
-  <div class="cert-wrap">
-    <div class="cert-success-banner">
-      <div class="cert-success-icon">🎉</div>
-      <div class="cert-success-title">Du har bestået Kursus D!</div>
-      <div class="cert-success-sub">Du har gennemført begge dele af eksamen og bevist at du kan bruge AI trygt og klogt. Tillykke!</div>
-      <div class="cert-coins">🪙 +100 coins tilføjet til din konto</div>
-    </div>
-
-    <!-- THE CERTIFICATE -->
-    <div class="certificate-card" id="certificateCard">
-      <div class="cert-corner tl"></div>
-      <div class="cert-corner tr"></div>
-      <div class="cert-corner bl"></div>
-      <div class="cert-corner br"></div>
-      <div class="cert-watermark">🎓</div>
-      <div class="cert-seal">🏅</div>
-
-      <div class="cert-logo-row">
-        <div class="cert-logo-icon">LA</div>
-        <div class="cert-logo-text">LearnAI DK</div>
-      </div>
-
-      <div class="cert-divider"></div>
-
-      <div class="cert-headline">Dette er at bekræfte at</div>
-      <div class="cert-name" id="certName">—</div>
-      <div class="cert-email" id="certEmail">—</div>
-
-      <div class="cert-body-text">
-        har bestået den officielle eksamen og hermed opnået certifikatet for
-      </div>
-
-      <div style="text-align:center;margin-bottom:.5rem">
-        <div class="cert-course-name">Kursus D — Fra nybegynder til AI-bruger</div>
-        <div style="text-align:center">
-          <div class="cert-level-badge">🥉 Niveau D · Amatør</div>
-        </div>
-      </div>
-
-      <div class="cert-body-text" style="font-size:.82rem">
-        Kursisten har demonstreret kendskab til grundlæggende AI-koncepter, sikker brug af AI-chatbots, beskyttelse af personlige oplysninger samt evnen til at skrive effektive prompts.
-      </div>
-
-      <div class="cert-divider"></div>
-
-      <div class="cert-meta-row">
-        <div class="cert-meta-item">
-          <div class="cert-meta-label">Udstedt af</div>
-          <div class="cert-meta-value">LearnAI DK</div>
-        </div>
-        <div class="cert-meta-item">
-          <div class="cert-meta-label">Dato</div>
-          <div class="cert-meta-value" id="certDate">—</div>
-        </div>
-        <div class="cert-meta-item">
-          <div class="cert-meta-label">Niveau</div>
-          <div class="cert-meta-value">D · Amatør</div>
-        </div>
-        <div class="cert-meta-item">
-          <div class="cert-meta-label">Del 1 score</div>
-          <div class="cert-meta-value" id="certScore">—</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="cert-actions">
-      <button class="btn-download-cert" onclick="downloadCertificate()">
-        ⬇️ Download som PDF
-      </button>
-      <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-to-platform">
-        🏠 Gå til platformen →
-      </a>
-    </div>
-
-    <div style="text-align:center;padding:1rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);margin-top:1rem">
-      <p style="font-size:.85rem;color:var(--muted);line-height:1.65">🚀 <strong style="color:var(--text)">Næste skridt:</strong> Dit badge er nu gemt på din profil på platformen. Klar til Kursus C?</p>
-    </div>
-  </div>
 </div>
 
 <!-- HELP CHAT -->
@@ -701,21 +555,82 @@ window._fb = { db, doc, updateDoc, arrayUnion, serverTimestamp };
 
 // ====== SPØRGSMÅL ======
 const QUESTIONS = [
-  {mod:'Modul 1 · Hvad er AI', q:'Din telefon bruger ansigtsgenkendelse til at låse op. Hvad er dette et eksempel på?', opts:['En simpel alarm der er programmeret til at reagere på dit ansigt','Et traditionelt kodeord der er gemt som et billede','Kunstig intelligens der har lært at genkende dit ansigt','En funktion der kun virker med internetforbindelse'], c:2, exp:'Ansigtsgenkendelse er AI — systemet har lært at genkende dit ansigt ud fra mønstre, ikke fulgt en simpel programmeret regel.'},
-  {mod:'Modul 1 · Hvad er AI', q:'Hvad er den vigtigste forskel på en lommeregner og en AI-chatbot?', opts:['En lommeregner kan kun bruge tal, mens en chatbot kan bruge alle bogstaver','En lommeregner følger faste regler, mens en AI-chatbot har lært at forstå naturligt sprog','En lommeregner er altid gratis, mens en AI-chatbot koster penge','En lommeregner er ældre og derfor mindre præcis end en AI'], c:1, exp:'En lommeregner følger præcist programmerede regler. En AI-chatbot er trænet på tekst og kan forstå og generere naturligt sprog.'},
-  {mod:'Modul 1 · Hvad er AI', q:'Hvilken AI anbefaler LearnAI til nye brugere og hvad er grunden?', opts:['ChatGPT fordi den er den ældste og mest kendte chatbot','Gemini fordi den er lavet af Google og bedst til søgninger','Claude fordi den er kendt for rolige, trygge og forståelige svar der passer til nye brugere','Copilot fordi den er gratis og integreret i Windows'], c:2, exp:'LearnAI anbefaler Claude fra Anthropic. Den er særligt god til at give rolige og trygge svar — vigtigt når man er ny til AI.'},
-  {mod:'Modul 2 · Beskyt dig selv', q:'Du vil bede en AI om hjælp til at skrive et brev til din læge. Hvad er den rigtige fremgangsmåde?', opts:['Skrive dit fulde navn, CPR og diagnose så AI\'en kan lave et præcist brev','Skrive at du er en kvinde i 60\'erne der vil bede din læge om en tid, uden personlige detaljer','Aldrig bede en AI om hjælp til lægerelaterede breve da det er farligt','Kun bruge AI til det hvis du betaler for et abonnement'], c:1, exp:'Du kan sagtens bruge AI til breve — men du behøver aldrig dele dit navn, CPR eller diagnose. Generelle beskrivelser er nok.'},
-  {mod:'Modul 2 · Beskyt dig selv', q:'Hvilke oplysninger må du ALDRIG dele med en AI-chatbot?', opts:['Din alder og dit postnummer','Dit fornavn og din hobby','CPR-nummer, adgangskoder og bankoplysninger','Hvad du spiste til morgenmad og hvilken by du bor i'], c:2, exp:'CPR-nummer, adgangskoder og bankoplysninger deles aldrig med en AI. AI-tjenester er ikke bygget til at håndtere disse oplysninger sikkert.'},
-  {mod:'Modul 2 · Beskyt dig selv', q:'Hvad betyder det at slå dataindsamling fra i AI-indstillingerne?', opts:['At AI\'en bliver dårligere og svarer forkert på dine spørgsmål','At dine samtaler ikke bruges til at forbedre AI-modellen fremover','At du ikke længere kan bruge tjenesten gratis','At AI\'en glemmer alt hvad den ved fra sin uddannelse'], c:1, exp:'Når du slår træning fra, vælger du at dine samtaler ikke bruges som data til fremtidige versioner. Det ændrer intet ved din brugsoplevelse.'},
-  {mod:'Modul 3 · Login og samtale', q:'Du har haft en god samtale med Claude. Hvad sker der hvis du lukker browseren og åbner Claude igen næste dag?', opts:['Claude husker præcist hvad I talte om og fortsætter automatisk','Claude husker dit navn men ikke den specifikke samtale','Samtalen er væk og Claude starter forfra uden erindring om jeres chat','Claude sender dig en mail med et resumé af samtalen'], c:2, exp:'AI-chatbots husker ikke fra session til session. Næste gang du åbner Claude starter du på en frisk. Kun i den aktive samtale husker Claude hvad I har talt om.'},
-  {mod:'Modul 3 · Login og samtale', q:'Hvad er den vigtigste forskel på at bruge Claude og at søge på Google?', opts:['Google er gratis mens Claude altid koster penge','Google finder eksisterende sider på nettet, mens Claude genererer svar baseret på sin træning og ikke kender dagens nyheder','Claude er bedre til at finde specifikke hjemmesider end Google','Der er ingen forskel da de kan begge det samme'], c:1, exp:'Google finder og viser eksisterende indhold fra nettet. Claude genererer svar baseret på sin træning — men kender ikke aktuelle nyheder og kan tage fejl på specifikke fakta.'},
-  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvilket prompt vil give det bedste og mest præcise svar fra en AI?', opts:['Hjælp mig','Hjælp mig med en mail til min nabo om støj fra hans have om aftenen — skriv den venligt og hold den under 5 sætninger','Skriv noget til mig','Lav en mail'], c:1, exp:'Et godt prompt er specifikt, giver kontekst og beder om et bestemt format. Hjælp mig er for uspecifikt — AI\'en ved ikke hvad du har brug for.'},
-  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvad betyder kontekst i sammenhæng med et godt prompt?', opts:['En teknisk kode du skal bruge for at AI\'en forstår dig','Oplysninger om hvem du er og hvad situationen er, så AI\'en kan give et relevant svar','En liste over alle de ord du bruger i din besked','Det antal tegn dit prompt indeholder'], c:1, exp:'Kontekst er baggrundsinformationen du giver AI\'en — fx jeg er pensionist eller det er til min chef. Det giver AI\'en mulighed for at skræddersy sit svar til din situation.'},
-  {mod:'Modul 4 · Skriv et godt prompt', q:'Du vil have AI\'en til at forklare hvad streaming er på en enkel måde. Hvilken formulering er bedst?', opts:['Streaming','Forklar streaming','Forklar hvad streaming er i to korte sætninger som om jeg aldrig har hørt ordet. Brug et hverdagseksempel','Hvad ved du om streaming og kan du forklare det på mange måder med eksempler og historik'], c:2, exp:'Den tredje mulighed indeholder alle tre elementer: hvad du vil have, format (to korte sætninger) og niveau (aldrig hørt det). Det giver præcist det svar du ønsker.'},
-  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvad kan du gøre hvis AI\'en giver dig et svar du ikke forstår?', opts:['Lukke samtalen og starte en ny da du ikke kan ændre et svar der er givet','Skrive videre i samme samtale og bede om at det forklares enklere eller uddybes','Slette din konto og oprette en ny for at få et bedre svar','Vente 24 timer da AI\'en forbedrer automatisk sit svar over tid'], c:1, exp:'Du kan altid stille opfølgende spørgsmål i samme samtale — fx Kan du forklare det enklere? AI\'en husker hvad I talte om og kan bygge videre på det.'},
-  {mod:'Modul 5 · Undgå faldgruber', q:'Hvad betyder det at en AI hallucerer?', opts:['At AI\'en laver grafiske billeder i stedet for at svare med tekst','At AI\'en genererer overbevisende svar der lyder korrekte men faktisk er forkerte eller opdigtede','At AI\'en taler i metaforer i stedet for præcise svar','At AI\'en kun kan svare om emner den lærte om inden 2020'], c:1, exp:'Hallucination er når en AI finder på fakta der lyder troværdige men er forkerte. Sker især med specifikke tal, navne og datoer — dobbelttjek altid vigtige oplysninger.'},
-  {mod:'Modul 5 · Undgå faldgruber', q:'Du spørger en AI om vejret i morgen i København. Hvad er problemet med det?', opts:['AI\'en kan ikke forstå navne på byer','AI\'en har ikke adgang til aktuelle vejrdata — brug vejr.dk eller en vejr-app i stedet','AI\'en er for upræcis til at give nyttige svar om vejret','Der er intet problem da AI-chatbots er perfekte til vejrudsigter'], c:1, exp:'AI-chatbots er ikke forbundet til internettet og kender ikke aktuelle data som vejr eller nyheder. Brug en søgemaskine eller dedikeret app til den slags.'},
-  {mod:'Modul 5 · Undgå faldgruber', q:'Du har ondt i maven og overvejer at spørge en AI om det er noget alvorligt. Hvad er den rigtige brug af AI her?', opts:['Stole fuldt på AI\'ens svar da den har adgang til al medicinsk viden og er mere pålidelig end din læge','Bruge AI til at forberede spørgsmål til lægen eller forstå termer, men aldrig som erstatning for en rigtig læge','Aldrig bruge AI til noget sundhedsrelateret da det altid er farligt','Kun bruge AI hvis symptomerne har stået på i mere end en uge'], c:1, exp:'AI er god til at forberede sig til et lægebesøg — forstå termer, formulere spørgsmål. Men AI erstatter aldrig en rigtig læge og må ikke bruges til selvdiagnose.'},
+
+  // Q1 — Modul 1 (korrekt = C, alle svar ca. samme længde)
+  {mod:'Modul 1 · Hvad er AI', q:'Din telefon bruger ansigtsgenkendelse til at låse op. Hvad er dette et eksempel på?',
+   opts:['Et fast program der følger en regel om at matche to billeder','En kode der aktiveres når kameraet registrerer bevægelse foran skærmen','AI der har lært at genkende dit ansigt ved at analysere mønstre','En sikkerhedsfunktion der styres direkte af din telefonudbyder'],
+   c:2, exp:'Ansigtsgenkendelse er AI — systemet har ikke fulgt en simpel regel, men lært at genkende netop dit ansigt ved at analysere tusindvis af mønstre.'},
+
+  // Q2 — Modul 1 (korrekt = C, alle svar ca. samme længde)
+  {mod:'Modul 1 · Hvad er AI', q:'Hvad er den vigtigste forskel på en lommeregner og en AI-chatbot?',
+   opts:['Lommeregneren kan kun vise tal, mens chatbotten kan vise billeder','Lommeregneren er gratis, mens chatbotten typisk koster penge om måneden','Lommeregneren er hurtigere end chatbotten til at løse matematikopgaver','Lommeregneren følger faste regler, mens chatbotten har lært at forstå sprog'],
+   c:3, exp:'En lommeregner følger præcist programmerede regler — 2+2 er altid 4. En AI-chatbot er derimod trænet på tekst og har lært mønstre i sprog, ikke faste regler.'},
+
+  // Q3 — Modul 1 (korrekt = B, alle svar ca. samme længde)
+  {mod:'Modul 1 · Hvad er AI', q:'Hvilken AI-chatbot anbefaler LearnAI til nye brugere og hvad er grunden?',
+   opts:['ChatGPT fordi den har flest brugere og er mest omtalt i nyhederne','Claude fordi den er særligt god til rolige og trygge svar til nybegyndere','Gemini fordi den henter live data direkte fra Googles søgemaskine','Copilot fordi den kommer gratis med og er let at finde på computeren'],
+   c:1, exp:'LearnAI anbefaler Claude fra Anthropic. Den er særligt god til at give rolige, nuancerede svar — det er vigtigt når man er helt ny til AI.'},
+
+  // Q4 — Modul 2 (korrekt = B, alle svar ca. samme længde)
+  {mod:'Modul 2 · Beskyt dig selv', q:'Du vil bede en AI om hjælp til at skrive et brev til din læge. Hvad er den rigtige fremgangsmåde?',
+   opts:['Dele dit fulde navn og CPR-nummer så AI\'en kan lave et præcist og personligt brev','Undlade at bruge AI til lægebreve da det altid er for risikabelt at gøre','Kun bruge AI til det hvis du har et betalt abonnement med sikker kryptering','Beskrive situationen generelt uden persondata, fx at du vil bede om en tid'],
+   c:3, exp:'Du kan sagtens bruge AI til breve — du behøver bare ikke dele CPR eller fuldt navn. En generel beskrivelse som "kvinde i 60\'erne der vil bede om en tid" er nok.'},
+
+  // Q5 — Modul 2 (korrekt = A, alle svar ca. samme længde)
+  {mod:'Modul 2 · Beskyt dig selv', q:'Hvilke oplysninger må du ALDRIG dele med en AI-chatbot?',
+   opts:['CPR-nummer, adgangskoder og bankoplysninger','Din bopælskommune og dit foretrukne supermarked','Hvad du hedder til fornavn og hvilket land du bor i','Din alder og hvilken slags musik du bedst kan lide'],
+   c:0, exp:'CPR-nummer, adgangskoder og bankoplysninger er strengt fortrolige og deles aldrig med en AI. AI-tjenester er ikke bygget til at håndtere den slags oplysninger sikkert.'},
+
+  // Q6 — Modul 2 (korrekt = C, alle svar ca. samme længde)
+  {mod:'Modul 2 · Beskyt dig selv', q:'Hvad sker der når du slår dataindsamling fra i Claude\'s indstillinger?',
+   opts:['AI\'en bliver langsommere og giver kortere svar end normalt','Du kan ikke længere stille spørgsmål om personlige emner','Dine samtaler bruges ikke til at træne AI-modellen fremover','AI\'en gemmer ikke dine svar men du kan stadig se dem selv'],
+   c:2, exp:'Når du slår træning fra under Privacy, vælger du at dine samtaler ikke bruges som data til at forbedre fremtidige versioner af AI\'en. Din brugsoplevelse ændres ikke.'},
+
+  // Q7 — Modul 3 (korrekt = D, alle svar ca. samme længde)
+  {mod:'Modul 3 · Login og samtale', q:'Du lukker browseren efter en samtale med Claude. Hvad sker der næste gang du åbner Claude?',
+   opts:['Claude viser samtalen igen og tilbyder at fortsætte den','Claude husker dit navn og dine præferencer men ikke samtalen','Claude beder dig om at bekræfte hvad I talte om sidst','Claude starter forfra og har ingen erindring om den tidligere chat'],
+   c:3, exp:'AI-chatbots husker ikke fra session til session. Hver gang du åbner et nyt vindue starter du på en frisk — AI\'en har ingen hukommelse fra forrige gang.'},
+
+  // Q8 — Modul 3 (korrekt = A, alle svar ca. samme længde)
+  {mod:'Modul 3 · Login og samtale', q:'Hvad er den vigtigste forskel på Claude og Google?',
+   opts:['Google søger i eksisterende sider på nettet, Claude genererer svar fra sin træning','Google kræver altid login mens Claude er åben for alle uden en konto','Claude forstår kun dansk mens Google fungerer på alle sprog globalt','Google ejes af et stort firma mens Claude er et non-profit program'],
+   c:0, exp:'Google søger i eksisterende indhold på internettet. Claude genererer svar fra sin træning — men kender ikke til aktuelle nyheder og kan tage fejl på specifikke fakta.'},
+
+  // Q9 — Modul 4 (korrekt = C, alle svar CA. SAMME LÆNGDE — dette var det værste eksempel)
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvilket af disse prompts vil give det mest præcise og nyttige svar fra en AI?',
+   opts:['Skriv noget venligt til min nabo der larmer i sin have om aftenen','Hjælp mig med at sige noget til en nabo der laver støj i haven ved siden af','Skriv en venlig mail til min nabo om aftenstøj fra hans have, hold den under 5 sætninger','Kan du hjælpe mig med at formulere noget til naboen om at han larmer for meget'],
+   c:2, exp:'Det tredje prompt er konkret, angiver præcist hvad der skal laves og beder om et bestemt format. De andre er for vage — AI\'en kan ikke vide hvad den præcist skal hjælpe med.'},
+
+  // Q10 — Modul 4 (korrekt = B, alle svar ca. samme længde)
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Hvad betyder kontekst i sammenhæng med et godt prompt?',
+   opts:['En liste over de søgeord du vil have AI\'en til at bruge i sit svar','Baggrundsinformation om dig selv og situationen så AI\'en kan tilpasse svaret','En teknisk kode du indsætter foran promptet for at aktivere en bestemt funktion','Det samlede antal tegn og ord dit prompt indeholder'],
+   c:1, exp:'Kontekst er info om hvem du er og hvad situationen er — fx "jeg er pensionist" eller "det er til min chef". Det hjælper AI\'en til at give et svar der passer til netop din situation.'},
+
+  // Q11 — Modul 4 (korrekt = A, alle svar ca. samme længde — dette var skævt)
+  {mod:'Modul 4 · Skriv et godt prompt', q:'Du vil have AI\'en til at forklare hvad streaming er. Hvilken formulering giver det bedste svar?',
+   opts:['Forklar streaming i to sætninger med et eksempel fra hverdagen, til en nybegynder','Hvad er streaming og kan du skrive lidt om det og hvornår det startede','Streaming — kan du forklare det på en nem måde med lidt historik om det','Skriv noget om streaming og hvad folk typisk bruger det til i dag'],
+   c:0, exp:'Det første prompt angiver præcist format (to sætninger), niveau (nybegynder) og beder om et konkret eksempel. De andre er for brede og giver AI\'en for meget frihed.'},
+
+  // Q12 — Modul 4 (korrekt = D, alle svar ca. samme længde)
+  {mod:'Modul 4 · Skriv et godt prompt', q:'AI\'en har givet dig et svar du ikke forstår. Hvad gør du?',
+   opts:['Lukker samtalen og åbner en ny — det er ikke muligt at ændre et svar der er givet','Sletter din konto og opretter en ny profil for at nulstille AI\'ens hukommelse','Venter til næste dag da AI\'en automatisk opdaterer og forbedrer sine svar','Skriver videre i samme samtale og beder AI\'en om at forklare det enklere'],
+   c:3, exp:'Du kan altid følge op i samme samtale. Skriv fx "Kan du forklare det enklere?" og AI\'en tilpasser sit svar. Den husker hvad I allerede har talt om.'},
+
+  // Q13 — Modul 5 (korrekt = C, alle svar ca. samme længde — dette var skævt)
+  {mod:'Modul 5 · Undgå faldgruber', q:'Hvad betyder det at en AI hallucerer?',
+   opts:['At AI\'en nægter at svare fordi spørgsmålet er for svært eller upassende','At AI\'en taler i billeder og metaforer fremfor at give direkte svar','At AI\'en præsenterer forkerte oplysninger med stor sikkerhed som om de er sande','At AI\'en gentager det samme svar flere gange uden at nå frem til en konklusion'],
+   c:2, exp:'Hallucination er når AI\'en formulerer forkerte fakta så overbevisende at de lyder sande. Det sker særligt med specifikke tal, navne og datoer — dobbelttjek altid vigtige oplysninger.'},
+
+  // Q14 — Modul 5 (korrekt = D, alle svar ca. samme længde — dette var skævt)
+  {mod:'Modul 5 · Undgå faldgruber', q:'Du spørger Claude om vejret i morgen i København. Hvad er problemet?',
+   opts:['Claude kan ikke forstå danske stednavne og giver forkerte byer','Claude er ikke forbundet til nettet og kender ikke aktuelle vejrdata','Claude giver altid vejrudsigter der er en til to dage forsinket','Claude blander vejrdata fra flere danske byer og giver gennemsnit'],
+   c:1, exp:'AI-chatbots som Claude er ikke forbundet til internettet og kender ikke aktuelle data som vejr, nyheder eller åbningstider. Brug en vejrapp eller Google til det.'},
+
+  // Q15 — Modul 5 (korrekt = B, alle svar ca. samme længde — dette var skævt)
+  {mod:'Modul 5 · Undgå faldgruber', q:'Du har ondt i maven og vil spørge en AI om det er noget alvorligt. Hvad er den rigtige tilgang?',
+   opts:['Stole fuldt på AI\'ens svar da den har adgang til al medicinsk litteratur','Bruge AI til at forberede spørgsmål til lægen, men aldrig som erstatning for en læge','Undlade at bruge AI til sundhedsspørgsmål da det altid giver farlige svar','Kun spørge AI\'en hvis symptomerne har stået på i over en uge uden forbedring'],
+   c:1, exp:'AI kan hjælpe dig med at forstå termer og forberede spørgsmål til lægen. Men AI diagnosticerer ikke — til alvorlige symptomer skal du altid kontakte din læge.'},
+
 ];
 
 let currentQ=0,selectedOption=null,answered=false,score=0,userAnswers=[];
@@ -823,7 +738,51 @@ function showResults(){
 }
 
 function goToPart2(){
-  showScene('scene-task');
+  // Gem at del 1 er bestaaet i sessionStorage saa del2-siden kan tjekke det
+  try { sessionStorage.setItem('learnai_part1_passed', '1'); } catch(e){}
+
+  // Fed transition: hele siden flyver opad og fader ud, derefter naviger
+  const overlay = document.createElement('div');
+  overlay.id = 'pageTransition';
+  overlay.innerHTML = `
+    <div class="pt-content">
+      <div class="pt-rocket">🚀</div>
+      <div class="pt-text">Klar til del 2...</div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  // Tilfoej style
+  if (!document.getElementById('ptStyle')) {
+    const s = document.createElement('style');
+    s.id = 'ptStyle';
+    s.textContent = `
+      #pageTransition{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse at center,#0f1928 0%,#080c14 70%);display:flex;align-items:center;justify-content:center;animation:ptFadeIn .4s ease forwards;}
+      @keyframes ptFadeIn{from{opacity:0}to{opacity:1}}
+      .pt-content{text-align:center;animation:ptScale .8s cubic-bezier(.22,1,.36,1) forwards}
+      @keyframes ptScale{0%{opacity:0;transform:scale(.8)}50%{opacity:1;transform:scale(1.05)}100%{opacity:1;transform:scale(1)}}
+      .pt-rocket{font-size:5rem;animation:ptRocket 1.4s cubic-bezier(.4,0,.2,1) forwards;display:inline-block;filter:drop-shadow(0 0 20px rgba(240,192,64,.5))}
+      @keyframes ptRocket{
+        0%{transform:translateY(40px) rotate(-25deg) scale(.8);opacity:0}
+        15%{opacity:1}
+        50%{transform:translateY(-10px) rotate(0deg) scale(1)}
+        100%{transform:translateY(-700px) rotate(10deg) scale(1.2);opacity:0}
+      }
+      .pt-text{font-size:1.4rem;font-weight:700;color:#f0c040;margin-top:1.5rem;letter-spacing:.02em;animation:ptTextFade 1.4s ease forwards}
+      @keyframes ptTextFade{
+        0%{opacity:0;transform:translateY(20px)}
+        20%{opacity:1;transform:translateY(0)}
+        80%{opacity:1}
+        100%{opacity:0}
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // Naviger efter animation
+  setTimeout(() => {
+    window.location.href = 'eksamen-d-del2.html';
+  }, 1300);
 }
 
 
