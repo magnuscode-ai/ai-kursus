@@ -551,7 +551,20 @@ onAuthStateChanged(auth, async (user) => {
 // Gem bestået + coins + badge i Firebase
 window.saveCertificate = async function() {
   if (!window._user || !window._fb) return;
-  const { db, doc: fbDoc, updateDoc, arrayUnion, serverTimestamp } = window._fb;
+  const { db, doc: fbDoc, getDoc, updateDoc, arrayUnion } = window._fb;
+  
+  // Tjek om kurset allerede er bestaaet — undgaar duplikater
+  try {
+    const snap = await getDoc(fbDoc(db, 'users', window._user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      if ((data.completedCourses || []).includes('D')) {
+        console.log('Kursus D allerede bestaaet — springer gem over');
+        return true; // Allerede gemt, intet at goere
+      }
+    }
+  } catch(e) { console.error(e); }
+
   const today = new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
   try {
     await updateDoc(fbDoc(db, 'users', window._user.uid), {
@@ -571,7 +584,7 @@ window.saveCertificate = async function() {
   }
 };
 
-window._fb = { db, doc, updateDoc, arrayUnion, serverTimestamp };
+window._fb = { db, doc, getDoc, updateDoc, arrayUnion, serverTimestamp };
 </script>
 
 <script>
