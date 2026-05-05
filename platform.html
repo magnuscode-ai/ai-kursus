@@ -27,6 +27,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 5%;height:64px;dis
 .btn-nav:hover{opacity:.85;transform:translateY(-1px)}
 .btn-nav-ghost{background:transparent;color:var(--muted);border:1px solid var(--border);padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-nav-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.btn-nav-logout{background:transparent;color:#f87171;border:1px solid rgba(248,113,113,.3);padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
+.btn-nav-logout:hover{background:rgba(248,113,113,.1);border-color:#f87171}
 .btn-nav-outline{background:transparent;color:var(--muted);border:1px solid var(--border);padding:8px 14px;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s}
 .btn-nav-outline:hover{border-color:var(--red);color:var(--red)}
 
@@ -49,6 +51,27 @@ h1 span{background:linear-gradient(135deg,var(--gold),#fff 60%,var(--blue));-web
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(240,192,64,.35)}
 .btn-ghost{background:transparent;color:var(--text);font-weight:600;padding:14px 28px;border-radius:10px;border:1px solid var(--border);font-size:1rem;cursor:pointer;transition:border-color .2s,background .2s}
 .btn-ghost:hover{border-color:var(--blue);background:rgba(59,130,246,.08)}
+/* Hero signup knap — iøjnefaldende med blå glow */
+.btn-hero-signup{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a6aff,#0047cc);
+  color:#fff;font-weight:700;padding:14px 30px;
+  border-radius:10px;border:none;font-size:1rem;
+  cursor:pointer;letter-spacing:.02em;
+  box-shadow:0 0 22px rgba(26,106,255,.5),0 4px 16px rgba(0,0,40,.4);
+  transition:transform .2s,box-shadow .2s;
+  animation:heroBtnPulse 2.5s ease-in-out infinite;
+}
+.btn-hero-signup::before{
+  content:'';position:absolute;top:0;left:-80%;width:55%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.2),transparent);
+  animation:btnShimmer 3s ease-in-out infinite;pointer-events:none;
+}
+.btn-hero-signup:hover{transform:translateY(-3px);box-shadow:0 0 36px rgba(26,106,255,.75),0 8px 24px rgba(0,0,60,.5);animation:none}
+@keyframes heroBtnPulse{
+  0%,100%{box-shadow:0 0 22px rgba(26,106,255,.5),0 4px 16px rgba(0,0,40,.4)}
+  50%{box-shadow:0 0 36px rgba(26,106,255,.75),0 4px 20px rgba(0,0,60,.5)}
+}
 .hero-stats{display:flex;gap:32px;justify-content:center;margin-top:52px;animation:fadeUp .7s ease .4s both;flex-wrap:wrap}
 .stat{text-align:center}
 .stat-num{font-size:1.6rem;font-weight:800;color:var(--gold)}
@@ -302,7 +325,6 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:40px 5%;d
   <div class="nav-right" id="navRight">
     <div class="nav-coins">🪙 <span id="userCoins">0</span> Coins</div>
     <button class="btn-nav-ghost" onclick="openModal('login')">Log ind</button>
-    <button class="btn-nav" id="navLoginBtn" onclick="openModal('signup')">Opret konto →</button>
   </div>
 </nav>
 
@@ -316,7 +338,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:40px 5%;d
     <p class="hero-sub">"Det er ikke AI, der tager dit job – det er folk, der kan bruge AI, der tager dit job."<br>Start din rejse i dag, fra begynder til ekspert.</p>
     <div class="hero-cta">
       <button class="btn-primary" onclick="document.getElementById('kurser').scrollIntoView({behavior:'smooth'})">Se kurser →</button>
-      <button class="btn-ghost" id="heroSignupBtn" onclick="openModal('signup')">Opret konto gratis</button>
+      <button class="btn-hero-signup" id="heroSignupBtn" onclick="openModal('signup')">✦ Opret konto gratis</button>
     </div>
     <div class="hero-stats">
       <div class="stat float"><div class="stat-num">4</div><div class="stat-label">Kursusniveauer</div></div>
@@ -860,7 +882,11 @@ function updateNavLoggedIn(data) {
         </button>
       </div>
     </div>
+    <button class="btn-nav-logout" onclick="doLogout()">Log ud</button>
   `;
+  // Skjul hero signup knap — man er allerede logget ind
+  const heroBtn = document.getElementById('heroSignupBtn');
+  if (heroBtn) heroBtn.style.display = 'none';
 }
 
 function updateNavLoggedOut() {
@@ -868,8 +894,10 @@ function updateNavLoggedOut() {
   navRight.innerHTML = `
     <div class="nav-coins">🪙 <span id="userCoins">0</span> Coins</div>
     <button class="btn-nav-ghost" onclick="openModal('login')">Log ind</button>
-    <button class="btn-nav" onclick="openModal('signup')">Opret konto →</button>
   `;
+  // Vis hero signup knap
+  const heroBtn = document.getElementById('heroSignupBtn');
+  if (heroBtn) heroBtn.style.display = '';
 }
 
 function toggleDropdown() {
