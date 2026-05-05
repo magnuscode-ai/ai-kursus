@@ -251,21 +251,19 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <!-- SCENE: GATE -->
 <div class="scene" id="scene-gate">
   <div class="gate-icon">🔐</div>
+  <div class="gate-title">Log ind for at fortsætte</div>
+  <div class="gate-sub">Du skal være logget ind på LearnAI for at tage eksamen.</div>
+  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">Gå til LearnAI og log ind</a>
+</div>
 
 <!-- SCENE: ALREADY PASSED -->
 <div class="scene" id="scene-passed2">
-  <div style="max-width:460px">
+  <div style="max-width:460px;text-align:center">
     <div style="font-size:3rem;margin-bottom:1rem">🏆</div>
-    <h2 style="font-family:serif;font-size:1.6rem;margin-bottom:.75rem">Du har allerede bestået!</h2>
+    <h2 style="font-size:1.6rem;margin-bottom:.75rem">Du har allerede bestået!</h2>
     <p style="color:var(--muted);font-size:.92rem;line-height:1.7;margin-bottom:1.75rem">Du har allerede bestået Kursus D og dit bevis er gemt på din profil.</p>
     <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" style="display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;font-weight:700;padding:13px 28px;border-radius:50px;text-decoration:none;font-size:.95rem">Se mit bevis på platformen</a>
   </div>
-</div>
-
-
-  <div class="gate-title">Adgang nægtet</div>
-  <div class="gate-sub">Du skal bestå del 1 af eksamen før du kan komme hertil. Gå tilbage og gennemfør del 1 først.</div>
-  <a href="eksamen-d.html" class="btn-gate">← Gå til del 1</a>
 </div>
 
 <!-- SCENE: TASK -->
@@ -501,12 +499,8 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Tjek session + login
-const part1Passed = sessionStorage.getItem('part1Passed');
-if (!part1Passed) {
-  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-  document.getElementById('scene-gate').classList.add('active');
-}
+// Tjek login - vises direkte naar Firebase bekraefter
+// sessionStorage-check er fjernet da det blokerer navigation fra del 1
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
@@ -517,9 +511,25 @@ onAuthStateChanged(auth, async (user) => {
   try {
     const snap = await getDoc(doc(db, 'users', user.uid));
     if (snap.exists()) {
-      window._user = { uid: user.uid, email: user.email, ...snap.data() };
+      const data = snap.data();
+      window._user = { uid: user.uid, email: user.email, ...data };
+      if ((data.completedCourses||[]).includes('D')) {
+        // Allerede bestaaet
+        document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+        const passed = document.getElementById('scene-passed2');
+        if (passed) passed.classList.add('active');
+        return;
+      }
+    } else {
+      window._user = { uid: user.uid, email: user.email, firstName:'', lastName:'', coins:0 };
     }
-  } catch(e) { console.error(e); }
+  } catch(e) {
+    window._user = { uid: user.uid, email: user.email, firstName:'', lastName:'', coins:0 };
+    console.error(e);
+  }
+  // Vis del 2 direkte
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  document.getElementById('scene-task').classList.add('active');
 });
 
 // Gem bestået + coins + badge i Firebase
@@ -687,9 +697,9 @@ function retryPrompt() {
 }
 
 async function completePart2() {
-  const part1Score = sessionStorage.getItem('part1Score') || '?';
-  const userName = sessionStorage.getItem('userName') || (window._user ? `${window._user.firstName || ''} ${window._user.lastName || ''}`.trim() : 'Ukendt');
-  const userEmail = sessionStorage.getItem('userEmail') || (window._user?.email || '');
+  const u = window._user || {};
+  const userName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Dit navn';
+  const userEmail = u.email || '';
   const today = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
 
   // Gem i Firebase
@@ -858,62 +868,5 @@ window.sendHelp = sendHelp;
 window.showScene = showScene;
 </script>
 
-<script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
-
-const app = initializeApp({
-  apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
-  authDomain:"learnai-dk.firebaseapp.com",
-  projectId:"learnai-dk",
-  storageBucket:"learnai-dk.firebasestorage.app",
-  messagingSenderId:"3073076360",
-  appId:"1:3073076360:web:b853d118e943395de4833d"
-});
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.location.href = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
-    return;
-  }
-  // Hjælpefunktion der virker på tværs af script-typer
-  const goToScene = (id) => {
-    document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
-    const el = document.getElementById(id);
-    if (el) { el.classList.add('active'); window.scrollTo({top:0}); }
-  };
-  try {
-    const snap = await getDoc(doc(db,'users',user.uid));
-    if (snap.exists()) {
-      const data = snap.data();
-      window._user = { uid:user.uid, email:user.email, ...data };
-      if ((data.completedCourses||[]).includes('D')) {
-        goToScene('scene-passed2');
-        return;
-      }
-    } else {
-      window._user = { uid:user.uid, email:user.email, firstName:'', lastName:'', coins:0 };
-    }
-  } catch(e) {
-    window._user = { uid:user.uid, email:user.email, firstName:'', lastName:'', coins:0 };
-  }
-  goToScene('scene-task');
-});
-
-window.saveCertToFirebase = async function() {
-  if (!window._user) return;
-  const today = new Date().toLocaleDateString('da-DK',{day:'2-digit',month:'long',year:'numeric'});
-  try {
-    await updateDoc(doc(db,'users',window._user.uid),{
-      coins: increment(100),
-      completedCourses: arrayUnion('D'),
-      badges: arrayUnion({level:'D',date:today,course:'Kursus D — Fra nybegynder til AI-bruger'})
-    });
-  } catch(e){console.error(e);}
-};
-</script>
 </body>
 </html>
