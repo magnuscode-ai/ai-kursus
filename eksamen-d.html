@@ -35,6 +35,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .scene.active{display:block}
 #scene-results.active,#scene-gate.active,#scene-passed.active,#scene-certificate.active{display:flex}
 
+/* ALLEREDE BESTÅET */
+#scene-passed.active{
+  align-items:center;justify-content:center;
+  min-height:calc(100vh - 62px);padding:2rem;
+}
+.already-passed-wrap{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;
+  background:linear-gradient(135deg,rgba(240,192,64,.1),rgba(240,192,64,.04));
+  border:1px solid rgba(240,192,64,.3);
+  border-radius:20px;padding:28px 32px;
+  max-width:780px;width:100%;
+  animation:apSlide .6s cubic-bezier(.22,1,.36,1) both;
+}
+@keyframes apSlide{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.already-passed-left{display:flex;align-items:center;gap:20px;flex:1}
+.already-passed-icon{font-size:2.8rem;filter:drop-shadow(0 0 12px rgba(240,192,64,.5));animation:apBounce 2s ease-in-out infinite}
+@keyframes apBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.already-passed-title{font-size:1.2rem;font-weight:800;color:var(--text);margin-bottom:5px}
+.already-passed-sub{font-size:.88rem;color:var(--muted);line-height:1.5}
+.already-passed-btn{
+  display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+  background:linear-gradient(135deg,#1a6aff,#0047cc);
+  color:#fff;font-weight:700;font-size:.9rem;
+  padding:13px 24px;border-radius:12px;text-decoration:none;
+  box-shadow:0 0 20px rgba(26,106,255,.4);
+  transition:transform .2s,box-shadow .2s;
+}
+.already-passed-btn:hover{transform:translateY(-2px);box-shadow:0 0 32px rgba(26,106,255,.65)}
+
 /* GATE */
 #scene-gate{min-height:calc(100vh - 62px);display:none;align-items:center;justify-content:center;text-align:center;padding:2rem;flex-direction:column}
 #scene-gate.active{display:flex}
@@ -431,10 +460,18 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
 <!-- SCENE: ALREADY PASSED -->
 <div class="scene" id="scene-passed">
-  <div class="gate-icon">&#127942;</div>
-  <div class="gate-title">Du har allerede best&#229;et!</div>
-  <div class="gate-sub">Du har allerede best&#229;et Kursus D og dit bevis er gemt p&#229; din profil. Du kan ikke tage eksamen igen med samme bruger.</div>
-  <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-gate">Se mit bevis p&#229; platformen</a>
+  <div class="already-passed-wrap">
+    <div class="already-passed-left">
+      <div class="already-passed-icon">🏆</div>
+      <div class="already-passed-text">
+        <div class="already-passed-title">Du har allerede bestået!</div>
+        <div class="already-passed-sub">Kursus D er gennemført og dit bevis er gemt på din profil.</div>
+      </div>
+    </div>
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html#badges" class="already-passed-btn">
+      Se mit bevis på platformen →
+    </a>
+  </div>
 </div>
 
 <!-- HELP CHAT -->
