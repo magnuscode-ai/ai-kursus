@@ -3,665 +3,1684 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnAI DK — Kursus C1</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>LearnAI — C1: Prompt-teknik</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --blue:        #185FA5;
-      --blue-light:  #E6F1FB;
-      --blue-mid:    #c8dff5;
-      --green:       #0F6E56;
-      --green-light: #E1F5EE;
-      --orange:      #C45000;
-      --orange-light:#FFF0E6;
-      --yellow-bg:   #FFF3CD;
-      --yellow-txt:  #856404;
-      --grey:        #F5F5F5;
-      --border:      #E2E8F0;
-      --bg:          #F4F7FB;
-      --white:       #FFFFFF;
-      --text:        #1A1A1A;
-      --muted:       #6B7280;
-      --radius:      14px;
-      --shadow:      0 4px 24px rgba(24,95,165,0.08);
+      --ink:          #0D1117;
+      --ink-soft:     #374151;
+      --muted:        #6B7280;
+      --border:       #E5E7EB;
+      --bg:           #F9FAFB;
+      --white:        #FFFFFF;
+      --indigo:       #4F46E5;
+      --indigo-deep:  #3730A3;
+      --indigo-50:    #EEF2FF;
+      --indigo-100:   #E0E7FF;
+      --indigo-200:   #C7D2FE;
+      --indigo-glow:  rgba(79,70,229,0.15);
+      --amber:        #D97706;
+      --amber-50:     #FFFBEB;
+      --amber-100:    #FEF3C7;
+      --green:        #059669;
+      --green-50:     #ECFDF5;
+      --red:          #DC2626;
+      --red-50:       #FEF2F2;
+      --teal:         #0D9488;
+      --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; }
 
-    /* ── NAV ── */
+    /* NAV */
     nav {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 200;
+      height: 58px; background: rgba(255,255,255,0.93);
+      backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
     }
-    .logo {
-      display: flex; align-items: center; gap: 9px;
-      font-size: 16px; font-weight: 700;
-      color: var(--text); text-decoration: none;
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--indigo); display: flex; align-items: center; justify-content: center; }
+    .nav-mark svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 12px; font-weight: 600; color: var(--indigo); background: var(--indigo-50); padding: 4px 12px; border-radius: 999px; }
+
+    /* JOURNEY BAR */
+    .journey { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; padding: 0 28px; }
+    .journey::-webkit-scrollbar { display: none; }
+    .journey-track { display: flex; align-items: stretch; min-width: max-content; }
+    .j-item { display: flex; align-items: center; gap: 7px; padding: 13px 14px; font-size: 12px; font-weight: 600; color: #9CA3AF; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; white-space: nowrap; }
+    .j-item.active { color: var(--indigo); border-bottom-color: var(--indigo); }
+    .j-item.done   { color: var(--green);  border-bottom-color: var(--green); }
+    .j-dot { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; background: #F3F4F6; color: #9CA3AF; transition: background .2s, color .2s; }
+    .j-item.active .j-dot { background: var(--indigo); color: white; }
+    .j-item.done   .j-dot { background: var(--green);  color: white; }
+    .j-sep { color: #D1D5DB; font-size: 14px; align-self: center; }
+
+    /* HERO */
+    .hero { background: var(--indigo-deep); padding: 52px 28px 44px; position: relative; overflow: hidden; }
+    .hero-grid { position: absolute; inset: 0; opacity: .045; background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-blob { position: absolute; width: 420px; height: 420px; background: radial-gradient(circle, rgba(99,102,241,.35) 0%, transparent 70%); top: -140px; right: -60px; border-radius: 50%; animation: blobFloat 8s ease-in-out infinite; }
+    @keyframes blobFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+    .hero-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.85); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 20px; }
+    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #A5B4FC; display: inline-block; }
+    .hero h1 { font-family: 'Lora', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 600; color: white; line-height: 1.18; margin-bottom: 14px; letter-spacing: -.4px; }
+    .hero h1 em { font-style: italic; color: #A5B4FC; }
+    .hero-lead { font-size: 15.5px; color: rgba(255,255,255,.72); max-width: 500px; line-height: 1.7; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-pill { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.8); font-size: 13px; padding: 7px 13px; border-radius: var(--r-sm); }
+
+    /* LAYOUT */
+    .wrap { max-width: 740px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    /* NOTICES */
+    .notice { display: flex; gap: 13px; align-items: flex-start; border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+    .notice-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+    .notice-head { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
+    .notice-body { font-size: 13px; line-height: 1.55; }
+    .notice.warn  { background: var(--amber-100); }
+    .notice.warn  .notice-head { color: #92400E; }
+    .notice.warn  .notice-body { color: #78350F; }
+    .notice.info  { background: var(--indigo-50); }
+    .notice.info  .notice-head { color: var(--indigo-deep); }
+    .notice.info  .notice-body { color: var(--indigo-deep); }
+
+    /* MODULES */
+    .mod { background: #F8F9FF; border: 1px solid #DDE3FF; border-left: 4px solid var(--indigo-200); border-radius: var(--r-xl); margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(79,70,229,.07); transition: box-shadow .25s, border-color .25s, border-left-color .25s; }
+    .mod:hover { box-shadow: 0 4px 20px rgba(79,70,229,.13); border-left-color: var(--indigo); }
+    .mod.open { border-color: var(--indigo-200); border-left-color: var(--indigo); box-shadow: 0 6px 28px var(--indigo-glow); background: var(--white); }
+    .mod-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; cursor: pointer; transition: background .15s; }
+    .mod-header:hover { background: var(--bg); }
+    .mod.open .mod-header { background: var(--indigo-50); }
+    .mod-num { width: 40px; height: 40px; border-radius: 11px; background: #F3F4F6; color: #9CA3AF; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; transition: background .2s, color .2s; }
+    .mod.open .mod-num { background: var(--indigo); color: white; }
+    .mod-text { flex: 1; }
+    .mod-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .mod-sub   { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .mod-time  { font-size: 11.5px; font-weight: 600; color: var(--muted); background: #F3F4F6; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod.open .mod-time { background: var(--indigo-100); color: var(--indigo-deep); }
+    .mod-arrow { color: #D1D5DB; font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; }
+    .mod.open .mod-arrow { transform: rotate(180deg); color: var(--indigo); }
+    .mod-body { display: none; padding: 24px 28px 30px; border-top: 1px solid var(--border); animation: fadeSlide .22s ease; }
+    .mod.open .mod-body { display: block; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* SECTION LABEL */
+    .sect-label { display: flex; align-items: center; gap: 12px; margin: 30px 0 16px; }
+    .sect-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .sect-label span { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+    /* PROSE */
+    p.prose { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
+    p.prose strong { color: var(--ink); font-weight: 600; }
+
+    /* CONCEPT CARDS */
+    .concept-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    @media(max-width:560px){ .concept-row { grid-template-columns: 1fr; } }
+    .cc { border-radius: var(--r); padding: 16px 18px; position: relative; overflow: hidden; }
+    .cc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .cc.blue { background: var(--indigo-50); } .cc.blue::before { background: var(--indigo); }
+    .cc.yellow { background: var(--amber-100); } .cc.yellow::before { background: var(--amber); }
+    .cc.teal { background: #F0FDFA; } .cc.teal::before { background: var(--teal); }
+    .cc.wide { grid-column: 1/-1; }
+    .cc-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .cc.blue .cc-title   { color: var(--indigo-deep); }
+    .cc.yellow .cc-title { color: #92400E; }
+    .cc.teal .cc-title   { color: #134E4A; }
+    .cc-body { font-size: 13px; line-height: 1.6; }
+    .cc.blue .cc-body   { color: #3730A3; }
+    .cc.yellow .cc-body { color: #78350F; }
+    .cc.teal .cc-body   { color: #134E4A; }
+    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,.07); font-size: 12px; font-weight: 600; }
+    .cc.blue .cc-tip   { color: var(--indigo); }
+    .cc.yellow .cc-tip { color: var(--amber); }
+    .cc.teal .cc-tip   { color: var(--teal); }
+
+    /* TECHNIQUE */
+    .tech { margin-bottom: 30px; }
+    .tech-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--indigo); color: white; font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 11px; }
+    .tech-pill .num { background: rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; font-size: 10px; }
+    h3.tech-h { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+
+    /* COPY BLOCK */
+    .copy-block { background: #0D1117; border-radius: var(--r); overflow: hidden; margin-bottom: 16px; border: 1px solid #1E2530; }
+    .copy-topbar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.07); }
+    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #4B5563; }
+    .copy-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.11); color: #9CA3AF; font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all .18s; }
+    .copy-btn:hover { background: rgba(255,255,255,.14); color: white; }
+    .copy-btn.copied { background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); color: #6EE7B7; }
+    .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .copy-text { padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; color: #E2E8F0; white-space: pre-wrap; word-break: break-word; }
+    .copy-text .hl  { color: #A5B4FC; }
+    .copy-text .hlg { color: #6EE7B7; }
+    .copy-text .hly { color: #FCD34D; }
+
+    /* COMPARE */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    @media(max-width:500px){ .compare { grid-template-columns: 1fr; } }
+    .cmp { border-radius: var(--r); padding: 14px 16px; }
+    .cmp.bad  { background: var(--red-50);   border: 1px solid #FECACA; }
+    .cmp.good { background: var(--green-50); border: 1px solid #A7F3D0; }
+    .cmp-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 7px; }
+    .cmp.bad  .cmp-label { color: var(--red); }
+    .cmp.good .cmp-label { color: var(--green); }
+    .cmp-text { font-size: 13px; line-height: 1.6; font-style: italic; }
+    .cmp.bad  .cmp-text { color: #7F1D1D; }
+    .cmp.good .cmp-text { color: #064E3B; }
+
+    /* PRACTICE */
+    .practice { background: linear-gradient(135deg, #FFFBF5, #FFF8EC); border: 1px solid #FDE68A; border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px; }
+    .practice-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+    .p-tag { background: var(--amber); color: white; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+    .p-title { font-size: 13.5px; font-weight: 700; color: #78350F; }
+    .p-body { font-size: 13px; line-height: 1.7; color: #7C2D12; }
+    .p-body ol, .p-body ul { padding-left: 1.2rem; margin-top: 7px; }
+    .p-body li { margin-bottom: 4px; }
+    .p-body em { font-style: italic; }
+    .p-body strong { color: #92400E; }
+
+    /* CHECKLIST */
+    .checklist { display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px; }
+    .chk { display: flex; gap: 12px; align-items: flex-start; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; transition: border-color .2s, box-shadow .2s; }
+    .chk:hover { border-color: var(--indigo-200); box-shadow: 0 2px 10px var(--indigo-glow); }
+    .chk-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .chk-icon.i { background: var(--indigo-50); }
+    .chk-icon.g { background: var(--green-50); }
+    .chk-icon.s { background: #F3F4F6; }
+    .chk-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+    .chk-desc  { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+    .chk-desc em { font-style: italic; color: var(--ink-soft); }
+
+    /* PRIVACY */
+    .priv-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+    .priv-row { display: flex; gap: 10px; align-items: center; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 10px 14px; font-size: 13px; color: var(--ink-soft); }
+
+    hr.div { border: none; border-top: 1px solid var(--border); margin: 22px 0; }
+
+    /* SUMMARY */
+    .summary { background: var(--indigo-deep); border-radius: var(--r-xl); padding: 30px; color: white; margin: 34px 0 24px; position: relative; overflow: hidden; }
+    .summary::after { content: 'C1'; position: absolute; right: 22px; top: 12px; font-family: 'Lora', serif; font-size: 80px; font-weight: 600; color: rgba(255,255,255,.05); line-height: 1; }
+    .summary h3 { font-family: 'Lora', serif; font-size: 21px; font-weight: 600; margin-bottom: 18px; color: white; }
+    .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    @media(max-width:480px){ .sum-grid { grid-template-columns: 1fr; } }
+    .sum-item { display: flex; gap: 9px; background: rgba(255,255,255,.07); border-radius: var(--r-sm); padding: 11px 13px; font-size: 13px; color: rgba(255,255,255,.82); line-height: 1.5; }
+    .sum-item::before { content: '✓'; color: #A5B4FC; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    /* CTA */
+    .cta { background: var(--white); border: 1.5px solid var(--indigo-200); border-radius: var(--r-xl); padding: 34px 28px; text-align: center; box-shadow: 0 8px 36px var(--indigo-glow); }
+    .cta-icon { font-size: 40px; margin-bottom: 10px; }
+    .cta h2 { font-family: 'Lora', serif; font-size: 23px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .cta p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+    .cta-warn { display: inline-block; background: var(--amber-100); color: #92400E; font-size: 12px; font-weight: 600; padding: 5px 14px; border-radius: 999px; margin-bottom: 18px; }
+    .btn-go { display: inline-flex; align-items: center; gap: 9px; background: var(--indigo); color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 38px; border-radius: var(--r); text-decoration: none; box-shadow: 0 4px 18px var(--indigo-glow); transition: background .15s, transform .15s, box-shadow .15s; }
+    .btn-go:hover { background: var(--indigo-deep); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(79,70,229,.28); }
+    .btn-go svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .cta-sub { margin-top: 13px; font-size: 12.5px; color: var(--muted); display: flex; gap: 6px; justify-content: center; align-items: center; flex-wrap: wrap; }
+    .cta-sub .coins { color: var(--amber); font-weight: 700; }
+    .cta-sub .dot-sep { color: var(--border); }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1E293B; color: white; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 999px; box-shadow: 0 8px 32px rgba(0,0,0,.2); opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* MODULE DONE STATE */
+    .mod.done .mod-num { background: var(--green); color: white; }
+    .mod.done { border-color: #A7F3D0; }
+    .mod.done .mod-header { background: var(--green-50); }
+    .mod-done-badge {
+      display: none; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; color: var(--green);
+      background: var(--green-50); padding: 4px 10px;
+      border-radius: 999px; flex-shrink: 0;
     }
-    .logo-icon {
-      width: 30px; height: 30px;
-      background: var(--blue); border-radius: 7px;
+    .mod.done .mod-done-badge { display: flex; }
+    .mod.done .mod-time { display: none; }
+
+    /* PROGRESS TRACKER BAR */
+    .progress-track-wrap {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 22px;
+      margin-bottom: 28px; display: flex; align-items: center; gap: 16px;
+    }
+    .prog-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+    .prog-bar-outer { flex: 1; height: 7px; background: var(--border); border-radius: 999px; overflow: hidden; }
+    .prog-bar-inner { height: 100%; background: linear-gradient(90deg, var(--indigo), #818CF8); border-radius: 999px; width: 0%; transition: width .6s ease; }
+    .prog-pct { font-size: 13px; font-weight: 700; color: var(--indigo); white-space: nowrap; min-width: 36px; text-align: right; }
+
+    /* Progress steps — KUN visuelle, aldrig klikkbare */
+    .prog-steps { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .prog-step {
+      width: 26px; height: 26px; border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-    }
-    .logo-icon svg { width: 15px; height: 15px; fill: white; }
-    .nav-tag {
-      font-size: 13px; color: var(--muted);
-      background: var(--grey); padding: 5px 12px;
-      border-radius: 20px;
-    }
-
-    /* ── HERO ── */
-    .hero {
-      background: var(--blue);
-      color: white;
-      padding: 3rem 1.5rem 2.5rem;
-      text-align: center;
-    }
-    .hero-badge {
-      display: inline-block;
-      background: rgba(255,255,255,0.18);
-      font-size: 12px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 5px 14px; border-radius: 20px;
-      margin-bottom: 1rem;
-    }
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(26px, 5vw, 38px);
-      font-weight: 400;
-      line-height: 1.2;
-      margin-bottom: 0.75rem;
-    }
-    .hero p {
-      font-size: 16px; opacity: 0.85;
-      max-width: 480px; margin: 0 auto 1.75rem;
-    }
-    .hero-meta {
-      display: flex; gap: 1.5rem;
-      justify-content: center; flex-wrap: wrap;
-    }
-    .hero-meta-item {
-      display: flex; align-items: center; gap: 7px;
-      font-size: 14px; opacity: 0.9;
-    }
-    .hero-meta-item span { font-size: 18px; }
-
-    /* ── PROGRESS STEPS ── */
-    .steps-bar {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem;
-      display: flex;
-      justify-content: center;
-      gap: 0;
-    }
-    .step-item {
-      display: flex; align-items: center; gap: 0;
-      font-size: 13px;
-    }
-    .step-dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700;
-      flex-shrink: 0;
-    }
-    .step-dot.active { background: var(--blue); color: white; }
-    .step-dot.done   { background: var(--green); color: white; }
-    .step-dot.next   { background: var(--border); color: var(--muted); }
-    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
-    .step-label.active { color: var(--blue); }
-    .step-label.next   { color: var(--muted); }
-    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
-
-    /* ── CONTENT ── */
-    .content {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: 2.5rem 1.5rem 4rem;
-    }
-
-    /* Section label */
-    .section-label {
       font-size: 11px; font-weight: 700;
-      color: var(--blue); letter-spacing: 0.1em;
-      text-transform: uppercase; margin-bottom: 0.4rem;
-    }
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px; font-weight: 400;
-      color: var(--text); margin-bottom: 0.5rem;
-    }
-    .section-body {
-      font-size: 15px; color: var(--muted);
-      margin-bottom: 2rem; line-height: 1.7;
-    }
-
-    /* ── MODULE CARD ── */
-    .module {
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      margin-bottom: 1.5rem;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .module-header {
-      background: var(--blue-light);
-      padding: 1.1rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-      cursor: pointer;
+      background: #F1F5F9; color: #94A3B8;
+      border: 2px solid #E2E8F0;
+      pointer-events: none; /* aldrig klikkbar */
       user-select: none;
+      transition: all .35s ease;
+      position: relative;
     }
-    .module-header:hover { background: var(--blue-mid); }
-    .module-letter {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--blue); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; flex-shrink: 0;
+    /* Grå streg mellem steps */
+    .prog-step:not(:last-child)::after {
+      content: '';
+      position: absolute; left: 100%; top: 50%;
+      transform: translateY(-50%);
+      width: 6px; height: 2px;
+      background: #E2E8F0;
+      margin-left: 0;
     }
-    .module-title-wrap { flex: 1; }
-    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
-    .module.open .module-toggle { transform: rotate(45deg); }
-
-    .module-body {
-      display: none;
-      padding: 1.5rem;
-      border-top: 1px solid var(--border);
+    /* I gang — pulserende blå prik */
+    .prog-step.active {
+      background: var(--indigo-50);
+      border-color: var(--indigo);
+      color: var(--indigo);
     }
-    .module.open .module-body { display: block; }
-
-    /* ── CONTENT ELEMENTS ── */
-    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
-
-    .info-box {
-      border-radius: 12px;
-      padding: 1rem 1.15rem;
-      margin-bottom: 1.25rem;
+    .prog-step.active::before {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      border: 2px solid var(--indigo);
+      opacity: 0;
+      animation: stepPulse 1.8s ease-out infinite;
     }
-    .info-box-title {
-      font-size: 13px; font-weight: 700;
-      margin-bottom: 0.5rem;
+    @keyframes stepPulse {
+      0%   { transform: scale(0.85); opacity: 0.6; }
+      70%  { transform: scale(1.4);  opacity: 0; }
+      100% { transform: scale(1.4);  opacity: 0; }
     }
-    .info-box p { font-size: 14px; line-height: 1.6; }
-    .info-box ul { padding-left: 1.1rem; }
-    .info-box li { font-size: 14px; line-height: 1.7; }
-
-    .box-blue   { background: var(--blue-light);  }
-    .box-blue .info-box-title   { color: var(--blue); }
-    .box-green  { background: var(--green-light); }
-    .box-green .info-box-title  { color: var(--green); }
-    .box-yellow { background: var(--yellow-bg);   }
-    .box-yellow .info-box-title { color: var(--yellow-txt); }
-    .box-grey   { background: var(--grey);        }
-    .box-grey .info-box-title   { color: #444; }
-    .box-orange { background: var(--orange-light); }
-    .box-orange .info-box-title { color: var(--orange); }
-
-    h3.subhead {
-      font-size: 16px; font-weight: 700;
-      color: var(--text); margin: 1.25rem 0 0.6rem;
-    }
-
-    .numbered-list, .bullet-list {
-      padding-left: 1.3rem; margin-bottom: 1.25rem;
-    }
-    .numbered-list li, .bullet-list li {
-      font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text);
-    }
-
-    .divider {
-      border: none; border-top: 1px solid var(--border);
-      margin: 1.5rem 0;
-    }
-
-    /* ── PRACTICE BOX ── */
-    .practice {
-      background: var(--orange-light);
-      border-radius: 12px;
-      padding: 1rem 1.15rem;
-      margin-bottom: 1.25rem;
-    }
-    .practice-title {
-      font-size: 13px; font-weight: 700;
-      color: var(--orange); margin-bottom: 0.5rem;
-    }
-    .practice ol { padding-left: 1.2rem; }
-    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
-    .practice li { margin-bottom: 4px; }
-
-    /* ── SUMMARY BOX ── */
-    .summary {
-      background: var(--blue);
-      border-radius: 16px;
-      padding: 1.75rem;
+    /* Færdig — grøn med flueben */
+    .prog-step.done {
+      background: var(--green);
+      border-color: var(--green);
       color: white;
-      margin-bottom: 2rem;
     }
-    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
-    .summary ul { padding-left: 1.2rem; }
-    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+    .prog-step.done::after { background: var(--green); }
 
-    /* ── QUIZ CTA ── */
-    .quiz-cta {
-      background: white;
-      border: 2px solid var(--blue);
-      border-radius: 18px;
-      padding: 2rem;
-      text-align: center;
-      box-shadow: var(--shadow);
+    /* AI DEMO */
+    .ai-demo {
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      overflow: hidden; margin-bottom: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.05);
     }
-    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
-    .quiz-cta h2 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 22px; font-weight: 400;
-      color: var(--text); margin-bottom: 0.5rem;
+    .ai-demo-label {
+      background: #F8FAFC; border-bottom: 1px solid var(--border);
+      padding: 8px 16px; font-size: 11px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase; color: var(--muted);
     }
-    .quiz-cta p { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
-    .quiz-cta .req {
-      display: inline-block;
-      background: var(--yellow-bg); color: var(--yellow-txt);
-      font-size: 13px; font-weight: 600;
-      padding: 6px 16px; border-radius: 20px;
-      margin-bottom: 1.25rem;
+    .ai-tabs {
+      display: flex; border-bottom: 1px solid var(--border);
+      background: var(--white);
     }
-    .btn-quiz {
-      display: inline-block;
-      background: var(--blue); color: white;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 16px; font-weight: 700;
-      padding: 14px 36px; border-radius: 12px;
-      text-decoration: none;
-      transition: background 0.15s, transform 0.1s;
+    .ai-tab {
+      flex: 1; padding: 10px 14px; font-family: 'Outfit', sans-serif;
+      font-size: 12.5px; font-weight: 600; cursor: pointer;
+      background: none; border: none; color: var(--muted);
+      border-bottom: 2px solid transparent; transition: all .18s;
     }
-    .btn-quiz:hover { background: #1250a0; transform: translateY(-1px); }
+    .ai-tab.active { color: var(--indigo); border-bottom-color: var(--indigo); background: var(--indigo-50); }
+    .ai-tab:hover:not(.active) { background: var(--bg); }
+    .ai-response { padding: 16px; background: var(--white); }
+    .ai-response.hidden { display: none; }
+    .ai-bubble { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 12px; }
+    .ai-avatar {
+      width: 30px; height: 30px; border-radius: 9px;
+      background: #374151; color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 800; flex-shrink: 0; letter-spacing: .02em;
+    }
+    .ai-avatar-good { background: var(--indigo); }
+    .ai-msg {
+      background: #F8FAFC; border: 1px solid var(--border);
+      border-radius: 0 var(--r) var(--r) var(--r);
+      padding: 12px 14px; font-size: 13.5px; line-height: 1.65;
+      color: var(--ink-soft); flex: 1;
+    }
+    .ai-msg-good { background: var(--indigo-50); border-color: var(--indigo-200); color: #1E1B4B; }
+    .ai-msg strong { font-weight: 600; }
+    .ai-msg em { font-style: italic; }
+    .ai-verdict {
+      font-size: 12.5px; font-weight: 600; padding: 8px 12px;
+      border-radius: var(--r-sm); display: flex; align-items: center; gap: 8px;
+    }
+    .ai-verdict::before { font-size: 14px; flex-shrink: 0; }
+    .ai-verdict.bad  { background: var(--red-50); color: #991B1B; border: 1px solid #FECACA; }
+    .ai-verdict.bad::before { content: '💡'; }
+    .ai-verdict.good { background: var(--green-50); color: #065F46; border: 1px solid #A7F3D0; }
+    .ai-verdict.good::before { content: '✅'; }
 
-    /* ── TECHNIQUE TAG ── */
-    .technique-tag {
-      display: inline-block;
-      background: var(--blue); color: white;
-      font-size: 11px; font-weight: 700;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      padding: 3px 10px; border-radius: 6px;
-      margin-bottom: 0.5rem;
+    /* USE CASES */
+    .use-section { margin-bottom: 20px; }
+    .use-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 16px; padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .use-section-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: var(--indigo-50); font-size: 18px;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .use-section-title { font-size: 16px; font-weight: 700; color: var(--ink); }
+    .use-section-sub   { font-size: 12.5px; color: var(--muted); margin-top: 1px; }
+
+    .use-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 16px;
+    }
+    @media(max-width:580px){ .use-grid { grid-template-columns: 1fr; } }
+
+    .use-card {
+      border: 1px solid var(--border); border-radius: var(--r-lg);
+      overflow: hidden; background: var(--white);
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      transition: box-shadow .2s, border-color .2s;
+    }
+    .use-card:hover { box-shadow: 0 4px 16px rgba(79,70,229,.1); border-color: var(--indigo-200); }
+    .use-card-top {
+      display: flex; align-items: center; gap: 10px;
+      padding: 12px 14px 10px;
+    }
+    .use-emoji { font-size: 22px; flex-shrink: 0; line-height: 1; }
+    .use-card-title { font-size: 13px; font-weight: 700; color: var(--ink); }
+    .use-card-sub   { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box {
+      display: flex; gap: 12px; align-items: flex-start;
+      background: linear-gradient(135deg, var(--indigo-50), #F5F3FF);
+      border: 1px solid var(--indigo-200); border-radius: var(--r);
+      padding: 14px 16px; margin-bottom: 16px;
+    }
+    .hb-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .hb-title { font-size: 12.5px; font-weight: 700; color: var(--indigo-deep); margin-bottom: 3px; }
+    .hb-text  { font-size: 13px; line-height: 1.6; color: #3730A3; }
+
+    /* TIME VISUAL */
+    .time-visual {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 20px 22px;
+      margin-bottom: 4px;
+    }
+    .time-visual-title {
+      font-size: 13px; font-weight: 700; color: var(--ink);
+      margin-bottom: 18px;
+    }
+    .time-bars { display: flex; flex-direction: column; gap: 12px; margin-bottom: 14px; }
+    .time-row  { display: flex; align-items: center; gap: 12px; }
+    .time-label {
+      font-size: 12px; color: var(--muted); font-weight: 500;
+      width: 130px; flex-shrink: 0;
+    }
+    .time-bar-wrap { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+    .time-bar {
+      height: 22px; border-radius: 6px;
+      display: flex; align-items: center; padding: 0 8px;
+      transition: width .8s ease;
+    }
+    .time-bar span { font-size: 11px; font-weight: 700; color: white; white-space: nowrap; }
+    .time-bar.before { background: #94A3B8; min-width: 50px; }
+    .time-bar.after  { background: var(--indigo); min-width: 36px; }
+    .time-legend { display: flex; gap: 16px; }
+    .leg { font-size: 11.5px; font-weight: 600; }
+    .leg.before { color: #94A3B8; }
+    .leg.after  { color: var(--indigo); }
+
+    /* ── INDBYGGET AI-CHAT OPGAVE ───────────────────────── */
+    .chat-opgave {
+      border: 1.5px solid var(--indigo-200);
+      border-radius: var(--r-xl);
+      overflow: hidden;
+      margin-top: 20px;
+      box-shadow: 0 4px 20px var(--indigo-glow);
+    }
+    .chat-opgave-header {
+      background: linear-gradient(135deg, var(--indigo-deep), var(--indigo));
+      padding: 18px 22px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .chat-opgave-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: rgba(255,255,255,.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .chat-opgave-title { font-size: 15px; font-weight: 700; color: white; }
+    .chat-opgave-sub   { font-size: 12.5px; color: rgba(255,255,255,.72); margin-top: 2px; }
+
+    .chat-opgave-body { background: var(--white); padding: 20px 22px; }
+
+    .chat-opgave-prompt {
+      background: var(--indigo-50);
+      border: 1px solid var(--indigo-200);
+      border-radius: var(--r); padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+    .chat-opgave-prompt-label {
+      font-size: 11px; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--indigo); margin-bottom: 6px;
+    }
+    .chat-opgave-prompt p {
+      font-size: 13.5px; line-height: 1.65; color: var(--indigo-deep);
     }
 
-    /* code-style */
-    .code-block {
-      background: #1e2a3a;
-      color: #e2f0fb;
-      border-radius: 10px;
-      padding: 1rem 1.15rem;
-      font-size: 13px;
-      font-family: 'Courier New', monospace;
-      line-height: 1.7;
-      margin-bottom: 1.25rem;
-      white-space: pre-wrap;
+    .chat-examples {
+      display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
     }
-    .code-label {
-      font-size: 11px; font-weight: 700;
-      color: var(--muted); letter-spacing: 0.06em;
-      text-transform: uppercase; margin-bottom: 0.35rem;
+    .chat-example-btn {
+      background: var(--bg); border: 1px solid var(--border);
+      border-radius: 999px; padding: 6px 13px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      cursor: pointer; transition: all .18s;
+    }
+    .chat-example-btn:hover {
+      background: var(--indigo-50); border-color: var(--indigo-200);
+      color: var(--indigo);
     }
 
-    @media (max-width: 480px) {
-      .hero { padding: 2rem 1rem 1.75rem; }
-      .content { padding: 1.75rem 1rem 3rem; }
-      .module-body { padding: 1.1rem; }
-      .quiz-cta { padding: 1.5rem 1rem; }
-      .steps-bar { gap: 0; }
-      .step-label { display: none; }
+    .chat-messages {
+      min-height: 80px;
+      max-height: 420px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 14px;
+      padding-right: 4px;
+    }
+    .chat-messages::-webkit-scrollbar { width: 4px; }
+    .chat-messages::-webkit-scrollbar-track { background: transparent; }
+    .chat-messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    .chat-msg {
+      display: flex; gap: 10px; align-items: flex-start;
+      animation: msgIn .2s ease;
+    }
+    @keyframes msgIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .chat-msg.user { flex-direction: row-reverse; }
+
+    .chat-avatar {
+      width: 30px; height: 30px; border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 800; flex-shrink: 0;
+    }
+    .chat-avatar.user-av { background: var(--indigo); color: white; }
+    .chat-avatar.ai-av   { background: var(--ink); color: white; letter-spacing: .02em; }
+
+    .chat-bubble {
+      max-width: 82%; padding: 11px 14px;
+      font-size: 13.5px; line-height: 1.65; border-radius: var(--r);
+    }
+    .chat-msg.user .chat-bubble {
+      background: var(--indigo); color: white;
+      border-radius: var(--r) 4px var(--r) var(--r);
+    }
+    .chat-msg.ai .chat-bubble {
+      background: #F8FAFC; border: 1px solid var(--border);
+      color: var(--ink-soft);
+      border-radius: 4px var(--r) var(--r) var(--r);
+    }
+    .chat-msg.ai .chat-bubble strong { color: var(--ink); font-weight: 600; }
+    .chat-msg.ai .chat-bubble em { font-style: italic; }
+
+    .chat-typing {
+      display: none; gap: 10px; align-items: center;
+      padding: 4px 0;
+    }
+    .chat-typing.show { display: flex; }
+    .chat-typing-dots {
+      background: #F8FAFC; border: 1px solid var(--border);
+      border-radius: 4px var(--r) var(--r) var(--r);
+      padding: 10px 16px; display: flex; gap: 4px; align-items: center;
+    }
+    .chat-typing-dots span {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--muted); display: inline-block;
+      animation: dotBounce 1.2s ease-in-out infinite;
+    }
+    .chat-typing-dots span:nth-child(2) { animation-delay: .2s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes dotBounce {
+      0%,80%,100% { transform: translateY(0); opacity: .4; }
+      40%          { transform: translateY(-5px); opacity: 1; }
+    }
+
+    .chat-input-row {
+      display: flex; gap: 9px; align-items: flex-end;
+    }
+    .chat-textarea {
+      flex: 1; min-height: 44px; max-height: 120px;
+      background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: var(--r); padding: 10px 14px;
+      font-family: 'Outfit', sans-serif; font-size: 14px;
+      color: var(--ink); resize: none; outline: none;
+      transition: border-color .18s, box-shadow .18s;
+      line-height: 1.5;
+    }
+    .chat-textarea:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 3px rgba(79,70,229,.1);
+    }
+    .chat-textarea::placeholder { color: #9CA3AF; }
+    .chat-send-btn {
+      width: 44px; height: 44px; border-radius: var(--r);
+      background: var(--indigo); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      transition: background .15s, transform .15s, box-shadow .15s;
+      box-shadow: 0 2px 8px var(--indigo-glow);
+    }
+    .chat-send-btn:hover:not(:disabled) {
+      background: var(--indigo-deep);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(79,70,229,.3);
+    }
+    .chat-send-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .chat-send-btn svg { width: 18px; height: 18px; fill: none; stroke: white; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .chat-hint {
+      font-size: 11.5px; color: var(--muted); text-align: center;
+      margin-top: 10px; line-height: 1.5;
+    }
+    .chat-hint strong { color: var(--indigo); font-weight: 600; }
+
+    @media(max-width:480px){
+      nav, .journey { padding-left: 16px; padding-right: 16px; }
+      .hero { padding: 36px 16px 30px; }
+      .wrap { padding: 24px 16px 60px; }
+      .mod-header { padding: 16px 18px; gap: 12px; }
+      .mod-body { padding: 18px 18px 22px; }
+      .summary { padding: 24px 20px; }
+      .cta { padding: 26px 18px; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="platform.html" class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
-    </div>
-    LearnAI DK
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
   </a>
-  <span class="nav-tag">Kursus C — Del 1 af 3</span>
+  <div class="nav-tag">Kursus C &nbsp;·&nbsp; Del 1 af 3</div>
 </nav>
 
-<!-- PROGRESS STEPS -->
-<div class="steps-bar">
-  <div class="step-item">
-    <div class="step-dot active">C1</div>
-    <span class="step-label active">Prompt-teknik</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">Q1</div>
-    <span class="step-label next">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">C2</div>
-    <span class="step-label next">Emails</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">Q2</div>
-    <span class="step-label next">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">C3</div>
-    <span class="step-label next">Rapporter</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen</span>
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item active"><div class="j-dot">C1</div>Prompt-teknik</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">Q1</div>Mini-quiz</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">C2</div>Emails</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">Q2</div>Mini-quiz</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">C3</div>Rapporter & møder</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">E1</div>Eksamen del 1</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">E2</div>Eksamen del 2</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">🥈</div>Bevis & coins</div>
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Kursus C &nbsp;·&nbsp; Del 1 af 3</div>
-  <h1>Prompt-teknik og AI-forståelse</h1>
-  <p>Lær at styre AI præcist — med fire teknikker der markant forbedrer kvaliteten af dine svar.</p>
-  <div class="hero-meta">
-    <div class="hero-meta-item"><span>⏱</span> 45 min – 1 time</div>
-    <div class="hero-meta-item"><span>📋</span> 3 moduler</div>
-    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="hero-chip-dot"></span> Kursus C &nbsp;·&nbsp; Del 1 af 3</div>
+    <h1>Prompt-teknik og<br><em>AI-forståelse</em></h1>
+    <p class="hero-lead">I Kursus D lærte du at føre en basal samtale med AI. Her går vi et niveau dybere — med fire teknikker der giver markant bedre resultater.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><span>⏱</span> Ca. 1 time 15 min</div>
+      <div class="hero-pill"><span>📋</span> 4 moduler</div>
+      <div class="hero-pill"><span>🎯</span> 4 teknikker</div>
+      <div class="hero-pill"><span>🔒</span> Kræver Kursus D</div>
+    </div>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div class="content">
+<div class="wrap">
 
-  <!-- INTRO -->
-  <div class="section-label">Velkommen</div>
-  <div class="section-title">Hvad du lærer her</div>
-  <p class="section-body">I Kursus D lærte du hvad AI er og hvordan du fører en basal samtale. Nu går vi et niveau dybere. Del C1 giver dig de teknikker der adskiller en gennemsnitlig AI-bruger fra en god én.</p>
-
-  <div class="info-box box-yellow" style="margin-bottom:2rem;">
-    <div class="info-box-title">⚠ Krav</div>
-    <p>Har du ikke bestået Kursus D endnu, anbefaler vi kraftigt at du gør det først. Kursus C bygger direkte på det grundlag Kursus D lægger. Du finder Kursus D gratis på learnaidk.dk.</p>
-  </div>
-
-  <div class="info-box box-green" style="margin-bottom:2.5rem;">
-    <div class="info-box-title">💡 Inden du starter</div>
-    <p>Åbn Claude.ai eller ChatGPT i et andet vindue nu. Du skal bruge det til øvelserne — gå ikke videre uden at have prøvet dem.</p>
-  </div>
-
-  <!-- MODULE C1.1 -->
-  <div class="module open" id="mod1">
-    <div class="module-header" onclick="toggleModule('mod1')">
-      <div class="module-letter">1</div>
-      <div class="module-title-wrap">
-        <div class="module-title">Hvad sker der inde i AI?</div>
-        <div class="module-sub">Forstå modellen — brug den bedre</div>
-      </div>
-      <div class="module-toggle">+</div>
+  <div class="notice warn">
+    <div class="notice-icon">⚠️</div>
+    <div>
+      <div class="notice-head">Forudsætning</div>
+      <div class="notice-body">Kursus C bygger direkte på Kursus D. Har du ikke bestået Kursus D, anbefaler vi at gøre det først — det er gratis.</div>
     </div>
-    <div class="module-body">
-      <p class="prose">For at bruge AI godt hjælper det at have et grundlæggende billede af, hvad der faktisk sker når du skriver en besked. Du behøver ikke forstå matematikken bag — men tre nøglebegreber åbner op for bedre teknikker.</p>
-
-      <h3 class="subhead">Tre begreber du skal kende</h3>
-
-      <div class="info-box box-blue">
-        <div class="info-box-title">Kontekstvindue</div>
-        <p>AI'en kan kun arbejde med det, der står i den aktuelle samtale. Den husker ikke hvad du spurgte om i går eller i en anden samtale.<br><br>
-        <strong>Praktisk:</strong> Start en ny samtale til nye emner. Gentag vigtig baggrundsinformation i starten af lange opgaver.</p>
-      </div>
-
-      <div class="info-box box-yellow">
-        <div class="info-box-title">⚠ Hallucination</div>
-        <p>AI kan generere information der lyder overbevisende, men er forkert. Det sker fordi modellen producerer sandsynlige svar baseret på mønstre i træningsdata — ikke fordi den har verificeret fakta.<br><br>
-        <strong>Praktisk:</strong> Faktatjek altid vigtige oplysninger. Se Modul 3.</p>
-      </div>
-
-      <div class="info-box box-green">
-        <div class="info-box-title">Temperature (kreativitet)</div>
-        <p>En indstilling der styrer, hvor 'kreativ' og varieret svaret er. Høj temperature = mere kreative svar. Lav = mere præcise og ensartede svar.<br><br>
-        ChatGPT og Claude justerer dette automatisk efter opgavetype.</p>
-      </div>
-
-      <hr class="divider">
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Test kontekstvinduet</div>
-        <ol>
-          <li>Åbn ChatGPT eller Claude og fortæl AI'en dit navn og en tilfældig yndlingsfarve.</li>
-          <li>Chat lidt om noget andet i 2-3 beskeder.</li>
-          <li>Spørg: <em>"Hvad er mit navn og yndlingsfarve?"</em></li>
-          <li>Start derefter en <strong>helt ny samtale</strong> og stil præcis samme spørgsmål.</li>
-        </ol>
-        <p style="margin-top:0.75rem;">Hvad sker der? Det er kontekstvinduet i praksis.</p>
-      </div>
+  </div>
+  <div class="notice info" style="margin-bottom:20px;">
+    <div class="notice-icon">💡</div>
+    <div>
+      <div class="notice-head">Inden du starter</div>
+      <div class="notice-body">Åbn Claude.ai eller ChatGPT i et andet vindue <strong>nu</strong>. Hvert modul har øvelser du skal gennemføre — du lærer ved at gøre, ikke ved at læse.</div>
     </div>
   </div>
 
-  <!-- MODULE C1.2 -->
-  <div class="module" id="mod2">
-    <div class="module-header" onclick="toggleModule('mod2')">
-      <div class="module-letter">2</div>
-      <div class="module-title-wrap">
-        <div class="module-title">Avanceret prompt-teknik</div>
-        <div class="module-sub">Fire teknikker der markant forbedrer dine svar</div>
+  <!-- MODUL 1 -->
+  <div class="sect-label"><hr><span>Modul 1 af 4</span><hr></div>
+  <div class="mod open" id="m1">
+    <div class="mod-header" onclick="tog('m1')">
+      <div class="mod-num">1</div>
+      <div class="mod-text">
+        <div class="mod-title">Hvad sker der inde i AI?</div>
+        <div class="mod-sub">Tre begreber der ændrer måden du bruger AI på</div>
       </div>
-      <div class="module-toggle">+</div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
     </div>
-    <div class="module-body">
-      <p class="prose">I Kursus D lærte du at skrive klare spørgsmål. Her går vi et niveau dybere med fire teknikker.</p>
+    <div class="mod-body">
+      <p class="prose">Du behøver ikke forstå matematikken bag AI — men tre begreber åbner op for langt bedre resultater. De fleste AI-brugere kender dem ikke, og det koster dem kvalitet hver dag.</p>
 
-      <!-- Teknik 1 -->
-      <span class="technique-tag">Teknik 1</span>
-      <h3 class="subhead">Rolleprompt</h3>
-      <p class="prose">Giv AI en rolle, så den justerer tone og viden til din situation.</p>
-
-      <div class="code-label">Format</div>
-      <div class="code-block">"Du er [rolle/ekspert]. [Opgave]. [Kontekst]."</div>
-
-      <div class="info-box box-grey">
-        <div class="info-box-title">Eksempler</div>
-        <ul>
-          <li><em>"Du er en erfaren dansk kok. Forklar mig hvordan jeg laver en god carbonara."</em></li>
-          <li><em>"Du er en rekrutteringskonsulent. Hjælp mig med at skrive et ansøgningsbrev til en projektleder-stilling."</em></li>
-          <li><em>"Du er min strenge korrekturlæser. Påpeg alt der er uklart, dårligt formuleret eller mangler logik."</em></li>
-        </ul>
+      <div class="concept-row">
+        <div class="cc blue">
+          <div class="cc-title">🧠 Kontekstvindue</div>
+          <div class="cc-body">AI husker <em>kun</em> den igangværende samtale. Starter du en ny, er alt fra den forrige væk — uanset konto eller abonnement.</div>
+          <div class="cc-tip">→ Start ny samtale til nye emner.</div>
+        </div>
+        <div class="cc yellow">
+          <div class="cc-title">⚠️ Hallucination</div>
+          <div class="cc-body">AI genererer sandsynlige svar — ikke verificerede fakta. Den kan overbevise dig med information der er forkert.</div>
+          <div class="cc-tip">→ Faktatjek vigtige tal, navne og datoer.</div>
+        </div>
+        <div class="cc teal wide">
+          <div class="cc-title">🎛️ Temperature — kreativitetsniveauet</div>
+          <div class="cc-body">Styrer hvor varieret AI er i sine svar. Høj = mere kreativ og uforudsigelig. Lav = mere præcis og konsistent. Claude og ChatGPT justerer dette automatisk — du behøver ikke styre det manuelt, men det forklarer hvorfor svar kan variere.</div>
+          <div class="cc-tip">→ Nyttigt at vide når svar virker mærkelige eller meget ens.</div>
+        </div>
       </div>
 
       <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Sammenlign med og uden rolleprompt</div>
-        <p><strong>Prompt A:</strong> <em>"Forklar hvad inflation er."</em></p>
-        <p style="margin-top:0.5rem;"><strong>Prompt B:</strong> <em>"Du er økonomiuddannet. Forklar hvad inflation er til en gymnasieelev uden økonomisk baggrund. Brug et konkret hverdagseksempel."</em></p>
-        <p style="margin-top:0.75rem;">Hvilken forklaring er mest brugbar? Notér forskellen.</p>
-      </div>
-
-      <hr class="divider">
-
-      <!-- Teknik 2 -->
-      <span class="technique-tag">Teknik 2</span>
-      <h3 class="subhead">Kædetænkning (Chain-of-Thought)</h3>
-      <p class="prose">Bed AI tænke skridt-for-skridt før det svarer. Reducerer fejl markant ved komplekse opgaver.</p>
-
-      <div class="info-box box-blue">
-        <div class="info-box-title">Tilføj blot én af disse sætninger</div>
-        <ul>
-          <li>"Tænk skridt for skridt."</li>
-          <li>"Forklar din tankegang, før du svarer."</li>
-        </ul>
-        <p style="margin-top:0.5rem;">Særlig effektivt til: matematik, logiske opgaver, analyser og argumentation.</p>
-      </div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Se kædetænkning i aktion</div>
-        <p>Prompt: <em>"En butik sælger 3 varer til 45 kr., 2 varer til 89 kr. og 1 vare til 130 kr. Kunden betaler med 500 kr. Hvad får kunden tilbage? Tænk skridt for skridt."</em></p>
-        <p style="margin-top:0.75rem;">Prøv derefter <strong>uden</strong> "Tænk skridt for skridt" og sammenlign de to svar.</p>
-      </div>
-
-      <hr class="divider">
-
-      <!-- Teknik 3 -->
-      <span class="technique-tag">Teknik 3</span>
-      <h3 class="subhead">Negativ afgrænsning</h3>
-      <p class="prose">Forklar AI hvad du IKKE vil have. Overraskende effektivt og let at glemme.</p>
-
-      <div class="info-box box-grey">
-        <div class="info-box-title">Eksempel</div>
-        <p><em>"Skriv en email til min chef. Vær ikke for formel. Undgå indledninger som 'Jeg håber denne email finder dig vel.' Kom direkte til sagen på maks 100 ord."</em></p>
-      </div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Brug negativ afgrænsning</div>
-        <ol>
-          <li>Bed AI skrive en kort præsentation af dig til LinkedIn.</li>
-          <li>Læs svaret. Hvad kan du ikke lide?</li>
-          <li>Skriv: <em>"Omskriv — undgå [det du ikke kunne lide]."</em></li>
-        </ol>
-        <p style="margin-top:0.75rem;">Gentag til du er tilfreds. Notér hvor mange runder det tog.</p>
-      </div>
-
-      <hr class="divider">
-
-      <!-- Teknik 4 -->
-      <span class="technique-tag">Teknik 4</span>
-      <h3 class="subhead">Iterativ forfining</h3>
-      <p class="prose">Den stærkeste vane: byg videre på svaret i en samtale frem for at starte forfra. Tænk på AI som en assistent du kan give feedback til.</p>
-
-      <div class="info-box box-blue">
-        <div class="info-box-title">Workflow — kør dette i én løbende samtale</div>
-        <ul>
-          <li><strong>Runde 1:</strong> "Skriv et udkast til [opgave]"</li>
-          <li><strong>Runde 2:</strong> "Gør den mere [kortere / mere formel / mere konkret]"</li>
-          <li><strong>Runde 3:</strong> "Skift det andet afsnit ud med noget der handler om [X]"</li>
-          <li><strong>Runde 4:</strong> "Perfekt — tilføj en afslutning der [...]"</li>
-        </ul>
-      </div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Skriv en tekst om dig selv</div>
-        <ol>
-          <li>Runde 1: <em>"Skriv 3 sætninger der beskriver mig som [student / ansat / hobbyist]."</em></li>
-          <li>Runde 2: Bed om én konkret forbedring.</li>
-          <li>Runde 3: Bed om én mere.</li>
-        </ol>
-        <p style="margin-top:0.75rem;"><strong>Mål:</strong> få et resultat du faktisk ville bruge.</p>
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Test kontekstvinduet selv</div></div>
+        <div class="p-body">
+          <ol>
+            <li>Åbn ChatGPT eller Claude og fortæl dit navn og en tilfældig yndlingsfarve.</li>
+            <li>Chat om noget andet i 2–3 beskeder.</li>
+            <li>Spørg: <em>"Hvad er mit navn og yndlingsfarve?"</em> — AI husker det.</li>
+            <li>Start en <strong>ny samtale</strong> og stil præcist samme spørgsmål.</li>
+          </ol>
+          <p style="margin-top:8px;">Det er kontekstvinduet i praksis — forklaringen på mange frustrerende AI-oplevelser.</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODULE C1.3 -->
-  <div class="module" id="mod3">
-    <div class="module-header" onclick="toggleModule('mod3')">
-      <div class="module-letter">3</div>
-      <div class="module-title-wrap">
-        <div class="module-title">Når AI tager fejl</div>
-        <div class="module-sub">Faktatjek, kritisk tænkning og privatliv</div>
+  <!-- MODUL 2 -->
+  <div class="sect-label"><hr><span>Modul 2 af 4 — Kernen i C1</span><hr></div>
+  <div class="mod" id="m2">
+    <div class="mod-header" onclick="tog('m2')">
+      <div class="mod-num">2</div>
+      <div class="mod-text">
+        <div class="mod-title">De fire teknikker</div>
+        <div class="mod-sub">Fra gennemsnitlig til god AI-bruger — fire konkrete redskaber</div>
       </div>
-      <div class="module-toggle">+</div>
+      <div class="mod-time">25 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
     </div>
-    <div class="module-body">
-      <p class="prose">AI tager fejl — og gør det overbevisende. De færdigheder du lærer her adskiller en god AI-bruger fra en dårlig.</p>
+    <div class="mod-body">
+      <p class="prose">De bedste AI-brugere bruger ikke en særlig model eller et særligt abonnement. De bruger disse fire teknikker konsekvent. Du vil mærke forskel fra første gang du prøver dem.</p>
 
-      <h3 class="subhead">Hvad AI er dårlig til</h3>
-      <ul class="bullet-list">
-        <li>Aktuelle begivenheder (AI's viden stopper på et bestemt tidspunkt)</li>
-        <li>Præcis matematik med mange led</li>
-        <li>Specifikke facts: priser, love, statistikker, navne på rigtige mennesker</li>
-        <li>Medicinske og juridiske råd — konsultér altid en reel ekspert</li>
-      </ul>
+      <!-- T1 -->
+      <div class="tech">
+        <div class="tech-pill"><span class="num">01</span> Rolleprompt</div>
+        <h3 class="tech-h">Giv AI en ekspertrolle</h3>
+        <p class="prose">Den nemmeste og mest effektive teknik. Giver du AI en rolle, ændrer den tone, dybde og ordforråd — fordi den nu ved <strong>hvem</strong> den er og <strong>hvem</strong> den taler til.</p>
 
-      <h3 class="subhead">Tre faktatjek-teknikker</h3>
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Format</span>
+            <button class="copy-btn" onclick="doCopy(this,'fmt1')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+            </button>
+          </div>
+          <div class="copy-text" id="fmt1"><span class="hl">"Du er [rolle/ekspert].</span> <span class="hlg">[Opgave].</span> <span class="hly">[Kontekst og begrænsninger]."</span></div>
+        </div>
 
-      <div class="info-box box-blue">
-        <div class="info-box-title">Teknik A — Bed AI tvivle på sig selv</div>
-        <p>Efter du får et svar, spørg:<br>
-        <em>"Hvad er du usikker på i dette svar?"</em><br>
-        <em>"Hvilke af disse facts bør jeg dobbelttjekke?"</em><br><br>
-        God AI vil ærligt pege på sine egne svagheder.</p>
+        <div class="compare">
+          <div class="cmp bad"><div class="cmp-label">❌ Uden rolleprompt</div><div class="cmp-text">"Forklar hvad inflation er."</div></div>
+          <div class="cmp good"><div class="cmp-label">✓ Med rolleprompt</div><div class="cmp-text">"Du er økonomiuddannet. Forklar inflation til en gymnasieelev. Brug ét konkret hverdagseksempel."</div></div>
+        </div>
+
+        <!-- AI SVAR DEMO -->
+        <div class="ai-demo">
+          <div class="ai-demo-label">Se hvad AI faktisk svarer</div>
+          <div class="ai-tabs">
+            <button class="ai-tab active" onclick="switchTab(this,'demo-bad')">❌ Uden rolleprompt</button>
+            <button class="ai-tab" onclick="switchTab(this,'demo-good')">✓ Med rolleprompt</button>
+          </div>
+          <div class="ai-response" id="demo-bad">
+            <div class="ai-bubble">
+              <div class="ai-avatar">AI</div>
+              <div class="ai-msg">
+                <p>Inflation er en stigning i det generelle prisniveau i en økonomi over tid. Det måles typisk ved hjælp af forbrugerprisindekset (CPI) eller BNP-deflatoren.</p>
+                <p style="margin-top:8px;">Inflation opstår når pengemængden vokser hurtigere end den reale produktion, eller når efterspørgslen overstiger udbuddet. Centrale banker bruger rentepolitik til at styre inflationen mod et målniveau, typisk 2%.</p>
+              </div>
+            </div>
+            <div class="ai-verdict bad">Teknisk korrekt — men uforståeligt for en gymnasieelev. For generisk.</div>
+          </div>
+          <div class="ai-response hidden" id="demo-good">
+            <div class="ai-bubble">
+              <div class="ai-avatar ai-avatar-good">AI</div>
+              <div class="ai-msg ai-msg-good">
+                <p>Forestil dig at du har 100 kr. og vil købe en pizza til 80 kr. — du har penge til overs. Men næste år koster den samme pizza 90 kr. Dine 100 kr. kan nu købe <em>mindre</em> end før.</p>
+                <p style="margin-top:8px;">Det er inflation: pengene er de samme, men de er <strong>mindre værd</strong> fordi priserne er steget. Sker det for hurtigt, kan folk ikke følge med — og det kan skade hele økonomien.</p>
+              </div>
+            </div>
+            <div class="ai-verdict good">Konkret, forståeligt, med et eksempel der sidder fast. Rolleprompt virker.</div>
+          </div>
+        </div>
+
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Prøv dette prompt</span>
+            <button class="copy-btn" onclick="doCopy(this,'p1')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+            </button>
+          </div>
+          <div class="copy-text" id="p1">Du er økonomiuddannet. Forklar hvad inflation er til en gymnasieelev uden baggrund i økonomi. Brug ét konkret hverdagseksempel og hold forklaringen under 150 ord.</div>
+        </div>
+
+        <div class="practice">
+          <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Sammenlign med og uden rolleprompt</div></div>
+          <div class="p-body"><p>Kopiér prompten og send den. Stil derefter <em>samme spørgsmål</em> uden rolleprompt og sammenlign. Hvad ændrer sig i dybde, tone og relevans?</p></div>
+        </div>
       </div>
 
-      <div class="info-box box-grey">
-        <div class="info-box-title">Teknik B — Krydstjek med kildeprompt</div>
-        <p><em>"Giv mig 3 pålidelige kilder jeg kan slå dette op i."</em><br><br>
-        OBS: Tjek at kilderne rent faktisk eksisterer — AI kan finde på URL'er.</p>
+      <hr class="div">
+
+      <!-- T2 -->
+      <div class="tech">
+        <div class="tech-pill"><span class="num">02</span> Kædetænkning</div>
+        <h3 class="tech-h">Bed AI tænke skridt for skridt</h3>
+        <p class="prose">Tre ord der reducerer fejl markant. Kædetænkning tvinger AI til at arbejde systematisk frem — frem for at hoppe direkte til et (potentielt forkert) svar.</p>
+
+        <div class="cc blue" style="margin-bottom:14px;">
+          <div class="cc-title">📌 Tilføj blot én af disse formuleringer</div>
+          <div class="cc-body">— <em>"Tænk skridt for skridt."</em><br>— <em>"Forklar din tankegang inden du svarer."</em><br>— <em>"Gennemgå hvert led i argumentet."</em></div>
+          <div class="cc-tip">Særlig effektivt: matematik, logik, analyser, juridiske vurderinger.</div>
+        </div>
+
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Prøv dette prompt</span>
+            <button class="copy-btn" onclick="doCopy(this,'p2')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+            </button>
+          </div>
+          <div class="copy-text" id="p2">En butik sælger 3 varer til 45 kr., 2 varer til 89 kr. og 1 vare til 130 kr. Kunden betaler med 500 kr. Hvad får kunden tilbage? Tænk skridt for skridt.</div>
+        </div>
+
+        <!-- AI SVAR DEMO KÆDETÆNKNING -->
+        <div class="ai-demo">
+          <div class="ai-demo-label">Se hvad AI faktisk svarer</div>
+          <div class="ai-tabs">
+            <button class="ai-tab active" onclick="switchTab(this,'demo2-bad')">❌ Uden kædetænkning</button>
+            <button class="ai-tab" onclick="switchTab(this,'demo2-good')">✓ Med kædetænkning</button>
+          </div>
+          <div class="ai-response" id="demo2-bad">
+            <div class="ai-bubble">
+              <div class="ai-avatar">AI</div>
+              <div class="ai-msg">
+                <p>Kunden får <strong>117 kr.</strong> tilbage.</p>
+              </div>
+            </div>
+            <div class="ai-verdict bad">Forkert svar — og ingen forklaring. Du kan ikke se hvad der gik galt.</div>
+          </div>
+          <div class="ai-response hidden" id="demo2-good">
+            <div class="ai-bubble">
+              <div class="ai-avatar ai-avatar-good">AI</div>
+              <div class="ai-msg ai-msg-good">
+                <p><strong>Trin 1 — Udregn hver varegruppe:</strong><br>
+                3 varer × 45 kr. = 135 kr.<br>
+                2 varer × 89 kr. = 178 kr.<br>
+                1 vare × 130 kr. = 130 kr.</p>
+                <p style="margin-top:8px;"><strong>Trin 2 — Samlet pris:</strong><br>
+                135 + 178 + 130 = 443 kr.</p>
+                <p style="margin-top:8px;"><strong>Trin 3 — Byttepenge:</strong><br>
+                500 − 443 = <strong>57 kr. tilbage</strong></p>
+              </div>
+            </div>
+            <div class="ai-verdict good">Rigtigt svar — og du kan følge hvert trin. Fejl bliver synlige og nemme at korrigere.</div>
+          </div>
+        </div>
+
+        <div class="practice">
+          <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Se kædetænkning eliminere fejl</div></div>
+          <div class="p-body"><p>Send prompten. Send derefter <em>samme spørgsmål</em> uden "Tænk skridt for skridt" og sammenlign. Hvad ændrer sig?</p></div>
+        </div>
       </div>
 
-      <div class="info-box box-green">
-        <div class="info-box-title">Teknik C — Uafhængig søgning</div>
-        <p>For vigtige fakta: Google det også. Hvis svaret er overraskende eller utroligt — tjek det.</p>
+      <hr class="div">
+
+      <!-- T3 -->
+      <div class="tech">
+        <div class="tech-pill"><span class="num">03</span> Negativ afgrænsning</div>
+        <h3 class="tech-h">Fortæl AI hvad du IKKE vil have</h3>
+        <p class="prose">Overraskende effektivt og overraskende ofte glemt. At specificere hvad AI skal undgå er ofte mere præcist end at beskrive hvad du vil have — det eliminerer de generiske standardsvar AI falder tilbage på.</p>
+
+        <div class="compare">
+          <div class="cmp bad"><div class="cmp-label">❌ For vagt</div><div class="cmp-text">"Skriv en professionel email til min chef."</div></div>
+          <div class="cmp good"><div class="cmp-label">✓ Med afgrænsning</div><div class="cmp-text">"Skriv en email til min chef. Undgå floskler. Undgå passiv-aggressiv tone. Maks 80 ord."</div></div>
+        </div>
+
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Prøv dette prompt</span>
+            <button class="copy-btn" onclick="doCopy(this,'p3')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+            </button>
+          </div>
+          <div class="copy-text" id="p3">Skriv en kort LinkedIn-bio til en person der arbejder som [din stilling]. Undgå buzzwords som "passioneret", "drevet" og "resultatorienteret". Undgå generiske sætninger. Hold det under 100 ord og skriv i første person.</div>
+        </div>
+
+        <div class="practice">
+          <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Ret din LinkedIn-bio i to runder</div></div>
+          <div class="p-body">
+            <ol>
+              <li>Kopiér og send prompten — udfyld din stilling.</li>
+              <li>Læs svaret. Hvad kan du stadig ikke lide?</li>
+              <li>Send: <em>"Omskriv — undgå også [det du ikke kunne lide]."</em></li>
+            </ol>
+            <p style="margin-top:8px;">De fleste når et godt resultat på 2–3 runder.</p>
+          </div>
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <!-- T4 -->
+      <div class="tech">
+        <div class="tech-pill"><span class="num">04</span> Iterativ forfining</div>
+        <h3 class="tech-h">Byg videre i dialog — trin for trin</h3>
+        <p class="prose">De bedste resultater kommer aldrig fra ét enkelt prompt. De kommer fra en samtale, hvor du gradvist guider AI tættere på det du vil have. Tænk på AI som en assistent du kan give løbende feedback til.</p>
+
+        <div class="cc blue" style="margin-bottom:14px;">
+          <div class="cc-title">📐 Workflow — kør dette i én samtale</div>
+          <div class="cc-body">
+            <strong>Runde 1:</strong> "Skriv et udkast til [opgave]"<br>
+            <strong>Runde 2:</strong> "Gør det mere [kortere / formel / konkret]"<br>
+            <strong>Runde 3:</strong> "Skift [afsnit X] ud med noget om [Y]"<br>
+            <strong>Runde 4:</strong> "Tilføj en afslutning der [...]"
+          </div>
+          <div class="cc-tip">→ Nøglen: bliv i SAMME samtale. Start ikke forfra.</div>
+        </div>
+
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Start runde 1 med dette prompt</span>
+            <button class="copy-btn" onclick="doCopy(this,'p4')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+            </button>
+          </div>
+          <div class="copy-text" id="p4">Skriv 3 sætninger der beskriver mig som [student / ansat / iværksætter]. Vær konkret og undgå generiske formuleringer.</div>
+        </div>
+
+        <div class="practice">
+          <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Skriv en tekst om dig selv i 3 runder</div></div>
+          <div class="p-body">
+            <ol>
+              <li>Send runde 1-promptet — udfyld med din situation.</li>
+              <li>Runde 2: Bed om én konkret forbedring.</li>
+              <li>Runde 3: Bed om én ting mere.</li>
+            </ol>
+            <p style="margin-top:8px;"><strong>Mål:</strong> Et resultat du faktisk ville bruge. Hvad tog 3 runder, som ét prompt ikke ville have givet?</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 3 — NYT -->
+  <div class="sect-label"><hr><span>Modul 3 af 4</span><hr></div>
+  <div class="mod" id="m3">
+    <div class="mod-header" onclick="tog('m3')">
+      <div class="mod-num">3</div>
+      <div class="mod-text">
+        <div class="mod-title">AI i hverdagen og på arbejdet</div>
+        <div class="mod-sub">Virkelige use cases — med prompts du kan bruge med det samme</div>
+      </div>
+      <div class="mod-time">20 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <p class="prose">De fire teknikker er redskaberne. Her ser du hvad du faktisk kan bruge dem til — i dit arbejdsliv og i hverdagen. Alle prompts er klar til at kopiere og tilpasse.</p>
+
+      <!-- HVERDAGSLIV -->
+      <div class="use-section">
+        <div class="use-section-header">
+          <div class="use-section-icon">🏠</div>
+          <div>
+            <div class="use-section-title">Hverdagsliv</div>
+            <div class="use-section-sub">Fra madplaner til feriebudgetter — AI sparer dig for timer</div>
+          </div>
+        </div>
+
+        <div class="use-grid">
+
+          <!-- USE CASE: Madplan -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">🥗</div>
+              <div>
+                <div class="use-card-title">Ugentlig madplan</div>
+                <div class="use-card-sub">Spar beslutningstræthed hver uge</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uc1')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uc1">Lav en madplan for 5 hverdage til 2 voksne. Krav: maks 30 min tilberedningstid pr. ret, varieret (ingen ret to gange), og én ret skal kunne laves i store portioner til fryseren. Skriv også en samlet indkøbsliste.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Feriebudget -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">✈️</div>
+              <div>
+                <div class="use-card-title">Feriebudget og planlægning</div>
+                <div class="use-card-sub">Få overblik på 2 minutter</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uc2')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uc2">Vi er 2 voksne der vil på 7 dages ferie i [destination] med et samlet budget på [beløb] kr. Lav et realistisk budgetoverblik fordelt på: fly, hotel, mad, aktiviteter og transport. Peg på de 2 poster vi nemmest kan spare på.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Træning -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">💪</div>
+              <div>
+                <div class="use-card-title">Personligt træningsprogram</div>
+                <div class="use-card-sub">Din egen PT — gratis</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uc3')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uc3">Lav et 4-ugers træningsprogram til mig. Jeg er [nybegynder/øvet], har adgang til [hjemme/fitnesscenter], og kan træne [X] dage om ugen. Mål: [styrke/kondition/vægttab]. Inkludér opvarmning, øvelser med sæt/reps og en note om hvornår jeg skal øge intensiteten.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Lær noget nyt -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">📚</div>
+              <div>
+                <div class="use-card-title">Lær noget nyt på 15 min</div>
+                <div class="use-card-sub">AI som din personlige lærer</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uc4')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uc4">Giv mig en 80/20-gennemgang af [emne]: de 20% af stoffet der giver mig 80% af forståelsen. Jeg har 15 minutter. Afslut med 3 spørgsmål jeg kan stille for at virke informeret til et møde om emnet.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- HVERDAGS HIGHLIGHT BOX -->
+      <div class="highlight-box">
+        <div class="hb-icon">💡</div>
+        <div class="hb-content">
+          <div class="hb-title">Vidste du?</div>
+          <div class="hb-text">En gennemsnitlig person bruger 2–3 timer om ugen på at planlægge hverdagen. Med AI kan det reduceres til under 20 minutter — og resultatet er ofte bedre fordi AI ser mønstre du ikke selv tænker på.</div>
+        </div>
+      </div>
+
+      <hr class="div">
+
+      <!-- ARBEJDSLIV -->
+      <div class="use-section">
+        <div class="use-section-header">
+          <div class="use-section-icon">💼</div>
+          <div>
+            <div class="use-section-title">Arbejdsliv</div>
+            <div class="use-section-sub">Spar tid, imponér kolleger, leverér bedre arbejde</div>
+          </div>
+        </div>
+
+        <div class="use-grid">
+
+          <!-- USE CASE: Research -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">🔬</div>
+              <div>
+                <div class="use-card-title">Hurtig research til møde</div>
+                <div class="use-card-sub">Klar på 10 minutter</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uw1')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uw1">Jeg skal til møde om [emne] om 30 minutter og kender det ikke godt. Giv mig: 1) De 5 vigtigste ting at vide, 2) 3 intelligente spørgsmål jeg kan stille, 3) ét kontroversielt synspunkt der viser jeg har tænkt selv.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Præsentation -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">📊</div>
+              <div>
+                <div class="use-card-title">Præsentationsstruktur</div>
+                <div class="use-card-sub">Fra blank side til færdig outline</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uw2')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uw2">Lav en struktur til en [X]-minutters præsentation om [emne] til [målgruppe]. Formål: [informere/overbevise/sælge]. Inkludér: en stærk åbningssætning der fanger opmærksomheden, 3 hovedpunkter med én kernepointe hver, og en call-to-action til sidst.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Brainstorm -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">🧠</div>
+              <div>
+                <div class="use-card-title">Struktureret brainstorm</div>
+                <div class="use-card-sub">Bryd ud af egne tankemønstre</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uw3')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uw3">Vi skal løse dette problem: [beskriv problemet]. Giv mig 10 idéer — de første 5 skal være oplagte og realistiske, de næste 5 skal være uventede eller kreative. Undgå generiske råd. Tænk som en person der ikke er bange for at fejle.</div>
+            </div>
+          </div>
+
+          <!-- USE CASE: Selvevaluering -->
+          <div class="use-card">
+            <div class="use-card-top">
+              <div class="use-emoji">🎯</div>
+              <div>
+                <div class="use-card-title">Kritisk feedback på dit arbejde</div>
+                <div class="use-card-sub">AI som ærlig sparringspartner</div>
+              </div>
+            </div>
+            <div class="copy-block" style="margin-bottom:0;">
+              <div class="copy-topbar">
+                <span class="copy-label-txt">Kopiér og tilpas</span>
+                <button class="copy-btn" onclick="doCopy(this,'uw4')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+                </button>
+              </div>
+              <div class="copy-text" id="uw4">Her er hvad jeg har lavet: [indsæt tekst/plan/idé]. Hvad er de 3 største svagheder? Hvad overser jeg? Vær direkte og kritisk — jeg vil have din ærligste vurdering, ikke beroligelse. Undgå generel ros.</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ARBEJDS VISUAL: Tidsoversigt -->
+      <div class="time-visual">
+        <div class="time-visual-title">⏱ Tid sparet med AI — en typisk arbejdsuge</div>
+        <div class="time-bars">
+          <div class="time-row">
+            <div class="time-label">Research til møde</div>
+            <div class="time-bar-wrap">
+              <div class="time-bar before" style="width:75%"><span>45 min</span></div>
+              <div class="time-bar after" style="width:17%"><span>10 min</span></div>
+            </div>
+          </div>
+          <div class="time-row">
+            <div class="time-label">Skriv præsentation</div>
+            <div class="time-bar-wrap">
+              <div class="time-bar before" style="width:100%"><span>2 timer</span></div>
+              <div class="time-bar after" style="width:33%"><span>40 min</span></div>
+            </div>
+          </div>
+          <div class="time-row">
+            <div class="time-label">Svare på emails</div>
+            <div class="time-bar-wrap">
+              <div class="time-bar before" style="width:83%"><span>1 time</span></div>
+              <div class="time-bar after" style="width:25%"><span>18 min</span></div>
+            </div>
+          </div>
+          <div class="time-row">
+            <div class="time-label">Brainstorm ny idé</div>
+            <div class="time-bar-wrap">
+              <div class="time-bar before" style="width:58%"><span>35 min</span></div>
+              <div class="time-bar after" style="width:13%"><span>8 min</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="time-legend">
+          <span class="leg before">■ Uden AI</span>
+          <span class="leg after">■ Med AI</span>
+        </div>
+      </div>
+
+      <!-- CHAT OPGAVE -->
+      <div class="chat-opgave">
+        <div class="chat-opgave-header">
+          <div class="chat-opgave-icon">✍️</div>
+          <div>
+            <div class="chat-opgave-title">Din opgave — skriv dit eget prompt</div>
+            <div class="chat-opgave-sub">Beskriv en reel udfordring fra din hverdag eller dit arbejde og få feedback her</div>
+          </div>
+        </div>
+        <div class="chat-opgave-body">
+
+          <div class="chat-opgave-prompt">
+            <div class="chat-opgave-prompt-label">📋 Opgaven</div>
+            <p>Brug det du har lært i modul 1 og 2 til at skrive ét godt prompt om noget der er relevant for <em>dig</em> — en reel udfordring, et problem du vil løse, eller noget du gerne vil lære. Brug mindst én af de fire teknikker.</p>
+          </div>
+
+          <p style="font-size:12.5px; color:var(--muted); margin-bottom:9px; font-weight:600;">Mangler du inspiration? Vælg et eksempel:</p>
+          <div class="chat-examples">
+            <button class="chat-example-btn" onclick="setExample(this)">Jeg vil planlægge min uge bedre</button>
+            <button class="chat-example-btn" onclick="setExample(this)">Hjælp mig til at lære et nyt emne til arbejdet</button>
+            <button class="chat-example-btn" onclick="setExample(this)">Jeg vil komme i bedre form</button>
+            <button class="chat-example-btn" onclick="setExample(this)">Skriv en svær email til en kollega</button>
+            <button class="chat-example-btn" onclick="setExample(this)">Hjælp mig med at spare mere op</button>
+          </div>
+
+          <div class="chat-messages" id="chat-msgs">
+            <div class="chat-msg ai">
+              <div class="chat-avatar ai-av">AI</div>
+              <div class="chat-bubble">Hej! 👋 Skriv et prompt om noget du gerne vil have hjælp til — så giver jeg dig konkret feedback på om det er et godt prompt, og hvad du evt. kan forbedre. Brug gerne en af teknikkerne fra modul 2.</div>
+            </div>
+          </div>
+
+          <div class="chat-typing" id="chat-typing">
+            <div class="chat-avatar ai-av">AI</div>
+            <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+
+          <div class="chat-input-row">
+            <textarea
+              class="chat-textarea"
+              id="chat-input"
+              placeholder="Skriv dit prompt her — fx: 'Du er ernæringsekspert. Lav en madplan til mig...'"
+              rows="2"
+              onkeydown="chatKeydown(event)"
+              oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"
+            ></textarea>
+            <button class="chat-send-btn" id="chat-send" onclick="sendChat()">
+              <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="chat-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje · Ubegrænsede forsøg</div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODUL 4 -->
+  <div class="sect-label"><hr><span>Modul 4 af 4</span><hr></div>
+  <div class="mod" id="m4">
+    <div class="mod-header" onclick="tog('m4')">
+      <div class="mod-num">4</div>
+      <div class="mod-text">
+        <div class="mod-title">Når AI tager fejl</div>
+        <div class="mod-sub">Faktatjek, kritisk tænkning og privatliv</div>
+      </div>
+      <div class="mod-time">10 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">AI tager fejl — og gør det overbevisende. Det er ikke en fejl i systemet, det er en iboende egenskab du skal lære at håndtere.</p>
+
+      <div class="notice warn" style="margin-bottom:16px;">
+        <div class="notice-icon">⚠️</div>
+        <div>
+          <div class="notice-head">AI er særlig upålidelig ved</div>
+          <div class="notice-body">Aktuelle priser og statistikker &nbsp;·&nbsp; Specifikke lovparagraffer &nbsp;·&nbsp; Medicinske doseringer &nbsp;·&nbsp; Navne og datoer på virkelige begivenheder</div>
+        </div>
+      </div>
+
+      <div class="checklist">
+        <div class="chk">
+          <div class="chk-icon i">🤔</div>
+          <div><div class="chk-title">Teknik A — Bed AI tvivle på sig selv</div><div class="chk-desc">Efter svaret: <em>"Hvad er du usikker på?"</em> og <em>"Hvilke facts bør jeg dobbelttjekke?"</em> God AI peger ærligt på sine egne svagheder.</div></div>
+        </div>
+        <div class="chk">
+          <div class="chk-icon s">🔍</div>
+          <div><div class="chk-title">Teknik B — Bed om kilder</div><div class="chk-desc"><em>"Giv mig 3 pålidelige kilder jeg kan slå dette op i."</em> Tjek at kilderne eksisterer — AI kan finde på URLs der ser ægte ud.</div></div>
+        </div>
+        <div class="chk">
+          <div class="chk-icon g">✅</div>
+          <div><div class="chk-title">Teknik C — Google det selv</div><div class="chk-desc">For vigtige facts: verificér eksternt. Jo mere præcist et tal er, jo vigtigere at tjekke det.</div></div>
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prøv dette prompt</span>
+          <button class="copy-btn" onclick="doCopy(this,'p5')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
+        </div>
+        <div class="copy-text" id="p5">Hvad er den nuværende gennemsnitlige månedlige husleje for en 2-værelses lejlighed i København?</div>
       </div>
 
       <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Afsløring af hallucination</div>
-        <ol>
-          <li>Prompt: <em>"Hvad er den seneste gennemsnitlige salgspris på et parcelhus i Odense?"</em></li>
-          <li>Følg op: <em>"Hvad er du usikker på i det svar?"</em></li>
-          <li>Søg derefter det samme på Google og sammenlign.</li>
-        </ol>
-        <p style="margin-top:0.75rem;">Bemærk: AI indrømmer usikkerhed når du spørger direkte.</p>
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Afslør en hallucination i realtid</div></div>
+        <div class="p-body">
+          <ol>
+            <li>Send promptet ovenfor til AI.</li>
+            <li>Følg op: <em>"Hvad er du usikker på i det svar? Hvornår er dine data fra?"</em></li>
+            <li>Søg samme spørgsmål på Google og sammenlign tallene.</li>
+          </ol>
+          <p style="margin-top:8px;">AI indrømmer usikkerhed når du spørger direkte — det er en feature, ikke en fejl.</p>
+        </div>
       </div>
 
-      <hr class="divider">
+      <hr class="div">
 
-      <h3 class="subhead">Privatliv: hvad du ikke skal dele med AI</h3>
-      <ul class="bullet-list">
-        <li>CPR-numre, adgangskoder eller kontoinformation</li>
-        <li>Fortrolige virksomhedsdokumenter (medmindre godkendt af arbejdsgiver)</li>
-        <li>Andre personers personlige oplysninger uden samtykke</li>
-      </ul>
+      <p class="prose" style="font-weight:600; margin-bottom:12px;">Hvad du aldrig bør dele med AI</p>
+      <div class="priv-list">
+        <div class="priv-row"><span>🔴</span> CPR-numre, adgangskoder og bankoplysninger</div>
+        <div class="priv-row"><span>🔴</span> Fortrolige virksomhedsdokumenter — medmindre arbejdsgiver har godkendt det</div>
+        <div class="priv-row"><span>🔴</span> Andre personers personlige oplysninger uden samtykke</div>
+        <div class="priv-row"><span>🟡</span> Interne forretningsstrategier og konkurrentanalyser</div>
+      </div>
 
-      <div class="info-box box-yellow">
-        <div class="info-box-title">⚠ Husk</div>
-        <p>Claude.ai og ChatGPT bruger som standard dine samtaler til at træne modellen. Du kan slå det fra under Indstillinger → Data Controls.</p>
+      <div class="notice warn">
+        <div class="notice-icon">⚙️</div>
+        <div>
+          <div class="notice-head">Husk dine indstillinger</div>
+          <div class="notice-body">Både Claude.ai og ChatGPT bruger som standard dine samtaler til at træne modellen. Slå det fra: <strong>Indstillinger → Data Controls → Training</strong>.</div>
+        </div>
       </div>
     </div>
+  </div>
+
+  <!-- PROGRESS TRACKER — vises mellem moduler og summary -->
+  <div class="progress-track-wrap" id="progress-tracker">
+    <div class="prog-steps">
+      <div class="prog-step active" id="ps1">1</div>
+      <div class="prog-step" id="ps2">2</div>
+      <div class="prog-step" id="ps3">3</div>
+      <div class="prog-step" id="ps4">4</div>
+    </div>
+    <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-bar"></div></div>
+    <div class="prog-pct" id="prog-pct">0%</div>
+    <div class="prog-label" id="prog-txt">25% — modul 1 gennemgået</div>
   </div>
 
   <!-- SUMMARY -->
   <div class="summary">
-    <h3>Del C1 — Hvad du har lært</h3>
-    <ul>
-      <li>Hvad kontekstvindue, hallucination og temperature er</li>
-      <li>Rolleprompt — giv AI en ekspertrolle</li>
-      <li>Kædetænkning — bed AI tænke skridt for skridt</li>
-      <li>Negativ afgrænsning — fortæl AI hvad du ikke vil have</li>
-      <li>Iterativ forfining — guide AI trin for trin i dialog</li>
-      <li>Faktatjek-teknikker og privatlivsråd</li>
-    </ul>
+    <h3>Del C1 — Det du har lært</h3>
+    <div class="sum-grid">
+      <div class="sum-item">Kontekstvindue, hallucination og temperature — hvad det betyder i praksis</div>
+      <div class="sum-item">Rolleprompt: giv AI en ekspertrolle der passer til opgaven</div>
+      <div class="sum-item">Kædetænkning: bed AI tænke skridt for skridt</div>
+      <div class="sum-item">Negativ afgrænsning: specificér hvad AI skal undgå</div>
+      <div class="sum-item">Iterativ forfining: byg videre i dialog frem for at starte forfra</div>
+      <div class="sum-item">8 kopierbare use cases til hverdagen og arbejdet</div>
+      <div class="sum-item">3 faktatjek-teknikker og privatlivsregler</div>
+      <div class="sum-item">Hvad AI er upålidelig ved — og hvordan du beskytter dig</div>
+    </div>
   </div>
 
-  <!-- QUIZ CTA -->
-  <div class="quiz-cta">
-    <div class="quiz-cta-icon">📝</div>
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-icon">📝</div>
     <h2>Klar til mini-quizzen?</h2>
-    <p>Tjek at du har forstået Del C1 inden du går videre til Del C2. Du skal have mindst 5 ud af 6 rigtige.</p>
-    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
-    <a href="quiz-c1.html" class="btn-quiz">Start mini-quiz C1 →</a>
+    <p>6 spørgsmål der tester om du har forstået Del C1. Du skal have mindst 5 rigtige for at låse Del C2 op.</p>
+    <div class="cta-warn">⚠️ Quizzen skal bestås for at gå videre</div><br>
+    <a href="quiz-c1.html" class="btn-go">
+      Start mini-quiz C1
+      <svg viewBox="0 0 16 16"><polyline points="6 3 11 8 6 13"/></svg>
+    </a>
+    <div class="cta-sub">
+      6 spørgsmål <span class="dot-sep">·</span>
+      <span class="coins">+25 coins ved beståelse</span>
+      <span class="dot-sep">·</span> Ubegrænset forsøg
+    </div>
   </div>
 
-</div><!-- /content -->
+</div>
+
+<div id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Kopieret!</span>
+</div>
 
 <script>
-function toggleModule(id) {
-  const mod = document.getElementById(id);
-  mod.classList.toggle('open');
+// ── Module toggle — auto-luk andre, done ved lukning ────────
+function tog(id) {
+  const m = document.getElementById(id);
+  if (m.classList.contains('open')) return;
+
+  const currentIdx = modIds.indexOf(id);
+
+  // Luk alle andre, og marker det åbnede modul + alle forrige som done
+  modIds.forEach((otherId, i) => {
+    const other = document.getElementById(otherId);
+    other.classList.remove('open');
+    if (i <= currentIdx && !modDone[otherId]) {
+      modDone[otherId] = true;
+      other.classList.add('done');
+    }
+  });
+
+  // Åbn dette modul
+  m.classList.add('open');
+  updateProgress();
+
+  requestAnimationFrame(() => {
+    const top = m.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  });
+}
+
+// ── AI Demo tabs ────────────────────────────────────────────
+function switchTab(btn, targetId) {
+  const demo = btn.closest('.ai-demo');
+  demo.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
+  demo.querySelectorAll('.ai-response').forEach(r => r.classList.add('hidden'));
+  btn.classList.add('active');
+  document.getElementById(targetId).classList.remove('hidden');
+}
+
+// ── Copy prompt — virker med Ctrl+V i alle browsere ─────────
+function doCopy(btn, srcId) {
+  const el = document.getElementById(srcId);
+  if (!el) return;
+
+  // Hent ren tekst uden HTML-tags
+  const text = el.innerText.trim();
+
+  // Metode 1: Moderne Clipboard API
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(() => {
+      showCopied(btn);
+    }).catch(() => fallbackCopy(btn, el, text));
+  } else {
+    fallbackCopy(btn, el, text);
+  }
+}
+
+function fallbackCopy(btn, el, text) {
+  // Metode 2: execCommand — virker i ældre browsere og ikke-HTTPS
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  try {
+    document.execCommand('copy');
+    showCopied(btn);
+  } catch (e) {
+    showToast('Kunne ikke kopiere — brug Ctrl+A, Ctrl+C manuelt');
+  }
+  document.body.removeChild(ta);
+}
+
+function showCopied(btn) {
+  btn.classList.add('copied');
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Kopieret!`;
+  showToast('Prompt kopieret — tryk Ctrl+V for at indsætte ✓');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér`;
+  }, 2200);
+}
+
+// ── Toast ────────────────────────────────────────────────────
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── Progress tracking — 4 moduler ───────────────────────────
+const modIds  = ['m1', 'm2', 'm3', 'm4'];
+const modDone = { m1: false, m2: false, m3: false, m4: false };
+const TOTAL_MODS = 4;
+
+function updateProgress() {
+  const doneCount = Object.values(modDone).filter(Boolean).length;
+  const pct = Math.round((doneCount / TOTAL_MODS) * 100);
+
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+
+  const labels = [
+    'Åbn modul 1 for at starte',
+    'Godt begyndt — 3 moduler tilbage',
+    'Halvvejs — du klarer det!',
+    'Næsten i mål — ét modul tilbage',
+    'Alle moduler gennemgået — tag quizzen! 🎯'
+  ];
+  document.getElementById('prog-txt').textContent = labels[doneCount];
+
+  // Find hvilket modul der er åbent nu
+  const openId = modIds.find(id => document.getElementById(id)?.classList.contains('open'));
+
+  modIds.forEach((id, i) => {
+    const step = document.getElementById('ps' + (i + 1));
+    if (!step) return;
+    step.classList.remove('done', 'active');
+    if (modDone[id]) {
+      step.classList.add('done');
+      step.textContent = '✓';
+    } else if (id === openId) {
+      step.classList.add('active');
+      step.textContent = i + 1;
+    } else {
+      step.textContent = i + 1;
+    }
+  });
+}
+
+function markDone(id, silent) {
+  if (modDone[id]) return;
+  modDone[id] = true;
+  document.getElementById(id).classList.add('done');
+  updateProgress();
+  if (!silent) {
+    const num = modIds.indexOf(id) + 1;
+    showToast(`Modul ${num} gennemgået ✓`);
+  }
+}
+
+// Init — modul 1 er åbent fra start, så marker det som done
+modDone['m1'] = true;
+document.getElementById('m1').classList.add('done');
+updateProgress();
+
+// ── Indbygget AI-chat ────────────────────────────────────────
+const chatHistory = [];
+
+function setExample(btn) {
+  const input = document.getElementById('chat-input');
+  input.value = btn.textContent;
+  input.style.height = 'auto';
+  input.style.height = input.scrollHeight + 'px';
+  input.focus();
+}
+
+function chatKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendChat();
+  }
+}
+
+async function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  const sendBtn = document.getElementById('chat-send');
+  sendBtn.disabled = true;
+  input.value = '';
+  input.style.height = 'auto';
+
+  // Vis brugerens besked
+  appendMsg('user', text);
+  chatHistory.push({ role: 'user', content: text });
+
+  // Vis typing-indikator
+  const typing = document.getElementById('chat-typing');
+  typing.classList.add('show');
+  scrollChat();
+
+  const systemPrompt = `Du er LearnAI's indbyggede prompt-coach på Kursus C, Del 1. Du hjælper kursister med at øve sig i at skrive gode prompts.
+
+KURSISTENS BAGGRUND:
+Kursisten har netop lært fire prompt-teknikker i dette kursus:
+
+1. ROLLEPROMPT — Man giver AI en konkret ekspertrolle så svaret bliver mere relevant og præcist.
+   Eksempel: "Du er en erfaren ernæringsekspert med speciale i hverdagsmad..."
+   Svagt prompt: "Hvad skal jeg spise?"
+   Stærkt prompt: "Du er ernæringsekspert. Lav en madplan til mig der har 30 min om aftenen og vil have varieret, sund mad. Undgå retter med fisk."
+
+2. KÆDETÆNKNING — Man beder AI tænke skridt-for-skridt frem for at give et direkte (fejlbehæftet) svar.
+   Tilføj: "Tænk skridt for skridt" eller "Forklar din tankegang"
+   Særlig effektiv ved: matematik, analyser, planlægning, juridiske spørgsmål
+
+3. NEGATIV AFGRÆNSNING — Man fortæller eksplicit hvad AI IKKE skal gøre.
+   Eksempel: "Undgå fagtermer", "Skriv ikke mere end 100 ord", "Ingen bullet points"
+   Gør svaret meget mere præcist ved at fjerne generiske standardsvar
+
+4. ITERATIV FORFINING — Man bygger videre i samme samtale frem for at starte forfra.
+   Runde 1: Bed om udkast → Runde 2: "Gør det kortere" → Runde 3: "Skift afsnit 2 ud med..."
+
+HVAD DU SKAL GØRE:
+Kursisten sender dig et prompt som øvelse. Din opgave er ALTID at:
+
+A) Anerkend hvad der er godt ved promptet (vær specifik — undgå tom ros)
+B) Identificér hvilke af de 4 teknikker kursisten har brugt — nævn dem ved navn
+C) Peg på ÉN konkret svaghed eller noget der mangler
+D) Vis et forbedret eksempel på promptet (maks 3 sætninger)
+
+VIGTIGT:
+- Svar ALTID på dansk
+- Vær konkret og specifik — aldrig vag
+- Hold svar under 200 ord
+- Hvis kursisten skriver noget der ikke ligner et prompt (fx "hej" eller et spørgsmål til dig), så svar kort venligt og bed dem skrive et prompt om en reel situation fra deres hverdag eller arbejde
+- Du må ALDRIG svare "noget gik galt" eller afvise at svare — find ALTID noget konstruktivt at sige om det kursisten sender
+- Hvis promptet er meget kort (under 10 ord), bed venligt om mere kontekst og forklar hvad der mangler`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: chatHistory
+      })
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    // Udtræk tekst fra response — håndter alle mulige formater
+    let reply = '';
+    if (data.content && Array.isArray(data.content)) {
+      reply = data.content.map(b => b.text || '').join('').trim();
+    } else if (data.error) {
+      throw new Error(data.error.message || 'API fejl');
+    }
+
+    if (!reply) {
+      reply = 'Jeg fik ikke et svar tilbage — skriv dit prompt igen, så forsøger jeg igen.';
+    }
+
+    chatHistory.push({ role: 'assistant', content: reply });
+    typing.classList.remove('show');
+    appendMsg('ai', reply);
+
+  } catch (e) {
+    typing.classList.remove('show');
+    // Vis aldrig en teknisk fejl — giv altid en hjælpsom besked
+    const fallback = 'Jeg fik en teknisk fejl denne gang — det sker indimellem. Prøv at sende dit prompt igen, og jeg hjælper dig med det samme! 😊';
+    appendMsg('ai', fallback);
+    console.error('Chat fejl:', e);
+  }
+
+  sendBtn.disabled = false;
+  input.focus();
+}
+
+function appendMsg(role, text) {
+  const msgs = document.getElementById('chat-msgs');
+  const div  = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+
+  const avatarTxt = role === 'user' ? 'DIG' : 'AI';
+  const avatarCls = role === 'user' ? 'user-av' : 'ai-av';
+
+  // Formatér AI-svar: **fed** → <strong>, *kursiv* → <em>, linjeskift → <br>
+  let html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+
+  div.innerHTML = `
+    <div class="chat-avatar ${avatarCls}">${avatarTxt}</div>
+    <div class="chat-bubble">${html}</div>`;
+
+  msgs.appendChild(div);
+  scrollChat();
+}
+
+function scrollChat() {
+  const msgs = document.getElementById('chat-msgs');
+  setTimeout(() => msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' }), 50);
 }
 </script>
-
 </body>
 </html>
