@@ -3,526 +3,1328 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnAI DK — Kursus C2</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>LearnAI — C2: AI til emails og produktivitet</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 
     :root {
-      --blue:        #185FA5;
-      --blue-light:  #E6F1FB;
-      --green:       #0F6E56;
-      --green-light: #E1F5EE;
-      --green-mid:   #c2e8d8;
-      --orange:      #C45000;
-      --orange-light:#FFF0E6;
-      --yellow-bg:   #FFF3CD;
-      --yellow-txt:  #856404;
-      --grey:        #F5F5F5;
-      --border:      #E2E8F0;
-      --bg:          #F4F7FB;
-      --white:       #FFFFFF;
-      --text:        #1A1A1A;
-      --muted:       #6B7280;
-      --radius:      14px;
-      --shadow:      0 4px 24px rgba(15,110,86,0.08);
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
+      --border:#E5E7EB; --bg:#F9FAFB; --white:#FFFFFF;
+      --teal:#0D9488; --teal-deep:#0F766E;
+      --teal-50:#F0FDFA; --teal-100:#CCFBF1; --teal-200:#99F6E4; --teal-300:#5EEAD4;
+      --teal-glow:rgba(13,148,136,0.15);
+      --amber:#D97706; --amber-50:#FFFBEB; --amber-100:#FEF3C7;
+      --green:#059669; --green-light:#10B981;
+      --green-50:#ECFDF5; --green-100:#D1FAE5;
+      --red:#DC2626; --red-50:#FEF2F2;
+      --indigo:#4F46E5;
+      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,0.93); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--teal); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-tag { font-size:12px; font-weight:600; color:var(--teal-deep); background:var(--teal-50); padding:4px 12px; border-radius:999px; }
+
+    /* JOURNEY */
+    .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
+    .journey::-webkit-scrollbar { display:none; }
+    .journey-track { display:flex; align-items:stretch; min-width:max-content; }
+    .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
+    .j-item.active { color:var(--teal); border-bottom-color:var(--teal); }
+    .j-item.done { color:var(--green); border-bottom-color:var(--green); }
+    .j-dot { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:#F3F4F6; color:#9CA3AF; }
+    .j-item.active .j-dot { background:var(--teal); color:white; }
+    .j-item.done .j-dot { background:var(--green); color:white; }
+    .j-sep { color:#D1D5DB; font-size:14px; align-self:center; }
+
+    /* HERO */
+    .hero { background:var(--teal-deep); padding:52px 28px 44px; position:relative; overflow:hidden; }
+    .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px); background-size:40px 40px; }
+    .hero-blob { position:absolute; width:440px; height:440px; background:radial-gradient(circle,rgba(20,184,166,.3) 0%,transparent 70%); top:-160px; right:-80px; border-radius:50%; animation:blobFloat 9s ease-in-out infinite; }
+    @keyframes blobFloat { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-18px) scale(1.04); } }
+    .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
+    .hero-chip { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:20px; }
+    .hero-chip-dot { width:6px; height:6px; border-radius:50%; background:var(--teal-300); display:inline-block; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(28px,5vw,42px); font-weight:600; color:white; line-height:1.18; margin-bottom:14px; letter-spacing:-.4px; }
+    .hero h1 em { font-style:italic; color:var(--teal-200); }
+    .hero-lead { font-size:15.5px; color:rgba(255,255,255,.72); max-width:500px; line-height:1.7; margin-bottom:28px; }
+    .hero-pills { display:flex; gap:10px; flex-wrap:wrap; }
+    .hero-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.8); font-size:13px; padding:7px 13px; border-radius:var(--r-sm); }
+
+    .wrap { max-width:740px; margin:0 auto; padding:36px 24px 80px; }
+
+    /* NOTICES */
+    .notice { display:flex; gap:13px; align-items:flex-start; border-radius:var(--r); padding:14px 16px; margin-bottom:14px; }
+    .notice-icon { font-size:17px; flex-shrink:0; margin-top:1px; }
+    .notice-head { font-size:12.5px; font-weight:700; margin-bottom:3px; }
+    .notice-body { font-size:13px; line-height:1.55; }
+    .notice.info { background:var(--teal-50); }
+    .notice.info .notice-head { color:var(--teal-deep); }
+    .notice.info .notice-body { color:var(--teal-deep); }
+
+    /* MODULES */
+    .mod { background:#F6FFFE; border:1px solid #B2DFDB; border-left:4px solid var(--teal-200); border-radius:var(--r-xl); margin-bottom:14px; overflow:hidden; box-shadow:0 2px 8px rgba(13,148,136,.06); transition:box-shadow .25s,border-color .25s,border-left-color .25s; }
+    .mod:hover { box-shadow:0 4px 20px rgba(13,148,136,.12); border-left-color:var(--teal); }
+    .mod.open { border-color:var(--teal-200); border-left-color:var(--teal); box-shadow:0 6px 28px var(--teal-glow); background:var(--white); }
+    .mod-header { display:flex; align-items:center; gap:16px; padding:20px 24px; cursor:pointer; transition:background .15s; }
+    .mod-header:hover { background:var(--teal-50); }
+    .mod.open .mod-header { background:var(--teal-50); }
+    .mod-num { width:40px; height:40px; border-radius:11px; background:#F3F4F6; color:#9CA3AF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex-shrink:0; transition:background .2s,color .2s; }
+    .mod.open .mod-num { background:var(--teal); color:white; }
+    .mod.done .mod-num { background:var(--green); color:white; }
+    .mod-text { flex:1; }
+    .mod-title { font-size:15px; font-weight:700; color:var(--ink); }
+    .mod-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
+    .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.open .mod-time { background:var(--teal-100); color:var(--teal-deep); }
+    .mod-done-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.done .mod-done-badge { display:flex; }
+    .mod.done .mod-time { display:none; }
+    .mod-arrow { color:#D1D5DB; font-size:18px; flex-shrink:0; transition:transform .25s,color .2s; }
+    .mod.open .mod-arrow { transform:rotate(180deg); color:var(--teal); }
+    .mod-body { display:none; padding:24px 28px 30px; border-top:1px solid var(--border); animation:fadeSlide .22s ease; }
+    .mod.open .mod-body { display:block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+
+    .sect-label { display:flex; align-items:center; gap:12px; margin:30px 0 16px; }
+    .sect-label hr { flex:1; border:none; border-top:1px solid var(--border); }
+    .sect-label span { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+
+    p.prose { font-size:14.5px; line-height:1.75; color:var(--ink-soft); margin-bottom:18px; }
+    p.prose strong { color:var(--ink); font-weight:600; }
+
+    /* COPY BLOCK */
+    .copy-block { background:#0D1117; border-radius:var(--r); overflow:hidden; margin-bottom:16px; border:1px solid #1E2530; }
+    .copy-topbar { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); }
+    .copy-label-txt { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#4B5563; }
+    .copy-btn { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.11); color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .copy-btn:hover { background:rgba(255,255,255,.14); color:white; }
+    .copy-btn.copied { background:rgba(16,185,129,.15); border-color:rgba(16,185,129,.3); color:#6EE7B7; }
+    .copy-btn svg { width:13px; height:13px; flex-shrink:0; }
+    .copy-text { padding:14px 16px; font-family:'Courier New',monospace; font-size:13px; line-height:1.7; color:#E2E8F0; white-space:pre-wrap; word-break:break-word; }
+
+    /* TONE CARDS */
+    .tone-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
+    @media(max-width:520px){ .tone-grid { grid-template-columns:1fr; } }
+    .tone-card { border-radius:var(--r); padding:14px 16px; border:1px solid transparent; }
+    .tone-card.t1 { background:#F1F5F9; border-color:#CBD5E1; }
+    .tone-card.t2 { background:var(--teal-50); border-color:var(--teal-200); }
+    .tone-card.t3 { background:var(--green-50); border-color:#A7F3D0; }
+    .tone-card.t4 { background:var(--amber-50); border-color:#FDE68A; }
+    .tone-label { font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:5px; }
+    .tone-card.t1 .tone-label { color:#475569; }
+    .tone-card.t2 .tone-label { color:var(--teal-deep); }
+    .tone-card.t3 .tone-label { color:#065F46; }
+    .tone-card.t4 .tone-label { color:#92400E; }
+    .tone-use { font-size:12.5px; color:var(--muted); line-height:1.5; }
+
+    /* AI DEMO */
+    .ai-demo { border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,.05); }
+    .ai-demo-label { background:#F8FAFC; border-bottom:1px solid var(--border); padding:8px 16px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .ai-tabs { display:flex; gap:8px; padding:10px; background:var(--bg); border-bottom:1px solid var(--border); }
+    .ai-tab {
+      flex:1; padding:12px 14px;
+      font-family:'Outfit',sans-serif;
+      font-size:13px; font-weight:700;
+      cursor:pointer; border-radius:var(--r-sm);
+      transition:all .2s ease;
+      display:flex; align-items:center; justify-content:center; gap:7px;
+      border:2px solid transparent;
+    }
+    /* AKTIV = lysegrøn (her er du) */
+    .ai-tab.active {
+      background:linear-gradient(135deg,#34D399,#10B981);
+      color:white;
+      border-color:#10B981;
+      box-shadow:0 2px 10px rgba(16,185,129,.35);
+      cursor:default;
+    }
+    /* INAKTIV = mørkegrøn (klik for at gå hertil) */
+    .ai-tab:not(.active) {
+      background:var(--teal-deep);
+      color:white;
+      border-color:var(--teal-deep);
+      box-shadow:0 2px 8px rgba(15,118,110,.3);
+      animation:tabPulse 2.2s ease-in-out infinite;
+    }
+    .ai-tab:not(.active):hover {
+      transform:translateY(-1px);
+      box-shadow:0 4px 14px rgba(15,118,110,.5);
+      animation:none;
+    }
+    @keyframes tabPulse {
+      0%,100% { box-shadow:0 2px 8px rgba(15,118,110,.3); }
+      50% { box-shadow:0 2px 14px rgba(15,118,110,.55); }
+    }
+    .ai-response { padding:16px; background:var(--white); }
+    .ai-response.hidden { display:none; }
+    .ai-bubble { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+    .ai-avatar { width:30px; height:30px; border-radius:9px; background:#374151; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .ai-avatar-good { background:var(--teal); }
+    .ai-msg { background:#F8FAFC; border:1px solid var(--border); border-radius:0 var(--r) var(--r) var(--r); padding:12px 14px; font-size:13.5px; line-height:1.65; color:var(--ink-soft); flex:1; }
+    .ai-msg-good { background:var(--teal-50); border-color:var(--teal-200); color:#134E4A; }
+    .ai-verdict { font-size:12.5px; font-weight:600; padding:8px 12px; border-radius:var(--r-sm); display:flex; align-items:center; gap:8px; }
+    .ai-verdict.bad { background:var(--red-50); color:#991B1B; border:1px solid #FECACA; }
+    .ai-verdict.bad::before { content:'💡'; font-size:14px; }
+    .ai-verdict.good { background:var(--green-50); color:#065F46; border:1px solid #A7F3D0; }
+    .ai-verdict.good::before { content:'✅'; font-size:14px; }
+
+    /* PRACTICE */
+    .practice { background:linear-gradient(135deg,#FFFBF5,#FFF8EC); border:1px solid #FDE68A; border-radius:var(--r); padding:18px 20px; margin-bottom:14px; }
+    .practice-bar { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+    .p-tag { background:var(--amber); color:white; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px; border-radius:999px; }
+    .p-title { font-size:13.5px; font-weight:700; color:#78350F; }
+    .p-body { font-size:13px; line-height:1.7; color:#7C2D12; }
+    .p-body ol,.p-body ul { padding-left:1.2rem; margin-top:7px; }
+    .p-body li { margin-bottom:4px; }
+    .p-body em { font-style:italic; }
+    .p-body strong { color:#92400E; }
+
+    /* EMAIL CHALLENGE */
+    .email-challenge { border:1.5px solid var(--teal-200); border-radius:var(--r-xl); overflow:hidden; margin-bottom:20px; box-shadow:0 4px 20px var(--teal-glow); }
+    .ec-header { background:linear-gradient(135deg,var(--teal-deep),var(--teal)); padding:18px 22px; display:flex; align-items:center; gap:12px; }
+    .ec-icon { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .ec-title { font-size:15px; font-weight:700; color:white; }
+    .ec-sub { font-size:12.5px; color:rgba(255,255,255,.72); margin-top:2px; }
+
+    .inbox-email { background:var(--white); border-bottom:1px solid var(--border); }
+    .inbox-meta { display:flex; align-items:center; gap:10px; padding:14px 20px 10px; border-bottom:1px solid #F3F4F6; }
+    .inbox-avatar { width:36px; height:36px; border-radius:50%; background:#374151; color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .inbox-from { font-size:13px; font-weight:700; color:var(--ink); }
+    .inbox-time { font-size:11.5px; color:var(--muted); margin-left:auto; }
+    .inbox-subject { font-size:12px; color:var(--muted); margin-top:1px; }
+    .inbox-body { padding:16px 20px; font-size:13.5px; line-height:1.75; color:var(--ink-soft); white-space:pre-line; }
+    .inbox-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:10px 20px 0; }
+    .inbox-actions { padding:0 20px 18px; display:flex; justify-content:flex-end; }
+    .copy-email-btn { display:inline-flex; align-items:center; gap:7px; background:var(--white); border:1.5px solid var(--teal); color:var(--teal-deep); font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:700; padding:7px 14px; border-radius:var(--r-sm); cursor:pointer; transition:all .18s; }
+    .copy-email-btn:hover { background:var(--teal); color:white; transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,148,136,.25); }
+    .copy-email-btn.copied { background:var(--green); border-color:var(--green); color:white; }
+    .copy-email-btn svg { width:13px; height:13px; }
+
+    .ec-howto { background:linear-gradient(135deg,#F0FDFA,#ECFDF5); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:16px 18px; margin:18px 20px; }
+    .ec-howto-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--teal-100); }
+    .ec-howto-icon { font-size:18px; }
+    .ec-howto-title { font-size:13.5px; font-weight:700; color:var(--teal-deep); }
+    .ec-howto-list { display:flex; flex-direction:column; gap:10px; }
+    .ec-howto-step { display:flex; gap:12px; align-items:flex-start; }
+    .ec-howto-num { width:26px; height:26px; border-radius:50%; background:var(--teal); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; box-shadow:0 2px 6px rgba(13,148,136,.3); }
+    .ec-howto-text { font-size:13px; color:var(--teal-deep); line-height:1.6; padding-top:2px; }
+    .ec-howto-text strong { color:var(--ink); font-weight:700; }
+
+    .ec-chat { background:var(--white); padding:0 20px 18px; }
+    .chat-messages { min-height:60px; max-height:380px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:14px; padding-right:4px; }
+    .chat-messages::-webkit-scrollbar { width:4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    .chat-msg { display:flex; gap:10px; align-items:flex-start; animation:msgIn .2s ease; }
+    @keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .chat-msg.user { flex-direction:row-reverse; }
+    .chat-avatar { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .chat-avatar.user-av { background:var(--teal); color:white; }
+    .chat-avatar.ai-av { background:var(--ink); color:white; }
+    .chat-bubble { max-width:85%; padding:11px 14px; font-size:13.5px; line-height:1.65; border-radius:var(--r); }
+    .chat-msg.user .chat-bubble { background:var(--teal); color:white; border-radius:var(--r) 4px var(--r) var(--r); }
+    .chat-msg.ai .chat-bubble { background:#F8FAFC; border:1px solid var(--border); color:var(--ink-soft); border-radius:4px var(--r) var(--r) var(--r); }
+    .chat-msg.ai .chat-bubble strong { color:var(--ink); font-weight:600; }
+    .chat-typing { display:none; gap:10px; align-items:center; padding:4px 0; }
+    .chat-typing.show { display:flex; }
+    .chat-typing-dots { background:#F8FAFC; border:1px solid var(--border); border-radius:4px var(--r) var(--r) var(--r); padding:10px 16px; display:flex; gap:4px; align-items:center; }
+    .chat-typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); display:inline-block; animation:dotBounce 1.2s ease-in-out infinite; }
+    .chat-typing-dots span:nth-child(2) { animation-delay:.2s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay:.4s; }
+    @keyframes dotBounce { 0%,80%,100% { transform:translateY(0); opacity:.4; } 40% { transform:translateY(-5px); opacity:1; } }
+    .chat-input-row { display:flex; gap:9px; align-items:flex-end; }
+    .chat-textarea { flex:1; min-height:52px; max-height:140px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r); padding:12px 14px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); resize:none; outline:none; transition:border-color .18s,box-shadow .18s; line-height:1.5; }
+    .chat-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .chat-send-btn { width:48px; height:48px; border-radius:var(--r); background:var(--teal); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s,transform .15s,box-shadow .15s; box-shadow:0 2px 8px var(--teal-glow); }
+    .chat-send-btn:hover:not(:disabled) { background:var(--teal-deep); transform:translateY(-1px); }
+    .chat-send-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .chat-send-btn svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .chat-hint { font-size:11.5px; color:var(--muted); text-align:center; margin-top:10px; }
+    .chat-hint strong { color:var(--teal); font-weight:600; }
+
+    /* PROGRESS */
+    .progress-track-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 22px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
+    .prog-label { font-size:13px; font-weight:600; color:var(--ink-soft); white-space:nowrap; }
+    .prog-bar-outer { flex:1; height:7px; background:var(--border); border-radius:999px; overflow:hidden; }
+    .prog-bar-inner { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal-300)); border-radius:999px; width:0%; transition:width .6s ease; }
+    .prog-pct { font-size:13px; font-weight:700; color:var(--teal); white-space:nowrap; min-width:36px; text-align:right; }
+    .prog-steps { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .prog-step { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:#F1F5F9; color:#94A3B8; border:2px solid #E2E8F0; pointer-events:none; user-select:none; transition:all .35s ease; position:relative; }
+    .prog-step.active { background:var(--teal-50); border-color:var(--teal); color:var(--teal); }
+    .prog-step.active::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--teal); opacity:0; animation:stepPulse 1.8s ease-out infinite; }
+    @keyframes stepPulse { 0% { transform:scale(0.85); opacity:0.6; } 70% { transform:scale(1.4); opacity:0; } 100% { transform:scale(1.4); opacity:0; } }
+    .prog-step.done { background:var(--green); border-color:var(--green); color:white; }
+
+    /* SUMMARY */
+    .summary { background:var(--teal-deep); border-radius:var(--r-xl); padding:30px; color:white; margin:34px 0 24px; position:relative; overflow:hidden; }
+    .summary::after { content:'C2'; position:absolute; right:22px; top:12px; font-family:'Lora',serif; font-size:80px; font-weight:600; color:rgba(255,255,255,.05); line-height:1; }
+    .summary h3 { font-family:'Lora',serif; font-size:21px; font-weight:600; margin-bottom:18px; color:white; }
+    .sum-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    @media(max-width:480px){ .sum-grid { grid-template-columns:1fr; } }
+    .sum-item { display:flex; gap:9px; background:rgba(255,255,255,.07); border-radius:var(--r-sm); padding:11px 13px; font-size:13px; color:rgba(255,255,255,.82); line-height:1.5; }
+    .sum-item::before { content:'✓'; color:var(--teal-200); font-weight:700; flex-shrink:0; margin-top:1px; }
+
+    /* CTA */
+    .cta { background:var(--white); border:1.5px solid var(--teal-200); border-radius:var(--r-xl); padding:34px 28px; text-align:center; box-shadow:0 8px 36px var(--teal-glow); }
+    .cta-icon { font-size:40px; margin-bottom:10px; }
+    .cta h2 { font-family:'Lora',serif; font-size:23px; font-weight:600; color:var(--ink); margin-bottom:8px; }
+    .cta p { font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
+    .cta-warn { display:inline-block; background:var(--amber-100); color:#92400E; font-size:12px; font-weight:600; padding:5px 14px; border-radius:999px; margin-bottom:18px; }
+    .btn-go { display:inline-flex; align-items:center; gap:9px; background:var(--teal); color:white; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); text-decoration:none; box-shadow:0 4px 18px var(--teal-glow); transition:background .15s,transform .15s,box-shadow .15s; }
+    .btn-go:hover { background:var(--teal-deep); transform:translateY(-2px); box-shadow:0 8px 28px rgba(13,148,136,.28); }
+    .btn-go svg { width:15px; height:15px; flex-shrink:0; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+    .cta-sub { margin-top:13px; font-size:12.5px; color:var(--muted); display:flex; gap:6px; justify-content:center; align-items:center; flex-wrap:wrap; }
+    .cta-sub .coins { color:var(--amber); font-weight:700; }
+    .cta-sub .dot-sep { color:var(--border); }
+
+    hr.div { border:none; border-top:1px solid var(--border); margin:22px 0; }
+
+    /* DRAFT TEXT BOX (modul 4) */
+    .draft-box { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-top:14px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+    .draft-head { display:flex; align-items:center; gap:12px; padding:14px 18px; background:linear-gradient(135deg,#FEFCE8,#FEF9E7); border-bottom:1px solid #FDE68A; }
+    .draft-icon { width:34px; height:34px; border-radius:9px; background:#F59E0B; color:white; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+    .draft-title { font-size:13.5px; font-weight:700; color:#78350F; line-height:1.3; }
+    .draft-sub { font-size:11.5px; color:#92400E; margin-top:2px; }
+    .draft-head > div:not(.draft-icon) { flex:1; }
+    .draft-body { padding:16px 20px; font-size:13px; line-height:1.7; color:var(--ink-soft); white-space:pre-line; }
+
+    /* ─── PROMPT-BIBLIOTEK GUIDE (modul 5) ─── */
+    .lib-open-card {
+      display:flex; align-items:center; gap:18px;
+      background:linear-gradient(135deg,var(--teal-deep) 0%,var(--teal) 100%);
+      border-radius:var(--r-xl); padding:22px 24px;
+      box-shadow:0 8px 28px rgba(13,148,136,.25);
+      flex-wrap:wrap;
+    }
+    .lib-open-icon {
+      width:60px; height:60px; border-radius:14px;
+      background:rgba(255,255,255,.18);
+      border:1px solid rgba(255,255,255,.25);
+      display:flex; align-items:center; justify-content:center;
+      font-size:30px; flex-shrink:0;
+    }
+    .lib-open-text { flex:1; min-width:200px; }
+    .lib-open-title { font-size:16px; font-weight:700; color:white; margin-bottom:3px; }
+    .lib-open-sub { font-size:13px; color:rgba(255,255,255,.78); line-height:1.5; }
+    .lib-open-btn {
+      display:inline-flex; align-items:center; gap:9px;
+      background:white; color:var(--teal-deep);
+      font-family:'Outfit',sans-serif;
+      font-size:14px; font-weight:700;
+      padding:12px 22px; border-radius:var(--r);
+      text-decoration:none; flex-shrink:0;
+      transition:transform .15s,box-shadow .15s;
+      box-shadow:0 4px 14px rgba(0,0,0,.15);
+    }
+    .lib-open-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.2); }
+    .lib-open-btn svg { width:15px; height:15px; }
+
+    /* GUIDE STEPS */
+    .guide-steps { display:flex; flex-direction:column; gap:0; margin-bottom:20px; }
+    .guide-step { display:flex; gap:16px; padding-bottom:24px; }
+    .guide-step:last-child { padding-bottom:0; }
+    .guide-step-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+    .guide-step-num {
+      width:34px; height:34px; border-radius:50%;
+      background:var(--teal); color:white;
+      font-size:14px; font-weight:800;
+      display:flex; align-items:center; justify-content:center;
+      box-shadow:0 3px 10px rgba(13,148,136,.3);
+      flex-shrink:0;
+    }
+    .guide-step-line { flex:1; width:2px; background:var(--teal-100); margin-top:8px; }
+    .guide-step-right { flex:1; padding-top:4px; }
+    .guide-step-title { font-size:15px; font-weight:700; color:var(--ink); margin-bottom:5px; }
+    .guide-step-text { font-size:13.5px; line-height:1.65; color:var(--ink-soft); margin-bottom:12px; }
+    .guide-step-text strong { color:var(--ink); font-weight:600; }
+    .guide-step-text em { font-style:italic; color:var(--teal-deep); }
+    .guide-step-text kbd {
+      background:#fff; border:1px solid var(--border); border-bottom-width:2px;
+      border-radius:5px; padding:1px 7px; font-family:'Courier New',monospace;
+      font-size:12px; font-weight:700; color:var(--ink); display:inline-block; margin:0 1px;
     }
 
-    /* ── NAV ── */
-    nav {
-      background: white;
-      border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem;
-      display: flex; align-items: center; justify-content: space-between;
-      height: 56px; position: sticky; top: 0; z-index: 100;
+    /* VISUAL MOCKUPS */
+    .guide-step-visual {
+      background:linear-gradient(135deg,#F8FAFC,#F1F5F9);
+      border:1px solid var(--border); border-radius:var(--r-lg);
+      padding:14px; margin-bottom:4px;
     }
-    .logo {
-      display: flex; align-items: center; gap: 9px;
-      font-size: 16px; font-weight: 700;
-      color: var(--text); text-decoration: none;
+    .visual-tab {
+      display:flex; align-items:center; gap:8px;
+      background:#E2E8F0; padding:6px 10px;
+      border-radius:8px 8px 0 0; border-bottom:1px solid #CBD5E1;
     }
-    .logo-icon {
-      width: 30px; height: 30px; background: var(--blue);
-      border-radius: 7px; display: flex; align-items: center; justify-content: center;
+    .visual-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+    .visual-dot.red { background:#FB7185; }
+    .visual-dot.yellow { background:#FBBF24; }
+    .visual-dot.green { background:#34D399; }
+    .visual-tab-text { font-size:11.5px; color:#475569; font-weight:600; margin-left:6px; }
+    .visual-content {
+      background:white; border-radius:0 0 8px 8px;
+      padding:10px; display:flex; flex-direction:column; gap:6px;
     }
-    .logo-icon svg { width: 15px; height: 15px; fill: white; }
-    .nav-tag {
-      font-size: 13px; color: var(--muted);
-      background: var(--grey); padding: 5px 12px; border-radius: 20px;
+    .visual-prompt-row {
+      display:flex; align-items:center; gap:10px;
+      padding:8px 11px; background:var(--teal-50);
+      border-radius:6px; font-size:12.5px; color:var(--ink); font-weight:600;
+    }
+    .visual-prompt-row > span:first-child { font-size:14px; flex-shrink:0; }
+    .visual-prompt-row > span:not(.visual-copy-mini) { flex:1; }
+    .visual-copy-mini { background:var(--teal); color:white; padding:3px 8px; border-radius:4px; font-size:11px; flex-shrink:0; }
+
+    /* Bookmark bar mock */
+    .visual-bookmark-bar {
+      display:flex; gap:6px; padding:8px 10px;
+      background:white; border:1px solid var(--border); border-radius:8px;
+      flex-wrap:wrap;
+    }
+    .visual-bookmark-item {
+      font-size:11.5px; color:var(--muted); padding:4px 8px;
+      border-radius:5px; background:#F1F5F9;
+    }
+    .visual-bookmark-item.active {
+      background:var(--teal-50); color:var(--teal-deep);
+      border:1px solid var(--teal-200); font-weight:600;
+    }
+    .visual-arrow-down {
+      text-align:center; font-size:11.5px; color:var(--teal);
+      font-weight:700; margin-top:8px;
     }
 
-    /* ── PROGRESS STEPS ── */
-    .steps-bar {
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem; display: flex; justify-content: center; gap: 0;
+    /* Flow chain (step 3) */
+    .flow-chain {
+      display:flex; align-items:center; gap:8px;
+      flex-wrap:wrap; justify-content:center;
     }
-    .step-item { display: flex; align-items: center; }
-    .step-dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; flex-shrink: 0;
+    .flow-step {
+      flex:1; min-width:90px; max-width:130px;
+      background:white; border:1px solid var(--border);
+      border-radius:var(--r); padding:10px 8px;
+      text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.04);
     }
-    .step-dot.done   { background: var(--green); color: white; }
-    .step-dot.active { background: var(--green); color: white; box-shadow: 0 0 0 3px var(--green-light); }
-    .step-dot.next   { background: var(--border); color: var(--muted); }
-    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
-    .step-label.done   { color: var(--green); }
-    .step-label.active { color: var(--green); }
-    .step-label.next   { color: var(--muted); }
-    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+    .flow-icon { font-size:22px; margin-bottom:4px; }
+    .flow-label { font-size:11.5px; color:var(--ink-soft); line-height:1.35; font-weight:500; }
+    .flow-arrow { color:var(--teal); font-size:18px; font-weight:700; flex-shrink:0; }
 
-    /* ── HERO ── */
-    .hero {
-      background: var(--green);
-      color: white; padding: 3rem 1.5rem 2.5rem; text-align: center;
+    /* TIPS BOX */
+    .lib-tips {
+      background:linear-gradient(135deg,#F0FDFA,#ECFDF5);
+      border:1.5px solid var(--teal-200); border-radius:var(--r-lg);
+      padding:18px 20px; margin-bottom:18px;
     }
-    .hero-badge {
-      display: inline-block; background: rgba(255,255,255,0.18);
-      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem;
+    .lib-tips-title { font-size:13.5px; font-weight:700; color:var(--teal-deep); margin-bottom:12px; }
+    .lib-tips-list { display:flex; flex-direction:column; gap:8px; }
+    .lib-tip-item {
+      display:flex; gap:10px; align-items:flex-start;
+      font-size:13px; color:var(--ink-soft); line-height:1.5;
     }
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(26px, 5vw, 38px); font-weight: 400;
-      line-height: 1.2; margin-bottom: 0.75rem;
-    }
-    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
-    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
-    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
-    .hero-meta-item span { font-size: 18px; }
+    .lib-tip-item > span:first-child { font-size:15px; flex-shrink:0; }
+    .lib-tip-item strong { color:var(--ink); font-weight:600; }
 
-    /* ── CONTENT ── */
-    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-
-    .section-label {
-      font-size: 11px; font-weight: 700; color: var(--green);
-      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;
-    }
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem;
-    }
-    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
-
-    /* ── MODULE ── */
-    .module {
-      background: white; border: 1px solid var(--border);
-      border-radius: 18px; margin-bottom: 1.5rem; overflow: hidden; box-shadow: var(--shadow);
-    }
-    .module-header {
-      background: var(--green-light); padding: 1.1rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-      cursor: pointer; user-select: none;
-    }
-    .module-header:hover { background: var(--green-mid); }
-    .module-letter {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--green); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; flex-shrink: 0;
-    }
-    .module-title-wrap { flex: 1; }
-    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
-    .module.open .module-toggle { transform: rotate(45deg); }
-    .module-body {
-      display: none; padding: 1.5rem; border-top: 1px solid var(--border);
-    }
-    .module.open .module-body { display: block; }
-
-    /* ── CONTENT ELEMENTS ── */
-    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
-
-    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
-    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
-    .info-box p  { font-size: 14px; line-height: 1.6; }
-    .info-box ul { padding-left: 1.1rem; }
-    .info-box li { font-size: 14px; line-height: 1.7; }
-
-    .box-blue   { background: var(--blue-light); }
-    .box-blue .info-box-title   { color: var(--blue); }
-    .box-green  { background: var(--green-light); }
-    .box-green .info-box-title  { color: var(--green); }
-    .box-yellow { background: var(--yellow-bg); }
-    .box-yellow .info-box-title { color: var(--yellow-txt); }
-    .box-grey   { background: var(--grey); }
-    .box-grey .info-box-title   { color: #444; }
-
-    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
-
-    .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
-    .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
-
-    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
-
-    /* tone table */
-    .tone-table { width: 100%; border-collapse: collapse; margin-bottom: 1.25rem; font-size: 14px; }
-    .tone-table th {
-      background: var(--green); color: white;
-      padding: 10px 14px; text-align: left; font-weight: 700; font-size: 13px;
-    }
-    .tone-table th:first-child { border-radius: 10px 0 0 0; }
-    .tone-table th:last-child  { border-radius: 0 10px 0 0; }
-    .tone-table td { padding: 10px 14px; border-bottom: 1px solid var(--border); }
-    .tone-table tr:nth-child(even) td { background: var(--green-light); }
-    .tone-table tr:last-child td { border-bottom: none; }
-    .tone-table td:first-child { font-weight: 700; white-space: nowrap; }
-
-    /* prompt template */
-    .prompt-template {
-      background: #1e2a3a; color: #e2f0fb;
-      border-radius: 10px; padding: 1rem 1.15rem;
-      font-size: 13px; font-family: 'Courier New', monospace;
-      line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap;
-    }
-    .prompt-label {
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem;
+    @media(max-width:520px){
+      .lib-open-card { padding:18px; }
+      .lib-open-icon { width:50px; height:50px; font-size:26px; }
+      .flow-arrow { transform:rotate(90deg); }
+      .flow-chain { flex-direction:column; }
+      .flow-step { max-width:none; width:100%; }
     }
 
-    /* technique tag */
-    .technique-tag {
-      display: inline-block; background: var(--green); color: white;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem;
-    }
+    /* PROMPT BIBLIOTEK */
+    .lib-intro { background:linear-gradient(135deg,#F0FDFA,#ECFDF5); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:18px 20px; margin-bottom:18px; }
+    .lib-intro-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .lib-intro-icon { font-size:22px; }
+    .lib-intro-title { font-size:14px; font-weight:700; color:var(--teal-deep); }
+    .lib-intro-text { font-size:13px; line-height:1.65; color:var(--teal-deep); }
 
-    /* practice */
-    .practice {
-      background: var(--orange-light); border-radius: 12px;
-      padding: 1rem 1.15rem; margin-bottom: 1.25rem;
-    }
-    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
-    .practice ol { padding-left: 1.2rem; }
-    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
-    .practice li { margin-bottom: 4px; }
+    .lib-toolbar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px; padding:14px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); }
+    .lib-count { font-size:13px; color:var(--muted); font-weight:600; flex-shrink:0; }
+    .lib-count strong { color:var(--ink); font-size:15px; }
+    .lib-toolbar-spacer { flex:1; }
+    .lib-btn { display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:var(--r-sm); font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:700; cursor:pointer; transition:all .18s; border:1.5px solid; }
+    .lib-btn-primary { background:var(--teal); color:white; border-color:var(--teal); }
+    .lib-btn-primary:hover { background:var(--teal-deep); border-color:var(--teal-deep); transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,148,136,.3); }
+    .lib-btn-outline { background:var(--white); color:var(--teal-deep); border-color:var(--teal); }
+    .lib-btn-outline:hover { background:var(--teal-50); }
+    .lib-btn svg { width:14px; height:14px; }
 
-    /* summary */
-    .summary {
-      background: var(--green); border-radius: 16px;
-      padding: 1.75rem; color: white; margin-bottom: 2rem;
-    }
-    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
-    .summary ul { padding-left: 1.2rem; }
-    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+    .lib-grid { display:grid; gap:10px; margin-bottom:16px; }
+    .lib-item { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:box-shadow .2s,border-color .2s; }
+    .lib-item:hover { box-shadow:0 4px 14px rgba(0,0,0,.06); border-color:var(--teal-200); }
+    .lib-item-header { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--teal-50); border-bottom:1px solid var(--teal-100); }
+    .lib-item-emoji { font-size:18px; flex-shrink:0; }
+    .lib-item-title { flex:1; font-size:13.5px; font-weight:700; color:var(--ink); }
+    .lib-item-meta { font-size:10.5px; font-weight:600; color:var(--teal-deep); background:var(--white); padding:3px 8px; border-radius:999px; }
+    .lib-item-meta.custom { background:var(--amber-100); color:#92400E; }
+    .lib-item-actions { display:flex; gap:6px; align-items:center; }
+    .lib-action-btn { width:28px; height:28px; border-radius:6px; display:flex; align-items:center; justify-content:center; background:var(--white); border:1px solid var(--border); cursor:pointer; transition:all .15s; color:var(--muted); }
+    .lib-action-btn:hover { color:var(--ink); border-color:var(--ink); }
+    .lib-action-btn.copy:hover { color:var(--teal); border-color:var(--teal); background:var(--teal-50); }
+    .lib-action-btn.copy.copied { color:white; background:var(--green); border-color:var(--green); }
+    .lib-action-btn.del:hover { color:var(--red); border-color:var(--red); background:var(--red-50); }
+    .lib-action-btn svg { width:13px; height:13px; }
+    .lib-item-body { padding:12px 14px; font-size:13px; line-height:1.65; color:var(--ink-soft); white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; }
+    .lib-empty { text-align:center; padding:40px 20px; color:var(--muted); font-size:14px; background:var(--white); border:1px dashed var(--border); border-radius:var(--r-lg); }
+    .lib-empty-emoji { font-size:36px; margin-bottom:10px; }
 
-    /* quiz cta */
-    .quiz-cta {
-      background: white; border: 2px solid var(--green);
-      border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow);
+    /* ADD PROMPT MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.55); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; animation:fadeIn .2s ease; }
+    .modal-overlay.show { display:flex; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .modal { background:var(--white); border-radius:var(--r-xl); max-width:520px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalSlide .25s ease; }
+    @keyframes modalSlide { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .modal-head { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .modal-title { font-size:16px; font-weight:700; color:var(--ink); }
+    .modal-close { width:32px; height:32px; border-radius:8px; background:var(--bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all .15s; }
+    .modal-close:hover { background:var(--red-50); color:var(--red); }
+    .modal-close svg { width:14px; height:14px; }
+    .modal-body { padding:22px; }
+    .modal-field { margin-bottom:16px; }
+    .modal-label { display:block; font-size:12px; font-weight:700; color:var(--ink); margin-bottom:6px; letter-spacing:.02em; }
+    .modal-input,.modal-textarea {
+      width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm);
+      padding:10px 12px; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+      outline:none; transition:border-color .18s,box-shadow .18s;
     }
-    .quiz-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
-    .quiz-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
-    .quiz-cta p  { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
-    .quiz-cta .req {
-      display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt);
-      font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem;
-    }
-    .btn-quiz {
-      display: inline-block; background: var(--green); color: white;
-      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
-      padding: 14px 36px; border-radius: 12px; text-decoration: none;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-quiz:hover { background: #0a5640; transform: translateY(-1px); }
+    .modal-input:focus,.modal-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .modal-textarea { min-height:120px; resize:vertical; line-height:1.5; }
+    .modal-emoji-picker { display:flex; gap:6px; flex-wrap:wrap; }
+    .modal-emoji { width:36px; height:36px; border-radius:8px; border:1.5px solid var(--border); background:var(--white); cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .modal-emoji:hover { border-color:var(--teal); background:var(--teal-50); }
+    .modal-emoji.selected { border-color:var(--teal); background:var(--teal-50); box-shadow:0 0 0 3px rgba(13,148,136,.15); }
+    .modal-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
 
-    @media (max-width: 480px) {
-      .hero { padding: 2rem 1rem 1.75rem; }
-      .content { padding: 1.75rem 1rem 3rem; }
-      .module-body { padding: 1.1rem; }
-      .quiz-cta { padding: 1.5rem 1rem; }
-      .step-label { display: none; }
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:10px 20px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.2); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:480px){
+      nav,.journey { padding-left:16px; padding-right:16px; }
+      .hero { padding:36px 16px 30px; }
+      .wrap { padding:24px 16px 60px; }
+      .mod-header { padding:16px 18px; gap:12px; }
+      .mod-body { padding:18px 18px 22px; }
+      .summary { padding:24px 20px; }
+      .cta { padding:26px 18px; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="platform.html" class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
-    </div>
-    LearnAI DK
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
   </a>
-  <span class="nav-tag">Kursus C — Del 2 af 3</span>
+  <div class="nav-tag">Kursus C &nbsp;·&nbsp; Del 2 af 3</div>
 </nav>
 
-<!-- PROGRESS STEPS -->
-<div class="steps-bar">
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Prompt-teknik</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot active">C2</div>
-    <span class="step-label active">Emails</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">Q2</div>
-    <span class="step-label next">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">C3</div>
-    <span class="step-label next">Rapporter</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen</span>
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item done"><div class="j-dot">✓</div>Prompt-teknik</div>
+    <div class="j-sep">›</div>
+    <div class="j-item done"><div class="j-dot">✓</div>Mini-quiz</div>
+    <div class="j-sep">›</div>
+    <div class="j-item active"><div class="j-dot">C2</div>Emails</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">Q2</div>Mini-quiz</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">C3</div>Rapporter & møder</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">E1</div>Eksamen del 1</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">E2</div>Eksamen del 2</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">🥈</div>Bevis & coins</div>
   </div>
 </div>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Kursus C &nbsp;·&nbsp; Del 2 af 3</div>
-  <h1>AI til emails og produktivitet</h1>
-  <p>Sæt teknikkerne fra Del C1 i spil — med konkrete workflows til emails og daglig produktivitet.</p>
-  <div class="hero-meta">
-    <div class="hero-meta-item"><span>⏱</span> 45 min – 1 time</div>
-    <div class="hero-meta-item"><span>📋</span> 2 moduler</div>
-    <div class="hero-meta-item"><span>🎯</span> Afsluttes med mini-quiz</div>
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="hero-chip-dot"></span> Kursus C &nbsp;·&nbsp; Del 2 af 3</div>
+    <h1>AI til emails og<br><em>produktivitet</em></h1>
+    <p class="hero-lead">Del C1 gav dig teknikkerne. Nu sætter vi dem i spil — med øvelser, en live email-udfordring, og dit eget personlige prompt-bibliotek du kan tage med dig.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><span>⏱</span> Ca. 1 time</div>
+      <div class="hero-pill"><span>📋</span> 5 moduler</div>
+      <div class="hero-pill"><span>✉️</span> Live email-opgave</div>
+      <div class="hero-pill"><span>📚</span> Prompt-bibliotek</div>
+    </div>
   </div>
 </div>
 
-<div class="content">
+<div class="wrap">
 
-  <div class="section-label">Del C2</div>
-  <div class="section-title">Nu anvender vi det du har lært</div>
-  <p class="section-body">Del C1 gav dig teknikkerne. Nu sætter vi dem i spil. I dette modul arbejder du med virkelige situationer — ikke bare teori. Hvert modul har opgaver du skal gennemføre i ChatGPT eller Claude.</p>
-
-  <!-- ── MODULE C2.1: EMAILS ── -->
-  <div class="module open" id="mod1">
-    <div class="module-header" onclick="toggleModule('mod1')">
-      <div class="module-letter">1</div>
-      <div class="module-title-wrap">
-        <div class="module-title">AI til emails og kommunikation</div>
-        <div class="module-sub">Skriv bedre — hurtigere</div>
-      </div>
-      <div class="module-toggle">+</div>
+  <div class="notice info" style="margin-bottom:28px;">
+    <div class="notice-icon">💡</div>
+    <div>
+      <div class="notice-head">Sådan bruger du C2</div>
+      <div class="notice-body">Hvert modul har én konkret øvelse du skal gennemføre. Fokus er på at <strong>bruge</strong> det du har lært — ikke bare læse om det. Modul 5 giver dig et personligt prompt-bibliotek du tager med dig.</div>
     </div>
-    <div class="module-body">
-      <p class="prose">Email er en af de største tidstyve i arbejdslivet. AI kan hjælpe dig med at skrive emails hurtigere og bedre. Her er de fire typiske situationer du vil møde.</p>
+  </div>
 
-      <!-- De 4 situationer -->
-      <h3 class="subhead">De fire typiske email-situationer</h3>
+  <!-- MODUL 1 -->
+  <div class="sect-label"><hr><span>Modul 1 af 5</span><hr></div>
+  <div class="mod open" id="m1">
+    <div class="mod-header" onclick="tog('m1')">
+      <div class="mod-num">1</div>
+      <div class="mod-text">
+        <div class="mod-title">AI til emails — to kerneteknikker</div>
+        <div class="mod-sub">Den svære email og opfølgningen — øvelse til hver</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">Email er en af de største tidstyve i arbejdslivet. To situationer dukker op igen og igen: <strong>den svære email</strong> (afvisninger, dårlige nyheder, konflikter) og <strong>opfølgningen</strong> (når ingen svarer). Mestrer du dem, sparer du timer hver uge.</p>
 
-      <div class="info-box box-green">
-        <div class="info-box-title">1. Den svære email</div>
-        <p>Til konflikter, dårlige nyheder eller afvisninger.</p>
-        <br>
-        <div class="prompt-label">Skabelon</div>
-        <div class="prompt-template">"Hjælp mig med at skrive en email til [modtager] om [situation].
-Situationen er: [forklar].
-Tone: ærlig men ikke anklagende.
-Under 150 ord. Kom direkte til sagen."</div>
+      <!-- TEKNIK 1: SVÆRE EMAILS -->
+      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px;">Teknik 1 — Den svære email</h3>
+      <p class="prose">Et svagt prompt giver en stiv, generisk email. Et stærkt prompt giver en email der lyder som dig — bare bedre. Se forskellen:</p>
+
+      <div class="ai-demo">
+        <div class="ai-demo-label">Se hvad et svagt vs. stærkt prompt giver</div>
+        <div class="ai-tabs">
+          <button class="ai-tab active" onclick="switchTab(this,'demo1-bad')">❌ Svagt prompt</button>
+          <button class="ai-tab" onclick="switchTab(this,'demo1-good')">✓ Stærkt prompt — klik her</button>
+        </div>
+        <div class="ai-response" id="demo1-bad">
+          <div class="ai-bubble">
+            <div class="ai-avatar">AI</div>
+            <div class="ai-msg">
+              <p><strong>Din prompt:</strong> <em>"Skriv en email til min chef om at jeg er bagud."</em></p>
+              <p style="margin-top:10px;">Kære [navn],<br><br>Jeg skriver for at informere dig om, at jeg på nuværende tidspunkt desværre befinder mig i en situation, hvor mit arbejde er en smule forsinket. Jeg beklager de eventuelle ulemper dette måtte medføre og vil gøre mit bedste for at indhente det forsømte snarest muligt.<br><br>Med venlig hilsen</p>
+            </div>
+          </div>
+          <div class="ai-verdict bad">Stivt, upersonligt og fyldt med fyldord. Ingen konkret information om hvad der er forsinket eller hvornår det er klar.</div>
+        </div>
+        <div class="ai-response hidden" id="demo1-good">
+          <div class="ai-bubble">
+            <div class="ai-avatar ai-avatar-good">AI</div>
+            <div class="ai-msg ai-msg-good">
+              <p><strong>Din prompt:</strong> <em>"Du er erfaren forretningskommunikatør. Skriv en email til min chef om at projektrapport til fredag er forsinket til mandag. Tone: direkte og professionel. Undgå undskyldninger og fyldord. Maks 60 ord."</em></p>
+              <p style="margin-top:10px;">Hej [navn],<br><br>Projektrapporten er klar mandag i stedet for fredag. Årsagen er [årsag]. Jeg holder dig opdateret hvis noget ændrer sig.<br><br>Mvh</p>
+            </div>
+          </div>
+          <div class="ai-verdict good">Præcis, direkte og respekterer chefens tid. Rolleprompt + negativ afgrænsning + konkret kontekst = markant bedre resultat.</div>
+        </div>
       </div>
 
-      <div class="info-box box-grey">
-        <div class="info-box-title">2. Opfølgning når ingen svarer</div>
-        <p>Når du har sendt en email og ikke hørt tilbage.</p>
-        <br>
-        <div class="prompt-label">Skabelon</div>
-        <div class="prompt-template">"Skriv en venlig men tydelig opfølgnings-email til [person].
-Jeg sendte en email om [emne] for [X] dage siden uden svar.
-Tone: ikke pressende, men tydeligt at jeg har brug for svar."</div>
+      <!-- TONE GUIDE -->
+      <p class="prose" style="font-weight:600;margin-bottom:12px;">Vælg altid den rigtige tone i din prompt</p>
+      <div class="tone-grid">
+        <div class="tone-card t1"><div class="tone-label">Meget formel</div><div class="tone-use">Juridiske dokumenter, officielle indberetninger, bestyrelseskommunikation</div></div>
+        <div class="tone-card t2"><div class="tone-label">Professionel</div><div class="tone-use">Standard arbejdsmails, kunder og samarbejdspartnere du ikke kender godt</div></div>
+        <div class="tone-card t3"><div class="tone-label">Venlig</div><div class="tone-use">Kolleger og faste samarbejdspartnere du har en god relation til</div></div>
+        <div class="tone-card t4"><div class="tone-label">Uformel</div><div class="tone-use">Intern kommunikation og nærmeste kolleger</div></div>
       </div>
 
-      <div class="info-box box-green">
-        <div class="info-box-title">3. Kort svar på lang email</div>
-        <p>Når du har modtaget en lang email og vil svare præcist.</p>
-        <br>
-        <div class="prompt-label">Skabelon</div>
-        <div class="prompt-template">"Her er en email jeg har modtaget: [indsæt].
-Jeg vil svare at: [dine punkter].
-Skriv svaret kort og professionelt. Maks 100 ord."</div>
+      <!-- ØVELSE 1 -->
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse 1</div><div class="p-title">Skriv en svær email — i din egen situation</div></div>
+        <div class="p-body">
+          <p>Vælg en reel eller hypotetisk situation:</p>
+          <ul>
+            <li>Afvis en invitation venligt</li>
+            <li>Bed om mere tid på en deadline</li>
+            <li>Sig nej til en opgave du ikke har tid til</li>
+          </ul>
+          <p style="margin-top:8px;">Skriv et stærkt prompt med <strong>rolleprompt + negativ afgrænsning + tone</strong>. Send det til AI. Brug derefter <strong>iterativ forfining</strong> (C1 Teknik 4) i 2 runder for at gøre den endnu bedre.</p>
+        </div>
       </div>
 
-      <div class="info-box box-grey">
-        <div class="info-box-title">4. Sprogvask og tone-justering</div>
-        <p>Når du har skrevet et udkast, men vil have det poleret.</p>
-        <br>
-        <div class="prompt-label">Skabelon</div>
-        <div class="prompt-template">"Ret følgende email til korrekt, professionelt dansk og forbedre
-formuleringerne uden at ændre indholdet: [indsæt tekst]"</div>
-      </div>
+      <hr class="div">
 
-      <hr class="divider">
-
-      <h3 class="subhead">Email-tone skala</h3>
-      <p class="prose">Tilføj altid til din prompt hvilken tone du vil have:</p>
-
-      <table class="tone-table">
-        <tr>
-          <th>Tone</th>
-          <th>Brug til</th>
-        </tr>
-        <tr>
-          <td>Meget formel</td>
-          <td>Juridiske dokumenter, officielle indberetninger, bestyrelseskommunikation</td>
-        </tr>
-        <tr>
-          <td>Professionel</td>
-          <td>Standard arbejdsmails, til kunder du ikke kender godt</td>
-        </tr>
-        <tr>
-          <td>Venlig</td>
-          <td>Kolleger og samarbejdspartnere du kender</td>
-        </tr>
-        <tr>
-          <td>Uformel</td>
-          <td>Intern kommunikation, nærekolleger, teamchat</td>
-        </tr>
-      </table>
-
-      <hr class="divider">
+      <!-- TEKNIK 2: OPFØLGNING -->
+      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:8px;">Teknik 2 — Opfølgningen</h3>
+      <p class="prose">Når nogen ikke svarer, handler det om at finde balancen: tydelig nok til at få et svar, blød nok til ikke at skade relationen. Det er præcist her negativ afgrænsning gør forskellen.</p>
 
       <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Skriv en svær email</div>
-        <p>Vælg en situation fra dit eget liv (rigtig eller opdigtet):</p>
-        <ul style="padding-left:1.2rem; margin-top:0.5rem;">
-          <li>Afvis en invitation på en venlig måde</li>
-          <li>Bed om mere tid på en opgave</li>
-          <li>Følg op på noget der ikke er sket</li>
-        </ul>
-        <p style="margin-top:0.75rem;">Brug skabelon 1 eller 2. Ret den derefter med <strong>iterativ forfining</strong> fra C1 Teknik 4.</p>
+        <div class="practice-bar"><div class="p-tag">Øvelse 2</div><div class="p-title">Skriv en opfølgning — uden at virke desperat</div></div>
+        <div class="p-body">
+          <p>Forestil dig: Du sendte en email for 8 dage siden om et tilbud. Du har ikke hørt fra modtageren. Du skal bruge svar inden fredag.</p>
+          <p style="margin-top:8px;">Skriv et prompt der får AI til at lave en opfølgning. <strong>Krav:</strong> Brug rolleprompt. Brug negativ afgrænsning til at undgå floskler som "Jeg tillader mig at følge op" og "Håber denne mail finder dig vel". Sæt en konkret deadline.</p>
+          <p style="margin-top:8px;">Læs AI's første svar. Spørg dig selv: <em>Ville jeg svare på denne email hvis jeg modtog den?</em> Hvis nej — hvad mangler?</p>
+        </div>
       </div>
 
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Tone-eksperiment</div>
-        <p>Bed AI skrive den <strong>samme besked</strong> i to toner: "professionel" og "uformel".</p>
-        <p style="margin-top:0.5rem;">Eksempel: <em>"Vi mødes fredag kl. 10 — skriv det til en kollega du kender."</em></p>
-        <p style="margin-top:0.75rem;">Hvad ændrer sig? Hvornår ville du bruge hvilken tone?</p>
+      <div class="notice info" style="margin-top:18px;">
+        <div class="notice-icon">📚</div>
+        <div>
+          <div class="notice-head">De færdige skabeloner finder du i modul 5</div>
+          <div class="notice-body">I prompt-biblioteket har du klar-til-brug skabeloner til begge teknikker — plus mulighed for at tilføje dine egne.</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- ── MODULE C2.2: PRODUKTIVITET ── -->
-  <div class="module" id="mod2">
-    <div class="module-header" onclick="toggleModule('mod2')">
-      <div class="module-letter">2</div>
-      <div class="module-title-wrap">
-        <div class="module-title">Personlige produktivitets-workflows</div>
-        <div class="module-sub">Spar timer hver uge med tre konkrete workflows</div>
+  <!-- MODUL 2 — EMAIL-UDFORDRINGEN -->
+  <div class="sect-label"><hr><span>Modul 2 af 5 — Live opgave</span><hr></div>
+  <div class="mod" id="m2">
+    <div class="mod-header" onclick="tog('m2')">
+      <div class="mod-num">2</div>
+      <div class="mod-text">
+        <div class="mod-title">Email-udfordringen</div>
+        <div class="mod-sub">En reel situation — brug AI til at skrive det perfekte svar</div>
       </div>
-      <div class="module-toggle">+</div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
     </div>
-    <div class="module-body">
-      <p class="prose">De mest produktive AI-brugere har ikke én magisk teknik — de har små workflows de bruger konsekvent. Her er de tre mest effektive.</p>
+    <div class="mod-body">
+      <p class="prose">Du har netop modtaget denne email fra en samarbejdspartner. Din opgave: brug det du har lært — skriv det bedst mulige svar med AI's hjælp. Indsæt dit svar i chatten nedenfor og få feedback.</p>
 
-      <hr class="divider">
+      <div class="email-challenge">
+        <div class="ec-header">
+          <div class="ec-icon">📬</div>
+          <div>
+            <div class="ec-title">Indkommende email — læs grundigt</div>
+            <div class="ec-sub">Dette er situationen du skal håndtere</div>
+          </div>
+        </div>
+        <div class="inbox-email">
+          <div class="inbox-label">Modtaget i dag kl. 09:14</div>
+          <div class="inbox-meta">
+            <div class="inbox-avatar">MK</div>
+            <div>
+              <div class="inbox-from">Martin Kjær &lt;martin.kjaer@partnerco.dk&gt;</div>
+              <div class="inbox-subject">Emne: Vores samarbejde — jeg er oprigtigt skuffet</div>
+            </div>
+            <div class="inbox-time">09:14</div>
+          </div>
+          <div class="inbox-body" id="inbox-email-text">Hej,
 
-      <!-- Workflow 1 -->
-      <span class="technique-tag">Workflow 1</span>
-      <h3 class="subhead">Lær noget nyt på 15 minutter</h3>
-      <p class="prose">Brug AI som din personlige lærer, når du hurtigt skal sætte dig ind i et nyt emne.</p>
+Jeg vil være ærlig med dig — jeg er skuffet over den måde beslutningen om [projektet] blev truffet på.
 
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Giv mig en 80/20-gennemgang af [emne]:
-de 20% information der giver mig 80% af forståelsen.
-Jeg har 15 minutter.
-Afslut med 3 spørgsmål jeg kan stille en ekspert for at virke informeret."</div>
+Vi har samarbejdet i over to år, og jeg regnede med at blive inddraget i de overvejelser der lå til grund for jeres valg. I stedet hørte jeg om det fra en tredje part, og det føles ikke rart.
 
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU</div>
-        <p>Vælg et emne du gerne vil vide mere om — noget fra skolen, arbejdet, eller bare noget du er nysgerrig på.</p>
-        <p style="margin-top:0.5rem;">Brug prompten og læs svaret.</p>
-        <p style="margin-top:0.5rem;"><strong>Svar på:</strong> Hvad lærte du? Hvad vil du vide mere om?</p>
-      </div>
+Jeg stiller ikke spørgsmålstegn ved selve beslutningen — det er jeres at træffe. Men processen var ikke fair overfor os som samarbejdspartner.
 
-      <hr class="divider">
+Jeg håber I tager dette alvorligt, for jeg ønsker at vi fortsætter samarbejdet på et godt grundlag.
 
-      <!-- Workflow 2 -->
-      <span class="technique-tag">Workflow 2</span>
-      <h3 class="subhead">Beslutningshjælp</h3>
-      <p class="prose">Når du står overfor en svær beslutning, kan AI hjælpe dig med at strukturere dine tanker og se blinde vinkler.</p>
+Med venlig hilsen
+Martin Kjær
+PartnerCo</div>
+          <div class="inbox-actions">
+            <button class="copy-email-btn" id="copy-email-btn" onclick="copyEmail(this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+              Kopiér hele emailen
+            </button>
+          </div>
+        </div>
 
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Jeg står overfor en beslutning: [beskriv].
-Mulighed A: [beskriv].
-Mulighed B: [beskriv].
-Hjælp mig med en pro/contra-analyse og peg på faktorer jeg måske overser.
-Giv ikke bare en liste — hjælp mig med at tænke klart."</div>
+        <div class="ec-howto">
+          <div class="ec-howto-head"><div class="ec-howto-icon">📝</div><div class="ec-howto-title">Sådan løser du opgaven</div></div>
+          <div class="ec-howto-list">
+            <div class="ec-howto-step"><div class="ec-howto-num">1</div><div class="ec-howto-text"><strong>Kopiér emailen</strong> ovenfor med knappen, og åbn Claude.ai eller ChatGPT i et nyt vindue.</div></div>
+            <div class="ec-howto-step"><div class="ec-howto-num">2</div><div class="ec-howto-text"><strong>Indsæt emailen i AI</strong> og bed den skrive et svar. Brug rolleprompt og negativ afgrænsning fra C1.</div></div>
+            <div class="ec-howto-step"><div class="ec-howto-num">3</div><div class="ec-howto-text"><strong>Kopiér AI's svar</strong> og indsæt det herunder. Du får kort feedback på hvad der virker og hvad du kan skærpe.</div></div>
+          </div>
+        </div>
 
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU</div>
-        <p>Brug AI til en rigtig eller hypotetisk beslutning.</p>
-        <p style="margin-top:0.5rem;">Eksempler: <em>"Skal jeg vælge fag X eller Y?"</em> / <em>"Skal jeg købe eller leje cykel?"</em></p>
-        <p style="margin-top:0.5rem;">Brug skabelonen med din egen situation.</p>
-        <p style="margin-top:0.5rem;"><strong>Reflektér:</strong> Hvad overser AI? Hvad overraskede dig i analysen?</p>
-      </div>
-
-      <hr class="divider">
-
-      <!-- Workflow 3 -->
-      <span class="technique-tag">Workflow 3</span>
-      <h3 class="subhead">Kritisk selvevaluering</h3>
-      <p class="prose">AI kan være en ubestikkelig sparringspartner på dit eget arbejde. Bed den om din ærligste feedback.</p>
-
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Her er hvad jeg har skrevet / planlagt / lavet: [beskriv eller indsæt].
-Hvad er de største svagheder?
-Hvad mangler jeg at overveje?
-Vær særlig kritisk — jeg vil have din ærligste vurdering, ikke beroligelse."</div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Afsluttende opgave</div>
-        <p>Tag noget du allerede har lavet: en tekst, en plan, en email eller en idé.</p>
-        <ol style="padding-left:1.2rem; margin-top:0.5rem;">
-          <li>Bed AI om sin mest ærlige og kritiske feedback.</li>
-          <li>Brug derefter <strong>iterativ forfining</strong> (Teknik 4 fra C1) til at forbedre det.</li>
-        </ol>
-        <p style="margin-top:0.75rem;"><strong>Mål:</strong> Lav mindst 2 konkrete forbedringer baseret på AI's feedback.</p>
+        <div class="ec-chat">
+          <div class="chat-messages" id="ec-msgs">
+            <div class="chat-msg ai">
+              <div class="chat-avatar ai-av">AI</div>
+              <div class="chat-bubble">Indsæt dit email-svar herunder — jeg giver dig kort feedback på hvad der er godt og hvad du kan skærpe. 📧</div>
+            </div>
+          </div>
+          <div class="chat-typing" id="ec-typing">
+            <div class="chat-avatar ai-av">AI</div>
+            <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="chat-input-row">
+            <textarea class="chat-textarea" id="ec-input" placeholder="Indsæt dit email-svar her..." rows="3" onkeydown="ecKeydown(event)" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+            <button class="chat-send-btn" id="ec-send" onclick="sendEcChat()">
+              <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            </button>
+          </div>
+          <div class="chat-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje</div>
+        </div>
       </div>
     </div>
+  </div>
+
+  <!-- MODUL 3 — PRODUKTIVITET -->
+  <div class="sect-label"><hr><span>Modul 3 af 5</span><hr></div>
+  <div class="mod" id="m3">
+    <div class="mod-header" onclick="tog('m3')">
+      <div class="mod-num">3</div>
+      <div class="mod-text">
+        <div class="mod-title">Beslutningshjælp med AI</div>
+        <div class="mod-sub">Lær at bruge AI som ærlig sparringspartner</div>
+      </div>
+      <div class="mod-time">12 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">Den mest undervurderede måde at bruge AI på: som sparringspartner når du står foran en beslutning. AI ser blinde vinkler du selv overser — fordi du er for tæt på problemet.</p>
+
+      <p class="prose">Det vigtigste princip: <strong>bed ikke AI om at træffe beslutningen</strong>. Bed den om at hjælpe dig med at tænke klarere. Forskellen er enorm.</p>
+
+      <div style="background:var(--teal-50);border:1px solid var(--teal-200);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;">
+        <div style="font-size:12.5px;font-weight:700;color:var(--teal-deep);margin-bottom:8px;">📌 Tre principper for god beslutningsanalyse</div>
+        <div style="font-size:13px;line-height:1.7;color:#134E4A;">
+          <strong>1.</strong> Beskriv begge muligheder lige grundigt — også fordele <em>og</em> ulemper for begge.<br>
+          <strong>2.</strong> Bed AI tænke skridt for skridt (kædetænkning fra C1).<br>
+          <strong>3.</strong> Bed eksplicit om at få blinde vinkler frem — det er der den største værdi ligger.
+        </div>
+      </div>
+
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Brug AI til en reel beslutning</div></div>
+        <div class="p-body">
+          <p>Tag en beslutning du står foran — stor eller lille. Det kunne være: skal jeg sige ja til mødet? Skal jeg købe det produkt? Skal jeg tage den uddannelse?</p>
+          <p style="margin-top:8px;"><strong>Skriv et prompt der:</strong></p>
+          <ol>
+            <li>Beskriver situationen (kontekst)</li>
+            <li>Beskriver mulighed A og B med fordele <em>og</em> ulemper</li>
+            <li>Beder om en pro/contra-analyse</li>
+            <li>Beder eksplicit om blinde vinkler du sandsynligvis overser</li>
+            <li>Beder AI tænke skridt for skridt</li>
+          </ol>
+          <p style="margin-top:8px;"><strong>Refleksion bagefter:</strong> Hvad nævner AI som du ikke selv havde tænkt på? Det er det der gør AI værdifuld.</p>
+        </div>
+      </div>
+
+      <div class="notice info" style="margin-top:18px;">
+        <div class="notice-icon">📚</div>
+        <div>
+          <div class="notice-head">Den færdige skabelon ligger i biblioteket</div>
+          <div class="notice-body">I modul 5 finder du en klar-til-brug beslutnings-prompt med alle tre principper indbygget.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 4 — TEKSTFORBEDRING -->
+  <div class="sect-label"><hr><span>Modul 4 af 5</span><hr></div>
+  <div class="mod" id="m4">
+    <div class="mod-header" onclick="tog('m4')">
+      <div class="mod-num">4</div>
+      <div class="mod-text">
+        <div class="mod-title">Omskrivning til ny målgruppe</div>
+        <div class="mod-sub">Den enkleste tekst-superkraft — du vil bruge den hver uge</div>
+      </div>
+      <div class="mod-time">10 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">Et af de mest undervurderede AI-værktøjer: omskriv samme indhold til en ny målgruppe. Du skriver én version — AI laver de andre på sekunder.</p>
+
+      <p class="prose">Brug det til at:</p>
+      <ul style="font-size:14px;line-height:1.7;color:var(--ink-soft);padding-left:1.3rem;margin-bottom:16px;">
+        <li>Forklare et teknisk emne til en ikke-teknisk kollega</li>
+        <li>Lave en kortere version af din rapport til chefen</li>
+        <li>Skrive et LinkedIn-opslag baseret på en email du allerede har skrevet</li>
+        <li>Tilpasse en kundepræsentation til en anden branche</li>
+      </ul>
+
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Omskriv én tekst — tre gange</div></div>
+        <div class="p-body">
+          <p><strong>Vælg én af de to muligheder:</strong></p>
+          <p style="margin-top:6px;">A) Tag en tekst du selv har skrevet — en email, et afsnit, et LinkedIn-opslag, et stykke noter. Mindst 80 ord.</p>
+          <p style="margin-top:4px;">B) Brug vores kladde-tekst nedenfor hvis du ikke har en lige nu — kopiér den og brug den til opgaven.</p>
+
+          <p style="margin-top:12px;"><strong>Få derefter AI til at omskrive teksten i tre versioner:</strong></p>
+          <ol>
+            <li>Til en kollega (uformel)</li>
+            <li>Til en chef du ikke kender godt (formel og kort)</li>
+            <li>Til en person der ikke kender emnet overhovedet (forklarende)</li>
+          </ol>
+          <p style="margin-top:8px;"><strong>Vigtigt:</strong> Brug negativ afgrænsning — fortæl AI hvad den ikke skal ændre (indholdet, fakta, kerne­budskabet).</p>
+          <p style="margin-top:8px;"><strong>Refleksion:</strong> Hvilken version er bedst? Hvad kan du lære om dit eget skrivetalent ved at sammenligne?</p>
+        </div>
+      </div>
+
+      <!-- KLADDE-TEKST -->
+      <div class="draft-box">
+        <div class="draft-head">
+          <div class="draft-icon">📄</div>
+          <div>
+            <div class="draft-title">Kladde-tekst — brug den hvis du ikke har en selv</div>
+            <div class="draft-sub">147 ord · Status fra et fiktivt projekt</div>
+          </div>
+          <button class="copy-email-btn" id="draft-copy-btn" onclick="copyDraft(this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+            Kopiér tekst
+          </button>
+        </div>
+        <div class="draft-body" id="draft-text-display">Vi har nu afsluttet første fase af det interne digitaliseringsprojekt, og resultaterne er overordnet positive. Tre ud af fire afdelinger har implementeret det nye sagsbehandlingssystem, og tidsforbruget på rutineopgaver er reduceret med cirka 23 % i pilotperioden. Den fjerde afdeling har bedt om udskydelse på grund af kapacitetsudfordringer i den travle sæson, hvilket vi har imødekommet.
+
+Brugertilfredsheden ligger på 7,2 ud af 10 — højere end forventet givet den korte oplæringsperiode. De største kritikpunkter handler om mobilversionen, som vi prioriterer i fase 2.
+
+Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonomisystemet og mobiloptimering. Jeg foreslår et statusmøde i uge 3 hvor vi gennemgår learnings fra fase 1 og finalere scope for fase 2. Forventet afslutning af det samlede projekt: medio juni.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 5 — GUIDE TIL PROMPT-BIBLIOTEKET -->
+  <div class="sect-label"><hr><span>Modul 5 af 5 — Tag det med dig</span><hr></div>
+  <div class="mod" id="m5">
+    <div class="mod-header" onclick="tog('m5')">
+      <div class="mod-num">5</div>
+      <div class="mod-text">
+        <div class="mod-title">Dit personlige prompt-bibliotek</div>
+        <div class="mod-sub">Et fast sted hvor alle dine bedste prompts bor — altid ét klik væk</div>
+      </div>
+      <div class="mod-time">8 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <p class="prose">Du har lært en masse prompts gennem C1 og C2. Men hvad nu hvis du om tre måneder skal bruge "den gode opfølgnings-prompt" — kan du så finde den igen? Det er præcist det <strong>dit personlige prompt-bibliotek</strong> løser.</p>
+
+      <!-- BIG OPEN BUTTON -->
+      <div class="lib-open-card">
+        <div class="lib-open-icon">📚</div>
+        <div class="lib-open-text">
+          <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
+          <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
+        </div>
+        <a href="bibliotek.html" target="_blank" class="lib-open-btn">
+          Åbn biblioteket
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </a>
+      </div>
+
+      <!-- 3-STEP GUIDE -->
+      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:24px 0 14px;">Sådan får du mest ud af dit bibliotek</h3>
+
+      <div class="guide-steps">
+
+        <!-- STEP 1 -->
+        <div class="guide-step">
+          <div class="guide-step-left">
+            <div class="guide-step-num">1</div>
+            <div class="guide-step-line"></div>
+          </div>
+          <div class="guide-step-right">
+            <div class="guide-step-title">Åbn dit bibliotek</div>
+            <div class="guide-step-text">Klik på den store grønne knap ovenfor. Biblioteket åbner i en ny fane med dine 10 prompts klar til brug.</div>
+            <div class="guide-step-visual visual-1">
+              <div class="visual-tab">
+                <div class="visual-dot red"></div>
+                <div class="visual-dot yellow"></div>
+                <div class="visual-dot green"></div>
+                <div class="visual-tab-text">📚 Mit Prompt-Bibliotek — LearnAI</div>
+              </div>
+              <div class="visual-content">
+                <div class="visual-prompt-row">
+                  <span>✉️</span> Den svære email
+                  <span class="visual-copy-mini">📋</span>
+                </div>
+                <div class="visual-prompt-row">
+                  <span>⏰</span> Opfølgning når ingen svarer
+                  <span class="visual-copy-mini">📋</span>
+                </div>
+                <div class="visual-prompt-row">
+                  <span>🎯</span> Beslutningshjælp
+                  <span class="visual-copy-mini">📋</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 2 -->
+        <div class="guide-step">
+          <div class="guide-step-left">
+            <div class="guide-step-num">2</div>
+            <div class="guide-step-line"></div>
+          </div>
+          <div class="guide-step-right">
+            <div class="guide-step-title">Bookmark siden — så er den altid ét klik væk</div>
+            <div class="guide-step-text">Tryk <kbd>Ctrl</kbd> + <kbd>D</kbd> (Windows) eller <kbd>Cmd</kbd> + <kbd>D</kbd> (Mac) mens biblioteket er åbent. Browseren spørger om du vil gemme det som bogmærke — sig ja. Næste gang du skal bruge en prompt, åbner du bare bogmærket.</div>
+            <div class="guide-step-visual visual-2">
+              <div class="visual-bookmark-bar">
+                <span class="visual-bookmark-item">🏠 Hjem</span>
+                <span class="visual-bookmark-item active">📚 Mit Prompt-Bibliotek</span>
+                <span class="visual-bookmark-item">📧 Mail</span>
+                <span class="visual-bookmark-item">📅 Kalender</span>
+              </div>
+              <div class="visual-arrow-down">↑ Sådan ser dit bookmark ud i browseren</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STEP 3 -->
+        <div class="guide-step">
+          <div class="guide-step-left">
+            <div class="guide-step-num">3</div>
+          </div>
+          <div class="guide-step-right">
+            <div class="guide-step-title">Brug en prompt med AI</div>
+            <div class="guide-step-text">Hver prompt har sin egen kopiér-knap. Klik <strong>kun den ene</strong> du vil bruge — så bliver AI ikke forvirret af 10 prompts på én gang. Indsæt den i Claude eller ChatGPT med <kbd>Ctrl</kbd> + <kbd>V</kbd> og tilpas pladsholderne i firkantede klammer som <em>[indsæt tekst]</em>.</div>
+            <div class="guide-step-visual visual-3">
+              <div class="flow-chain">
+                <div class="flow-step">
+                  <div class="flow-icon">📋</div>
+                  <div class="flow-label">Klik kopiér i biblioteket</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                  <div class="flow-icon">⌨️</div>
+                  <div class="flow-label">Ctrl+V i Claude/ChatGPT</div>
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                  <div class="flow-icon">✨</div>
+                  <div class="flow-label">Tilpas og send</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIPS BOX -->
+      <div class="lib-tips">
+        <div class="lib-tips-title">💡 Hvad du også kan med biblioteket</div>
+        <div class="lib-tips-list">
+          <div class="lib-tip-item"><span>➕</span> <strong>Tilføj dine egne prompts</strong> — prompts du selv finder ud af virker</div>
+          <div class="lib-tip-item"><span>🗑️</span> <strong>Slet hvad du ikke bruger</strong> — også de oprindelige 10, hvis nogen ikke passer dig</div>
+          <div class="lib-tip-item"><span>🔍</span> <strong>Søg i alle prompts</strong> — når biblioteket vokser, finder du hurtigt det rigtige</div>
+          <div class="lib-tip-item"><span>📈</span> <strong>Vokser med dig</strong> — flere prompts kommer til efterhånden som du tager flere kurser</div>
+        </div>
+      </div>
+
+      <!-- ØVELSE -->
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Sæt dit bibliotek op nu — det tager 2 minutter</div></div>
+        <div class="p-body">
+          <ol>
+            <li>Klik den store grønne knap og åbn biblioteket i en ny fane.</li>
+            <li>Bookmark siden med <kbd>Ctrl</kbd>+<kbd>D</kbd> eller <kbd>Cmd</kbd>+<kbd>D</kbd>.</li>
+            <li>Vælg én af de 10 prompts. Klik kopier-knappen. Indsæt den i Claude eller ChatGPT.</li>
+            <li>Tilpas pladsholderne <em>[i klammer]</em> til din situation og send.</li>
+          </ol>
+          <p style="margin-top:10px;"><strong>Det er det.</strong> Næste gang du har en svær email, et beslutningsproblem eller en tekst der skal omskrives — er biblioteket ét klik væk.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROGRESS TRACKER -->
+  <div class="progress-track-wrap" id="progress-tracker">
+    <div class="prog-steps">
+      <div class="prog-step done" id="ps1">✓</div>
+      <div class="prog-step" id="ps2">2</div>
+      <div class="prog-step" id="ps3">3</div>
+      <div class="prog-step" id="ps4">4</div>
+      <div class="prog-step" id="ps5">5</div>
+    </div>
+    <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-bar" style="width:20%"></div></div>
+    <div class="prog-pct" id="prog-pct">20%</div>
+    <div class="prog-label" id="prog-txt">Godt begyndt — 4 moduler tilbage</div>
   </div>
 
   <!-- SUMMARY -->
   <div class="summary">
-    <h3>Del C2 — Hvad du har lært</h3>
-    <ul>
-      <li>Skrive svære emails med den rigtige tone</li>
-      <li>Opfølgninger der ikke virker pressende</li>
-      <li>Sprogvaske og tone-justere tekster</li>
-      <li>80/20-prompten til hurtig indlæring</li>
-      <li>Bruge AI til beslutningsanalyse</li>
-      <li>Kritisk selvevaluering med AI som sparringspartner</li>
-    </ul>
+    <h3>Del C2 — Det du har lært</h3>
+    <div class="sum-grid">
+      <div class="sum-item">Den svære email — med rolleprompt + negativ afgrænsning</div>
+      <div class="sum-item">Opfølgning der ikke virker desperat</div>
+      <div class="sum-item">Tone-guide til 4 forskellige situationer</div>
+      <div class="sum-item">Live email-udfordring med konkret feedback</div>
+      <div class="sum-item">Beslutningshjælp som ærlig sparringspartner</div>
+      <div class="sum-item">Omskrivning til forskellige målgrupper</div>
+      <div class="sum-item">Dit eget prompt-bibliotek du tager med dig</div>
+      <div class="sum-item">Download-funktion til offline brug</div>
+    </div>
   </div>
 
-  <!-- QUIZ CTA -->
-  <div class="quiz-cta">
-    <div class="quiz-cta-icon">📝</div>
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-icon">📝</div>
     <h2>Klar til mini-quizzen?</h2>
-    <p>Tjek at du har forstået Del C2 inden du går videre til Del C3 — den sværeste og mest avancerede del af Kursus C.</p>
-    <div class="req">⚠ Du skal bestå quizzen for at gå videre</div><br>
-    <a href="quiz-c2.html" class="btn-quiz">Start mini-quiz C2 →</a>
+    <p>6 spørgsmål der tester om du har forstået Del C2. Du skal have mindst 5 rigtige for at låse Del C3 op.</p>
+    <div class="cta-warn">⚠️ Quizzen skal bestås for at gå videre</div><br>
+    <a href="quiz-c2.html" class="btn-go">
+      Start mini-quiz C2
+      <svg viewBox="0 0 16 16"><polyline points="6 3 11 8 6 13"/></svg>
+    </a>
+    <div class="cta-sub">
+      6 spørgsmål <span class="dot-sep">·</span>
+      <span class="coins">+25 coins ved beståelse</span>
+      <span class="dot-sep">·</span> Ubegrænset forsøg
+    </div>
   </div>
 
 </div>
 
+<div id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Kopieret!</span>
+</div>
+
 <script>
-function toggleModule(id) {
-  const mod = document.getElementById(id);
-  mod.classList.toggle('open');
+// ── Module accordion ─────────────────────────────────────────
+const modIds  = ['m1','m2','m3','m4','m5'];
+const modDone = { m1:false, m2:false, m3:false, m4:false, m5:false };
+const TOTAL   = 5;
+
+function tog(id) {
+  const m = document.getElementById(id);
+  if (m.classList.contains('open')) return;
+  const idx = modIds.indexOf(id);
+  modIds.forEach((oid, i) => {
+    const o = document.getElementById(oid);
+    o.classList.remove('open');
+    if (i <= idx && !modDone[oid]) {
+      modDone[oid] = true;
+      o.classList.add('done');
+    }
+  });
+  m.classList.add('open');
+  updateProgress();
+  requestAnimationFrame(() => {
+    const top = m.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+  });
+}
+
+function updateProgress() {
+  const done = Object.values(modDone).filter(Boolean).length;
+  const pct  = Math.round((done / TOTAL) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  const labels = ['Åbn modul 1 for at starte','Godt begyndt — 4 moduler tilbage','Du er i gang!','Halvvejs forbi!','Næsten i mål — ét modul tilbage','Alle moduler gennemgået — tag quizzen! 🎯'];
+  document.getElementById('prog-txt').textContent = labels[done];
+  const openId = modIds.find(id => document.getElementById(id).classList.contains('open'));
+  modIds.forEach((id, i) => {
+    const s = document.getElementById('ps' + (i+1));
+    if (!s) return;
+    s.classList.remove('done','active');
+    if (modDone[id]) { s.classList.add('done'); s.textContent = '✓'; }
+    else if (id === openId) { s.classList.add('active'); s.textContent = i+1; }
+    else s.textContent = i+1;
+  });
+}
+
+modDone['m1'] = true;
+document.getElementById('m1').classList.add('done');
+updateProgress();
+
+// ── AI Demo tabs ──────────────────────────────────────────────
+function switchTab(btn, id) {
+  const demo = btn.closest('.ai-demo');
+  demo.querySelectorAll('.ai-tab').forEach(t => t.classList.remove('active'));
+  demo.querySelectorAll('.ai-response').forEach(r => r.classList.add('hidden'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.remove('hidden');
+}
+
+// ── Generic copy ─────────────────────────────────────────────
+function writeClip(text) {
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(text);
+  }
+  return new Promise((res, rej) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); res(); } catch(e) { rej(e); }
+    finally { document.body.removeChild(ta); }
+  });
+}
+
+// ── Copy email (modul 2) — bulletproof ───────────────────────
+const EMAIL_TEXT_RAW = "Hej,\n\nJeg vil være ærlig med dig — jeg er skuffet over den måde beslutningen om [projektet] blev truffet på.\n\nVi har samarbejdet i over to år, og jeg regnede med at blive inddraget i de overvejelser der lå til grund for jeres valg. I stedet hørte jeg om det fra en tredje part, og det føles ikke rart.\n\nJeg stiller ikke spørgsmålstegn ved selve beslutningen — det er jeres at træffe. Men processen var ikke fair overfor os som samarbejdspartner.\n\nJeg håber I tager dette alvorligt, for jeg ønsker at vi fortsætter samarbejdet på et godt grundlag.\n\nMed venlig hilsen\nMartin Kjær\nPartnerCo";
+
+function copyEmail(btn) {
+  // Brug altid textarea-metoden — virker uanset HTTPS/HTTP
+  const ta = document.createElement('textarea');
+  ta.value = EMAIL_TEXT_RAW;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;outline:none;boxShadow:none;background:transparent;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, EMAIL_TEXT_RAW.length);
+
+  let success = false;
+  try {
+    success = document.execCommand('copy');
+  } catch(e) {
+    success = false;
+  }
+  document.body.removeChild(ta);
+
+  // Fallback: prøv Clipboard API hvis tilgængelig og execCommand fejlede
+  if (!success && navigator.clipboard) {
+    navigator.clipboard.writeText(EMAIL_TEXT_RAW).then(() => {
+      showCopyEmailSuccess(btn);
+    }).catch(() => showToast('Kopiering fejlede — marker tekst manuelt'));
+    return;
+  }
+
+  if (success) {
+    showCopyEmailSuccess(btn);
+  } else {
+    showToast('Kopiering fejlede — marker tekst manuelt');
+  }
+}
+
+function showCopyEmailSuccess(btn) {
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Email kopieret!';
+  showToast('Email kopieret — indsæt med Ctrl+V i AI ✓');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér hele emailen';
+  }, 2500);
+}
+
+// ── Copy draft text (modul 4) ─────────────────────────────────
+const DRAFT_TEXT_RAW = "Vi har nu afsluttet første fase af det interne digitaliseringsprojekt, og resultaterne er overordnet positive. Tre ud af fire afdelinger har implementeret det nye sagsbehandlingssystem, og tidsforbruget på rutineopgaver er reduceret med cirka 23 % i pilotperioden. Den fjerde afdeling har bedt om udskydelse på grund af kapacitetsudfordringer i den travle sæson, hvilket vi har imødekommet.\n\nBrugertilfredsheden ligger på 7,2 ud af 10 — højere end forventet givet den korte oplæringsperiode. De største kritikpunkter handler om mobilversionen, som vi prioriterer i fase 2.\n\nNæste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonomisystemet og mobiloptimering. Jeg foreslår et statusmøde i uge 3 hvor vi gennemgår learnings fra fase 1 og finalere scope for fase 2. Forventet afslutning af det samlede projekt: medio juni.";
+
+function copyDraft(btn) {
+  const ta = document.createElement('textarea');
+  ta.value = DRAFT_TEXT_RAW;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;outline:none;boxShadow:none;background:transparent;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, DRAFT_TEXT_RAW.length);
+
+  let success = false;
+  try { success = document.execCommand('copy'); } catch(e) { success = false; }
+  document.body.removeChild(ta);
+
+  if (!success && navigator.clipboard) {
+    navigator.clipboard.writeText(DRAFT_TEXT_RAW).then(() => {
+      showCopyDraftSuccess(btn);
+    }).catch(() => showToast('Kopiering fejlede — marker tekst manuelt'));
+    return;
+  }
+  if (success) showCopyDraftSuccess(btn);
+  else showToast('Kopiering fejlede — marker tekst manuelt');
+}
+
+function showCopyDraftSuccess(btn) {
+  btn.classList.add('copied');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Tekst kopieret!';
+  showToast('Tekst kopieret — indsæt med Ctrl+V i AI ✓');
+  setTimeout(() => {
+    btn.classList.remove('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér tekst';
+  }, 2500);
+}
+
+// ── Toast ─────────────────────────────────────────────────────
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+
+// ── Email challenge chat (uændret) ────────────────────────────
+const ecHistory = [];
+
+const EC_SYSTEM = `Du er en venlig email-coach på et dansk AI-kursus. En kursist har modtaget denne email:
+
+---
+Fra: Martin Kjær, PartnerCo
+Emne: Vores samarbejde — jeg er oprigtigt skuffet
+
+"Jeg vil være ærlig med dig — jeg er skuffet over den måde beslutningen om [projektet] blev truffet på. Vi har samarbejdet i over to år, og jeg regnede med at blive inddraget i de overvejelser der lå til grund for jeres valg. I stedet hørte jeg om det fra en tredje part, og det føles ikke rart. Jeg stiller ikke spørgsmålstegn ved selve beslutningen — det er jeres at træffe. Men processen var ikke fair overfor os som samarbejdspartner. Jeg håber I tager dette alvorligt, for jeg ønsker at vi fortsætter samarbejdet på et godt grundlag."
+---
+
+Kursisten indsætter nu deres email-svar. Din opgave er at give KORT, KONKRET feedback i to dele:
+
+✅ **Hvad fungerer godt:** 1-2 specifikke ting der er stærke i svaret
+💡 **Hvad kan forbedres:** 1-2 konkrete forbedringer — vær specifik
+
+Hold feedbacken under 120 ord. Vær direkte og konstruktiv. Svar altid på dansk.
+Hvis kursisten ikke har sendt et email-svar (fx bare spørger dig om noget), bed dem venligt om at indsætte deres email-svar.`;
+
+function ecKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendEcChat(); }
+}
+
+async function sendEcChat() {
+  const input   = document.getElementById('ec-input');
+  const text    = input.value.trim();
+  if (!text) return;
+  const sendBtn = document.getElementById('ec-send');
+  sendBtn.disabled = true;
+  input.value = ''; input.style.height = 'auto';
+
+  appendEcMsg('user', text);
+  ecHistory.push({ role: 'user', content: text });
+
+  const typing = document.getElementById('ec-typing');
+  typing.classList.add('show');
+  scrollEc();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: EC_SYSTEM,
+        messages: ecHistory
+      })
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    let reply = (data.content || []).map(b => b.text || '').join('').trim();
+    if (!reply) reply = 'Jeg kunne ikke analysere dit svar — prøv at sende det igen.';
+    ecHistory.push({ role: 'assistant', content: reply });
+    typing.classList.remove('show');
+    appendEcMsg('ai', reply);
+  } catch(e) {
+    typing.classList.remove('show');
+    appendEcMsg('ai', 'Der opstod en teknisk fejl — prøv igen om et øjeblik. 😊');
+    console.error(e);
+  }
+  sendBtn.disabled = false;
+  input.focus();
+}
+
+function appendEcMsg(role, text) {
+  const msgs = document.getElementById('ec-msgs');
+  const div  = document.createElement('div');
+  div.className = `chat-msg ${role}`;
+  const html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n/g, '<br>');
+  div.innerHTML = `
+    <div class="chat-avatar ${role === 'user' ? 'user-av' : 'ai-av'}">${role === 'user' ? 'DIG' : 'AI'}</div>
+    <div class="chat-bubble">${html}</div>`;
+  msgs.appendChild(div);
+  scrollEc();
+}
+
+function scrollEc() {
+  const msgs = document.getElementById('ec-msgs');
+  setTimeout(() => msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' }), 50);
 }
 </script>
-
 </body>
 </html>
