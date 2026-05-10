@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mit Prompt-Bibliotek — LearnAI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+    :root {
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
+      --border:#E5E7EB; --bg:#F9FAFB; --white:#FFFFFF;
+      --teal:#0D9488; --teal-deep:#0F766E;
+      --teal-50:#F0FDFA; --teal-100:#CCFBF1; --teal-200:#99F6E4; --teal-300:#5EEAD4;
+      --teal-glow:rgba(13,148,136,0.15);
+      --amber:#D97706; --amber-50:#FFFBEB; --amber-100:#FEF3C7;
+      --green:#059669; --green-50:#ECFDF5;
+      --red:#DC2626; --red-50:#FEF2F2;
+      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
+    }
+
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; min-height:100vh; }
+
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,0.93); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--teal); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-back { display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:600; color:var(--muted); text-decoration:none; transition:color .15s; }
+    .nav-back:hover { color:var(--ink); }
+    .nav-back svg { width:14px; height:14px; }
+
+    .hero { background:linear-gradient(135deg,var(--teal-deep) 0%,var(--teal) 100%); padding:48px 28px 40px; position:relative; overflow:hidden; }
+    .hero-grid { position:absolute; inset:0; opacity:.045; background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px); background-size:36px 36px; }
+    .hero-blob { position:absolute; width:380px; height:380px; background:radial-gradient(circle,rgba(20,184,166,.3) 0%,transparent 70%); top:-120px; right:-60px; border-radius:50%; }
+    .hero-inner { max-width:880px; margin:0 auto; position:relative; z-index:1; display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+    .hero-icon-big { width:62px; height:62px; border-radius:16px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:28px; flex-shrink:0; }
+    .hero-text { flex:1; min-width:240px; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(24px,4vw,36px); font-weight:600; color:white; line-height:1.15; margin-bottom:6px; letter-spacing:-.3px; }
+    .hero h1 em { font-style:italic; color:var(--teal-200); }
+    .hero-sub { font-size:14.5px; color:rgba(255,255,255,.78); line-height:1.65; }
+
+    .bookmark-tip { background:#FEF9C3; border-bottom:1px solid #FDE68A; padding:10px 28px; display:flex; align-items:center; justify-content:center; gap:10px; font-size:13px; color:#713F12; }
+    .bookmark-tip strong { font-weight:700; }
+    .bookmark-tip kbd { background:#fff; border:1px solid #D4D4AA; border-bottom-width:2px; border-radius:4px; padding:1px 7px; font-family:'Courier New',monospace; font-size:12px; font-weight:700; color:#713F12; }
+    .bookmark-tip-close { background:transparent; border:none; cursor:pointer; padding:2px 6px; color:#92400E; font-size:18px; line-height:1; margin-left:6px; }
+    .bookmark-tip-close:hover { color:#713F12; }
+    .bookmark-tip.hidden { display:none; }
+
+    .wrap { max-width:880px; margin:0 auto; padding:32px 24px 80px; }
+
+    .toolbar { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:16px; padding:14px 16px; background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); box-shadow:0 1px 4px rgba(0,0,0,.04); }
+    .search-wrap { flex:1; min-width:220px; position:relative; }
+    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+    .search-icon svg { width:15px; height:15px; }
+    .search-input { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 14px 9px 36px; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink); outline:none; transition:border-color .18s,box-shadow .18s; }
+    .search-input:focus { border-color:var(--teal); background:var(--white); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .search-input::placeholder { color:#9CA3AF; }
+    .search-clear { position:absolute; right:8px; top:50%; transform:translateY(-50%); background:var(--bg); border:none; cursor:pointer; padding:4px 6px; border-radius:4px; color:var(--muted); display:none; }
+    .search-clear.show { display:flex; align-items:center; }
+    .search-clear:hover { color:var(--ink); background:var(--border); }
+    .search-clear svg { width:12px; height:12px; }
+
+    .lib-count { font-size:13px; color:var(--muted); font-weight:600; flex-shrink:0; padding:0 4px; }
+    .lib-count strong { color:var(--ink); font-size:15px; }
+
+    .btn { display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:var(--r-sm); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:all .18s; border:1.5px solid; white-space:nowrap; }
+    .btn-primary { background:var(--teal); color:white; border-color:var(--teal); }
+    .btn-primary:hover { background:var(--teal-deep); border-color:var(--teal-deep); transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,148,136,.3); }
+    .btn-outline { background:var(--white); color:var(--teal-deep); border-color:var(--teal); }
+    .btn-outline:hover { background:var(--teal-50); }
+    .btn-danger { background:var(--red); color:white; border-color:var(--red); }
+    .btn-danger:hover { background:#B91C1C; border-color:#B91C1C; transform:translateY(-1px); box-shadow:0 4px 12px rgba(220,38,38,.3); }
+    .btn-ghost { background:transparent; color:var(--muted); border-color:transparent; }
+    .btn-ghost:hover { background:var(--bg); color:var(--ink); }
+    .btn svg { width:14px; height:14px; pointer-events:none; }
+
+    /* FILTER ROW */
+    .filter-row { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px; align-items:center; }
+    .filter-pill { background:var(--white); border:1.5px solid var(--border); color:var(--muted); font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:600; padding:6px 14px; border-radius:999px; cursor:pointer; transition:all .15s; display:inline-flex; align-items:center; gap:6px; }
+    .filter-pill:hover { border-color:var(--teal); color:var(--teal); }
+    .filter-pill.active { background:var(--teal); border-color:var(--teal); color:white; }
+    .filter-pill .pill-count { opacity:.7; font-size:11px; }
+    .filter-pill.active .pill-count { opacity:.85; }
+    .filter-edit-btn { margin-left:auto; background:transparent; border:none; cursor:pointer; padding:5px 10px; border-radius:6px; color:var(--muted); font-family:'Outfit',sans-serif; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:5px; transition:all .15s; }
+    .filter-edit-btn:hover { background:var(--bg); color:var(--ink); }
+    .filter-edit-btn svg { width:13px; height:13px; pointer-events:none; }
+
+    /* LIBRARY GRID */
+    .lib-grid { display:grid; gap:12px; }
+    .lib-item { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:box-shadow .2s,border-color .2s,transform .2s; }
+    .lib-item:hover { box-shadow:0 6px 20px rgba(0,0,0,.07); border-color:var(--teal-200); transform:translateY(-1px); }
+    .lib-item-header { display:flex; align-items:center; gap:11px; padding:13px 16px; background:var(--teal-50); border-bottom:1px solid var(--teal-100); }
+    .lib-item-emoji { font-size:20px; flex-shrink:0; line-height:1; }
+    .lib-item-titlewrap { flex:1; min-width:0; }
+    .lib-item-title { font-size:14px; font-weight:700; color:var(--ink); line-height:1.3; }
+    .lib-item-source { font-size:11px; color:var(--teal-deep); margin-top:2px; font-weight:500; display:inline-flex; align-items:center; gap:5px; }
+    .lib-item-cat-dot { width:6px; height:6px; border-radius:50%; background:var(--teal); display:inline-block; }
+    .lib-item-actions { display:flex; gap:6px; align-items:center; flex-shrink:0; }
+    .lib-action-btn { width:32px; height:32px; border-radius:7px; display:flex; align-items:center; justify-content:center; background:var(--white); border:1px solid var(--border); cursor:pointer; transition:all .15s; color:var(--muted); }
+    .lib-action-btn svg { width:14px; height:14px; pointer-events:none; }
+    .lib-action-btn:hover { color:var(--ink); border-color:var(--ink); }
+    .lib-action-btn.copy { background:var(--teal); border-color:var(--teal); color:white; }
+    .lib-action-btn.copy:hover { background:var(--teal-deep); border-color:var(--teal-deep); transform:translateY(-1px); box-shadow:0 4px 10px rgba(13,148,136,.3); }
+    .lib-action-btn.copy.copied { background:var(--green); border-color:var(--green); }
+    .lib-action-btn.copy svg { stroke:white; }
+    .lib-action-btn.edit:hover { color:var(--teal); border-color:var(--teal); background:var(--teal-50); }
+    .lib-action-btn.del:hover { color:var(--red); border-color:var(--red); background:var(--red-50); }
+    .lib-action-btn.fav { color:#D1D5DB; border-color:var(--border); }
+    .lib-action-btn.fav svg { width:15px; height:15px; fill:none; transition:fill .15s, color .15s; }
+    .lib-action-btn.fav:hover { color:#F59E0B; border-color:#FDE68A; background:#FFFBEB; }
+    .lib-action-btn.fav.active { color:#F59E0B; border-color:#FDE68A; background:#FFFBEB; }
+    .lib-action-btn.fav.active svg { fill:#F59E0B; }
+    .lib-item-body { padding:14px 16px; font-size:13px; line-height:1.7; color:var(--ink-soft); white-space:pre-wrap; word-break:break-word; font-family:'Courier New',monospace; }
+
+    .lib-empty { text-align:center; padding:50px 24px; color:var(--muted); font-size:14px; background:var(--white); border:1px dashed var(--border); border-radius:var(--r-lg); }
+    .lib-empty-emoji { font-size:42px; margin-bottom:12px; }
+    .lib-empty-title { font-weight:600; color:var(--ink); margin-bottom:6px; font-size:15px; }
+    .lib-empty-text { font-size:13px; }
+    .lib-restore { margin-top:14px; }
+
+    /* MODAL */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.55); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; animation:fadeIn .2s ease; }
+    .modal-overlay.show { display:flex; }
+    @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+    .modal { background:var(--white); border-radius:var(--r-xl); max-width:540px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalSlide .25s ease; }
+    @keyframes modalSlide { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+    .modal-head { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .modal-title { font-size:16px; font-weight:700; color:var(--ink); }
+    .modal-close { width:32px; height:32px; border-radius:8px; background:var(--bg); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); transition:all .15s; }
+    .modal-close:hover { background:var(--red-50); color:var(--red); }
+    .modal-close svg { width:14px; height:14px; pointer-events:none; }
+    .modal-body { padding:22px; }
+    .modal-field { margin-bottom:16px; }
+    .modal-label { display:block; font-size:12px; font-weight:700; color:var(--ink); margin-bottom:6px; letter-spacing:.02em; }
+    .modal-input,.modal-textarea,.modal-select { width:100%; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink); outline:none; transition:border-color .18s,box-shadow .18s; }
+    .modal-input:focus,.modal-textarea:focus,.modal-select:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .modal-textarea { min-height:130px; resize:vertical; line-height:1.5; }
+    .modal-emoji-picker { display:flex; gap:6px; flex-wrap:wrap; }
+    .modal-emoji { width:38px; height:38px; border-radius:8px; border:1.5px solid var(--border); background:var(--white); cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .modal-emoji:hover { border-color:var(--teal); background:var(--teal-50); }
+    .modal-emoji.selected { border-color:var(--teal); background:var(--teal-50); box-shadow:0 0 0 3px rgba(13,148,136,.15); }
+    .modal-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; align-items:center; }
+    .modal-foot-left { margin-right:auto; }
+
+    .modal-helper { font-size:11.5px; color:var(--muted); margin-top:6px; line-height:1.5; }
+
+    /* CATEGORY EDITOR */
+    .cat-list { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+    .cat-row { display:flex; align-items:center; gap:8px; padding:8px 10px; background:var(--bg); border:1px solid var(--border); border-radius:var(--r-sm); }
+    .cat-row-handle { color:var(--muted); cursor:grab; padding:4px; }
+    .cat-row-handle:active { cursor:grabbing; }
+    .cat-row-handle svg { width:14px; height:14px; }
+    .cat-row-input { flex:1; background:transparent; border:none; outline:none; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink); padding:4px 6px; border-radius:5px; }
+    .cat-row-input:focus { background:var(--white); box-shadow:0 0 0 2px var(--teal-200); }
+    .cat-row-count { font-size:11px; color:var(--muted); padding:2px 8px; background:var(--white); border-radius:999px; flex-shrink:0; }
+    .cat-row-del { width:28px; height:28px; border-radius:6px; background:var(--white); border:1px solid var(--border); cursor:pointer; color:var(--muted); display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; }
+    .cat-row-del:hover { color:var(--red); border-color:var(--red); background:var(--red-50); }
+    .cat-row-del svg { width:13px; height:13px; pointer-events:none; }
+    .cat-row.dragging { opacity:.5; }
+    .cat-row.drag-over { border-color:var(--teal); background:var(--teal-50); }
+
+    .cat-add-row { display:flex; gap:8px; }
+    .cat-add-input { flex:1; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:9px 12px; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink); outline:none; }
+    .cat-add-input:focus { border-color:var(--teal); }
+
+    .cat-info { background:var(--teal-50); border:1px solid var(--teal-100); border-radius:var(--r-sm); padding:10px 12px; font-size:12px; color:var(--teal-deep); line-height:1.5; margin-bottom:14px; }
+
+    /* CONFIRM DIALOG */
+    .confirm-modal { max-width:420px; }
+    .confirm-icon { width:50px; height:50px; border-radius:50%; background:var(--red-50); color:var(--red); display:flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:14px; }
+    .confirm-title { font-size:17px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+    .confirm-text { font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin-bottom:18px; }
+    .confirm-text strong { color:var(--ink); }
+
+    /* PLACEHOLDER FILL DIALOG */
+    .fill-modal { max-width:560px; }
+    .fill-intro {
+      background:var(--teal-50); border:1px solid var(--teal-100);
+      border-radius:var(--r-sm); padding:11px 14px;
+      font-size:12.5px; color:var(--teal-deep); line-height:1.5;
+      margin-bottom:18px; display:flex; gap:9px; align-items:flex-start;
+    }
+    .fill-intro-icon { font-size:15px; flex-shrink:0; }
+    .fill-fields { display:flex; flex-direction:column; gap:14px; margin-bottom:18px; }
+    .fill-field-label {
+      display:flex; align-items:center; justify-content:space-between;
+      font-size:12px; font-weight:700; color:var(--ink); margin-bottom:6px;
+      letter-spacing:.01em;
+    }
+    .fill-field-tag {
+      font-family:'Courier New',monospace; font-size:11px;
+      color:var(--teal-deep); background:var(--teal-50);
+      padding:2px 8px; border-radius:4px; font-weight:600;
+    }
+    .fill-input {
+      width:100%; background:var(--bg); border:1.5px solid var(--border);
+      border-radius:var(--r-sm); padding:10px 12px;
+      font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+      outline:none; transition:border-color .18s,box-shadow .18s;
+    }
+    .fill-input:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); background:var(--white); }
+    .fill-textarea {
+      width:100%; background:var(--bg); border:1.5px solid var(--border);
+      border-radius:var(--r-sm); padding:10px 12px;
+      font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
+      outline:none; transition:border-color .18s,box-shadow .18s;
+      min-height:64px; resize:vertical; line-height:1.5;
+    }
+    .fill-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); background:var(--white); }
+
+    .fill-preview-toggle {
+      background:transparent; border:none; cursor:pointer;
+      color:var(--teal-deep); font-family:'Outfit',sans-serif;
+      font-size:12.5px; font-weight:600;
+      display:flex; align-items:center; gap:6px;
+      padding:6px 0; margin-bottom:8px; transition:color .15s;
+    }
+    .fill-preview-toggle:hover { color:var(--teal); }
+    .fill-preview-toggle svg { width:13px; height:13px; pointer-events:none; transition:transform .2s; }
+    .fill-preview-toggle.open svg { transform:rotate(90deg); }
+    .fill-preview {
+      display:none; background:#0D1117; color:#E2E8F0;
+      border-radius:var(--r-sm); padding:14px 16px;
+      font-family:'Courier New',monospace; font-size:12.5px;
+      line-height:1.7; white-space:pre-wrap; word-break:break-word;
+      max-height:200px; overflow-y:auto; margin-bottom:8px;
+    }
+    .fill-preview.show { display:block; }
+    .fill-preview .ph-filled {
+      color:#5EEAD4; font-weight:600;
+      background:rgba(94,234,212,.08); padding:1px 4px; border-radius:3px;
+    }
+    .fill-preview .ph-empty {
+      color:#FBBF24; font-style:italic; opacity:.85;
+    }
+
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:11px 22px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.25); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:600px){
+      nav { padding:0 16px; }
+      .hero { padding:32px 16px 28px; }
+      .hero-inner { gap:14px; }
+      .hero-icon-big { width:48px; height:48px; font-size:22px; }
+      .bookmark-tip { padding:10px 16px; font-size:12px; flex-wrap:wrap; }
+      .wrap { padding:24px 16px 60px; }
+      .toolbar { padding:12px; }
+      .search-wrap { width:100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
+  </a>
+  <a class="nav-back" href="platform.html">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Tilbage til platformen
+  </a>
+</nav>
+
+<div class="bookmark-tip" id="bookmark-tip">
+  <span>💡</span>
+  <span><strong>Tip:</strong> Bookmark denne side med <kbd>Ctrl</kbd> + <kbd>D</kbd> (Windows) eller <kbd>Cmd</kbd> + <kbd>D</kbd> (Mac), så har du altid dit bibliotek ét klik væk.</span>
+  <button class="bookmark-tip-close" onclick="closeBookmarkTip()" title="Luk">×</button>
+</div>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-icon-big">📚</div>
+    <div class="hero-text">
+      <h1>Mit personlige <em>prompt-bibliotek</em></h1>
+      <p class="hero-sub">Alle dine bedste AI-prompts ét sted. Klik kopiér på den prompt du skal bruge — indsæt den i Claude eller ChatGPT — og du er klar.</p>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <div class="search-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <input type="text" class="search-input" id="search-input" placeholder="Søg i dine prompts..." oninput="filterLibrary()">
+      <button class="search-clear" id="search-clear" onclick="clearSearch()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="lib-count">📋 <strong id="lib-count">10</strong> prompts</div>
+    <button class="btn btn-primary" onclick="openAddModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Tilføj prompt
+    </button>
+  </div>
+
+  <div class="filter-row" id="filter-row"></div>
+  <div class="lib-grid" id="lib-grid"></div>
+
+</div>
+
+<!-- ADD/EDIT PROMPT MODAL -->
+<div class="modal-overlay" id="prompt-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="prompt-modal-title">Tilføj ny prompt</div>
+      <button class="modal-close" onclick="closePromptModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label class="modal-label">Vælg ikon</label>
+        <div class="modal-emoji-picker" id="emoji-picker"></div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="modal-input-title">Titel</label>
+        <input type="text" class="modal-input" id="modal-input-title" placeholder="Fx: Skriv en jobansøgning" maxlength="80">
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="modal-input-cat">Kategori</label>
+        <select class="modal-select" id="modal-input-cat"></select>
+        <div class="modal-helper">Du kan oprette nye kategorier under "Rediger kategorier".</div>
+      </div>
+      <div class="modal-field">
+        <label class="modal-label" for="modal-input-text">Prompt-tekst</label>
+        <textarea class="modal-textarea" id="modal-input-text" placeholder="Skriv din prompt her..."></textarea>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closePromptModal()">Annullér</button>
+      <button class="btn btn-primary" onclick="savePrompt()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Gem prompt
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- CATEGORY EDITOR MODAL -->
+<div class="modal-overlay" id="cat-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Rediger kategorier</div>
+      <button class="modal-close" onclick="closeCatModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="cat-info">
+        💡 Omdøb kategorier ved at klikke på navnet. Træk i håndtaget for at sortere. Sletning af en kategori flytter dens prompts til "Ukategoriseret".
+      </div>
+      <label class="modal-label">Dine kategorier</label>
+      <div class="cat-list" id="cat-list"></div>
+      <label class="modal-label" style="margin-top:14px;">Opret ny kategori</label>
+      <div class="cat-add-row">
+        <input type="text" class="cat-add-input" id="cat-new-input" placeholder="Fx: Arbejde, Personlig, Studie..." maxlength="40" onkeydown="if(event.key==='Enter')addCategory()">
+        <button class="btn btn-primary" onclick="addCategory()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Opret
+        </button>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost modal-foot-left" onclick="restoreDefaultCategories()" title="Gendan kategorinavne fra start">↺ Gendan standardkategorier</button>
+      <button class="btn btn-primary" onclick="closeCatModal()">Færdig</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal confirm-modal">
+    <div class="modal-body">
+      <div class="confirm-icon" id="confirm-icon">⚠️</div>
+      <div class="confirm-title" id="confirm-title">Slet prompt?</div>
+      <div class="confirm-text" id="confirm-text">Er du sikker?</div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-outline" onclick="closeConfirmModal()">Annullér</button>
+      <button class="btn btn-danger" id="confirm-yes-btn" onclick="confirmYes()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+        Slet
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FILL PLACEHOLDERS MODAL -->
+<div class="modal-overlay" id="fill-modal">
+  <div class="modal fill-modal">
+    <div class="modal-head">
+      <div class="modal-title" id="fill-modal-title">Udfyld pladsholdere</div>
+      <button class="modal-close" onclick="closeFillModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="fill-intro">
+        <span class="fill-intro-icon">✨</span>
+        <span>Udfyld felterne nedenfor og få en færdig prompt direkte i udklipsholderen — klar til at indsætte i AI med <strong>Ctrl+V</strong>. Tomme felter beholder deres pladsholder.</span>
+      </div>
+      <div class="fill-fields" id="fill-fields"></div>
+      <button class="fill-preview-toggle" id="fill-preview-toggle" onclick="togglePreview()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        <span>Vis preview af færdig prompt</span>
+      </button>
+      <div class="fill-preview" id="fill-preview"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost modal-foot-left" onclick="copyOriginalAnyway()">Kopiér uden at udfylde</button>
+      <button class="btn btn-outline" onclick="closeFillModal()">Annullér</button>
+      <button class="btn btn-primary" onclick="copyFilledPrompt()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Kopiér udfyldt prompt
+      </button>
+    </div>
+  </div>
+</div>
+
+<div id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Kopieret!</span>
+</div>
+
+<script>
+// ── DEFAULTS ──────────────────────────────────────────────────
+const DEFAULT_CATEGORIES = ['C1', 'C2', 'Egne'];
+
+// Mapper hver default-prompts til en kategori
+const DEFAULT_PROMPTS = [
+  { id:'d1', emoji:'✉️', title:'Den svære email', source:'C2 — Modul 1', category:'C2',
+    text:'Du er erfaren forretningskommunikatør. Hjælp mig med at skrive en email til [modtager] om [situation]. Tone: ærlig men ikke anklagende. Undgå passive formuleringer og floskler. Maks 120 ord — kom direkte til sagen.' },
+  { id:'d2', emoji:'⏰', title:'Opfølgning når ingen svarer', source:'C2 — Modul 1', category:'C2',
+    text:'Skriv en opfølgnings-email til [person]. Jeg sendte en email om [emne] for [X] dage siden og har ikke hørt tilbage. Tone: venlig og ikke pressende, men tydelig om at jeg har brug for svar inden [dato]. Undgå sætningen "Jeg tillader mig at følge op".' },
+  { id:'d3', emoji:'✏️', title:'Sprogvask af email-udkast', source:'C2 — Modul 1', category:'C2',
+    text:'Ret følgende email til korrekt, professionelt dansk. Forbedre formuleringer og flow — men ændr ikke indholdet eller meningen. Gør den mere direkte og fjern unødvendige fyldord: [indsæt din email].' },
+  { id:'d4', emoji:'🎯', title:'Beslutningshjælp', source:'C2 — Modul 3', category:'C2',
+    text:'Jeg skal træffe en beslutning: [beskriv situationen].\n\nMulighed A: [fordele og ulemper]\nMulighed B: [fordele og ulemper]\n\nLav en pro/contra-analyse. Peg på 2-3 blinde vinkler jeg sandsynligvis overser. Anbefal ikke en løsning — hjælp mig med at tænke klarere. Tænk skridt for skridt.' },
+  { id:'d5', emoji:'🔄', title:'Omskriv til ny målgruppe', source:'C2 — Modul 4', category:'C2',
+    text:'Omskriv følgende tekst så den passer til [ny målgruppe / ny tone / nyt formål]. Behold det samme indhold og de samme fakta — tilpas kun sprog, tone og detaljeniveau. Den nye version skal lyde naturlig: [indsæt tekst].' },
+  { id:'d6', emoji:'📚', title:'Lær noget på 15 minutter', source:'C1 — Modul 3', category:'C1',
+    text:'Giv mig en 80/20-gennemgang af [emne]: de 20% der giver mig 80% af forståelsen. Jeg har 15 minutter og ingen forudgående viden. Skriv i klart, ikke-teknisk dansk. Afslut med 3 præcise spørgsmål jeg kan stille en ekspert.' },
+  { id:'d7', emoji:'🔍', title:'Kritisk feedback på dit arbejde', source:'C1 — Modul 2', category:'C1',
+    text:'Her er hvad jeg har lavet: [indsæt tekst/plan/idé].\n\nGiv mig de 3 største svagheder. Hvad mangler? Hvad er uklart? Hvad ville en kritisk læser reagere på? Vær direkte og specifik — undgå at starte med ros.' },
+  { id:'d8', emoji:'👤', title:'Rolleprompt-skabelon', source:'C1 — Modul 2', category:'C1',
+    text:'Du er [konkret rolle, fx "erfaren juridisk rådgiver med speciale i ansættelsesret"]. [Opgave]. Konteksten er: [baggrund]. Skriv som du ville til [målgruppe]. Undgå [det du ikke vil have].' },
+  { id:'d9', emoji:'💼', title:'Forbered et møde på 10 min', source:'C1 — Modul 3', category:'C1',
+    text:'Jeg skal til møde om [emne] om 30 minutter og kender det ikke godt. Giv mig: 1) De 5 vigtigste ting at vide, 2) 3 intelligente spørgsmål jeg kan stille, 3) ét kontroversielt synspunkt der viser jeg har tænkt selv.' },
+  { id:'d10', emoji:'✂️', title:'Forkort uden at miste substans', source:'C2 — Modul 4', category:'C2',
+    text:'Forkort følgende tekst til maks [X] ord. Behold alle vigtige pointer og kerneinformation — skær kun fyldord, gentagelser og unødvendige detaljer. Tonen skal forblive den samme: [indsæt tekst].' }
+];
+
+const EMOJIS = ['✨','📝','💼','📧','🎯','💡','🔍','⚡','🚀','📊','🎨','💬','✉️','⏰','✏️','🔄','📚','👤','✂️','🔥'];
+
+const STORAGE_KEY     = 'learnai_prompt_library_v2';
+const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
+const TIP_KEY         = 'learnai_bookmark_tip_dismissed';
+
+let library    = loadLibrary();
+let categories = loadCategories();
+let currentFilter  = 'all';
+let currentSearch  = '';
+let editingPromptId = null;
+
+// ── LOAD/SAVE ────────────────────────────────────────────────
+function loadLibrary() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      // Migration: tilføj category felt hvis den mangler
+      return parsed.map(p => ({ ...p, category: p.category || 'Egne' }));
+    }
+  } catch(e) {}
+  return [...DEFAULT_PROMPTS];
+}
+
+function saveLibrary() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(library)); } catch(e) {}
+}
+
+function loadCategories() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY_CAT);
+    if (saved) return JSON.parse(saved);
+  } catch(e) {}
+  return [...DEFAULT_CATEGORIES];
+}
+
+function saveCategories() {
+  try { localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(categories)); } catch(e) {}
+}
+
+// ── BOOKMARK TIP ─────────────────────────────────────────────
+if (localStorage.getItem(TIP_KEY) === '1') {
+  document.getElementById('bookmark-tip').classList.add('hidden');
+}
+function closeBookmarkTip() {
+  document.getElementById('bookmark-tip').classList.add('hidden');
+  try { localStorage.setItem(TIP_KEY, '1'); } catch(e) {}
+}
+
+// ── FILTER ROW ───────────────────────────────────────────────
+function renderFilterRow() {
+  const row = document.getElementById('filter-row');
+  if (library.length === 0) { row.innerHTML = ''; return; }
+
+  const counts = {};
+  library.forEach(p => {
+    const c = p.category || 'Egne';
+    counts[c] = (counts[c] || 0) + 1;
+  });
+
+  // Vis kategorier i den rækkefølge de er gemt
+  const favCount = library.filter(p => p.fav).length;
+  let html = `<button class="filter-pill ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">Alle <span class="pill-count">${library.length}</span></button>`;
+  if (favCount > 0) {
+    html += `<button class="filter-pill fav-pill ${currentFilter === '__fav__' ? 'active' : ''}" data-filter="__fav__">⭐ Favoritter <span class="pill-count">${favCount}</span></button>`;
+  }
+
+  categories.forEach(cat => {
+    if (counts[cat]) {
+      html += `<button class="filter-pill ${currentFilter === cat ? 'active' : ''}" data-filter="${escapeAttr(cat)}">${escapeHtml(cat)} <span class="pill-count">${counts[cat]}</span></button>`;
+    }
+  });
+
+  // Ukategoriseret — hvis nogen prompts har en kategori der ikke længere findes
+  let uncatCount = 0;
+  Object.keys(counts).forEach(c => {
+    if (!categories.includes(c)) uncatCount += counts[c];
+  });
+  if (uncatCount > 0) {
+    html += `<button class="filter-pill ${currentFilter === '__uncat__' ? 'active' : ''}" data-filter="__uncat__">Ukategoriseret <span class="pill-count">${uncatCount}</span></button>`;
+  }
+
+  html += `<button class="filter-edit-btn" id="filter-edit-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Rediger kategorier
+  </button>`;
+
+  row.innerHTML = html;
+
+  // Event delegation for filter clicks
+  row.querySelectorAll('.filter-pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.dataset.filter;
+      renderFilterRow();
+      renderLibrary();
+    });
+  });
+  document.getElementById('filter-edit-btn').addEventListener('click', openCatModal);
+}
+
+// ── SEARCH ───────────────────────────────────────────────────
+function filterLibrary() {
+  currentSearch = document.getElementById('search-input').value.trim().toLowerCase();
+  document.getElementById('search-clear').classList.toggle('show', currentSearch.length > 0);
+  renderLibrary();
+}
+
+function clearSearch() {
+  document.getElementById('search-input').value = '';
+  currentSearch = '';
+  document.getElementById('search-clear').classList.remove('show');
+  renderLibrary();
+}
+
+// ── RENDER LIBRARY ───────────────────────────────────────────
+function renderLibrary() {
+  const grid = document.getElementById('lib-grid');
+  document.getElementById('lib-count').textContent = library.length;
+
+  let filtered = library;
+
+  if (currentFilter === '__fav__') {
+    filtered = filtered.filter(p => p.fav);
+  } else if (currentFilter === '__uncat__') {
+    filtered = filtered.filter(p => !categories.includes(p.category));
+  } else if (currentFilter !== 'all') {
+    filtered = filtered.filter(p => p.category === currentFilter);
+  }
+
+  if (currentSearch) {
+    filtered = filtered.filter(p =>
+      p.title.toLowerCase().includes(currentSearch) ||
+      p.text.toLowerCase().includes(currentSearch)
+    );
+  }
+
+  if (library.length === 0) {
+    grid.innerHTML = `
+      <div class="lib-empty">
+        <div class="lib-empty-emoji">📭</div>
+        <div class="lib-empty-title">Dit bibliotek er tomt</div>
+        <div class="lib-empty-text">Tilføj din første prompt med knappen ovenfor — eller gendan de oprindelige 10 prompts.</div>
+        <div class="lib-restore">
+          <button class="btn btn-outline" id="restore-btn">↺ Gendan de oprindelige 10 prompts</button>
+        </div>
+      </div>`;
+    document.getElementById('restore-btn').addEventListener('click', restoreDefaults);
+    return;
+  }
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div class="lib-empty">
+        <div class="lib-empty-emoji">🔍</div>
+        <div class="lib-empty-title">Ingen prompts matcher</div>
+        <div class="lib-empty-text">${currentSearch ? `Ingen prompts matcher "${escapeHtml(currentSearch)}"` : 'Prøv et andet filter ovenfor'}</div>
+      </div>`;
+    return;
+  }
+
+  // Favoritter øverst
+  filtered = [...filtered].sort((a, b) => (b.fav ? 1 : 0) - (a.fav ? 1 : 0));
+
+  grid.innerHTML = filtered.map(p => `
+    <div class="lib-item">
+      <div class="lib-item-header">
+        <div class="lib-item-emoji">${escapeHtml(p.emoji)}</div>
+        <div class="lib-item-titlewrap">
+          <div class="lib-item-title">${escapeHtml(p.title)}</div>
+          <div class="lib-item-source">
+            <span class="lib-item-cat-dot"></span>
+            ${escapeHtml(p.category || 'Ukategoriseret')}
+            ${p.source && p.source !== 'Egen prompt' ? ` &middot; <span style="opacity:.7;">${escapeHtml(p.source)}</span>` : ''}
+          </div>
+        </div>
+        <div class="lib-item-actions">
+          <button class="lib-action-btn fav${p.fav ? ' active' : ''}" data-action="fav" data-id="${escapeAttr(p.id)}" title="${p.fav ? 'Fjern fra favoritter' : 'Tilføj til favoritter'}">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </button>
+          <button class="lib-action-btn copy" data-action="copy" data-id="${escapeAttr(p.id)}" title="Kopiér prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          </button>
+          <button class="lib-action-btn edit" data-action="edit" data-id="${escapeAttr(p.id)}" title="Rediger prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="lib-action-btn del" data-action="delete" data-id="${escapeAttr(p.id)}" title="Slet prompt">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="lib-item-body">${escapeHtml(p.text)}</div>
+    </div>
+  `).join('');
+
+  // Event delegation for actions
+  grid.querySelectorAll('[data-action]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const action = btn.dataset.action;
+      const id     = btn.dataset.id;
+      if (action === 'copy')   copyPrompt(btn, id);
+      if (action === 'edit')   openEditModal(id);
+      if (action === 'delete') confirmDeletePrompt(id);
+      if (action === 'fav')    toggleFav(btn, id);
+    });
+  });
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+}
+function escapeAttr(s) {
+  return String(s).replace(/"/g, '&quot;');
+}
+
+// ── COPY ─────────────────────────────────────────────────────
+// Find pladsholdere som [noget]. Vi finder UNIKKE pladsholdere i rækkefølge.
+function findPlaceholders(text) {
+  const re = /\[([^\[\]\n]{1,80})\]/g;
+  const found = [];
+  const seen = new Set();
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const tag = m[1].trim();
+    const key = tag.toLowerCase();
+    if (!seen.has(key) && tag.length > 0) {
+      seen.add(key);
+      found.push({ tag: tag, raw: m[0] });
+    }
+  }
+  return found;
+}
+
+function copyPrompt(btn, id) {
+  const p = library.find(x => x.id === id);
+  if (!p) return;
+
+  const placeholders = findPlaceholders(p.text);
+
+  // Hvis prompten har pladsholdere — åbn fill-dialog
+  if (placeholders.length > 0) {
+    openFillModal(p, placeholders, btn);
+    return;
+  }
+
+  // Ellers — kopiér direkte
+  copyTextToClipboard(p.text, () => {
+    btn.classList.add('copied');
+    showToast('Prompt kopieret — indsæt med Ctrl+V i AI ✓');
+    setTimeout(() => btn.classList.remove('copied'), 1800);
+  });
+}
+
+function copyTextToClipboard(text, onSuccess) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;padding:0;border:none;outline:none;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  ta.setSelectionRange(0, text.length);
+
+  let success = false;
+  try { success = document.execCommand('copy'); } catch(e) { success = false; }
+  document.body.removeChild(ta);
+
+  if (success) { onSuccess && onSuccess(); return; }
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => onSuccess && onSuccess()).catch(() => showToast('Kopiering fejlede'));
+  } else {
+    showToast('Kopiering fejlede — marker tekst manuelt');
+  }
+}
+
+// ── TOGGLE FAVOURITE ─────────────────────────────────────────
+function toggleFav(btn, id) {
+  const p = library.find(x => x.id === id);
+  if (!p) return;
+  p.fav = !p.fav;
+  saveLibrary();
+  btn.classList.toggle('active', p.fav);
+  btn.title = p.fav ? 'Fjern fra favoritter' : 'Tilføj til favoritter';
+  btn.querySelector('svg').style.fill = p.fav ? '#F59E0B' : 'none';
+  renderFilterRow(); // Opdater favorit-pill i filter
+  showToast(p.fav ? '⭐ Tilføjet til favoritter' : 'Fjernet fra favoritter');
+}
+
+// ── FILL PLACEHOLDERS DIALOG ─────────────────────────────────
+let currentFillPrompt = null;
+let currentFillButton = null;
+
+function openFillModal(prompt, placeholders, btn) {
+  currentFillPrompt = prompt;
+  currentFillButton = btn;
+
+  document.getElementById('fill-modal-title').textContent = `Udfyld: ${prompt.title}`;
+
+  const fields = document.getElementById('fill-fields');
+  fields.innerHTML = placeholders.map((ph, i) => {
+    // Vælg textarea hvis pladsholderen ligner et længere indhold
+    const isLong = /tekst|email|emne|beskriv|kontekst|baggrund|indhold|udkast|opgave|situation/i.test(ph.tag);
+    const id = `fill-input-${i}`;
+    return `
+      <div>
+        <div class="fill-field-label">
+          <span>${escapeHtml(capitalizeFirst(ph.tag))}</span>
+          <span class="fill-field-tag">${escapeHtml(ph.raw)}</span>
+        </div>
+        ${isLong
+          ? `<textarea class="fill-textarea" id="${id}" data-tag="${escapeAttr(ph.raw)}" placeholder="Skriv her..." oninput="updatePreview()"></textarea>`
+          : `<input type="text" class="fill-input" id="${id}" data-tag="${escapeAttr(ph.raw)}" placeholder="Skriv her..." oninput="updatePreview()">`}
+      </div>`;
+  }).join('');
+
+  // Reset preview
+  document.getElementById('fill-preview').classList.remove('show');
+  const tBtn = document.getElementById('fill-preview-toggle');
+  tBtn.classList.remove('open');
+  tBtn.querySelector('span').textContent = 'Vis preview af færdig prompt';
+
+  updatePreview();
+  document.getElementById('fill-modal').classList.add('show');
+
+  // Fokuser første felt
+  setTimeout(() => {
+    const first = fields.querySelector('input, textarea');
+    if (first) first.focus();
+  }, 120);
+}
+
+function closeFillModal() {
+  document.getElementById('fill-modal').classList.remove('show');
+  currentFillPrompt = null;
+  currentFillButton = null;
+}
+
+function capitalizeFirst(s) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function buildFilledText(highlight) {
+  if (!currentFillPrompt) return '';
+  let text = currentFillPrompt.text;
+  const inputs = document.querySelectorAll('#fill-fields [data-tag]');
+
+  // Build map af tag -> value (sidste værdi vinder hvis gentaget — ikke et problem fordi vi unikkede dem)
+  inputs.forEach(inp => {
+    const raw = inp.dataset.tag;
+    const val = inp.value.trim();
+    if (highlight) {
+      // Til preview: highlight udfyldte i grøn, tomme bevarer pladsholder i gul
+      if (val) {
+        const safe = escapeHtml(val);
+        text = text.split(raw).join(`__FILLED__${safe}__/FILLED__`);
+      }
+    } else {
+      // Til kopi: erstat udfyldte, behold tomme som de er
+      if (val) {
+        text = text.split(raw).join(val);
+      }
+    }
+  });
+
+  if (highlight) {
+    text = escapeHtml(text);
+    text = text.replace(/__FILLED__/g, '<span class="ph-filled">').replace(/__\/FILLED__/g, '</span>');
+    // Resterende [pladsholdere] markeres som tomme
+    text = text.replace(/\[([^\[\]\n]{1,80})\]/g, '<span class="ph-empty">[$1]</span>');
+  }
+  return text;
+}
+
+function updatePreview() {
+  const preview = document.getElementById('fill-preview');
+  preview.innerHTML = buildFilledText(true);
+}
+
+function togglePreview() {
+  const preview = document.getElementById('fill-preview');
+  const tBtn = document.getElementById('fill-preview-toggle');
+  const isOpen = preview.classList.toggle('show');
+  tBtn.classList.toggle('open', isOpen);
+  tBtn.querySelector('span').textContent = isOpen ? 'Skjul preview' : 'Vis preview af færdig prompt';
+}
+
+function copyFilledPrompt() {
+  if (!currentFillPrompt) return;
+  const filledText = buildFilledText(false);
+  const btn = currentFillButton;
+
+  copyTextToClipboard(filledText, () => {
+    if (btn) {
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1800);
+    }
+    closeFillModal();
+    showToast('Færdig prompt kopieret — indsæt med Ctrl+V i AI ✓');
+  });
+}
+
+function copyOriginalAnyway() {
+  if (!currentFillPrompt) return;
+  const text = currentFillPrompt.text;
+  const btn = currentFillButton;
+  copyTextToClipboard(text, () => {
+    if (btn) {
+      btn.classList.add('copied');
+      setTimeout(() => btn.classList.remove('copied'), 1800);
+    }
+    closeFillModal();
+    showToast('Prompt kopieret — indsæt med Ctrl+V i AI ✓');
+  });
+}
+
+// ── DELETE — custom confirm dialog ───────────────────────────
+let pendingConfirmAction = null;
+
+function showConfirm(opts) {
+  document.getElementById('confirm-icon').textContent = opts.icon || '⚠️';
+  document.getElementById('confirm-title').textContent = opts.title || 'Er du sikker?';
+  document.getElementById('confirm-text').innerHTML    = opts.text  || '';
+  const btn = document.getElementById('confirm-yes-btn');
+  btn.innerHTML = (opts.yesIcon || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>') + (opts.yesLabel || 'Slet');
+  pendingConfirmAction = opts.onConfirm;
+  document.getElementById('confirm-modal').classList.add('show');
+}
+
+function closeConfirmModal() {
+  document.getElementById('confirm-modal').classList.remove('show');
+  pendingConfirmAction = null;
+}
+
+function confirmYes() {
+  const fn = pendingConfirmAction;
+  closeConfirmModal();
+  if (typeof fn === 'function') fn();
+}
+
+function confirmDeletePrompt(id) {
+  const p = library.find(x => x.id === id);
+  if (!p) return;
+  showConfirm({
+    icon: '🗑️',
+    title: 'Slet prompt?',
+    text: `Er du sikker på at du vil slette <strong>"${escapeHtml(p.title)}"</strong>? Det kan ikke fortrydes.`,
+    yesLabel: 'Slet prompt',
+    onConfirm: () => {
+      library = library.filter(x => x.id !== id);
+      saveLibrary();
+      renderFilterRow();
+      renderLibrary();
+      showToast('Prompt slettet ✓');
+    }
+  });
+}
+
+// ── RESTORE DEFAULTS ─────────────────────────────────────────
+function restoreDefaults() {
+  showConfirm({
+    icon: '↺',
+    title: 'Gendan de 10 oprindelige prompts?',
+    text: 'Egne prompts beholdes. Eventuelle eksisterende oprindelige prompts overskrives ikke — de tilføjes kun hvis de mangler.',
+    yesLabel: 'Gendan',
+    yesIcon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>',
+    onConfirm: () => {
+      const existingIds = new Set(library.map(p => p.id));
+      DEFAULT_PROMPTS.forEach(p => {
+        if (!existingIds.has(p.id)) library.push(p);
+      });
+      saveLibrary();
+      renderFilterRow();
+      renderLibrary();
+      showToast('Oprindelige prompts gendannet ✓');
+    }
+  });
+}
+
+// ── ADD/EDIT PROMPT MODAL ────────────────────────────────────
+let selectedEmoji = '✨';
+
+function buildEmojiPicker() {
+  const picker = document.getElementById('emoji-picker');
+  picker.innerHTML = EMOJIS.map((e, i) => `<button type="button" class="modal-emoji${i === 0 ? ' selected' : ''}" data-emoji="${e}">${e}</button>`).join('');
+  picker.querySelectorAll('.modal-emoji').forEach(b => {
+    b.addEventListener('click', () => {
+      selectedEmoji = b.dataset.emoji;
+      picker.querySelectorAll('.modal-emoji').forEach(x => x.classList.remove('selected'));
+      b.classList.add('selected');
+    });
+  });
+}
+
+function buildCategoryDropdown() {
+  const sel = document.getElementById('modal-input-cat');
+  sel.innerHTML = categories.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join('');
+}
+
+function openAddModal() {
+  editingPromptId = null;
+  document.getElementById('prompt-modal-title').textContent = 'Tilføj ny prompt';
+  document.getElementById('modal-input-title').value = '';
+  document.getElementById('modal-input-text').value = '';
+  selectedEmoji = '✨';
+  buildEmojiPicker();
+  buildCategoryDropdown();
+  // Default kategori = "Egne" hvis det findes, ellers første
+  const sel = document.getElementById('modal-input-cat');
+  sel.value = categories.includes('Egne') ? 'Egne' : categories[0] || '';
+  document.getElementById('prompt-modal').classList.add('show');
+  setTimeout(() => document.getElementById('modal-input-title').focus(), 100);
+}
+
+function openEditModal(id) {
+  const p = library.find(x => x.id === id);
+  if (!p) return;
+  editingPromptId = id;
+  document.getElementById('prompt-modal-title').textContent = 'Rediger prompt';
+  document.getElementById('modal-input-title').value = p.title;
+  document.getElementById('modal-input-text').value  = p.text;
+  selectedEmoji = p.emoji;
+  buildEmojiPicker();
+  // Marker den valgte emoji
+  const picker = document.getElementById('emoji-picker');
+  picker.querySelectorAll('.modal-emoji').forEach(b => {
+    b.classList.toggle('selected', b.dataset.emoji === p.emoji);
+  });
+  // Hvis prompt'ens emoji ikke er i picker'en, tilføj den
+  if (!EMOJIS.includes(p.emoji)) {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'modal-emoji selected';
+    btn.dataset.emoji = p.emoji;
+    btn.textContent = p.emoji;
+    btn.addEventListener('click', () => {
+      selectedEmoji = p.emoji;
+      picker.querySelectorAll('.modal-emoji').forEach(x => x.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+    picker.querySelectorAll('.modal-emoji').forEach(x => x.classList.remove('selected'));
+    picker.prepend(btn);
+  }
+  buildCategoryDropdown();
+  document.getElementById('modal-input-cat').value = p.category || categories[0] || '';
+  document.getElementById('prompt-modal').classList.add('show');
+}
+
+function closePromptModal() {
+  document.getElementById('prompt-modal').classList.remove('show');
+  editingPromptId = null;
+}
+
+function savePrompt() {
+  const title = document.getElementById('modal-input-title').value.trim();
+  const text  = document.getElementById('modal-input-text').value.trim();
+  const cat   = document.getElementById('modal-input-cat').value;
+  if (!title) { showToast('Tilføj en titel først'); document.getElementById('modal-input-title').focus(); return; }
+  if (!text)  { showToast('Tilføj prompt-tekst først'); document.getElementById('modal-input-text').focus(); return; }
+
+  if (editingPromptId) {
+    const p = library.find(x => x.id === editingPromptId);
+    if (p) {
+      p.emoji = selectedEmoji;
+      p.title = title;
+      p.text  = text;
+      p.category = cat;
+    }
+    showToast('Prompt opdateret ✓');
+  } else {
+    library.unshift({
+      id: 'u' + Date.now(),
+      emoji: selectedEmoji,
+      title: title,
+      source: 'Egen prompt',
+      category: cat,
+      text: text
+    });
+    showToast('Ny prompt tilføjet ✓');
+  }
+  saveLibrary();
+  renderFilterRow();
+  renderLibrary();
+  closePromptModal();
+}
+
+// ── CATEGORY EDITOR ──────────────────────────────────────────
+function openCatModal() {
+  renderCatList();
+  document.getElementById('cat-modal').classList.add('show');
+  setTimeout(() => document.getElementById('cat-new-input').focus(), 100);
+}
+
+function closeCatModal() {
+  document.getElementById('cat-modal').classList.remove('show');
+}
+
+function renderCatList() {
+  const list = document.getElementById('cat-list');
+  if (categories.length === 0) {
+    list.innerHTML = '<div style="font-size:13px; color:var(--muted); padding:14px; text-align:center; background:var(--bg); border-radius:var(--r-sm);">Ingen kategorier endnu — opret én nedenfor.</div>';
+    return;
+  }
+
+  // Optæl prompts pr kategori
+  const counts = {};
+  library.forEach(p => { counts[p.category] = (counts[p.category] || 0) + 1; });
+
+  list.innerHTML = categories.map((cat, i) => `
+    <div class="cat-row" draggable="true" data-idx="${i}">
+      <div class="cat-row-handle" title="Træk for at sortere">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      </div>
+      <input type="text" class="cat-row-input" value="${escapeAttr(cat)}" data-original="${escapeAttr(cat)}" maxlength="40">
+      <span class="cat-row-count">${counts[cat] || 0} prompts</span>
+      <button class="cat-row-del" data-cat="${escapeAttr(cat)}" title="Slet kategori">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>
+      </button>
+    </div>
+  `).join('');
+
+  // Rename on input
+  list.querySelectorAll('.cat-row-input').forEach(inp => {
+    inp.addEventListener('blur', () => {
+      const newName = inp.value.trim();
+      const oldName = inp.dataset.original;
+      if (!newName || newName === oldName) {
+        inp.value = oldName;
+        return;
+      }
+      if (categories.includes(newName) && newName !== oldName) {
+        showToast('Kategorinavn findes allerede');
+        inp.value = oldName;
+        return;
+      }
+      // Opdater kategori i array og i alle prompts
+      const idx = categories.indexOf(oldName);
+      if (idx > -1) categories[idx] = newName;
+      library.forEach(p => { if (p.category === oldName) p.category = newName; });
+      saveCategories();
+      saveLibrary();
+      inp.dataset.original = newName;
+      renderFilterRow();
+      renderLibrary();
+      showToast(`Kategori omdøbt til "${newName}" ✓`);
+    });
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') inp.blur(); });
+  });
+
+  // Delete buttons
+  list.querySelectorAll('.cat-row-del').forEach(btn => {
+    btn.addEventListener('click', () => deleteCategory(btn.dataset.cat));
+  });
+
+  // Drag and drop
+  list.querySelectorAll('.cat-row').forEach(row => {
+    row.addEventListener('dragstart', (e) => {
+      row.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', row.dataset.idx);
+    });
+    row.addEventListener('dragend', () => row.classList.remove('dragging'));
+    row.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      row.classList.add('drag-over');
+    });
+    row.addEventListener('dragleave', () => row.classList.remove('drag-over'));
+    row.addEventListener('drop', (e) => {
+      e.preventDefault();
+      row.classList.remove('drag-over');
+      const fromIdx = parseInt(e.dataTransfer.getData('text/plain'), 10);
+      const toIdx   = parseInt(row.dataset.idx, 10);
+      if (fromIdx === toIdx) return;
+      const moved = categories.splice(fromIdx, 1)[0];
+      categories.splice(toIdx, 0, moved);
+      saveCategories();
+      renderCatList();
+      renderFilterRow();
+    });
+  });
+}
+
+function deleteCategory(name) {
+  const count = library.filter(p => p.category === name).length;
+  showConfirm({
+    icon: '🗂️',
+    title: `Slet kategori "${name}"?`,
+    text: count > 0
+      ? `<strong>${count} prompt${count === 1 ? '' : 's'}</strong> bliver flyttet til "Ukategoriseret". Selve prompts slettes ikke.`
+      : 'Ingen prompts bruger denne kategori.',
+    yesLabel: 'Slet kategori',
+    onConfirm: () => {
+      categories = categories.filter(c => c !== name);
+      // Prompts beholder kategorinavn — vil dukke op under "Ukategoriseret" filter
+      saveCategories();
+      renderCatList();
+      renderFilterRow();
+      renderLibrary();
+      showToast(`Kategori "${name}" slettet`);
+    }
+  });
+}
+
+function addCategory() {
+  const inp = document.getElementById('cat-new-input');
+  const name = inp.value.trim();
+  if (!name) return;
+  if (categories.includes(name)) {
+    showToast('Kategorinavn findes allerede');
+    return;
+  }
+  if (name.length > 40) {
+    showToast('Kategorinavnet er for langt');
+    return;
+  }
+  categories.push(name);
+  saveCategories();
+  inp.value = '';
+  renderCatList();
+  renderFilterRow();
+  showToast(`Kategori "${name}" oprettet ✓`);
+}
+
+function restoreDefaultCategories() {
+  showConfirm({
+    icon: '↺',
+    title: 'Gendan standardkategorier?',
+    text: 'Dine egne kategorier slettes. Prompts beholder deres tildeling — kategorier der ikke findes mere vises som "Ukategoriseret".',
+    yesLabel: 'Gendan',
+    yesIcon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>',
+    onConfirm: () => {
+      categories = [...DEFAULT_CATEGORIES];
+      saveCategories();
+      renderCatList();
+      renderFilterRow();
+      renderLibrary();
+      showToast('Standardkategorier gendannet ✓');
+    }
+  });
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── KEYBOARD ─────────────────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('confirm-modal').classList.contains('show')) closeConfirmModal();
+    else if (document.getElementById('fill-modal').classList.contains('show')) closeFillModal();
+    else if (document.getElementById('prompt-modal').classList.contains('show')) closePromptModal();
+    else if (document.getElementById('cat-modal').classList.contains('show')) closeCatModal();
+  }
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    document.getElementById('search-input').focus();
+  }
+});
+
+// Click outside modal closes it
+['prompt-modal','cat-modal','confirm-modal','fill-modal'].forEach(id => {
+  document.getElementById(id).addEventListener('click', (e) => {
+    if (e.target.id === id) {
+      if (id === 'prompt-modal') closePromptModal();
+      else if (id === 'cat-modal') closeCatModal();
+      else if (id === 'confirm-modal') closeConfirmModal();
+      else if (id === 'fill-modal') closeFillModal();
+    }
+  });
+});
+
+// ── INIT ─────────────────────────────────────────────────────
+renderFilterRow();
+renderLibrary();
+</script>
+</body>
+</html>
