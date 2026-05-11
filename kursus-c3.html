@@ -3,515 +3,1456 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnAI DK — Kursus C3</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>LearnAI — C3: AI til møder, research og indhold</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 
     :root {
-      --purple:        #6B3FA0;
-      --purple-light:  #F0EAFA;
-      --purple-mid:    #D9C8F0;
-      --blue:          #185FA5;
-      --blue-light:    #E6F1FB;
-      --green:         #0F6E56;
-      --green-light:   #E1F5EE;
-      --orange:        #C45000;
-      --orange-light:  #FFF0E6;
-      --yellow-bg:     #FFF3CD;
-      --yellow-txt:    #856404;
-      --grey:          #F5F5F5;
-      --border:        #E2E8F0;
-      --bg:            #F6F4FB;
-      --white:         #FFFFFF;
-      --text:          #1A1A1A;
-      --muted:         #6B7280;
-      --radius:        14px;
-      --shadow:        0 4px 24px rgba(107,63,160,0.09);
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
+      --border:#E5E7EB; --bg:#F9FAFB; --white:#FFFFFF;
+      /* C3 farve: violet */
+      --vio:#7C3AED; --vio-deep:#5B21B6;
+      --vio-50:#F5F3FF; --vio-100:#EDE9FE; --vio-200:#DDD6FE; --vio-300:#C4B5FD;
+      --vio-glow:rgba(124,58,237,0.15);
+      --amber:#D97706; --amber-50:#FFFBEB; --amber-100:#FEF3C7;
+      --green:#059669; --green-50:#ECFDF5; --green-100:#D1FAE5;
+      --red:#DC2626; --red-50:#FEF2F2;
+      --teal:#0D9488;
+      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
     }
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.7;
-    }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; }
 
-    /* ── NAV ── */
-    nav {
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 0 1.5rem; display: flex; align-items: center;
-      justify-content: space-between; height: 56px;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .logo {
-      display: flex; align-items: center; gap: 9px;
-      font-size: 16px; font-weight: 700; color: var(--text); text-decoration: none;
-    }
-    .logo-icon {
-      width: 30px; height: 30px; background: var(--blue);
-      border-radius: 7px; display: flex; align-items: center; justify-content: center;
-    }
-    .logo-icon svg { width: 15px; height: 15px; fill: white; }
-    .nav-tag {
-      font-size: 13px; color: var(--muted);
-      background: var(--grey); padding: 5px 12px; border-radius: 20px;
-    }
+    /* NAV */
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,0.93); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--vio); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-tag { font-size:12px; font-weight:600; color:var(--vio-deep); background:var(--vio-50); padding:4px 12px; border-radius:999px; }
 
-    /* ── PROGRESS STEPS ── */
-    .steps-bar {
-      background: white; border-bottom: 1px solid var(--border);
-      padding: 1rem 1.5rem; display: flex; justify-content: center;
-    }
-    .step-item { display: flex; align-items: center; }
-    .step-dot {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 700; flex-shrink: 0;
-    }
-    .step-dot.done   { background: var(--green); color: white; }
-    .step-dot.active { background: var(--purple); color: white; box-shadow: 0 0 0 3px var(--purple-light); }
-    .step-dot.next   { background: var(--border); color: var(--muted); }
-    .step-label { margin: 0 8px; font-size: 13px; font-weight: 500; }
-    .step-label.done   { color: var(--green); }
-    .step-label.active { color: var(--purple); }
-    .step-label.next   { color: var(--muted); }
-    .step-arrow { color: var(--border); font-size: 14px; margin: 0 4px; }
+    /* JOURNEY */
+    .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
+    .journey::-webkit-scrollbar { display:none; }
+    .journey-track { display:flex; align-items:stretch; min-width:max-content; }
+    .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
+    .j-item.active { color:var(--vio); border-bottom-color:var(--vio); }
+    .j-item.done { color:var(--green); border-bottom-color:var(--green); }
+    .j-dot { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:#F3F4F6; color:#9CA3AF; }
+    .j-item.active .j-dot { background:var(--vio); color:white; }
+    .j-item.done .j-dot { background:var(--green); color:white; }
+    .j-sep { color:#D1D5DB; font-size:14px; align-self:center; }
 
-    /* ── HERO ── */
-    .hero {
-      background: var(--purple); color: white;
-      padding: 3rem 1.5rem 2.5rem; text-align: center;
-    }
-    .hero-badge {
-      display: inline-block; background: rgba(255,255,255,0.18);
-      font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; padding: 5px 14px; border-radius: 20px; margin-bottom: 1rem;
-    }
-    .hero h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(26px, 5vw, 38px); font-weight: 400;
-      line-height: 1.2; margin-bottom: 0.75rem;
-    }
-    .hero p { font-size: 16px; opacity: 0.85; max-width: 480px; margin: 0 auto 1.75rem; }
-    .hero-meta { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; }
-    .hero-meta-item { display: flex; align-items: center; gap: 7px; font-size: 14px; opacity: 0.9; }
-    .hero-meta-item span { font-size: 18px; }
+    /* HERO */
+    .hero { background:var(--vio-deep); padding:52px 28px 44px; position:relative; overflow:hidden; }
+    .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px); background-size:40px 40px; }
+    .hero-blob { position:absolute; width:440px; height:440px; background:radial-gradient(circle,rgba(167,139,250,.3) 0%,transparent 70%); top:-160px; right:-80px; border-radius:50%; animation:blobFloat 9s ease-in-out infinite; }
+    @keyframes blobFloat { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-18px) scale(1.04); } }
+    .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
+    .hero-chip { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:20px; }
+    .hero-chip-dot { width:6px; height:6px; border-radius:50%; background:var(--vio-300); display:inline-block; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(28px,5vw,42px); font-weight:600; color:white; line-height:1.18; margin-bottom:14px; letter-spacing:-.4px; }
+    .hero h1 em { font-style:italic; color:var(--vio-200); }
+    .hero-lead { font-size:15.5px; color:rgba(255,255,255,.72); max-width:500px; line-height:1.7; margin-bottom:28px; }
+    .hero-pills { display:flex; gap:10px; flex-wrap:wrap; }
+    .hero-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.8); font-size:13px; padding:7px 13px; border-radius:var(--r-sm); }
 
-    /* ── CONTENT ── */
-    .content { max-width: 720px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+    /* LAYOUT */
+    .wrap { max-width:740px; margin:0 auto; padding:36px 24px 80px; }
 
-    .section-label {
-      font-size: 11px; font-weight: 700; color: var(--purple);
-      letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.4rem;
-    }
-    .section-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem;
-    }
-    .section-body { font-size: 15px; color: var(--muted); margin-bottom: 2rem; line-height: 1.7; }
+    /* NOTICES */
+    .notice { display:flex; gap:13px; align-items:flex-start; border-radius:var(--r); padding:14px 16px; margin-bottom:14px; }
+    .notice-icon { font-size:17px; flex-shrink:0; margin-top:1px; }
+    .notice-head { font-size:12.5px; font-weight:700; margin-bottom:3px; }
+    .notice-body { font-size:13px; line-height:1.55; }
+    .notice.warn { background:var(--amber-100); }
+    .notice.warn .notice-head { color:#92400E; }
+    .notice.warn .notice-body { color:#78350F; }
+    .notice.info { background:var(--vio-50); }
+    .notice.info .notice-head { color:var(--vio-deep); }
+    .notice.info .notice-body { color:var(--vio-deep); }
+    .notice.green { background:var(--green-50); }
+    .notice.green .notice-head { color:#065F46; }
+    .notice.green .notice-body { color:#065F46; }
 
-    /* ── MODULE ── */
-    .module {
-      background: white; border: 1px solid var(--border);
-      border-radius: 18px; margin-bottom: 1.5rem;
-      overflow: hidden; box-shadow: var(--shadow);
-    }
-    .module-header {
-      background: var(--purple-light); padding: 1.1rem 1.5rem;
-      display: flex; align-items: center; gap: 1rem;
-      cursor: pointer; user-select: none;
-    }
-    .module-header:hover { background: var(--purple-mid); }
-    .module-letter {
-      width: 40px; height: 40px; border-radius: 10px;
-      background: var(--purple); color: white;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; font-weight: 700; flex-shrink: 0;
-    }
-    .module-title-wrap { flex: 1; }
-    .module-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .module-sub   { font-size: 13px; color: var(--muted); margin-top: 2px; }
-    .module-toggle { font-size: 20px; color: var(--muted); transition: transform 0.2s; }
-    .module.open .module-toggle { transform: rotate(45deg); }
-    .module-body { display: none; padding: 1.5rem; border-top: 1px solid var(--border); }
-    .module.open .module-body { display: block; }
+    /* MODULES */
+    .mod { background:#FAF8FF; border:1px solid #E4DCFF; border-left:4px solid var(--vio-200); border-radius:var(--r-xl); margin-bottom:14px; overflow:hidden; box-shadow:0 2px 8px rgba(124,58,237,.06); transition:box-shadow .25s,border-color .25s,border-left-color .25s; }
+    .mod:hover { box-shadow:0 4px 20px rgba(124,58,237,.12); border-left-color:var(--vio); }
+    .mod.open { border-color:var(--vio-200); border-left-color:var(--vio); box-shadow:0 6px 28px var(--vio-glow); background:var(--white); }
+    .mod-header { display:flex; align-items:center; gap:16px; padding:20px 24px; cursor:pointer; transition:background .15s; }
+    .mod-header:hover { background:var(--vio-50); }
+    .mod.open .mod-header { background:var(--vio-50); }
+    .mod-num { width:40px; height:40px; border-radius:11px; background:#F3F4F6; color:#9CA3AF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex-shrink:0; transition:background .2s,color .2s; }
+    .mod.open .mod-num { background:var(--vio); color:white; }
+    .mod.done .mod-num { background:var(--green); color:white; }
+    .mod-text { flex:1; }
+    .mod-title { font-size:15px; font-weight:700; color:var(--ink); }
+    .mod-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
+    .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.open .mod-time { background:var(--vio-100); color:var(--vio-deep); }
+    .mod-done-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.done .mod-done-badge { display:flex; }
+    .mod.done .mod-time { display:none; }
+    .mod-arrow { color:#D1D5DB; font-size:18px; flex-shrink:0; transition:transform .25s,color .2s; }
+    .mod.open .mod-arrow { transform:rotate(180deg); color:var(--vio); }
+    .mod-body { display:none; padding:24px 28px 30px; border-top:1px solid var(--border); animation:fadeSlide .22s ease; }
+    .mod.open .mod-body { display:block; }
+    @keyframes fadeSlide { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ── CONTENT ELEMENTS ── */
-    .prose { font-size: 15px; color: var(--text); line-height: 1.7; margin-bottom: 1.25rem; }
+    .sect-label { display:flex; align-items:center; gap:12px; margin:30px 0 16px; }
+    .sect-label hr { flex:1; border:none; border-top:1px solid var(--border); }
+    .sect-label span { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
 
-    .info-box { border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
-    .info-box-title { font-size: 13px; font-weight: 700; margin-bottom: 0.5rem; }
-    .info-box p  { font-size: 14px; line-height: 1.6; }
-    .info-box ul { padding-left: 1.1rem; }
-    .info-box li { font-size: 14px; line-height: 1.7; }
+    p.prose { font-size:14.5px; line-height:1.75; color:var(--ink-soft); margin-bottom:18px; }
+    p.prose strong { color:var(--ink); font-weight:600; }
 
-    .box-purple { background: var(--purple-light); }
-    .box-purple .info-box-title { color: var(--purple); }
-    .box-green  { background: var(--green-light); }
-    .box-green .info-box-title  { color: var(--green); }
-    .box-yellow { background: var(--yellow-bg); }
-    .box-yellow .info-box-title { color: var(--yellow-txt); }
-    .box-grey   { background: var(--grey); }
-    .box-grey .info-box-title   { color: #444; }
+    /* COPY BLOCK */
+    .copy-block { background:#0D1117; border-radius:var(--r); overflow:hidden; margin-bottom:16px; border:1px solid #1E2530; }
+    .copy-topbar { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); gap:8px; flex-wrap:wrap; }
+    .copy-label-txt { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#4B5563; }
+    .copy-topbar-actions { display:flex; align-items:center; gap:7px; }
+    .see-prompt-btn { display:flex; align-items:center; gap:6px; background:var(--vio); border:none; color:white; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .see-prompt-btn:hover { background:var(--vio-deep); transform:translateY(-1px); }
+    .see-prompt-btn.open { background:#374151; }
+    .see-prompt-btn svg { width:12px; height:12px; flex-shrink:0; pointer-events:none; transition:transform .2s; }
+    .see-prompt-btn.open svg.chevron { transform:rotate(180deg); }
+    .copy-btn { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.11); color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .copy-btn:hover { background:rgba(255,255,255,.14); color:white; }
+    .copy-btn.copied { background:rgba(16,185,129,.15); border-color:rgba(16,185,129,.3); color:#6EE7B7; }
+    .copy-btn svg { width:13px; height:13px; flex-shrink:0; pointer-events:none; }
+    .copy-text { display:none; padding:14px 16px; font-family:'Courier New',monospace; font-size:13px; line-height:1.7; color:#E2E8F0; white-space:pre-wrap; word-break:break-word; border-top:1px solid rgba(255,255,255,.07); animation:fadeSlide .18s ease; }
+    .copy-text.show { display:block; }
 
-    h3.subhead { font-size: 16px; font-weight: 700; color: var(--text); margin: 1.25rem 0 0.6rem; }
+    /* PRACTICE */
+    .practice { background:linear-gradient(135deg,#FFFBF5,#FFF8EC); border:1px solid #FDE68A; border-radius:var(--r); padding:18px 20px; margin-bottom:14px; }
+    .practice-bar { display:flex; align-items:center; gap:9px; margin-bottom:10px; }
+    .p-tag { background:var(--amber); color:white; font-size:10px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:3px 9px; border-radius:999px; }
+    .p-title { font-size:13.5px; font-weight:700; color:#78350F; }
+    .p-body { font-size:13px; line-height:1.7; color:#7C2D12; }
+    .p-body ol,.p-body ul { padding-left:1.2rem; margin-top:7px; }
+    .p-body li { margin-bottom:4px; }
+    .p-body em { font-style:italic; }
+    .p-body strong { color:#92400E; font-weight:600; }
+    .p-body kbd { background:#fff; border:1px solid #E5E7EB; border-bottom-width:2px; border-radius:4px; padding:1px 6px; font-family:'Courier New',monospace; font-size:11.5px; font-weight:700; }
 
-    .bullet-list { padding-left: 1.3rem; margin-bottom: 1.25rem; }
-    .bullet-list li { font-size: 14px; line-height: 1.7; margin-bottom: 6px; color: var(--text); }
+    /* BEFORE/AFTER */
+    .ba-wrap { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    @media(max-width:560px){ .ba-wrap { grid-template-columns:1fr; } }
+    .ba-col { border-radius:var(--r); overflow:hidden; border:1px solid var(--border); }
+    .ba-head { padding:8px 14px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; display:flex; align-items:center; gap:6px; }
+    .ba-col.before .ba-head { background:#FEF2F2; color:#991B1B; }
+    .ba-col.after .ba-head { background:var(--green-50); color:#065F46; }
+    .ba-body { padding:13px 15px; font-size:13px; line-height:1.65; color:var(--ink-soft); background:var(--white); font-family:'Courier New',monospace; white-space:pre-wrap; }
 
-    .divider { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+    /* TRAP CARD */
+    .trap { background:#FFF7ED; border:1px solid #FED7AA; border-left:3px solid #F97316; border-radius:var(--r); padding:14px 16px; margin-bottom:14px; display:flex; gap:12px; }
+    .trap-icon { font-size:18px; flex-shrink:0; }
+    .trap-head { font-size:12.5px; font-weight:700; color:#9A3412; margin-bottom:3px; }
+    .trap-body { font-size:13px; color:#7C2D12; line-height:1.55; }
 
-    .prompt-label {
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.35rem;
-    }
-    .prompt-template {
-      background: #1e2a3a; color: #e2f0fb; border-radius: 10px;
-      padding: 1rem 1.15rem; font-size: 13px; font-family: 'Courier New', monospace;
-      line-height: 1.7; margin-bottom: 1.25rem; white-space: pre-wrap;
-    }
+    /* WORKFLOW STEPS */
+    .wf-steps { display:flex; flex-direction:column; gap:0; margin-bottom:16px; }
+    .wf-step { display:flex; gap:14px; padding-bottom:20px; }
+    .wf-step:last-child { padding-bottom:0; }
+    .wf-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+    .wf-num { width:34px; height:34px; border-radius:50%; background:var(--vio); color:white; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; box-shadow:0 3px 10px rgba(124,58,237,.3); flex-shrink:0; }
+    .wf-line { flex:1; width:2px; background:var(--vio-100); margin-top:8px; }
+    .wf-right { flex:1; padding-top:4px; }
+    .wf-title { font-size:14.5px; font-weight:700; color:var(--ink); margin-bottom:4px; }
+    .wf-body { font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:10px; }
 
-    .technique-tag {
-      display: inline-block; background: var(--purple); color: white;
-      font-size: 11px; font-weight: 700; letter-spacing: 0.06em;
-      text-transform: uppercase; padding: 3px 10px; border-radius: 6px; margin-bottom: 0.5rem;
-    }
+    /* PHASE LABEL */
+    .phase-label { display:inline-flex; align-items:center; gap:6px; background:var(--vio-50); color:var(--vio-deep); font-size:11px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; padding:4px 12px; border-radius:999px; margin-bottom:12px; border:1px solid var(--vio-100); }
 
-    .step-box {
-      display: flex; gap: 1rem; margin-bottom: 1rem; align-items: flex-start;
-    }
-    .step-num {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--purple); color: white; font-size: 14px; font-weight: 700;
-      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
-    }
-    .step-content { flex: 1; }
-    .step-content strong { font-size: 15px; display: block; margin-bottom: 3px; }
-    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    /* CHANNEL CARDS */
+    .channel-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px; }
+    @media(max-width:520px){ .channel-grid { grid-template-columns:1fr; } }
+    .channel-card { border-radius:var(--r); padding:14px 16px; border:1px solid var(--border); background:var(--white); }
+    .channel-card-head { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:5px; display:flex; align-items:center; gap:7px; }
+    .channel-icon { font-size:16px; }
+    .channel-body { font-size:12.5px; color:var(--muted); line-height:1.55; }
+    .channel-card.c1 { border-color:var(--vio-200); background:var(--vio-50); }
+    .channel-card.c1 .channel-card-head { color:var(--vio-deep); }
+    .channel-card.c2 { border-color:#BAE6FD; background:#F0F9FF; }
+    .channel-card.c2 .channel-card-head { color:#0C4A6E; }
+    .channel-card.c3 { border-color:#BBF7D0; background:var(--green-50); }
+    .channel-card.c3 .channel-card-head { color:#065F46; }
+    .channel-card.c4 { border-color:#FDE68A; background:var(--amber-50); }
+    .channel-card.c4 .channel-card-head { color:#92400E; }
 
-    /* practice */
-    .practice { background: var(--orange-light); border-radius: 12px; padding: 1rem 1.15rem; margin-bottom: 1.25rem; }
-    .practice-title { font-size: 13px; font-weight: 700; color: var(--orange); margin-bottom: 0.5rem; }
-    .practice ol { padding-left: 1.2rem; }
-    .practice li, .practice p { font-size: 14px; line-height: 1.7; color: var(--text); }
-    .practice li { margin-bottom: 4px; }
+    /* AI DEMO */
+    .ai-demo { border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,.05); }
+    .ai-demo-label { background:#F8FAFC; border-bottom:1px solid var(--border); padding:8px 16px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .ai-tabs { display:flex; gap:8px; padding:10px; background:var(--bg); border-bottom:1px solid var(--border); }
+    .ai-tab { flex:1; padding:12px 14px; font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; cursor:pointer; border-radius:var(--r-sm); transition:all .2s ease; display:flex; align-items:center; justify-content:center; gap:7px; border:2px solid transparent; }
+    .ai-tab.active { background:linear-gradient(135deg,#A78BFA,#7C3AED); color:white; border-color:var(--vio); box-shadow:0 2px 10px rgba(124,58,237,.35); cursor:default; }
+    .ai-tab:not(.active) { background:var(--vio-deep); color:white; border-color:var(--vio-deep); box-shadow:0 2px 8px rgba(91,33,182,.3); animation:tabPulse 2.2s ease-in-out infinite; }
+    .ai-tab:not(.active):hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(91,33,182,.5); animation:none; }
+    @keyframes tabPulse { 0%,100% { box-shadow:0 2px 8px rgba(91,33,182,.3); } 50% { box-shadow:0 2px 14px rgba(91,33,182,.55); } }
+    .ai-response { padding:16px; background:var(--white); }
+    .ai-response.hidden { display:none; }
+    .ai-bubble { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
+    .ai-avatar { width:30px; height:30px; border-radius:9px; background:#374151; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .ai-avatar-good { background:var(--vio); }
+    .ai-msg { background:#F8FAFC; border:1px solid var(--border); border-radius:0 var(--r) var(--r) var(--r); padding:12px 14px; font-size:13.5px; line-height:1.65; color:var(--ink-soft); flex:1; }
+    .ai-msg-good { background:var(--vio-50); border-color:var(--vio-200); color:#3B1F87; }
+    .ai-verdict { font-size:12.5px; font-weight:600; padding:8px 12px; border-radius:var(--r-sm); display:flex; align-items:center; gap:8px; }
+    .ai-verdict.bad { background:var(--red-50); color:#991B1B; border:1px solid #FECACA; }
+    .ai-verdict.bad::before { content:'💡'; font-size:14px; }
+    .ai-verdict.good { background:var(--green-50); color:#065F46; border:1px solid #A7F3D0; }
+    .ai-verdict.good::before { content:'✅'; font-size:14px; }
 
-    /* summary */
-    .summary {
-      background: var(--purple); border-radius: 16px;
-      padding: 1.75rem; color: white; margin-bottom: 2rem;
-    }
-    .summary h3 { font-family: 'DM Serif Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 1rem; }
-    .summary ul { padding-left: 1.2rem; }
-    .summary li { font-size: 14px; line-height: 1.8; opacity: 0.92; }
+    /* LIVE OPGAVE (Projekt-briefing) */
+    .live-challenge { border:1.5px solid var(--vio-200); border-radius:var(--r-xl); overflow:hidden; margin-bottom:20px; box-shadow:0 4px 20px var(--vio-glow); }
+    .lc-header { background:linear-gradient(135deg,var(--vio-deep),var(--vio)); padding:18px 22px; display:flex; align-items:center; gap:12px; }
+    .lc-icon { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .lc-title { font-size:15px; font-weight:700; color:white; }
+    .lc-sub { font-size:12.5px; color:rgba(255,255,255,.72); margin-top:2px; }
+    .lc-brief { background:var(--white); border-bottom:1px solid var(--border); }
+    .lc-brief-meta { display:flex; align-items:center; gap:10px; padding:14px 20px 10px; border-bottom:1px solid #F3F4F6; flex-wrap:wrap; gap:8px; }
+    .lc-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
+    .lc-badge.urgent { background:#FEE2E2; color:#991B1B; }
+    .lc-badge.project { background:var(--vio-50); color:var(--vio-deep); }
+    .lc-brief-body { padding:16px 20px; font-size:13.5px; line-height:1.8; color:var(--ink-soft); white-space:pre-line; }
+    .lc-brief-body strong { color:var(--ink); font-weight:600; }
+    .lc-stakeholders { padding:14px 20px; background:#FAFAFA; border-bottom:1px solid var(--border); }
+    .lc-s-title { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
+    .lc-s-list { display:flex; flex-direction:column; gap:8px; }
+    .lc-s-item { display:flex; gap:10px; align-items:flex-start; }
+    .lc-s-avatar { width:30px; height:30px; border-radius:50%; color:white; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .lc-s-name { font-size:13px; font-weight:700; color:var(--ink); }
+    .lc-s-want { font-size:12.5px; color:var(--muted); line-height:1.4; }
 
-    /* exam cta */
-    .exam-cta {
-      background: white; border: 2px solid var(--purple);
-      border-radius: 18px; padding: 2rem; text-align: center; box-shadow: var(--shadow);
-    }
-    .exam-cta-icon { font-size: 40px; margin-bottom: 0.75rem; }
-    .exam-cta h2 { font-family: 'DM Serif Display', serif; font-size: 22px; font-weight: 400; color: var(--text); margin-bottom: 0.5rem; }
-    .exam-cta p  { font-size: 14px; color: var(--muted); margin-bottom: 1.5rem; }
-    .exam-cta .req {
-      display: inline-block; background: var(--yellow-bg); color: var(--yellow-txt);
-      font-size: 13px; font-weight: 600; padding: 6px 16px; border-radius: 20px; margin-bottom: 1.25rem;
-    }
-    .btn-exam {
-      display: inline-block; background: var(--purple); color: white;
-      font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700;
-      padding: 14px 36px; border-radius: 12px; text-decoration: none;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-exam:hover { background: #5a2d90; transform: translateY(-1px); }
+    .lc-howto { background:linear-gradient(135deg,var(--vio-50),#F0EAFF); border:1.5px solid var(--vio-100); border-radius:var(--r-lg); padding:16px 18px; margin:18px 20px; }
+    .lc-howto-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--vio-100); }
+    .lc-howto-title { font-size:13.5px; font-weight:700; color:var(--vio-deep); }
+    .lc-howto-list { display:flex; flex-direction:column; gap:10px; }
+    .lc-howto-step { display:flex; gap:12px; align-items:flex-start; }
+    .lc-howto-num { width:26px; height:26px; border-radius:50%; background:var(--vio); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; box-shadow:0 2px 6px rgba(124,58,237,.3); }
+    .lc-howto-text { font-size:13px; color:var(--vio-deep); line-height:1.6; padding-top:2px; }
+    .lc-howto-text strong { color:var(--ink); font-weight:700; }
 
-    @media (max-width: 480px) {
-      .hero { padding: 2rem 1rem 1.75rem; }
-      .content { padding: 1.75rem 1rem 3rem; }
-      .module-body { padding: 1.1rem; }
-      .exam-cta { padding: 1.5rem 1rem; }
-      .step-label { display: none; }
+    .lc-chat { background:var(--white); padding:0 20px 18px; }
+    .chat-messages { min-height:60px; max-height:380px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:14px; padding-right:4px; }
+    .chat-messages::-webkit-scrollbar { width:4px; }
+    .chat-messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+    .chat-msg { display:flex; gap:10px; align-items:flex-start; animation:msgIn .2s ease; }
+    @keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .chat-msg.user { flex-direction:row-reverse; }
+    .chat-avatar { width:30px; height:30px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .chat-avatar.user-av { background:var(--vio); color:white; }
+    .chat-avatar.ai-av { background:var(--ink); color:white; }
+    .chat-bubble { max-width:85%; padding:11px 14px; font-size:13.5px; line-height:1.65; border-radius:var(--r); }
+    .chat-msg.user .chat-bubble { background:var(--vio); color:white; border-radius:var(--r) 4px var(--r) var(--r); }
+    .chat-msg.ai .chat-bubble { background:#F8FAFC; border:1px solid var(--border); color:var(--ink-soft); border-radius:4px var(--r) var(--r) var(--r); }
+    .chat-msg.ai .chat-bubble strong { color:var(--ink); font-weight:600; }
+    .chat-typing { display:none; gap:10px; align-items:center; padding:4px 0; }
+    .chat-typing.show { display:flex; }
+    .chat-typing-dots { background:#F8FAFC; border:1px solid var(--border); border-radius:4px var(--r) var(--r) var(--r); padding:10px 16px; display:flex; gap:4px; align-items:center; }
+    .chat-typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); display:inline-block; animation:dotBounce 1.2s ease-in-out infinite; }
+    .chat-typing-dots span:nth-child(2) { animation-delay:.2s; }
+    .chat-typing-dots span:nth-child(3) { animation-delay:.4s; }
+    @keyframes dotBounce { 0%,80%,100% { transform:translateY(0); opacity:.4; } 40% { transform:translateY(-5px); opacity:1; } }
+    .chat-input-row { display:flex; gap:9px; align-items:flex-end; }
+    .chat-textarea { flex:1; min-height:52px; max-height:140px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r); padding:12px 14px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); resize:none; outline:none; transition:border-color .18s,box-shadow .18s; line-height:1.5; }
+    .chat-textarea:focus { border-color:var(--vio); box-shadow:0 0 0 3px rgba(124,58,237,.1); }
+    .chat-send-btn { width:48px; height:48px; border-radius:var(--r); background:var(--vio); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s,transform .15s; box-shadow:0 2px 8px var(--vio-glow); }
+    .chat-send-btn:hover:not(:disabled) { background:var(--vio-deep); transform:translateY(-1px); }
+    .chat-send-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .chat-send-btn svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
+    .chat-hint { font-size:11.5px; color:var(--muted); text-align:center; margin-top:10px; }
+    .chat-hint strong { color:var(--vio); font-weight:600; }
+
+    /* PROGRESS BAR */
+    .progress-track-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 22px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
+    .prog-label { font-size:13px; font-weight:600; color:var(--ink-soft); white-space:nowrap; }
+    .prog-bar-outer { flex:1; height:7px; background:var(--border); border-radius:999px; overflow:hidden; }
+    .prog-bar-inner { height:100%; background:linear-gradient(90deg,var(--vio),var(--vio-300)); border-radius:999px; width:0%; transition:width .6s ease; }
+    .prog-pct { font-size:13px; font-weight:700; color:var(--vio); white-space:nowrap; min-width:36px; text-align:right; }
+    .prog-steps { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+    .prog-step { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:#F1F5F9; color:#94A3B8; border:2px solid #E2E8F0; transition:all .35s ease; position:relative; }
+    .prog-step.active { background:var(--vio-50); border-color:var(--vio); color:var(--vio); }
+    .prog-step.active::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--vio); opacity:0; animation:stepPulse 1.8s ease-out infinite; }
+    @keyframes stepPulse { 0% { transform:scale(0.85); opacity:0.6; } 70% { transform:scale(1.4); opacity:0; } 100% { transform:scale(1.4); opacity:0; } }
+    .prog-step.done { background:var(--green); border-color:var(--green); color:white; }
+
+    /* SUMMARY */
+    .summary { background:var(--vio-deep); border-radius:var(--r-xl); padding:30px; color:white; margin:34px 0 24px; position:relative; overflow:hidden; }
+    .summary::after { content:'C3'; position:absolute; right:22px; top:12px; font-family:'Lora',serif; font-size:80px; font-weight:600; color:rgba(255,255,255,.05); line-height:1; }
+    .summary h3 { font-family:'Lora',serif; font-size:21px; font-weight:600; margin-bottom:18px; color:white; }
+    .sum-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    @media(max-width:480px){ .sum-grid { grid-template-columns:1fr; } }
+    .sum-item { display:flex; gap:9px; background:rgba(255,255,255,.07); border-radius:var(--r-sm); padding:11px 13px; font-size:13px; color:rgba(255,255,255,.82); line-height:1.5; }
+    .sum-item::before { content:'✓'; color:var(--vio-300); font-weight:700; flex-shrink:0; margin-top:1px; }
+
+    /* ADD LIBRARY PROMPTS */
+    .lib-add-card { background:linear-gradient(135deg,var(--vio-deep),var(--vio)); border-radius:var(--r-xl); padding:24px 28px; margin-bottom:20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; box-shadow:0 8px 28px var(--vio-glow); }
+    .lib-add-icon { width:56px; height:56px; border-radius:14px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:26px; flex-shrink:0; }
+    .lib-add-text { flex:1; min-width:200px; }
+    .lib-add-title { font-size:16px; font-weight:700; color:white; margin-bottom:3px; }
+    .lib-add-sub { font-size:13px; color:rgba(255,255,255,.75); line-height:1.5; }
+    .lib-add-btn { display:inline-flex; align-items:center; gap:9px; background:white; color:var(--vio-deep); font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; padding:12px 22px; border-radius:var(--r); border:none; cursor:pointer; flex-shrink:0; transition:transform .15s,box-shadow .15s; box-shadow:0 4px 14px rgba(0,0,0,.15); }
+    .lib-add-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.2); }
+    .lib-add-btn.done { background:var(--green); color:white; cursor:default; transform:none; }
+    .lib-add-btn svg { width:15px; height:15px; pointer-events:none; }
+    .lib-open-link { display:inline-flex; align-items:center; gap:9px; background:var(--vio); color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; padding:13px 24px; border-radius:var(--r); text-decoration:none; box-shadow:0 4px 14px var(--vio-glow); transition:background .15s,transform .15s; align-self:flex-start; }
+    .lib-open-link:hover { background:var(--vio-deep); transform:translateY(-2px); }
+    .lib-open-link svg { width:15px; height:15px; pointer-events:none; }
+
+    /* CTA */
+    .cta { background:var(--white); border:1.5px solid var(--vio-200); border-radius:var(--r-xl); padding:34px 28px; text-align:center; box-shadow:0 8px 36px var(--vio-glow); }
+    .cta-icon { font-size:40px; margin-bottom:10px; }
+    .cta h2 { font-family:'Lora',serif; font-size:23px; font-weight:600; color:var(--ink); margin-bottom:8px; }
+    .cta p { font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
+    .cta-warn { display:inline-block; background:var(--amber-100); color:#92400E; font-size:12px; font-weight:600; padding:5px 14px; border-radius:999px; margin-bottom:18px; }
+    .btn-go { display:inline-flex; align-items:center; gap:9px; background:var(--vio); color:white; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); text-decoration:none; box-shadow:0 4px 18px var(--vio-glow); transition:background .15s,transform .15s,box-shadow .15s; }
+    .btn-go:hover { background:var(--vio-deep); transform:translateY(-2px); box-shadow:0 8px 28px var(--vio-glow); }
+    .btn-go svg { width:16px; height:16px; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .cta-sub { margin-top:14px; font-size:12.5px; color:var(--muted); }
+    .dot-sep { margin:0 6px; }
+    .coins { color:var(--amber); font-weight:600; }
+
+    /* MEETING SIMULATOR — BACKSTORY */
+    .sim-backstory { border:1px solid var(--vio-200); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; }
+    .sim-bs-header { background:var(--vio-50); padding:14px 18px; border-bottom:1px solid var(--vio-100); display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+    .sim-bs-badge { background:var(--vio); color:white; font-size:10px; font-weight:700; letter-spacing:.07em; text-transform:uppercase; padding:3px 10px; border-radius:999px; }
+    .sim-bs-title { font-size:15px; font-weight:700; color:var(--ink); }
+    .sim-bs-body { padding:14px 18px; font-size:13.5px; color:var(--ink-soft); line-height:1.7; border-bottom:1px solid var(--border); }
+    .sim-bs-chars { padding:14px 18px; display:flex; flex-direction:column; gap:12px; border-bottom:1px solid var(--border); }
+    .sim-bs-char { display:flex; gap:12px; align-items:flex-start; }
+    .sim-bs-av { width:36px; height:36px; border-radius:50%; color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .sim-bs-name { font-size:13px; font-weight:700; color:var(--ink); margin-bottom:2px; }
+    .sim-bs-desc { font-size:12.5px; color:var(--muted); line-height:1.5; }
+    .sim-bs-goal { padding:13px 18px; background:#FFFBEB; display:flex; gap:10px; align-items:flex-start; font-size:13px; color:#78350F; line-height:1.6; }
+    .sim-bs-goal-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    .sim-bs-goal strong { color:#92400E; }
+
+    /* AI GUIDE (sammenklapbar) */
+    .sim-ai-guide { border:1.5px solid var(--vio-300); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; box-shadow:0 3px 14px var(--vio-glow); }
+    .sim-guide-toggle { width:100%; background:linear-gradient(135deg,var(--vio-deep),var(--vio)); border:none; cursor:pointer; padding:14px 18px; display:flex; align-items:center; justify-content:space-between; gap:12px; transition:filter .15s; }
+    .sim-guide-toggle:hover { filter:brightness(1.1); }
+    .sim-guide-toggle-left { display:flex; align-items:center; gap:12px; }
+    .sim-guide-icon { width:36px; height:36px; border-radius:9px; background:rgba(255,255,255,.18); color:white; display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+    .sim-guide-title { font-size:14px; font-weight:700; color:white; text-align:left; }
+    .sim-guide-sub { font-size:12px; color:rgba(255,255,255,.72); text-align:left; margin-top:1px; }
+    .sim-guide-cta { display:flex; align-items:center; gap:8px; background:white; color:var(--vio-deep); font-family:'Outfit',sans-serif; font-size:12px; font-weight:800; padding:6px 13px; border-radius:999px; flex-shrink:0; white-space:nowrap; animation:ctaPulse 2s ease-in-out infinite; }
+    @keyframes ctaPulse { 0%,100% { box-shadow:0 0 0 0 rgba(255,255,255,.4); } 50% { box-shadow:0 0 0 5px rgba(255,255,255,.0); } }
+    .sim-guide-cta svg { width:13px; height:13px; pointer-events:none; transition:transform .2s; }
+    .sim-guide-toggle.open .sim-guide-cta { animation:none; }
+    .sim-guide-toggle.open .sim-guide-cta svg { transform:rotate(180deg); }
+    .sim-guide-title { font-size:14px; font-weight:700; color:var(--vio-deep); text-align:left; }
+    .sim-guide-sub { font-size:12px; color:var(--muted); text-align:left; margin-top:1px; }
+    .sim-guide-arrow { color:var(--vio); font-size:16px; transition:transform .2s; flex-shrink:0; }
+    .sim-guide-arrow.open { transform:rotate(180deg); }
+    .sim-guide-body { display:none; padding:16px 18px; border-top:1px solid var(--vio-100); background:var(--white); }
+    .sim-guide-body.show { display:block; }
+    .sim-guide-step { display:flex; gap:14px; padding-bottom:18px; }
+    .sim-guide-step:last-child { padding-bottom:0; }
+    .sim-guide-num { width:28px; height:28px; border-radius:50%; background:var(--vio); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; box-shadow:0 2px 8px var(--vio-glow); }
+    .sim-guide-content { flex:1; }
+    .sim-guide-step-title { font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+    .sim-guide-step-desc { font-size:12.5px; color:var(--muted); line-height:1.55; margin-bottom:0; }
+
+    /* MEETING SIMULATOR */
+    .sim-card { border:1.5px solid var(--vio-200); border-radius:var(--r-xl); overflow:hidden; box-shadow:0 4px 24px var(--vio-glow); }
+    .sim-header { background:linear-gradient(135deg,var(--vio-deep),var(--vio)); padding:18px 22px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .sim-header-left { display:flex; align-items:center; gap:13px; }
+    .sim-icon { width:42px; height:42px; border-radius:11px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+    .sim-title { font-size:15px; font-weight:700; color:white; }
+    .sim-sub { font-size:12px; color:rgba(255,255,255,.7); margin-top:2px; }
+    .sim-score-wrap { text-align:center; flex-shrink:0; }
+    .sim-round-label { font-size:10px; font-weight:700; color:rgba(255,255,255,.6); text-transform:uppercase; letter-spacing:.08em; }
+    .sim-round-num { font-size:20px; font-weight:800; color:white; line-height:1.1; }
+    .sim-chars { display:flex; flex-direction:column; border-bottom:1px solid var(--border); }
+    .sim-char { display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid #F3F4F6; transition:background .3s; }
+    .sim-char:last-child { border-bottom:none; }
+    .sim-char-avatar { width:34px; height:34px; border-radius:50%; color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .sim-char-info { flex:1; }
+    .sim-char-name { font-size:13px; font-weight:700; color:var(--ink); }
+    .sim-char-want { font-size:12px; color:var(--muted); line-height:1.4; }
+    .sim-char-mood { font-size:20px; flex-shrink:0; transition:all .4s; }
+    .sim-char.happy { background:#F0FDF4; }
+    .sim-char.unhappy { background:#FFF7ED; }
+    .sim-mission { background:var(--vio-50); border-bottom:1px solid var(--vio-100); padding:14px 18px; }
+    .sim-mission-title { font-size:12px; font-weight:700; color:var(--vio-deep); letter-spacing:.06em; text-transform:uppercase; margin-bottom:6px; }
+    .sim-mission-body { font-size:13px; color:var(--ink-soft); line-height:1.6; margin-bottom:10px; }
+    .sim-tips-row { display:flex; gap:8px; flex-wrap:wrap; }
+    .sim-tip { font-size:11.5px; color:var(--vio-deep); background:var(--vio-100); padding:3px 10px; border-radius:999px; font-weight:600; }
+    .sim-chat { background:var(--white); padding:16px 18px; }
+    .sim-input-area { margin-top:12px; }
+    .sim-start { padding:20px; display:flex; flex-direction:column; align-items:center; gap:8px; background:var(--white); border-top:1px solid var(--border); }
+    .sim-start-btn { display:inline-flex; align-items:center; gap:10px; background:var(--vio); color:white; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 32px; border-radius:var(--r); border:none; cursor:pointer; box-shadow:0 4px 16px var(--vio-glow); transition:background .15s,transform .15s; }
+    .sim-start-btn:hover { background:var(--vio-deep); transform:translateY(-2px); }
+    .sim-start-btn svg { width:16px; height:16px; pointer-events:none; }
+    .sim-start-sub { font-size:12.5px; color:var(--muted); }
+    .sim-result-score { text-align:center; padding:20px 14px; }
+    .sim-result-emoji { font-size:52px; margin-bottom:10px; }
+    .sim-result-title { font-size:20px; font-weight:700; color:var(--ink); margin-bottom:6px; }
+    .sim-result-sub { font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:16px; }
+    .sim-result-breakdown { display:flex; flex-direction:column; gap:8px; }
+    .sim-result-item { display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:var(--r-sm); font-size:13px; }
+    .sim-result-item.green { background:var(--green-50); color:#065F46; }
+    .sim-result-item.amber { background:var(--amber-50); color:#92400E; }
+    .sim-result-item.red { background:var(--red-50); color:#991B1B; }
+    .sim-restart-btn { display:inline-flex; align-items:center; gap:8px; background:var(--vio-50); color:var(--vio-deep); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1px solid var(--vio-200); cursor:pointer; margin-top:14px; transition:background .15s; }
+    .sim-restart-btn:hover { background:var(--vio-100); }
+
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:11px 22px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.25); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:600px){
+      nav { padding:0 16px; }
+      .hero { padding:32px 16px 28px; }
+      .wrap { padding:24px 16px 60px; }
+      .mod-body { padding:18px 18px 22px; }
+      .lc-brief-body { padding:14px 16px; }
+      .lc-howto { margin:14px 14px; }
+      .lc-chat { padding:0 14px 14px; }
     }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav>
-  <a href="platform.html" class="logo">
-    <div class="logo-icon">
-      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
-    </div>
-    LearnAI DK
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
   </a>
   <span class="nav-tag">Kursus C — Del 3 af 3</span>
 </nav>
 
-<!-- PROGRESS STEPS -->
-<div class="steps-bar">
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Prompt-teknik</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Emails</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot done">✓</div>
-    <span class="step-label done">Mini-quiz</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot active">C3</div>
-    <span class="step-label active">Rapporter</span>
-  </div>
-  <span class="step-arrow">›</span>
-  <div class="step-item">
-    <div class="step-dot next">🏆</div>
-    <span class="step-label next">Eksamen</span>
+<!-- JOURNEY BAR -->
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item done"><div class="j-dot">✓</div> C1: Prompt-teknik</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> Mini-quiz C1</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> C2: Emails</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> Mini-quiz C2</div>
+    <span class="j-sep">›</span>
+    <div class="j-item active"><div class="j-dot">C3</div> Møder & indhold</div>
+    <span class="j-sep">›</span>
+    <div class="j-item"><div class="j-dot">🏆</div> Eksamen</div>
   </div>
 </div>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Kursus C &nbsp;·&nbsp; Del 3 af 3</div>
-  <h1>AI til rapporter og møder</h1>
-  <p>Den mest avancerede del af Kursus C. Lær at bruge AI til at strukturere, skrive og forbedre professionelle tekster og møder.</p>
-  <div class="hero-meta">
-    <div class="hero-meta-item"><span>⏱</span> 1 time – 1 time 30 min</div>
-    <div class="hero-meta-item"><span>📋</span> 2 moduler</div>
-    <div class="hero-meta-item"><span>🏆</span> Afsluttes med eksamen</div>
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="hero-chip-dot"></span> Kursus C — Del 3 af 3</div>
+    <h1>AI til møder, <em>research</em> og indhold</h1>
+    <p class="hero-lead">Du kender teknikkerne. Nu bruger du dem på de opgaver der virkelig tager tid — møder, research, rapporter og indhold til arbejdet.</p>
+    <div class="hero-pills">
+      <div class="hero-pill">⏱ 70 min</div>
+      <div class="hero-pill">📋 5 moduler</div>
+      <div class="hero-pill">🔴 1 live opgave</div>
+      <div class="hero-pill">🏆 Afsluttes med eksamen</div>
+    </div>
   </div>
 </div>
 
-<div class="content">
+<div class="wrap">
 
-  <div class="section-label">Del C3</div>
-  <div class="section-title">Næsten i mål</div>
-  <p class="section-body">Du har lært teknikkerne i C1 og brugt dem på emails og produktivitet i C2. Nu anvender vi dem på de tungere opgaver: rapporter, lange tekster og møder. Gennemfør begge moduler og tag derefter den afsluttende eksamen for at få dit Kursus C-bevis.</p>
-
-  <!-- ── MODULE C3.1: RAPPORTER ── -->
-  <div class="module open" id="mod1">
-    <div class="module-header" onclick="toggleModule('mod1')">
-      <div class="module-letter">1</div>
-      <div class="module-title-wrap">
-        <div class="module-title">AI til rapporter og lange tekster</div>
-        <div class="module-sub">Strukturer, skriv og forbedr</div>
-      </div>
-      <div class="module-toggle">+</div>
-    </div>
-    <div class="module-body">
-      <p class="prose">Lange tekster er tidskrævende at skrive. AI kan hjælpe dig med struktur og formuleringer — så du bruger din tid på indholdet, ikke formen.</p>
-
-      <div class="info-box box-yellow">
-        <div class="info-box-title">⚠ Vigtig regel</div>
-        <p>Du er eksperten — AI er assistenten. Giv AI dine noter og lad den forme sproget. Tjek altid at fakta er korrekte. Lad aldrig AI opfinde tal og påstande i din rapport.</p>
-      </div>
-
-      <h3 class="subhead">Tre-trins workflow: Fra ideer til færdig tekst</h3>
-
-      <div class="step-box">
-        <div class="step-num">1</div>
-        <div class="step-content">
-          <strong>Lav en outline</strong>
-          <p>Start med at bede AI lave en disposition. Det tager under 2 minutter og giver dig et overblik over hele strukturen, inden du skriver et eneste afsnit.</p>
-        </div>
-      </div>
-
-      <div class="prompt-label">Skabelon — Trin 1</div>
-      <div class="prompt-template">"Jeg skal skrive en rapport om [emne] til [målgruppe].
-Længde: ca. [X] sider. Formål: [hvad skal den opnå].
-Lav en disposition med afsnitsoverskrifter og
-kort beskrivelse af indhold i hvert afsnit."</div>
-
-      <div class="step-box">
-        <div class="step-num">2</div>
-        <div class="step-content">
-          <strong>Skriv afsnit for afsnit</strong>
-          <p>Tag outlinefra trin 1. Vælg ét afsnit ad gangen. Giv AI dine egne rånoter og lad den skrive et udkast — ret det derefter.</p>
-        </div>
-      </div>
-
-      <div class="prompt-label">Skabelon — Trin 2</div>
-      <div class="prompt-template">"Skriv afsnittet '[overskrift]' baseret på disse noter: [dine punkter].
-Brug en [professionel / akademisk / letlæst] tone.
-Maks [X] ord."</div>
-
-      <div class="step-box">
-        <div class="step-num">3</div>
-        <div class="step-content">
-          <strong>Finpuds hele teksten</strong>
-          <p>Når alle afsnit er skrevet, giv AI den samlede tekst og bed den forbedre flow, overgange og konsistens.</p>
-        </div>
-      </div>
-
-      <div class="prompt-label">Skabelon — Trin 3</div>
-      <div class="prompt-template">"Læs følgende tekst og forbedre: flow, overgange
-mellem afsnit, konsistent tone og tydelighed.
-Marker dine ændringer.
-[Indsæt tekst]"</div>
-
-      <hr class="divider">
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Lav en outline på under 2 minutter</div>
-        <p>Vælg et emne du kender: en hobby, dit arbejde, en sport eller et fag fra skolen.</p>
-        <div class="prompt-label" style="margin-top:0.75rem;">Brug denne prompt</div>
-        <p><em>"Lav en disposition til en 2-siders rapport om [emne] til en læser der ikke kender emnet. Inkléér 4 afsnit med overskrifter og 2 bulletpoints pr. afsnit."</em></p>
-        <p style="margin-top:0.75rem;"><strong>Vurdér:</strong> Fik du en brugbar struktur? Hvad ville du ændre?</p>
-      </div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Skriv et afsnit fra dine egne noter</div>
-        <ol>
-          <li>Tag outlinenfra forrige opgave. Vælg ét afsnit.</li>
-          <li>Skriv 3–5 korte punkter om hvad du VED om emnet (dit eget indhold).</li>
-          <li>Brug Trin 2-prompten med dine noter.</li>
-        </ol>
-        <p style="margin-top:0.75rem;"><strong>Ret:</strong> Hvad mangler? Hvad er upræcist? Brug iterativ forfining (C1 Teknik 4) til at forbedre det.</p>
-      </div>
-
-      <hr class="divider">
-
-      <h3 class="subhead">Tre typer tekster AI er særlig god til</h3>
-
-      <div class="info-box box-purple">
-        <div class="info-box-title">Sammenfatninger</div>
-        <p><em>"Lav en struktureret sammenfatning af følgende tekst. Format: 1) Hovedpointe (2 sætninger), 2) Vigtigste punkter (bullet-liste), 3) Hvad bør jeg gøre nu? [Indsæt tekst]"</em></p>
-      </div>
-
-      <div class="info-box box-grey">
-        <div class="info-box-title">Feedback på din tekst</div>
-        <p><em>"Læs følgende tekst og giv mig konstruktiv feedback. Fokus på: tydelighed, tone, struktur og logik. Vær ærlig og specifik — ikke generelt ros. [Indsæt tekst]"</em></p>
-      </div>
-
-      <div class="info-box box-purple">
-        <div class="info-box-title">Omskriv til en anden målgruppe</div>
-        <p><em>"Omskriv følgende tekst så den passer til [ny målgruppe]. Behold det samme indhold men tilpas sprog, tone og detaljeniveau. [Indsæt tekst]"</em></p>
-      </div>
+  <div class="notice info" style="margin-bottom:28px;">
+    <div class="notice-icon">💡</div>
+    <div>
+      <div class="notice-head">Sådan bruger du C3</div>
+      <div class="notice-body">Åbn modulerne i rækkefølge — hvert modul markeres automatisk som færdigt. Brug øvelserne aktivt: åbn Claude eller ChatGPT ved siden af og prøv det med det samme. Modul 4 er en live opgave ligesom email-udfordringen i C2.</div>
     </div>
   </div>
 
-  <!-- ── MODULE C3.2: MØDER ── -->
-  <div class="module" id="mod2">
-    <div class="module-header" onclick="toggleModule('mod2')">
-      <div class="module-letter">2</div>
-      <div class="module-title-wrap">
-        <div class="module-title">AI til møder og projekter</div>
-        <div class="module-sub">Før, under og efter</div>
-      </div>
-      <div class="module-toggle">+</div>
+  <!-- PROGRESS -->
+  <div class="progress-track-wrap">
+    <div class="prog-label">Fremgang</div>
+    <div class="prog-bar-outer"><div class="prog-bar-inner" id="prog-bar" style="width:20%"></div></div>
+    <div class="prog-pct" id="prog-pct">20%</div>
+    <div class="prog-steps">
+      <div class="prog-step active" id="ps1">1</div>
+      <div class="prog-step" id="ps2">2</div>
+      <div class="prog-step" id="ps3">3</div>
+      <div class="prog-step" id="ps4">4</div>
+      <div class="prog-step" id="ps5">5</div>
     </div>
-    <div class="module-body">
-      <p class="prose">Møder er en af de største ressourcer i enhver organisation. AI kan hjælpe dig med at gøre dine møder skarpere, kortere og mere handlingsorienterede — både før og efter.</p>
+    <div class="prog-label" id="prog-txt">Godt begyndt — 4 moduler tilbage</div>
+  </div>
 
-      <span class="technique-tag">Før mødet</span>
-      <h3 class="subhead">Forbered en dagsorden</h3>
+  <!-- ── MODUL 1: MØDER ── -->
+  <div class="sect-label"><hr><span>Modul 1 af 5</span><hr></div>
+  <div class="mod open" id="m1">
+    <div class="mod-header" onclick="tog('m1')">
+      <div class="mod-num">1</div>
+      <div class="mod-text">
+        <div class="mod-title">AI til møder — før, under og efter</div>
+        <div class="mod-sub">Forberedelse, referater og status — ét møde på 5 minutter</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
 
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Lav en møde dagsorden til et [X]-minutters møde om [emne].
-Deltagere: [hvem]. Formål: [hvad skal vi beslutte].
-Inkléér tid pr. punkt og et punkt til action items til sidst."</div>
+      <p class="prose">Møder er en af de største tidssluger på arbejdet. AI kan ikke deltage i stedet for dig — men den kan klare alt det administrative rundt om: forberedelsen, referatet og opfølgningen. Det er reelt 30-45 minutter du vinder pr. møde.</p>
 
-      <h3 class="subhead">Forbered spørgsmål</h3>
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Jeg skal til møde om [emne].
-Hjælp mig med 5 gode spørgsmål der viser at
-jeg har forstået emnet og bidrager konstruktivt."</div>
-
-      <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Lav en dagsorden til et fiktivt møde</div>
-        <p>Vælg et møde-scenarie:</p>
-        <ul style="padding-left:1.2rem; margin:0.5rem 0;">
-          <li>Nyt projekt skal planlægges</li>
-          <li>Ugentlig teamstatus</li>
-          <li>Planlægning af en event</li>
-          <li>Løsning af et konkret problem</li>
-        </ul>
-        <p style="margin-top:0.5rem;">Brug skabelonen. 5 deltagere. 30 minutter.</p>
-        <p style="margin-top:0.5rem;"><strong>Vurdér:</strong> Er den realistisk? Hvad ville du ændre?</p>
+      <div class="trap">
+        <div class="trap-icon">⚠️</div>
+        <div>
+          <div class="trap-head">Pas på her</div>
+          <div class="trap-body">AI kan ikke vide hvad der faktisk skete i mødet. Referatet er kun så godt som dine noter. Tag mindst 6-8 korte punkter under mødet — ellers mangler AI kontekst til at lave et brugbart referat.</div>
+        </div>
       </div>
 
-      <hr class="divider">
+      <!-- FØR MØDET -->
+      <div class="phase-label">📅 Fase 1 — Dagen før</div>
 
-      <span class="technique-tag">Efter mødet</span>
-      <h3 class="subhead">Omdan rånoter til referat</h3>
-      <p class="prose">Det er her AI virkelig sparer dig for tid. Tag dine hurtige noter fra mødet og lad AI lave et struktureret referat.</p>
+      <div class="wf-steps">
+        <div class="wf-step">
+          <div class="wf-left"><div class="wf-num">1</div><div class="wf-line"></div></div>
+          <div class="wf-right">
+            <div class="wf-title">Lav en skarp dagsorden</div>
+            <div class="wf-body">Giv AI emnet, hvem der deltager og hvad der skal besluttes. Du får en tidssat dagsorden med et "action items"-punkt til sidst.</div>
+            <div class="copy-block">
+              <div class="copy-topbar"><span class="copy-label-txt">Prompt — Dagsorden</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+              <div class="copy-text">Lav en dagsorden til et [X]-minutters møde om [emne].
+Deltagere: [hvem og deres roller].
+Formål: [hvad skal vi beslutte eller opnå].
+Inkludér tid pr. punkt og afslut med "action items".</div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-left"><div class="wf-num">2</div></div>
+          <div class="wf-right">
+            <div class="wf-title">Forbered 5 intelligente spørgsmål</div>
+            <div class="wf-body">Brug dette til et møde du ikke kender emnet godt — det giver dig øjeblikkelig troværdighed.</div>
+            <div class="copy-block">
+              <div class="copy-topbar"><span class="copy-label-txt">Prompt — Forberedelse</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+              <div class="copy-text">Jeg skal til møde om [emne] om 30 minutter.
+Giv mig:
+1) De 5 vigtigste ting at vide om emnet
+2) 3 spørgsmål der viser jeg har forstået kompleksiteten
+3) Ét kontroversielt synspunkt der starter en god diskussion</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Her er mine rånoter fra mødet: [indsæt noter].
+      <!-- EFTER MØDET -->
+      <div class="phase-label" style="margin-top:20px;">📝 Fase 2 — Lige efter mødet</div>
+
+      <p class="prose">Det her er AI's stærkeste møde-superkraft. Dine rånoter → struktureret referat på under 2 minutter.</p>
+
+      <!-- FØR/EFTER DEMO -->
+      <div class="ba-wrap">
+        <div class="ba-col before">
+          <div class="ba-head">❌ Dine rånoter</div>
+          <div class="ba-body">Maria ringer leverandør. Budget 5k. Logo godkendes fredag. Jonas laver præsentation. Ingen beslutning om dato endnu. Kunder inviteres uge 47. Sarah holder i tøjret.</div>
+        </div>
+        <div class="ba-col after">
+          <div class="ba-head">✅ AI's referat</div>
+          <div class="ba-body"><strong>Beslutninger:</strong> Budget fastsat til 5.000 kr. Logo godkendes fredag.
+
+<strong>Action items:</strong>
+• Maria: Kontakter leverandør (denne uge)
+• Jonas: Udkast til præsentation (fredag)
+
+<strong>Åbent:</strong> Dato ikke besluttet. Kunder inviteres uge 47.</div>
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-topbar"><span class="copy-label-txt">Prompt — Referat</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+        <div class="copy-text">Her er mine rånoter fra mødet: [indsæt noter].
 Lav et struktureret referat med:
 1) Vigtigste beslutninger
 2) Action items: hvem gør hvad inden hvornår
-3) Åbne spørgsmål der stadig mangler svar"</div>
-
-      <h3 class="subhead">Statusopdatering til leder</h3>
-      <div class="prompt-label">Skabelon</div>
-      <div class="prompt-template">"Lav en kort statusopdatering baseret på disse noter.
-Maks 200 ord. Fokus: fremskridt, næste skridt, risici.
-[Indsæt noter]"</div>
+3) Åbne spørgsmål der stadig mangler svar
+Skriv professionelt dansk — maks 200 ord.</div>
+      </div>
 
       <div class="practice">
-        <div class="practice-title">🔥 PRØV DET NU — Omdan rånoter til referat</div>
-        <p>Skriv 6–8 rånoter som om du tog dem til et møde (kan være opdigtede).</p>
-        <p style="margin-top:0.5rem;">Eksempel: <em>"Maria kontakter leverandør. Budget max 5.000 kr. Logo skal godkendes fredag. Jonas laver udkast til præsentation."</em></p>
-        <p style="margin-top:0.5rem;">Brug referat-skabelonen og se hvad AI laver ud af det.</p>
-        <p style="margin-top:0.75rem;"><strong>Reflektér:</strong> Hvor meget tid sparede det dig? Hvad manglede AI?</p>
+        <div class="practice-bar"><div class="p-tag">Din tur først</div><div class="p-title">Skriv dine egne rånoter — lad AI lave resten</div></div>
+        <div class="p-body">
+          <p>Inden du bruger prompten ovenfor: <strong>skriv 7-8 korte rånoter</strong> som om du tog dem til et møde. De må gerne være opdigtede. Brug derefter referat-prompten.</p>
+          <p style="margin-top:8px;"><strong>Reflektér:</strong> Hvad fik AI rigtigt? Hvad manglede den? Hvilken information fra dine noter valgte AI at fremhæve?</p>
+        </div>
       </div>
 
-      <hr class="divider">
+    </div>
+  </div>
 
-      <h3 class="subhead">Det fulde møde-workflow</h3>
-      <div class="info-box box-purple">
-        <div class="info-box-title">Brug AI i alle tre faser</div>
-        <ul>
-          <li><strong>Dag før:</strong> Lav dagsorden + forbered spørgsmål</li>
-          <li><strong>Under mødet:</strong> Tag korte rånoter — AI laver resten</li>
-          <li><strong>Efter mødet:</strong> Referat med action items + statusmail til leder</li>
-        </ul>
-        <p style="margin-top:0.75rem;">Et møde på 1 time kan resultere i et fuldt referat på under 5 minutter.</p>
+  <!-- ── MODUL 2: RESEARCH ── -->
+  <div class="sect-label"><hr><span>Modul 2 af 5</span><hr></div>
+  <div class="mod" id="m2">
+    <div class="mod-header" onclick="tog('m2')">
+      <div class="mod-num">2</div>
+      <div class="mod-text">
+        <div class="mod-title">AI til research — dyk ind i et nyt emne</div>
+        <div class="mod-sub">Stillads-teknikken · Kilde-skepticisme · Rigtig vs. forkert brug</div>
       </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <p class="prose">AI er en exceptionel research-assistent — men kun hvis du bruger den rigtigt. Den største fejl er at bruge AI som en <strong>sandhedsmaskine</strong>. Det er den ikke. Den er en <strong>startrampe</strong>.</p>
+
+      <div class="trap">
+        <div class="trap-icon">⚠️</div>
+        <div>
+          <div class="trap-head">Den vigtigste regel i research med AI</div>
+          <div class="trap-body">AI opfinder fakta, tal og kildehenvisninger hvis den ikke ved svaret — og den lyder lige så selvsikker når den tager fejl. <strong>Tjek altid specifikke tal, navne og påstande i en rigtig kilde.</strong> Brug AI til at forstå emnet og stille bedre spørgsmål — ikke til at hente fakta du skal bruge som dokumentation.</div>
+        </div>
+      </div>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin:20px 0 12px;">Stillads-teknikken — byg viden lag for lag</h3>
+      <p class="prose">I stedet for at stille ét stort spørgsmål, starter du med det brede billede og går gradvist dybere. AI husker konteksten fra dine tidligere beskeder i samtalen.</p>
+
+      <div class="wf-steps">
+        <div class="wf-step">
+          <div class="wf-left"><div class="wf-num">1</div><div class="wf-line"></div></div>
+          <div class="wf-right">
+            <div class="wf-title">Start bredt — 80/20-overblikket</div>
+            <div class="wf-body">Få de 20% information der giver 80% af forståelsen. Perfekt som første prompt i en ny samtale.</div>
+            <div class="copy-block">
+              <div class="copy-topbar"><span class="copy-label-txt">Prompt — Lag 1</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+              <div class="copy-text">Giv mig en 80/20-gennemgang af [emne]: de 20% jeg
+skal forstå for at få 80% af helheden.
+Ingen forudgående viden. Klart, ikke-teknisk dansk.
+Afslut med 3 spørgsmål jeg burde stille en ekspert.</div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-left"><div class="wf-num">2</div><div class="wf-line"></div></div>
+          <div class="wf-right">
+            <div class="wf-title">Dyk dybere i det vigtigste</div>
+            <div class="wf-body">Fortsæt i <em>samme samtale</em> — AI husker hvad du allerede ved.</div>
+            <div class="copy-block">
+              <div class="copy-topbar"><span class="copy-label-txt">Prompt — Lag 2</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+              <div class="copy-text">Uddyb [det punkt der interesserede mig mest].
+Behold det samme niveau — ikke for teknisk.
+Hvad er de mest kontroversielle synspunkter på dette?</div>
+            </div>
+          </div>
+        </div>
+        <div class="wf-step">
+          <div class="wf-left"><div class="wf-num">3</div></div>
+          <div class="wf-right">
+            <div class="wf-title">Forbered dig til at tale med en rigtig ekspert</div>
+            <div class="wf-body">Det ultimative mål med AI-research er bedre spørgsmål til rigtige mennesker og rigtige kilder.</div>
+            <div class="copy-block">
+              <div class="copy-topbar"><span class="copy-label-txt">Prompt — Lag 3</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+              <div class="copy-text">Baseret på det vi har gennemgået:
+Hvilke 3 spørgsmål ville skelne en novice fra
+en der virkelig forstår emnet?
+Og hvad er de bedste typer af kilder at konsultere
+for at verificere det vi har talt om?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SVAG/STÆRK DEMO -->
+      <div class="ai-demo">
+        <div class="ai-demo-label">Se forskellen — svagt vs. stærkt research-prompt</div>
+        <div class="ai-tabs">
+          <div class="ai-tab active" id="r-tab1" onclick="switchTab('r','1')">Svagt prompt — du er her</div>
+          <div class="ai-tab" id="r-tab2" onclick="switchTab('r','2')">Stærkt prompt — klik her</div>
+        </div>
+        <div class="ai-response" id="r-resp1">
+          <div class="ai-bubble">
+            <div class="ai-avatar">AI</div>
+            <div class="ai-msg">Hvad er bæredygtighed?<br><br>Bæredygtighed handler om at imødekomme nutidens behov uden at kompromittere fremtidige generationers muligheder...</div>
+          </div>
+          <div class="ai-verdict bad">Generisk svar — kunne stå på Wikipedia. Du ved ikke mere end før.</div>
+        </div>
+        <div class="ai-response hidden" id="r-resp2">
+          <div class="ai-bubble">
+            <div class="ai-avatar ai-avatar-good">AI</div>
+            <div class="ai-msg ai-msg-good"><strong>De 3 ting der bestemmer 80% af debatten:</strong><br><br>1. <strong>Den tredobbelte bundlinje</strong> — økonomi, miljø og sociale forhold skal alle tre gå op. Konflikten opstår når de modstrider hinanden.<br><br>2. <strong>Certificering vs. greenwashing</strong> — hvem bestemmer hvad der er "bæredygtigt"? Det er her det politiske spil er.<br><br>3. <strong>Systemtænkning</strong> — en elbil er ikke bæredygtig i sig selv, kun i kontekst af energikilden bag den.<br><br><strong>Spørgsmål til en ekspert:</strong> "Hvilken certificeringsstandard anser du for mest troværdig og hvorfor?"</div>
+          </div>
+          <div class="ai-verdict good">Konkret, struktureret, og sætter dig i stand til at tale med eksperter. Det er research-AI.</div>
+        </div>
+      </div>
+
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Din tur først</div><div class="p-title">Vælg et emne du vil lære — brug stillads-teknikken</div></div>
+        <div class="p-body">
+          <p>Vælg noget du har tænkt "det burde jeg forstå bedre": en faglig trend, en teknologi, et historisk emne — hvad som helst.</p>
+          <ol>
+            <li>Send lag-1-prompten med dit emne.</li>
+            <li>Læs svaret. Hvad vil du vide mere om?</li>
+            <li>Send lag-2-prompten med det specifikke punkt i <em>samme samtale</em>.</li>
+          </ol>
+          <p style="margin-top:8px;"><strong>Tjek:</strong> Passer de fakta AI nævner til hvad du kan finde andetsteds? Identificér ét punkt du ville verificere i en rigtig kilde.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── MODUL 3: INDHOLD ── -->
+  <div class="sect-label"><hr><span>Modul 3 af 5</span><hr></div>
+  <div class="mod" id="m3">
+    <div class="mod-header" onclick="tog('m3')">
+      <div class="mod-num">3</div>
+      <div class="mod-text">
+        <div class="mod-title">AI til indholdsproduktion</div>
+        <div class="mod-sub">Samme budskab — fire forskellige kanaler</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <p class="prose">En af AI's mest undervurderede superkræfter: du skriver indholdet én gang — og AI tilpasser det til enhver kanal og målgruppe. Det der tog en time, tager nu fem minutter.</p>
+
+      <h3 style="font-size:15px;font-weight:700;color:var(--ink);margin:0 0 12px;">Fire kanaler — fire vidt forskellige toner</h3>
+
+      <div class="channel-grid">
+        <div class="channel-card c1">
+          <div class="channel-card-head"><span class="channel-icon">💼</span> LinkedIn-opslag</div>
+          <div class="channel-body">Professionelt men personligt. Starter med en krog. Brug linjeskift. Afslut med spørgsmål eller CTA. Maks 150 ord.</div>
+        </div>
+        <div class="channel-card c2">
+          <div class="channel-card-head"><span class="channel-icon">📧</span> Intern nyhedsbrev</div>
+          <div class="channel-body">Direkte og informativt. Kollegerne er travle — kom til sagen. Bullet-liste til handlingspunkter. Ingen salgstone.</div>
+        </div>
+        <div class="channel-card c3">
+          <div class="channel-card-head"><span class="channel-icon">📊</span> Præsentationsslide</div>
+          <div class="channel-body">Maks 5 ord pr. linje. Bullet-punkter der støtter hvad du siger mundtligt — ikke erstatter det. Én pointe pr. slide.</div>
+        </div>
+        <div class="channel-card c4">
+          <div class="channel-card-head"><span class="channel-icon">📋</span> Rapport-afsnit</div>
+          <div class="channel-body">Akademisk eller professionel tone. Komplet sætninger. Underbyg påstande. Afsnittet skal give mening alene.</div>
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-topbar"><span class="copy-label-txt">Master-prompt — til alle 4 kanaler</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+        <div class="copy-text">Her er mit rå-indhold: [indsæt dine noter / dit udkast].
+
+Omskriv dette til [kanal] til [målgruppe].
+Tone: [professionel / uformel / akademisk / salgsorienteret].
+Længde: [maks X ord / X bullet-punkter / 1 slide].
+Behold alle fakta og pointer — tilpas kun form og sprog.</div>
+      </div>
+
+      <!-- FØR/EFTER DEMO -->
+      <p class="prose" style="margin-bottom:10px;"><strong>Eksempel:</strong> Samme indhold — to versioner.</p>
+      <div class="ba-wrap">
+        <div class="ba-col before">
+          <div class="ba-head">📋 Rå-noter (input)</div>
+          <div class="ba-body">Vi har testet det nye bookingsystem i 3 uger. 40% hurtigere. Kunderne er tilfredse. 2 fejl fundet og rettet. Klar til fuld udrulning næste måned.</div>
+        </div>
+        <div class="ba-col after">
+          <div class="ba-head">💼 LinkedIn-version (output)</div>
+          <div class="ba-body">3 uger. 40% hurtigere bookinger. 2 fejl fundet — og rettet.
+
+Vores nye bookingsystem er klar til fuld udrulning næste måned, og kunderne har allerede mærket forskellen.
+
+Hvad lærte vi? At teste tidligt betaler sig.</div>
+        </div>
+      </div>
+
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Samme budskab — tre kanaler</div></div>
+        <div class="p-body">
+          <p>Tag disse rå-noter:</p>
+          <p style="margin:8px 0; font-style:italic; background:rgba(0,0,0,.04); padding:10px 12px; border-radius:6px; color:var(--ink-soft);">"Vores team har reduceret responstiden til kunder fra 48 timer til 4 timer ved hjælp af en ny intern proces. Det skyldes daglige 10-minutters stand-up møder og et nyt ticketsystem."</p>
+          <p><strong>Brug master-prompten og omskriv til:</strong></p>
+          <ol>
+            <li>Et LinkedIn-opslag</li>
+            <li>Et afsnit til en intern rapport</li>
+            <li>To bullet-punkter til en præsentationsslide</li>
+          </ol>
+          <p style="margin-top:8px;"><strong>Sammenlign:</strong> Hvilke ord og detaljer valgte AI at beholde? Hvilke valgte den at skære?</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── MODUL 4: MØDE-SIMULATOR ── -->
+  <div class="sect-label"><hr><span>Modul 4 af 5 — Interaktiv øvelse</span><hr></div>
+  <div class="mod" id="m4">
+    <div class="mod-header" onclick="tog('m4')">
+      <div class="mod-num">4</div>
+      <div class="mod-text">
+        <div class="mod-title">Møde-simulatoren</div>
+        <div class="mod-sub">Du leder mødet — brug AI til at forberede dig — tre karakterer svarer i karakter</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <!-- BAGHISTORIE -->
+      <div class="sim-backstory">
+        <div class="sim-bs-header">
+          <div class="sim-bs-badge">📋 Din rolle</div>
+          <div class="sim-bs-title">Du er projektleder hos TechNord A/S</div>
+        </div>
+        <div class="sim-bs-body">
+          <p>Din virksomhed har brugt det samme manuelle bookingsystem i 8 år. Det er langsomt, fejlbehæftet og koster jer kunder. Direktionen har besluttet at I skal skifte system inden årets udgang.</p>
+          <p style="margin-top:8px;"><strong>Du har indkaldt til et besluttningsmøde</strong> med tre kollegaer der alle har en mening — og de er ikke enige. Din opgave er at lede mødet så I ender med en konkret beslutning alle kan acceptere.</p>
+        </div>
+        <div class="sim-bs-chars">
+          <div class="sim-bs-char">
+            <div class="sim-bs-av" style="background:#7C3AED;">S</div>
+            <div>
+              <div class="sim-bs-name">Sara — Salgschef</div>
+              <div class="sim-bs-desc">Vil have løsningen klar inden Q2 så salgsteamet kan bruge den til sommerens kampagner. Utålmodig og resultatorienteret.</div>
+            </div>
+          </div>
+          <div class="sim-bs-char">
+            <div class="sim-bs-av" style="background:#0369A1;">M</div>
+            <div>
+              <div class="sim-bs-name">Mikkel — IT-chef</div>
+              <div class="sim-bs-desc">Skeptisk over for hurtige løsninger. Vil have et teknisk solidt system der kan integreres med jeres eksisterende infrastruktur.</div>
+            </div>
+          </div>
+          <div class="sim-bs-char">
+            <div class="sim-bs-av" style="background:#B45309;">L</div>
+            <div>
+              <div class="sim-bs-name">Lone — Økonomiansvarlig</div>
+              <div class="sim-bs-desc">Vogter over budgettet. Vil se en klar ROI-beregning før hun godkender noget som helst. Budget: maks 80.000 kr.</div>
+            </div>
+          </div>
+        </div>
+        <div class="sim-bs-goal">
+          <span class="sim-bs-goal-icon">🎯</span>
+          <div><strong>Din opgave:</strong> Få alle tre til at acceptere den samme beslutning inden for 10 runder. Brug AI til at forberede dig — se guiden nedenfor.</div>
+        </div>
+      </div>
+
+      <!-- AI-GUIDE (sammenklapbar) -->
+      <div class="sim-ai-guide">
+        <button class="sim-guide-toggle" id="sim-guide-toggle" onclick="toggleAiGuide()">
+          <div class="sim-guide-toggle-left">
+            <div class="sim-guide-icon">🤖</div>
+            <div>
+              <div class="sim-guide-title">Sådan bruger du AI til at forberede dig</div>
+              <div class="sim-guide-sub">3 konkrete prompts — brug dem inden du starter mødet</div>
+            </div>
+          </div>
+          <div class="sim-guide-cta">
+            Åbn guide
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </button>
+        <div class="sim-guide-body" id="sim-guide-body">
+          <p style="font-size:13px; color:var(--ink-soft); line-height:1.65; margin-bottom:14px;">Åbn Claude eller ChatGPT i en ny fane. Brug disse tre prompts <em>inden</em> du starter mødet — så går du ind forberedt.</p>
+
+          <div class="sim-guide-step">
+            <div class="sim-guide-num">1</div>
+            <div class="sim-guide-content">
+              <div class="sim-guide-step-title">Forstå hvad der egentlig er i spil</div>
+              <div class="sim-guide-step-desc">Brug AI til at afdække de skjulte konflikter og hvad der typisk blokerer den slags beslutninger.</div>
+              <div class="copy-block" style="margin-bottom:0; margin-top:10px;">
+                <div class="copy-topbar"><span class="copy-label-txt">Prompt 1 — Forberedelse</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+                <div class="copy-text">Jeg skal lede et møde om valg af nyt bookingsystem. Tre deltagere har modstridende interesser: salgschefen vil have det hurtigt (klar Q2), IT-chefen vil have det teknisk solidt uden workarounds, økonomiansvarlig vil holde budget på 80.000 kr og se ROI.
+
+Hvad er de 3 mest sandsynlige konflikter der vil opstå? Og hvad er et realistisk kompromis der kunne tilfredsstille alle tre?</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-guide-step">
+            <div class="sim-guide-num">2</div>
+            <div class="sim-guide-content">
+              <div class="sim-guide-step-title">Forbered skarpe spørgsmål til mødet</div>
+              <div class="sim-guide-step-desc">Åbne spørgsmål der får folk til at forklare sig frem for at grave sig ned.</div>
+              <div class="copy-block" style="margin-bottom:0; margin-top:10px;">
+                <div class="copy-topbar"><span class="copy-label-txt">Prompt 2 — Spørgsmål</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+                <div class="copy-text">Giv mig 5 åbne spørgsmål jeg kan stille til et møde om valg af nyt bookingsystem, hvor deltagerne er uenige om tempo, teknisk kvalitet og økonomi. Spørgsmålene skal hjælpe folk til at forklare deres bekymringer uden at blive defensive.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sim-guide-step" style="padding-bottom:0;">
+            <div class="sim-guide-num">3</div>
+            <div class="sim-guide-content">
+              <div class="sim-guide-step-title">Øv dig på svære reaktioner</div>
+              <div class="sim-guide-step-desc">Brug AI til at rollespille — hvad svarer du hvis Mikkel siger "det er teknisk umuligt inden Q2"?</div>
+              <div class="copy-block" style="margin-bottom:0; margin-top:10px;">
+                <div class="copy-topbar"><span class="copy-label-txt">Prompt 3 — Rollespil</span><div class="copy-topbar-actions"><button class="see-prompt-btn" onclick="togglePrompt(this)" title="Se prompt"><svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg> Se prompt</button><button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér</button></div></div>
+                <div class="copy-text">Spil rollen som en skeptisk IT-chef i et møde om nyt bookingsystem. Jeg er mødeleder. Sig: "Det er teknisk umuligt at implementere inden Q2 uden at vi kompromitterer sikkerheden."
+
+Jeg svarer: [skriv hvad du ville sige]
+
+Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at bevæge IT-chefen mod et kompromis?</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="notice info" style="margin-top:14px; margin-bottom:0;">
+            <div class="notice-icon">💡</div>
+            <div>
+              <div class="notice-head">Pointen med disse prompts</div>
+              <div class="notice-body">Du bruger AI til at tænke igennem situationen <em>inden</em> du går ind i den — ligesom en fodboldtræner der forbereder sit hold på modstanderens bevægelser. Jo bedre du er forberedt, jo bedre klarer du dig i simulatoren.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIMULATOR CARD -->
+      <div class="sim-card">
+
+        <!-- HEADER -->
+        <div class="sim-header">
+          <div class="sim-header-left">
+            <div class="sim-icon">🏢</div>
+            <div>
+              <div class="sim-title">Møde: Nyt bookingsystem — TechNord A/S</div>
+              <div class="sim-sub">Du er mødeleder · Maks 10 runder · Nå en beslutning</div>
+            </div>
+          </div>
+          <div class="sim-score-wrap">
+            <div class="sim-round-label">Runde</div>
+            <div class="sim-round-num" id="sim-round">0/10</div>
+          </div>
+        </div>
+
+        <!-- KARAKTERER -->
+        <div class="sim-chars">
+          <div class="sim-char" id="char-sara">
+            <div class="sim-char-avatar" style="background:#7C3AED;">S</div>
+            <div class="sim-char-info">
+              <div class="sim-char-name">Sara · Salgschef</div>
+              <div class="sim-char-want">Klar inden Q2 · Fokus på salgsmuligheder</div>
+            </div>
+            <div class="sim-char-mood" id="mood-sara" title="Saras stemning">😐</div>
+          </div>
+          <div class="sim-char" id="char-mikkel">
+            <div class="sim-char-avatar" style="background:#0369A1;">M</div>
+            <div class="sim-char-info">
+              <div class="sim-char-name">Mikkel · IT-chef</div>
+              <div class="sim-char-want">Teknisk solid · Ingen quick-fixes</div>
+            </div>
+            <div class="sim-char-mood" id="mood-mikkel" title="Mikkels stemning">😐</div>
+          </div>
+          <div class="sim-char" id="char-lone">
+            <div class="sim-char-avatar" style="background:#B45309;">L</div>
+            <div class="sim-char-info">
+              <div class="sim-char-name">Lone · Økonomiansvarlig</div>
+              <div class="sim-char-want">Maks 80.000 kr · Klar ROI</div>
+            </div>
+            <div class="sim-char-mood" id="mood-lone" title="Lones stemning">😐</div>
+          </div>
+        </div>
+
+        <!-- CHAT -->
+        <div class="sim-chat">
+          <div class="chat-messages" id="sim-msgs" style="min-height:80px; max-height:420px;">
+            <div style="text-align:center; font-size:12.5px; color:var(--muted); padding:16px 8px; font-style:italic;">
+              Skriv din første besked for at starte mødet — præsenter dig og sæt dagsordenen.
+            </div>
+          </div>
+          <div class="chat-typing" id="sim-typing">
+            <div class="chat-avatar ai-av">AI</div>
+            <div class="chat-typing-dots"><span></span><span></span><span></span></div>
+          </div>
+          <div class="sim-input-area" id="sim-input-area">
+            <div class="chat-input-row">
+              <textarea class="chat-textarea" id="sim-input" placeholder="Hvad siger du til mødet? Præsentér dig og sæt dagsordenen..." onkeydown="simKeydown(event)"></textarea>
+              <button class="chat-send-btn" id="sim-send" onclick="sendSimMsg()">
+                <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div class="chat-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje</div>
+          </div>
+          <div class="sim-result" id="sim-result" style="display:none;"></div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── MODUL 5: BIBLIOTEK ── -->
+  <div class="sect-label"><hr><span>Modul 5 af 5 — Tag det med dig</span><hr></div>
+  <div class="mod" id="m5">
+    <div class="mod-header" onclick="tog('m5')">
+      <div class="mod-num">5</div>
+      <div class="mod-text">
+        <div class="mod-title">Tilføj C3-prompts til dit bibliotek</div>
+        <div class="mod-sub">8 nye prompts fra møder, research og indhold — klar i ét klik</div>
+      </div>
+      <div class="mod-time">5 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+
+      <p class="prose">Du har lært 8 nye prompts i C3. Klik <strong>"Tilføj til mit bibliotek"</strong> — og de gemmes automatisk i en ny "C3"-kategori. Klik derefter <strong>"Åbn mit bibliotek"</strong> for at se dem.</p>
+
+      <div class="lib-add-card">
+        <div class="lib-add-icon">📚</div>
+        <div class="lib-add-text">
+          <div class="lib-add-title">8 C3-prompts klar til dit bibliotek</div>
+          <div class="lib-add-sub">Møde-forberedelse, referat, stillads-research, kanal-tilpasning og projekt-briefing</div>
+        </div>
+        <button class="lib-add-btn" id="lib-add-btn" onclick="addC3Prompts()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Tilføj til mit bibliotek
+        </button>
+      </div>
+
+      <div id="lib-added-notice" style="display:none; flex-direction:column; gap:10px; margin-top:4px;">
+        <div class="notice green">
+          <div class="notice-icon">✅</div>
+          <div>
+            <div class="notice-head" id="lib-added-head">C3-prompts tilføjet!</div>
+            <div class="notice-body" id="lib-added-body">8 prompts er nu gemt i kategorien "C3" i dit bibliotek.</div>
+          </div>
+        </div>
+        <a href="bibliotek.html" class="lib-open-link" target="_blank">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Åbn mit bibliotek
+        </a>
+      </div>
+
+      <div id="lib-error-notice" style="display:none;" class="notice warn">
+        <div class="notice-icon">⚠️</div>
+        <div>
+          <div class="notice-head">Kunne ikke tilføje automatisk</div>
+          <div class="notice-body" id="lib-error-body">Dit bibliotek skal åbnes i samme browser for at det virker. <a href="bibliotek.html" target="_blank" style="color:#92400E;font-weight:700;">Åbn biblioteket her</a> — og klik derefter "Tilføj" igen.</div>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <!-- SUMMARY -->
   <div class="summary">
-    <h3>Del C3 — Hvad du har lært</h3>
-    <ul>
-      <li>Tre-trins workflow: outline → afsnit for afsnit → finpudsning</li>
-      <li>Sammenfatninger, feedback og målgruppe-tilpasning</li>
-      <li>Forberedelse af dagsorden og spørgsmål til møder</li>
-      <li>Omdan rånoter til strukturerede referater med action items</li>
-      <li>Statusopdateringer til leder på under 5 minutter</li>
-    </ul>
+    <h3>Del C3 — Det du har lært</h3>
+    <div class="sum-grid">
+      <div class="sum-item">Møde-forberedelse: dagsorden + 5 spørgsmål på 10 min</div>
+      <div class="sum-item">Rånoter → struktureret referat med action items</div>
+      <div class="sum-item">Stillads-teknikken: byg viden lag for lag</div>
+      <div class="sum-item">AI som startrampe — ikke som sandhedsmaskine</div>
+      <div class="sum-item">Samme indhold omskrevet til fire kanaler</div>
+      <div class="sum-item">Projekt-briefing fra rodet input og modstridende interessenter</div>
+      <div class="sum-item">8 nye prompts i dit personlige bibliotek</div>
+      <div class="sum-item">Klar til den afsluttende eksamen i Kursus C</div>
+    </div>
   </div>
 
-  <!-- EXAM CTA -->
-  <div class="exam-cta">
-    <div class="exam-cta-icon">🏆</div>
+  <!-- CTA -->
+  <div class="cta">
+    <div class="cta-icon">🏆</div>
     <h2>Klar til den afsluttende eksamen?</h2>
-    <p>Eksamenen tester at du kan anvende teknikkerne fra alle tre dele — ikke bare genkende dem. Du skal have mindst 7 ud af 10 rigtige for at bestå og få dit Kursus C-bevis.</p>
-    <div class="req">⚠ Eksamenen er markant sværere end mini-quizzerne</div><br>
-    <a href="eksamen-c.html" class="btn-exam">Start eksamen →</a>
+    <p>Eksamenen tester at du kan anvende det du har lært i C1, C2 og C3 — ikke bare genkende det. Del 1 er 15 multiple choice. Del 2 er en praktisk prompt-opgave.</p>
+    <div class="cta-warn">⚠️ Eksamenen er markant sværere end mini-quizzerne</div><br>
+    <a href="eksamen-c.html" class="btn-go">
+      Start eksamen
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+    <div class="cta-sub">
+      15 + praktisk opgave <span class="dot-sep">·</span>
+      <span class="coins">+150 coins + Sølv-badge ved beståelse</span>
+      <span class="dot-sep">·</span> Maks 3 forsøg
+    </div>
   </div>
 
 </div>
 
+<div id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Kopieret!</span>
+</div>
+
 <script>
-function toggleModule(id) {
-  const mod = document.getElementById(id);
-  mod.classList.toggle('open');
+// ── ACCORDION ────────────────────────────────────────────────
+const modIds  = ['m1','m2','m3','m4','m5'];
+const modDone = { m1:false, m2:false, m3:false, m4:false, m5:false };
+const TOTAL   = 5;
+
+function tog(id) {
+  const m = document.getElementById(id);
+  if (m.classList.contains('open')) return;
+  const idx = modIds.indexOf(id);
+  modIds.forEach((oid, i) => {
+    const el = document.getElementById(oid);
+    if (i < idx && !modDone[oid]) {
+      modDone[oid] = true;
+      el.classList.add('done');
+    }
+    el.classList.remove('open');
+  });
+  m.classList.add('open');
+  if (!modDone[id]) { modDone[id] = true; m.classList.add('done'); }
+  requestAnimationFrame(() => {
+    const top = m.getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({ top, behavior:'smooth' });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const done = Object.values(modDone).filter(Boolean).length;
+  const pct  = Math.round((done / TOTAL) * 100);
+  document.getElementById('prog-bar').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  const left = TOTAL - done;
+  document.getElementById('prog-txt').textContent = left === 0 ? 'Alle moduler gennemført 🎉' : left === 1 ? '1 modul tilbage' : `${left} moduler tilbage`;
+  modIds.forEach((id, i) => {
+    const s = document.getElementById('ps' + (i+1));
+    if (!s) return;
+    if (modDone[id]) { s.classList.remove('active'); s.classList.add('done'); s.textContent = '✓'; }
+    else if (id === modIds.find(x => !modDone[x])) { s.classList.add('active'); s.classList.remove('done'); s.textContent = i+1; }
+  });
+}
+updateProgress();
+
+// ── COPY BLOCK ───────────────────────────────────────────────
+function togglePrompt(btn) {
+  const block   = btn.closest('.copy-block');
+  const textEl  = block.querySelector('.copy-text');
+  const isOpen  = textEl.classList.toggle('show');
+  btn.classList.toggle('open', isOpen);
+  btn.querySelector('span') && (btn.querySelector('span').textContent = isOpen ? 'Luk' : 'Se prompt');
+  // Skift tekst-node (ikke span — knappen bruger svg + tekstnode)
+  btn.childNodes.forEach(n => {
+    if (n.nodeType === 3) n.textContent = isOpen ? ' Luk' : ' Se prompt';
+  });
+}
+
+function copyBlock(btn) {
+  const block  = btn.closest('.copy-block');
+  const textEl = block.querySelector('.copy-text');
+
+  // Åbn prompten hvis den ikke allerede er synlig
+  if (!textEl.classList.contains('show')) {
+    const seeBtn = block.querySelector('.see-prompt-btn');
+    if (seeBtn) togglePrompt(seeBtn);
+  }
+
+  const text = textEl.textContent;
+  copyText(text, () => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kopieret';
+    showToast('Prompt kopieret ✓');
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér';
+    }, 2000);
+  });
+}
+
+function copyText(text, onSuccess) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly','');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select(); ta.setSelectionRange(0, text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch(e) {}
+  document.body.removeChild(ta);
+  if (ok) { onSuccess && onSuccess(); return; }
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => onSuccess && onSuccess()).catch(() => showToast('Kopiering fejlede'));
+  else showToast('Kopiering fejlede');
+}
+
+// ── AI DEMO TABS ─────────────────────────────────────────────
+function switchTab(prefix, num) {
+  ['1','2'].forEach(n => {
+    const tab  = document.getElementById(prefix+'-tab'+n);
+    const resp = document.getElementById(prefix+'-resp'+n);
+    if (n === num) { tab.classList.add('active'); resp.classList.remove('hidden'); }
+    else { tab.classList.remove('active'); resp.classList.add('hidden'); }
+  });
+}
+
+// ── COPY SITUATION ───────────────────────────────────────────
+
+// ── MØDE-SIMULATOR ───────────────────────────────────────────
+let simRound = 0;
+let simHistory = [];
+let simRunning = false;
+
+const SIM_SYSTEM = `Du er moderator for en møde-simulator i et dansk AI-kursus. Brugeren spiller mødeleder i TechNord A/S til et møde om valg af nyt bookingsystem. De tre deltagere er:
+
+SARA (Salgschef): Vil have løsning klar inden Q2 til sommerens salgskampagner. Utålmodig, resultatorienteret. Glad af konkrete deadlines. Frustreret af teknisk snak.
+
+MIKKEL (IT-chef): Vil have teknisk solid løsning der integrerer med eksisterende systemer. Ingen workarounds. Glad af fokus på sikkerhed og kvalitet. Frustreret af at blive forceret til hurtige løsninger.
+
+LONE (Økonomiansvarlig): Budget maks 80.000 kr. Vil have klar ROI. Glad af konkrete tal og business case. Frustreret af vage løfter.
+
+REGLER — FØLG DISSE PRÆCIST:
+- Skriv korte naturlige replikker fra ALLE 3 karakterer — MAKS 1-2 sætninger pr. karakter
+- Format på separate linjer: "**Sara:** [replik]", "**Mikkel:** [replik]", "**Lone:** [replik]"
+- Karaktererne reagerer realistisk — de er uenige i starten, kan nærme sig enighed gradvist
+- ALTID til sidst på en separat linje: STEMNING: sara=[glad/neutral/sur], mikkel=[glad/neutral/sur], lone=[glad/neutral/sur]
+- Hold svarene KORTE — ingen lange forklaringer`;
+
+function toggleAiGuide() {
+  const body = document.getElementById('sim-guide-body');
+  const btn  = document.getElementById('sim-guide-toggle');
+  const isOpen = body.classList.toggle('show');
+  btn.classList.toggle('open', isOpen);
+  const cta = btn.querySelector('.sim-guide-cta');
+  if (cta) {
+    cta.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = isOpen ? 'Luk guide ' : 'Åbn guide '; });
+  }
+}
+
+function simKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendSimMsg(); }
+}
+
+async function sendSimMsg() {
+  const inp = document.getElementById('sim-input');
+  const msg = inp.value.trim();
+  if (!msg) return;
+
+  // Første besked starter mødet automatisk
+  if (!simRunning) {
+    simRunning = true;
+    simRound = 0;
+    simHistory = [];
+    const ph = document.querySelector('#sim-msgs div[style*="italic"]');
+    if (ph) ph.remove();
+  }
+
+  inp.value = '';
+  document.getElementById('sim-send').disabled = true;
+  simRound++;
+  document.getElementById('sim-round').textContent = simRound + '/10';
+
+  addSimMsg('user', msg);
+  simHistory.push({ role:'user', content:msg });
+
+  document.getElementById('sim-typing').classList.add('show');
+  document.getElementById('sim-msgs').scrollTop = 99999;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:300,
+        system:SIM_SYSTEM,
+        messages:simHistory
+      })
+    });
+    const data = await res.json();
+    const raw  = (data.content||[]).map(b=>b.text||'').join('');
+    if (!raw) throw new Error('Tomt svar');
+
+    simHistory.push({ role:'assistant', content:raw });
+    const clean = raw.replace(/STEMNING:.*$/im,'').trim();
+    const moods = parseMoods(raw);
+
+    document.getElementById('sim-typing').classList.remove('show');
+    addSimMsg('ai', clean);
+    if (moods) updateMoods(moods);
+
+    if (checkEnighed(moods)) {
+      setTimeout(() => endSimulator('success', moods), 800);
+    } else if (simRound >= 10) {
+      setTimeout(() => endSimulator('timeout', moods), 800);
+    }
+
+  } catch(e) {
+    document.getElementById('sim-typing').classList.remove('show');
+    addSimMsg('ai', '**Sara:** Undskyld, tekniske problemer. Prøv igen.\n**Mikkel:** Ja, send igen.\n**Lone:** Vi venter.');
+  }
+
+  document.getElementById('sim-send').disabled = false;
+  document.getElementById('sim-input').focus();
+}
+
+function updateMoods(moods) {
+  const map = { glad:'😊', neutral:'😐', sur:'😤' };
+  ['sara','mikkel','lone'].forEach(n => {
+    const mood = moods[n] || 'neutral';
+    document.getElementById('mood-' + n).textContent = map[mood] || '😐';
+    const el = document.getElementById('char-' + n);
+    el.classList.remove('happy','unhappy');
+    if (mood === 'glad') el.classList.add('happy');
+    if (mood === 'sur')  el.classList.add('unhappy');
+  });
+}
+
+function parseMoods(text) {
+  const m = text.match(/STEMNING:\s*sara=(\w+),\s*mikkel=(\w+),\s*lone=(\w+)/i);
+  if (!m) return null;
+  return { sara:m[1].toLowerCase(), mikkel:m[2].toLowerCase(), lone:m[3].toLowerCase() };
+}
+
+function checkEnighed(moods) {
+  return moods && Object.values(moods).every(m => m === 'glad');
+}
+
+function addSimMsg(role, text) {
+  const c   = document.getElementById('sim-msgs');
+  const div = document.createElement('div');
+  if (role === 'user') {
+    div.className = 'chat-msg user';
+    div.innerHTML = `<div class="chat-avatar user-av">DIG</div><div class="chat-bubble">${escHtml(text)}</div>`;
+  } else {
+    const html = text
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+      .replace(/\*\*(.+?):\*\*/g,'<strong>$1:</strong>')
+      .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+      .replace(/\n/g,'<br>');
+    div.className = 'chat-msg ai';
+    div.innerHTML = `<div class="chat-avatar ai-av" style="font-size:8px;letter-spacing:-.5px;background:#374151;">MØDE</div><div class="chat-bubble">${html}</div>`;
+  }
+  c.appendChild(div);
+  c.scrollTop = 99999;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function endSimulator(outcome, moods) {
+  simRunning = false;
+  document.getElementById('sim-input-area').style.display = 'none';
+  const gladCount = moods ? Object.values(moods).filter(m=>m==='glad').length : 0;
+  const resultEl  = document.getElementById('sim-result');
+  resultEl.style.display = 'block';
+
+  let emoji, title, sub;
+  if (outcome === 'success')    { emoji='🏆'; title='Beslutning truffet!'; sub=`Alle tre sagde ja på ${simRound} runder. Præcis hvad en god mødeleder opnår.`; }
+  else if (gladCount >= 2) { emoji='👍'; title=`${gladCount}/3 med — tæt på`; sub='En enkelt runde mere med fokus på den utilfredse, og du havde lukket mødet. Prøv igen.'; }
+  else if (gladCount === 1) { emoji='📋'; title='1/3 med — stadig langt fra mål'; sub='Brug AI-guiden ovenfor og øv dig på svære reaktioner med prompt 3 inden du prøver igen.'; }
+  else                      { emoji='🔄'; title='Ingen tilslutning'; sub='Åbn AI-guiden og brug prompt 1 til at forstå konflikterne bedre inden næste forsøg.'; }
+
+  const names = { sara:'Sara', mikkel:'Mikkel', lone:'Lone' };
+  const moodMap = moods || { sara:'neutral', mikkel:'neutral', lone:'neutral' };
+  const items = Object.entries(moodMap).map(([k,v]) => {
+    const cls=v==='glad'?'green':v==='sur'?'red':'amber';
+    const icon=v==='glad'?'✅':v==='sur'?'❌':'⚠️';
+    const lbl=v==='glad'?'Tilfreds — siger ja':v==='sur'?'Utilfreds — siger nej':'Neutral — afventer';
+    return `<div class="sim-result-item ${cls}">${icon} <strong>${names[k]}:</strong> ${lbl}</div>`;
+  }).join('');
+
+  resultEl.innerHTML = `
+    <div class="sim-result-score">
+      <div class="sim-result-emoji">${emoji}</div>
+      <div class="sim-result-title">${title}</div>
+      <div class="sim-result-sub">${sub}</div>
+      <div class="sim-result-breakdown" style="margin-bottom:14px;">${items}</div>
+      <button class="sim-restart-btn" onclick="restartSimulator()">↺ Prøv mødet igen</button>
+    </div>`;
+}
+
+function restartSimulator() {
+  simRunning = false; simRound = 0; simHistory = [];
+  document.getElementById('sim-result').style.display = 'none';
+  document.getElementById('sim-result').innerHTML = '';
+  document.getElementById('sim-input-area').style.display = 'block';
+  document.getElementById('sim-msgs').innerHTML = '<div style="text-align:center;font-size:12.5px;color:var(--muted);padding:16px 8px;font-style:italic;">Skriv din første besked for at starte mødet igen.</div>';
+  updateMoods({ sara:'neutral', mikkel:'neutral', lone:'neutral' });
+  document.getElementById('sim-round').textContent = '0/10';
+  document.getElementById('sim-input').focus();
+}
+const C3_PROMPTS = [
+  { id:'c3p1', emoji:'📅', title:'Dagsorden til møde', source:'C3 — Modul 1', category:'C3',
+    text:'Lav en dagsorden til et [X]-minutters møde om [emne].\nDeltagere: [hvem og deres roller].\nFormål: [hvad skal vi beslutte eller opnå].\nInkludér tid pr. punkt og afslut med "action items".' },
+  { id:'c3p2', emoji:'🔍', title:'Forbered dig til et møde på 10 min', source:'C3 — Modul 1', category:'C3',
+    text:'Jeg skal til møde om [emne] om 30 minutter.\nGiv mig:\n1) De 5 vigtigste ting at vide om emnet\n2) 3 spørgsmål der viser jeg har forstået kompleksiteten\n3) Ét kontroversielt synspunkt der starter en god diskussion' },
+  { id:'c3p3', emoji:'📝', title:'Rånoter til struktureret referat', source:'C3 — Modul 1', category:'C3',
+    text:'Her er mine rånoter fra mødet: [indsæt noter].\nLav et struktureret referat med:\n1) Vigtigste beslutninger\n2) Action items: hvem gør hvad inden hvornår\n3) Åbne spørgsmål der stadig mangler svar\nSkriv professionelt dansk — maks 200 ord.' },
+  { id:'c3p4', emoji:'📚', title:'80/20-overblik over et emne', source:'C3 — Modul 2', category:'C3',
+    text:'Giv mig en 80/20-gennemgang af [emne]: de 20% jeg\nskal forstå for at få 80% af helheden.\nIngen forudgående viden. Klart, ikke-teknisk dansk.\nAfslut med 3 spørgsmål jeg burde stille en ekspert.' },
+  { id:'c3p5', emoji:'🔬', title:'Dyk dybere — stillads lag 2', source:'C3 — Modul 2', category:'C3',
+    text:'Uddyb [det punkt der interesserede mig mest].\nBehold det samme niveau — ikke for teknisk.\nHvad er de mest kontroversielle synspunkter på dette?' },
+  { id:'c3p6', emoji:'🎯', title:'Kanal-tilpasning — master-prompt', source:'C3 — Modul 3', category:'C3',
+    text:'Her er mit rå-indhold: [indsæt dine noter / dit udkast].\n\nOmskriv dette til [kanal] til [målgruppe].\nTone: [professionel / uformel / akademisk / salgsorienteret].\nLængde: [maks X ord / X bullet-punkter / 1 slide].\nBehold alle fakta og pointer — tilpas kun form og sprog.' },
+  { id:'c3p7', emoji:'🗂️', title:'Projekt-briefing fra rodet input', source:'C3 — Modul 4', category:'C3',
+    text:'Her er mit rodede input fra [X] interessenter: [indsæt noter].\n\nLav en projekt-briefing der:\n1) Opsummerer formål og scope klart\n2) Identificerer de vigtigste konflikter og foreslår løsninger\n3) Lister risici\n4) Foreslår konkrete næste skridt med ansvar og tidslinje\nSkriv professionelt dansk. Maks 400 ord.' },
+  { id:'c3p8', emoji:'📊', title:'Statusopdatering til leder', source:'C3 — Modul 1', category:'C3',
+    text:'Lav en kort statusopdatering til [leder/modtager] baseret på disse noter.\nMaks 200 ord. Fokus: fremskridt siden sidst, næste skridt, risici der kræver opmærksomhed.\n[Indsæt noter]' }
+];
+
+function addC3Prompts() {
+  const STORAGE_KEY     = 'learnai_prompt_library_v2';
+  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
+
+  // Test at localStorage er tilgængeligt
+  try { localStorage.setItem('_test','1'); localStorage.removeItem('_test'); }
+  catch(e) {
+    document.getElementById('lib-error-body').textContent = 'Din browser blokerer localStorage. Prøv at åbne siden i Chrome eller Firefox.';
+    document.getElementById('lib-error-notice').style.display = 'flex';
+    return;
+  }
+
+  try {
+    // Hent eksisterende bibliotek
+    let library = [];
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      try { library = JSON.parse(saved); }
+      catch(e) { library = []; }
+    }
+
+    // Tilføj kun prompts der ikke allerede eksisterer (tjek på id)
+    const existingIds = new Set(library.map(p => p.id));
+    let added = 0;
+    C3_PROMPTS.forEach(p => {
+      if (!existingIds.has(p.id)) { library.push(p); added++; }
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+
+    // Tilføj C3 kategori
+    let cats = [];
+    const savedCats = localStorage.getItem(STORAGE_KEY_CAT);
+    if (savedCats) { try { cats = JSON.parse(savedCats); } catch(e) { cats = []; } }
+    if (!cats.includes('C3')) { cats.push('C3'); }
+    localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats));
+
+    // Opdatér knap
+    const btn = document.getElementById('lib-add-btn');
+    btn.classList.add('done');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tilføjet!';
+
+    // Vis bekræftelse
+    const headEl = document.getElementById('lib-added-head');
+    const bodyEl = document.getElementById('lib-added-body');
+    if (added > 0) {
+      headEl.textContent = `${added} C3-prompts tilføjet! ✅`;
+      bodyEl.textContent = 'De er nu gemt i kategorien "C3" i dit bibliotek. Klik knappen nedenfor for at åbne det.';
+    } else {
+      headEl.textContent = 'Allerede tilføjet ✅';
+      bodyEl.textContent = 'C3-prompts er allerede i dit bibliotek. Klik nedenfor for at åbne det.';
+    }
+    document.getElementById('lib-added-notice').style.display = 'flex';
+    document.getElementById('lib-error-notice').style.display = 'none';
+
+    showToast(added > 0 ? `✅ ${added} C3-prompts gemt i dit bibliotek` : '✅ Allerede i biblioteket');
+
+  } catch(e) {
+    document.getElementById('lib-error-body').innerHTML = `Fejl: ${e.message}. <a href="bibliotek.html" target="_blank" style="color:#92400E;font-weight:700;">Åbn biblioteket manuelt</a>.`;
+    document.getElementById('lib-error-notice').style.display = 'flex';
+    showToast('Fejl — se besked nedenfor');
+  }
+}
+
+// ── TOAST ────────────────────────────────────────────────────
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2600);
 }
 </script>
-
 </body>
 </html>
