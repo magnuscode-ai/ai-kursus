@@ -397,6 +397,15 @@
     .sim-result-item.red { background:var(--red-50); color:#991B1B; }
     .sim-restart-btn { display:inline-flex; align-items:center; gap:8px; background:var(--vio-50); color:var(--vio-deep); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1px solid var(--vio-200); cursor:pointer; margin-top:14px; transition:background .15s; }
     .sim-restart-btn:hover { background:var(--vio-100); }
+    .sim-solution-btn { display:inline-flex; align-items:center; gap:8px; background:var(--amber-50); color:var(--amber); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1px solid #FDE68A; cursor:pointer; margin-top:10px; transition:background .15s; }
+    .sim-solution-btn:hover { background:var(--amber-100); }
+    .sim-solution { background:var(--amber-50); border:1px solid #FDE68A; border-radius:var(--r); padding:16px 18px; margin-top:14px; }
+    .sim-solution-title { font-size:12px; font-weight:700; color:var(--amber); letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px; }
+    .sim-solution-item { display:flex; gap:10px; margin-bottom:10px; font-size:13px; color:#78350F; line-height:1.6; }
+    .sim-solution-item:last-child { margin-bottom:0; }
+    .sim-solution-who { font-weight:700; flex-shrink:0; min-width:56px; }
+    .sim-unlocked-notice { background:var(--green-50); border:1px solid var(--green-100); border-radius:var(--r-sm); padding:10px 14px; font-size:13px; color:#065F46; font-weight:600; margin-top:12px; display:flex; align-items:center; gap:8px; }
+    .sim-attempts-left { font-size:12px; color:rgba(255,255,255,.7); margin-top:4px; }
 
     /* TOAST */
     #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:11px 22px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.25); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
@@ -904,7 +913,9 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
           </div>
           <div class="sim-score-wrap">
             <div class="sim-round-label">Runde</div>
-            <div class="sim-round-num" id="sim-round">0/10</div>
+            <div class="sim-round-num" id="sim-round">0/5</div>
+            <div class="sim-round-label" style="margin-top:4px;">Forsøg</div>
+            <div class="sim-round-num" id="sim-attempt" style="font-size:14px;">0/3</div>
           </div>
         </div>
 
@@ -1178,24 +1189,58 @@ function switchTab(prefix, num) {
 // ── COPY SITUATION ───────────────────────────────────────────
 
 // ── MØDE-SIMULATOR ───────────────────────────────────────────
-let simRound = 0;
-let simHistory = [];
-let simRunning = false;
+let simRound    = 0;
+let simHistory  = [];
+let simRunning  = false;
+let simAttempt  = 0;
+const SIM_MAX_ROUNDS    = 5;
+const SIM_MAX_ATTEMPTS  = 3;
 
-const SIM_SYSTEM = `Du er moderator for en møde-simulator i et dansk AI-kursus. Brugeren spiller mødeleder i TechNord A/S til et møde om valg af nyt bookingsystem. De tre deltagere er:
+// Intern tilstand — sporer hver karakters holdning (0=sur, 1=neutral, 2=glad)
+// Starter alle på 1. Enighed = alle på 2.
+let simScores  = { sara:1, mikkel:1, lone:1 };
 
-SARA (Salgschef): Vil have løsning klar inden Q2 til sommerens salgskampagner. Utålmodig, resultatorienteret. Glad af konkrete deadlines. Frustreret af teknisk snak.
+// Vi sender tilstanden med i hver besked så AI altid ved præcis hvor vi er
+function buildSystemPrompt() {
+  return `Du kører en professionel møde-simulator til et dansk AI-kursus. Brugeren er mødeleder hos TechNord A/S. Mødet handler om valg af nyt bookingsystem.
 
-MIKKEL (IT-chef): Vil have teknisk solid løsning der integrerer med eksisterende systemer. Ingen workarounds. Glad af fokus på sikkerhed og kvalitet. Frustreret af at blive forceret til hurtige løsninger.
+DE TRE DELTAGERE — lær dem udenad:
 
-LONE (Økonomiansvarlig): Budget maks 80.000 kr. Vil have klar ROI. Glad af konkrete tal og business case. Frustreret af vage løfter.
+SARA (Salgschef):
+- Kerneønskে: Løsningen skal være KLAR OG I BRUG inden 1. april (Q2-kampagne starter da)
+- Hendes frygt: Endnu et IT-projekt der forsinkes og ødelægger salgsåret
+- Hvad bevæger hende: Konkrete datoer, leverandørnavne, klare leverancer. Generelle løfter gør hende mere skeptisk.
+- Startposition: Utålmodig og presset — hun har lovet sin salgsdirektør et nyt system
 
-REGLER — FØLG DISSE PRÆCIST:
-- Skriv korte naturlige replikker fra ALLE 3 karakterer — MAKS 1-2 sætninger pr. karakter
-- Format på separate linjer: "**Sara:** [replik]", "**Mikkel:** [replik]", "**Lone:** [replik]"
-- Karaktererne reagerer realistisk — de er uenige i starten, kan nærme sig enighed gradvist
-- ALTID til sidst på en separat linje: STEMNING: sara=[glad/neutral/sur], mikkel=[glad/neutral/sur], lone=[glad/neutral/sur]
-- Hold svarene KORTE — ingen lange forklaringer`;
+MIKKEL (IT-chef):
+- Kerneønske: API-integration med jeres eksisterende CRM (HubSpot). Ingen manuel dataimport.
+- Hans frygt: At blive tvunget til en billig SaaS-løsning der kræver 6 måneders oprydning bagefter
+- Hvad bevæger ham: Tekniske specifikationer, realistiske migrationsplaner, at blive taget alvorligt som ekspert
+- Startposition: Defensiv — han er tidligere blevet kørt over i budgetdiskussioner
+
+LONE (Økonomiansvarlig):
+- Kerneønske: Total cost under 80.000 kr inkl. implementering og første år. ROI synlig inden 18 mdr.
+- Hendes frygt: Skjulte omkostninger — licensudvidelser, konsulenttimer, datamigration
+- Hvad bevæger hende: Konkrete tal, sammenligning af to scenarier, risikooversigt
+- Startposition: Neutral men skeptisk — hun har set for mange IT-budgetter sprænge
+
+REALISTISK PROGRESSIONSLOGIK:
+Karaktererne starter reserverede og bevæger sig kun mod enighed hvis mødeleder gør noget specifikt rigtigt:
+- Sara bliver glad KUN hvis der nævnes en konkret dato eller leverancemilesten inden Q2
+- Mikkel bliver glad KUN hvis API/integration eller teknisk kvalitet adresseres konkret
+- Lone bliver glad KUN hvis der nævnes konkrete tal, budget eller ROI-estimat
+- Alle tre kan gå TILBAGE til neutral/sur hvis mødeleder siger noget der modsiger dem
+
+OUTPUTFORMAT — FØLG DETTE PRÆCIST HVER GANG:
+Skriv alle tre karakterers replikker i rækkefølge. Maks 2 korte sætninger pr. karakter. Naturlig dansk tale, ikke corporate-sprog.
+
+**Sara:** [replik]
+**Mikkel:** [replik]
+**Lone:** [replik]
+STEMNING: sara=[glad/neutral/sur], mikkel=[glad/neutral/sur], lone=[glad/neutral/sur]
+
+VIGTIGT: STEMNING-linjen skal ALTID være der, ALTID i det præcise format, og ALTID på en ny linje for sig selv til sidst.`;
+}
 
 function toggleAiGuide() {
   const body = document.getElementById('sim-guide-body');
@@ -1220,8 +1265,10 @@ async function sendSimMsg() {
   // Første besked starter mødet automatisk
   if (!simRunning) {
     simRunning = true;
-    simRound = 0;
+    simRound   = 0;
     simHistory = [];
+    simScores  = { sara:1, mikkel:1, lone:1 };
+    document.getElementById('sim-attempt').textContent = (simAttempt + 1) + '/' + SIM_MAX_ATTEMPTS;
     const ph = document.querySelector('#sim-msgs div[style*="italic"]');
     if (ph) ph.remove();
   }
@@ -1229,10 +1276,13 @@ async function sendSimMsg() {
   inp.value = '';
   document.getElementById('sim-send').disabled = true;
   simRound++;
-  document.getElementById('sim-round').textContent = simRound + '/10';
+  document.getElementById('sim-round').textContent = simRound + '/' + SIM_MAX_ROUNDS;
 
   addSimMsg('user', msg);
-  simHistory.push({ role:'user', content:msg });
+
+  // Vi sender nuværende stemningsstate med i konteksten
+  const stateNote = `[Intern mødetilstand efter runde ${simRound}: Sara er ${scoreToWord(simScores.sara)}, Mikkel er ${scoreToWord(simScores.mikkel)}, Lone er ${scoreToWord(simScores.lone)}. Reagér konsekvent fra dette udgangspunkt.]`;
+  simHistory.push({ role:'user', content: msg + '\n\n' + stateNote });
 
   document.getElementById('sim-typing').classList.add('show');
   document.getElementById('sim-msgs').scrollTop = 99999;
@@ -1241,38 +1291,97 @@ async function sendSimMsg() {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
       headers:{ 'Content-Type':'application/json' },
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:300,
-        system:SIM_SYSTEM,
-        messages:simHistory
+      body: JSON.stringify({
+        model:      'claude-haiku-4-5-20251001',
+        max_tokens: 350,
+        system:     buildSystemPrompt(),
+        messages:   simHistory
       })
     });
+
     const data = await res.json();
-    const raw  = (data.content||[]).map(b=>b.text||'').join('');
+    const raw  = (data.content || []).map(b => b.text || '').join('');
     if (!raw) throw new Error('Tomt svar');
 
-    simHistory.push({ role:'assistant', content:raw });
-    const clean = raw.replace(/STEMNING:.*$/im,'').trim();
-    const moods = parseMoods(raw);
+    // Gem rent svar uden state-noten
+    simHistory.push({ role:'assistant', content: raw });
+
+    // Parse stemning ROBUST — prøv flere mønstre
+    const moods = parseMoodsRobust(raw);
+
+    // Opdatér intern tilstand
+    if (moods) {
+      simScores.sara   = moodToScore(moods.sara);
+      simScores.mikkel = moodToScore(moods.mikkel);
+      simScores.lone   = moodToScore(moods.lone);
+    }
+
+    // Rens output-teksten for STEMNING-linjen
+    const clean = raw
+      .replace(/STEMNING:.*$/im, '')
+      .replace(/\[Intern mødetilstand[^\]]*\]/gi, '')
+      .trim();
 
     document.getElementById('sim-typing').classList.remove('show');
     addSimMsg('ai', clean);
+
     if (moods) updateMoods(moods);
 
-    if (checkEnighed(moods)) {
-      setTimeout(() => endSimulator('success', moods), 800);
-    } else if (simRound >= 10) {
-      setTimeout(() => endSimulator('timeout', moods), 800);
+    // Enighed = alle scorer 2 (glad)
+    const enighed = Object.values(simScores).every(s => s === 2);
+    if (enighed) {
+      setTimeout(() => endSimulator('success'), 800);
+    } else if (simRound >= SIM_MAX_ROUNDS) {
+      setTimeout(() => endSimulator('timeout'), 800);
     }
 
   } catch(e) {
     document.getElementById('sim-typing').classList.remove('show');
-    addSimMsg('ai', '**Sara:** Undskyld, tekniske problemer. Prøv igen.\n**Mikkel:** Ja, send igen.\n**Lone:** Vi venter.');
+    addSimMsg('ai', '**Sara:** Undskyld, der er lidt teknisk fnidder. Prøv igen.\n**Mikkel:** Ja, send din besked igen.\n**Lone:** Vi venter stadig på et svar fra dig.');
+    simRound--;
+    document.getElementById('sim-round').textContent = simRound + '/' + SIM_MAX_ROUNDS;
   }
 
   document.getElementById('sim-send').disabled = false;
   document.getElementById('sim-input').focus();
+}
+
+// ROBUST mood-parsing — prøver to mønstre
+function parseMoodsRobust(text) {
+  // Primært mønster: sara=glad, mikkel=neutral, lone=sur
+  let m = text.match(/STEMNING:\s*sara=(glad|neutral|sur),\s*mikkel=(glad|neutral|sur),\s*lone=(glad|neutral|sur)/i);
+  if (m) return { sara:m[1].toLowerCase(), mikkel:m[2].toLowerCase(), lone:m[3].toLowerCase() };
+
+  // Fallback: forsøg at hente individuelle værdier
+  const get = (name) => {
+    const r = new RegExp(name + '\\s*[=:]\\s*(glad|neutral|sur)', 'i');
+    const match = text.match(r);
+    return match ? match[1].toLowerCase() : null;
+  };
+  const sara = get('sara'), mikkel = get('mikkel'), lone = get('lone');
+  if (sara || mikkel || lone) {
+    return {
+      sara:   sara   || scoreToWord(simScores.sara),
+      mikkel: mikkel || scoreToWord(simScores.mikkel),
+      lone:   lone   || scoreToWord(simScores.lone)
+    };
+  }
+
+  // Ingen stemning fundet — bevar eksisterende scores
+  return { sara:scoreToWord(simScores.sara), mikkel:scoreToWord(simScores.mikkel), lone:scoreToWord(simScores.lone) };
+}
+
+function moodToScore(mood) {
+  if (mood === 'glad')    return 2;
+  if (mood === 'neutral') return 1;
+  if (mood === 'sur')     return 0;
+  return 1;
+}
+
+function scoreToWord(score) {
+  if (score === 2) return 'glad';
+  if (score === 0) return 'sur';
+  return 'neutral';
 }
 
 function updateMoods(moods) {
@@ -1285,16 +1394,6 @@ function updateMoods(moods) {
     if (mood === 'glad') el.classList.add('happy');
     if (mood === 'sur')  el.classList.add('unhappy');
   });
-}
-
-function parseMoods(text) {
-  const m = text.match(/STEMNING:\s*sara=(\w+),\s*mikkel=(\w+),\s*lone=(\w+)/i);
-  if (!m) return null;
-  return { sara:m[1].toLowerCase(), mikkel:m[2].toLowerCase(), lone:m[3].toLowerCase() };
-}
-
-function checkEnighed(moods) {
-  return moods && Object.values(moods).every(m => m === 'glad');
 }
 
 function addSimMsg(role, text) {
@@ -1320,46 +1419,121 @@ function escHtml(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-function endSimulator(outcome, moods) {
+function endSimulator(outcome) {
   simRunning = false;
   document.getElementById('sim-input-area').style.display = 'none';
-  const gladCount = moods ? Object.values(moods).filter(m=>m==='glad').length : 0;
+
+  const gladCount = Object.values(simScores).filter(s => s === 2).length;
   const resultEl  = document.getElementById('sim-result');
   resultEl.style.display = 'block';
 
+  if (outcome === 'success') {
+    // BESTÅET — lås modulet op
+    const emoji = '🏆';
+    const title = 'Beslutning truffet!';
+    const sub   = `Alle tre sagde ja — på ${simRound} runder. Du adresserede alle tre interessenters kernebekymringer og fandt et kompromis der holdt.`;
+    const names = { sara:'Sara', mikkel:'Mikkel', lone:'Lone' };
+    const items = Object.entries(simScores).map(([k,v]) => {
+      const mood = scoreToWord(v);
+      const cls  = mood === 'glad' ? 'green' : mood === 'sur' ? 'red' : 'amber';
+      const icon = mood === 'glad' ? '✅' : mood === 'sur' ? '❌' : '⚠️';
+      const lbl  = mood === 'glad' ? 'Tilfreds — siger ja' : mood === 'sur' ? 'Utilfreds — siger nej' : 'Neutral — afventer';
+      return `<div class="sim-result-item ${cls}">${icon} <strong>${names[k]}:</strong> ${lbl}</div>`;
+    }).join('');
+
+    resultEl.innerHTML = `
+      <div class="sim-result-score">
+        <div class="sim-result-emoji">${emoji}</div>
+        <div class="sim-result-title">${title}</div>
+        <div class="sim-result-sub">${sub}</div>
+        <div class="sim-result-breakdown" style="margin-bottom:14px;">${items}</div>
+        <div class="sim-unlocked-notice">✅ Modul 4 gennemført — du kan fortsætte til modul 5</div>
+      </div>`;
+
+    // Marker modul som done
+    const m4 = document.getElementById('m4');
+    if (m4 && !modDone['m4']) { modDone['m4'] = true; m4.classList.add('done'); updateProgress(); }
+    return;
+  }
+
+  // IKKE BESTÅET — opdatér forsøgstæller
+  simAttempt++;
+  document.getElementById('sim-attempt').textContent = simAttempt + '/' + SIM_MAX_ATTEMPTS;
+  const attemptsLeft = SIM_MAX_ATTEMPTS - simAttempt;
+
   let emoji, title, sub;
-  if (outcome === 'success')    { emoji='🏆'; title='Beslutning truffet!'; sub=`Alle tre sagde ja på ${simRound} runder. Præcis hvad en god mødeleder opnår.`; }
-  else if (gladCount >= 2) { emoji='👍'; title=`${gladCount}/3 med — tæt på`; sub='En enkelt runde mere med fokus på den utilfredse, og du havde lukket mødet. Prøv igen.'; }
-  else if (gladCount === 1) { emoji='📋'; title='1/3 med — stadig langt fra mål'; sub='Brug AI-guiden ovenfor og øv dig på svære reaktioner med prompt 3 inden du prøver igen.'; }
-  else                      { emoji='🔄'; title='Ingen tilslutning'; sub='Åbn AI-guiden og brug prompt 1 til at forstå konflikterne bedre inden næste forsøg.'; }
+  if (gladCount === 2)      { emoji='👍'; title='2 af 3 med — tæt på'; sub='Du fik to med, men én holdt igen. Se stemnings-ikonerne — hvem var stadig skeptisk?'; }
+  else if (gladCount === 1) { emoji='📋'; title='1 af 3 med'; sub='Du fik én med, men tabte de to andre. Prøv at adressere alle tre bekymringer — ikke kun én.'; }
+  else                      { emoji='🔄'; title='Ingen tilslutning'; sub='Husk: stil åbne spørgsmål og anerkend bekymringer inden du foreslår løsninger.'; }
 
   const names = { sara:'Sara', mikkel:'Mikkel', lone:'Lone' };
-  const moodMap = moods || { sara:'neutral', mikkel:'neutral', lone:'neutral' };
-  const items = Object.entries(moodMap).map(([k,v]) => {
-    const cls=v==='glad'?'green':v==='sur'?'red':'amber';
-    const icon=v==='glad'?'✅':v==='sur'?'❌':'⚠️';
-    const lbl=v==='glad'?'Tilfreds — siger ja':v==='sur'?'Utilfreds — siger nej':'Neutral — afventer';
+  const items = Object.entries(simScores).map(([k,v]) => {
+    const mood = scoreToWord(v);
+    const cls  = mood === 'glad' ? 'green' : mood === 'sur' ? 'red' : 'amber';
+    const icon = mood === 'glad' ? '✅' : mood === 'sur' ? '❌' : '⚠️';
+    const lbl  = mood === 'glad' ? 'Tilfreds' : mood === 'sur' ? 'Utilfreds' : 'Neutral';
     return `<div class="sim-result-item ${cls}">${icon} <strong>${names[k]}:</strong> ${lbl}</div>`;
   }).join('');
 
-  resultEl.innerHTML = `
-    <div class="sim-result-score">
-      <div class="sim-result-emoji">${emoji}</div>
-      <div class="sim-result-title">${title}</div>
-      <div class="sim-result-sub">${sub}</div>
-      <div class="sim-result-breakdown" style="margin-bottom:14px;">${items}</div>
-      <button class="sim-restart-btn" onclick="restartSimulator()">↺ Prøv mødet igen</button>
-    </div>`;
+  if (attemptsLeft > 0) {
+    // Har forsøg tilbage
+    resultEl.innerHTML = `
+      <div class="sim-result-score">
+        <div class="sim-result-emoji">${emoji}</div>
+        <div class="sim-result-title">${title}</div>
+        <div class="sim-result-sub">${sub}</div>
+        <div class="sim-result-breakdown" style="margin-bottom:14px;">${items}</div>
+        <div style="font-size:12.5px; color:var(--muted); margin-bottom:10px;">${attemptsLeft} forsøg tilbage af ${SIM_MAX_ATTEMPTS}</div>
+        <button class="sim-restart-btn" onclick="restartSimulator()">↺ Prøv igen</button>
+      </div>`;
+  } else {
+    // Ingen forsøg tilbage — vis løsningsforslag og lås op
+    resultEl.innerHTML = `
+      <div class="sim-result-score">
+        <div class="sim-result-emoji">📖</div>
+        <div class="sim-result-title">Alle ${SIM_MAX_ATTEMPTS} forsøg brugt</div>
+        <div class="sim-result-sub">Ingen problem — her er hvad der virker i dette møde. Læs det igennem, og du er klar til at bruge teknikkerne i virkeligheden.</div>
+        <div class="sim-solution">
+          <div class="sim-solution-title">💡 Sådan lykkes det — nøgleøjeblikke</div>
+          <div class="sim-solution-item">
+            <div class="sim-solution-who">Sara:</div>
+            <div>Sig en konkret dato: <em>"Vi sikrer at kernesystemet er live 15. marts, så I har 2 uger til at teste inden Q2."</em> En dato er alt hvad hun behøver.</div>
+          </div>
+          <div class="sim-solution-item">
+            <div class="sim-solution-who">Mikkel:</div>
+            <div>Anerkend hans ekspertise og spørg: <em>"Mikkel, hvad er det mindste vi skal have på plads for at integrationen med HubSpot kan ske korrekt?"</em> Han vil gerne høres, ikke overkøres.</div>
+          </div>
+          <div class="sim-solution-item">
+            <div class="sim-solution-who">Lone:</div>
+            <div>Giv hende to konkrete scenarier: <em>"Scenarie A: 65.000 kr, ROI på 14 mdr. Scenarie B: 78.000 kr, ROI på 11 mdr."</em> Tal slår alt andet for hende.</div>
+          </div>
+          <div class="sim-solution-item">
+            <div class="sim-solution-who">Kompromis:</div>
+            <div><em>"Vi vælger leverandør X: API til HubSpot medfølger, live 15. marts, total cost 72.000 kr med ROI på 12 mdr. Sara får sin deadline, Mikkel får sin integration, Lone er inden for budget."</em></div>
+          </div>
+        </div>
+        <div class="sim-unlocked-notice">✅ Modul 4 låst op — du kan fortsætte til modul 5</div>
+      </div>`;
+
+    // Lås modul op alligevel
+    const m4 = document.getElementById('m4');
+    if (m4 && !modDone['m4']) { modDone['m4'] = true; m4.classList.add('done'); updateProgress(); }
+  }
 }
 
 function restartSimulator() {
-  simRunning = false; simRound = 0; simHistory = [];
-  document.getElementById('sim-result').style.display = 'none';
-  document.getElementById('sim-result').innerHTML = '';
+  simRunning  = false;
+  simRound    = 0;
+  simHistory  = [];
+  simScores   = { sara:1, mikkel:1, lone:1 };
+  document.getElementById('sim-result').style.display   = 'none';
+  document.getElementById('sim-result').innerHTML        = '';
   document.getElementById('sim-input-area').style.display = 'block';
-  document.getElementById('sim-msgs').innerHTML = '<div style="text-align:center;font-size:12.5px;color:var(--muted);padding:16px 8px;font-style:italic;">Skriv din første besked for at starte mødet igen.</div>';
+  document.getElementById('sim-msgs').innerHTML =
+    '<div style="text-align:center;font-size:12.5px;color:var(--muted);padding:16px 8px;font-style:italic;">Skriv din første besked for at starte mødet igen.</div>';
   updateMoods({ sara:'neutral', mikkel:'neutral', lone:'neutral' });
-  document.getElementById('sim-round').textContent = '0/10';
+  document.getElementById('sim-round').textContent   = '0/' + SIM_MAX_ROUNDS;
+  document.getElementById('sim-attempt').textContent = simAttempt + '/' + SIM_MAX_ATTEMPTS;
   document.getElementById('sim-input').focus();
 }
 const C3_PROMPTS = [
