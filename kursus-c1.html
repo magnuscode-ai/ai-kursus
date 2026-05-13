@@ -238,6 +238,18 @@
     }
     .mod.done .mod-done-badge { display: flex; }
     .mod.done .mod-time { display: none; }
+    .mod.locked { opacity: .55; }
+    .mod.locked .mod-header { cursor: not-allowed; }
+    .mod-locked-badge { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--muted); background: #F3F4F6; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod.locked .mod-locked-badge { display: flex; }
+    .mod.locked .mod-time { display: none; }
+    .mod.locked .mod-arrow { display: none; }
+    .mod.unlocked-next { border-left-color: #F59E0B; box-shadow: 0 2px 12px rgba(245,158,11,.15); }
+    .mod.unlocked-next .mod-header { background: #FFFBEB; }
+    .mod.unlocked-next .mod-num { background: #F59E0B; color: white; }
+    .mod.unlocked-next .mod-arrow { color: #F59E0B; }
+    #locked-toast { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(.92); background: #1E293B; color: white; font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600; padding: 14px 26px; border-radius: var(--r); box-shadow: 0 12px 40px rgba(0,0,0,.3); opacity: 0; pointer-events: none; z-index: 9999; transition: opacity .2s, transform .2s; white-space: nowrap; display: flex; align-items: center; gap: 10px; }
+    #locked-toast.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
 
     /* PROGRESS TRACKER BAR */
     .progress-track-wrap {
@@ -715,7 +727,7 @@
 
   <!-- MODUL 2 -->
   <div class="sect-label"><hr><span>Modul 2 af 4 — Kernen i C1</span><hr></div>
-  <div class="mod" id="m2">
+  <div class="mod locked" id="m2">
     <div class="mod-header" onclick="tog('m2')">
       <div class="mod-num">2</div>
       <div class="mod-text">
@@ -724,6 +736,7 @@
       </div>
       <div class="mod-time">25 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -941,7 +954,7 @@
 
   <!-- MODUL 3 — NYT -->
   <div class="sect-label"><hr><span>Modul 3 af 4</span><hr></div>
-  <div class="mod" id="m3">
+  <div class="mod locked" id="m3">
     <div class="mod-header" onclick="tog('m3')">
       <div class="mod-num">3</div>
       <div class="mod-text">
@@ -950,6 +963,7 @@
       </div>
       <div class="mod-time">20 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -1246,7 +1260,7 @@
               <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
             </button>
           </div>
-          <div class="chat-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje · Ubegrænsede forsøg</div>
+          <div class="chat-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje · <strong>Send én besked for at låse modul 4 op 🔒</strong></div>
 
         </div>
       </div>
@@ -1256,7 +1270,7 @@
 
   <!-- MODUL 4 -->
   <div class="sect-label"><hr><span>Modul 4 af 4</span><hr></div>
-  <div class="mod" id="m4">
+  <div class="mod locked" id="m4">
     <div class="mod-header" onclick="tog('m4')">
       <div class="mod-num">4</div>
       <div class="mod-text">
@@ -1265,6 +1279,7 @@
       </div>
       <div class="mod-time">10 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -1369,10 +1384,17 @@
     <h2>Klar til mini-quizzen?</h2>
     <p>6 spørgsmål der tester om du har forstået Del C1. Du skal have mindst 5 rigtige for at låse Del C2 op.</p>
     <div class="cta-warn">⚠️ Quizzen skal bestås for at gå videre</div><br>
-    <a href="quiz-c1.html" class="btn-go">
+
+    <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#F3F4F6; color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
+      🔒 Gennemfør alle moduler først
+    </div>
+    <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mini-quizzen låses op når du har gennemgået alle 4 moduler</div>
+
+    <a href="quiz-c1.html" class="btn-go" id="exam-btn" style="display:none;">
       Start mini-quiz C1
       <svg viewBox="0 0 16 16"><polyline points="6 3 11 8 6 13"/></svg>
     </a>
+
     <div class="cta-sub">
       6 spørgsmål <span class="dot-sep">·</span>
       <span class="coins">+25 coins ved beståelse</span>
@@ -1382,6 +1404,8 @@
 
 </div>
 
+<div id="locked-toast">🔒 <span>Gennemfør det forrige modul først</span></div>
+
 <div id="toast">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toast-msg">Kopieret!</span>
@@ -1389,26 +1413,67 @@
 
 <script>
 // ── Module toggle — auto-luk andre, done ved lukning ────────
+let _lockedToastTimer;
+function showLockedToast(id) {
+  const t = document.getElementById('locked-toast');
+  const span = t.querySelector('span');
+  if (id === 'm4' && !chatHasBeenUsed) {
+    span.textContent = 'Prøv AI-coachen i modul 3 først — skriv et prompt og send det';
+  } else {
+    span.textContent = 'Gennemfør det forrige modul først';
+  }
+  t.classList.add('show');
+  clearTimeout(_lockedToastTimer);
+  _lockedToastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+let chatHasBeenUsed = false; // Sættes til true når brugeren sender sin første besked i modul 3
+
+function unlockNext(id) {
+  const idx  = ['m1','m2','m3','m4'].indexOf(id);
+  const next = ['m1','m2','m3','m4'][idx + 1];
+  if (!next) {
+    // m4 åbnet — lås quiz op
+    unlockExam();
+    return;
+  }
+  // m3 → m4 kræver at AI-chatten er brugt
+  if (id === 'm3' && !chatHasBeenUsed) return;
+  const el = document.getElementById(next);
+  if (el) { el.classList.remove('locked'); el.classList.add('unlocked-next'); }
+}
+
+function unlockExam() {
+  const locked = document.getElementById('exam-locked');
+  const hint   = document.getElementById('exam-locked-hint');
+  const btn    = document.getElementById('exam-btn');
+  if (locked) locked.style.display = 'none';
+  if (hint)   hint.style.display   = 'none';
+  if (btn)    btn.style.display    = 'inline-flex';
+}
+
 function tog(id) {
   const m = document.getElementById(id);
+  if (!m) return;
+  if (m.classList.contains('locked')) { showLockedToast(id); return; }
   if (m.classList.contains('open')) return;
 
-  const currentIdx = modIds.indexOf(id);
+  m.classList.remove('unlocked-next');
 
-  // Luk alle andre, og marker det åbnede modul + alle forrige som done
-  modIds.forEach((otherId, i) => {
-    const other = document.getElementById(otherId);
-    other.classList.remove('open');
-    if (i <= currentIdx && !modDone[otherId]) {
-      modDone[otherId] = true;
-      other.classList.add('done');
-    }
+  modIds.forEach(oid => {
+    const o = document.getElementById(oid);
+    if (o) o.classList.remove('open');
   });
 
-  // Åbn dette modul
   m.classList.add('open');
-  updateProgress();
 
+  if (!modDone[id]) {
+    modDone[id] = true;
+    m.classList.add('done');
+    unlockNext(id);
+  }
+
+  updateProgress();
   requestAnimationFrame(() => {
     const top = m.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
@@ -1530,9 +1595,12 @@ function markDone(id, silent) {
   }
 }
 
-// Init — modul 1 er åbent fra start, så marker det som done
+// Init — modul 1 er åbent fra start
 modDone['m1'] = true;
 document.getElementById('m1').classList.add('done');
+// M2 starter ulåst med amber signal
+const _m2c1 = document.getElementById('m2');
+if (_m2c1) { _m2c1.classList.remove('locked'); _m2c1.classList.add('unlocked-next'); }
 updateProgress();
 
 // ── Indbygget AI-chat ────────────────────────────────────────
@@ -1557,6 +1625,17 @@ async function sendChat() {
   const input = document.getElementById('chat-input');
   const text  = input.value.trim();
   if (!text) return;
+
+  // Første besked i chatten låser modul 4 op
+  if (!chatHasBeenUsed) {
+    chatHasBeenUsed = true;
+    const m4 = document.getElementById('m4');
+    if (m4 && m4.classList.contains('locked')) {
+      m4.classList.remove('locked');
+      m4.classList.add('unlocked-next');
+      showToast('Modul 4 er nu låst op 🎉');
+    }
+  }
 
   const sendBtn = document.getElementById('chat-send');
   sendBtn.disabled = true;
