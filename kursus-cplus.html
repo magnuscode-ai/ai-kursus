@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI — C+: Fra kursus til din hverdag</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+    :root {
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
+      --border:#E5E7EB; --bg:#F9FAFB; --white:#FFFFFF;
+      --rose:#E11D48; --rose-deep:#9F1239;
+      --rose-50:#FFF1F2; --rose-100:#FFE4E6; --rose-200:#FECDD3; --rose-300:#FDA4AF;
+      --rose-glow:rgba(225,29,72,0.15);
+      --amber:#D97706; --amber-50:#FFFBEB; --amber-100:#FEF3C7;
+      --green:#059669; --green-50:#ECFDF5; --green-100:#D1FAE5;
+      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
+    }
+
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; min-height:100vh; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,0.93); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--rose); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-tag { font-size:12px; font-weight:600; color:var(--rose-deep); background:var(--rose-100); padding:4px 12px; border-radius:999px; }
+
+    /* JOURNEY */
+    .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
+    .journey::-webkit-scrollbar { display:none; }
+    .journey-track { display:flex; align-items:stretch; min-width:max-content; justify-content:center; margin:0 auto; }
+    .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
+    .j-item.active { color:var(--rose); border-bottom-color:var(--rose); }
+    .j-item.done { color:var(--green); border-bottom-color:var(--green); }
+    .j-dot { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:#F3F4F6; color:#9CA3AF; }
+    .j-item.active .j-dot { background:var(--rose); color:white; }
+    .j-item.done .j-dot { background:var(--green); color:white; }
+    .j-sep { color:#D1D5DB; font-size:14px; align-self:center; }
+
+    /* HERO */
+    .hero { background:linear-gradient(135deg,var(--rose-deep) 0%,var(--rose) 100%); padding:52px 28px 44px; position:relative; overflow:hidden; }
+    .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px); background-size:40px 40px; }
+    .hero-blob { position:absolute; width:440px; height:440px; background:radial-gradient(circle,rgba(253,164,175,.3) 0%,transparent 70%); top:-160px; right:-80px; border-radius:50%; animation:blobFloat 9s ease-in-out infinite; }
+    @keyframes blobFloat { 0%,100%{transform:translateY(0) scale(1);} 50%{transform:translateY(-18px) scale(1.04);} }
+    .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
+    .hero-chip { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:20px; }
+    .hero-chip-plus { background:rgba(255,255,255,.25); padding:2px 8px; border-radius:5px; font-size:13px; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(28px,5vw,42px); font-weight:600; color:white; line-height:1.18; margin-bottom:14px; letter-spacing:-.4px; }
+    .hero h1 em { font-style:italic; color:var(--rose-200); }
+    .hero-lead { font-size:15.5px; color:rgba(255,255,255,.75); max-width:520px; line-height:1.7; margin-bottom:28px; }
+    .hero-pills { display:flex; gap:10px; flex-wrap:wrap; }
+    .hero-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.16); color:rgba(255,255,255,.82); font-size:13px; padding:7px 14px; border-radius:var(--r-sm); }
+
+    /* LAYOUT */
+    .wrap { max-width:740px; margin:0 auto; padding:36px 24px 80px; }
+
+    /* PHASE STEPPER */
+    .stepper { display:flex; align-items:center; gap:0; margin-bottom:32px; background:var(--white); border:1px solid var(--border); border-radius:var(--r-xl); overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .step-item { flex:1; display:flex; flex-direction:column; align-items:center; padding:16px 8px; gap:6px; border-right:1px solid var(--border); transition:background .2s; position:relative; }
+    .step-item:last-child { border-right:none; }
+    .step-item.active { background:var(--rose-50); }
+    .step-item.done { background:var(--green-50); }
+    .step-num { width:28px; height:28px; border-radius:50%; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; background:#F3F4F6; color:var(--muted); transition:all .3s; }
+    .step-item.active .step-num { background:var(--rose); color:white; box-shadow:0 3px 10px var(--rose-glow); }
+    .step-item.done .step-num { background:var(--green); color:white; }
+    .step-label { font-size:11px; font-weight:600; color:var(--muted); text-align:center; line-height:1.3; }
+    .step-item.active .step-label { color:var(--rose-deep); }
+    .step-item.done .step-label { color:var(--green); }
+
+    /* PHASE SECTIONS */
+    .phase { display:none; }
+    .phase.active { display:block; animation:fadeIn .25s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+
+    /* ── FASE 1: KORTLÆGNING ── */
+    .kortl-card { background:var(--white); border:1.5px solid var(--rose-200); border-radius:var(--r-xl); overflow:hidden; box-shadow:0 4px 24px var(--rose-glow); }
+    .kortl-head { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); padding:20px 24px; display:flex; align-items:center; gap:14px; }
+    .kortl-head-icon { width:44px; height:44px; border-radius:12px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .kortl-head-title { font-size:16px; font-weight:700; color:white; }
+    .kortl-head-sub { font-size:12.5px; color:rgba(255,255,255,.7); margin-top:2px; }
+    .kortl-progress { padding:12px 24px; background:var(--rose-50); border-bottom:1px solid var(--rose-100); display:flex; align-items:center; gap:12px; }
+    .kortl-prog-outer { flex:1; height:5px; background:var(--rose-100); border-radius:999px; overflow:hidden; }
+    .kortl-prog-inner { height:100%; background:linear-gradient(90deg,var(--rose),var(--rose-300)); border-radius:999px; width:0%; transition:width .5s ease; }
+    .kortl-prog-txt { font-size:12px; font-weight:700; color:var(--rose-deep); white-space:nowrap; min-width:80px; text-align:right; }
+
+    /* CHAT */
+    .kortl-msgs { padding:20px 24px 12px; min-height:100px; display:flex; flex-direction:column; gap:14px; }
+    .c-msg { display:flex; gap:10px; align-items:flex-start; animation:msgIn .22s ease; }
+    @keyframes msgIn { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+    .c-msg.user { flex-direction:row-reverse; }
+    .c-av { width:32px; height:32px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .c-av.ai { background:var(--rose); color:white; font-size:8px; letter-spacing:-.3px; }
+    .c-av.me { background:#1E293B; color:white; }
+    .c-bub { max-width:88%; padding:12px 16px; font-size:14px; line-height:1.65; border-radius:var(--r); }
+    .c-msg.ai .c-bub { background:#F8FAFC; border:1px solid var(--border); color:var(--ink-soft); border-radius:4px var(--r) var(--r) var(--r); }
+    .c-msg.ai .c-bub strong { color:var(--ink); font-weight:600; }
+    .c-msg.user .c-bub { background:var(--rose); color:white; border-radius:var(--r) 4px var(--r) var(--r); }
+    .c-typing { display:none; gap:10px; align-items:center; }
+    .c-typing.show { display:flex; }
+    .c-typing-dots { background:#F8FAFC; border:1px solid var(--border); border-radius:4px var(--r) var(--r) var(--r); padding:10px 16px; display:flex; gap:4px; }
+    .c-typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); display:inline-block; animation:dotB 1.2s ease-in-out infinite; }
+    .c-typing-dots span:nth-child(2){animation-delay:.2s;} .c-typing-dots span:nth-child(3){animation-delay:.4s;}
+    @keyframes dotB { 0%,80%,100%{transform:translateY(0);opacity:.4;} 40%{transform:translateY(-5px);opacity:1;} }
+
+    .kortl-input { padding:0 24px 20px; }
+    .kortl-input-row { display:flex; gap:9px; align-items:flex-end; }
+    .kortl-ta { flex:1; min-height:52px; max-height:140px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r); padding:13px 15px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); resize:none; outline:none; transition:border-color .18s,box-shadow .18s; line-height:1.5; }
+    .kortl-ta:focus { border-color:var(--rose); box-shadow:0 0 0 3px var(--rose-glow); background:var(--white); }
+    .kortl-ta::placeholder { color:#9CA3AF; }
+    .kortl-send { width:48px; height:48px; border-radius:var(--r); background:var(--rose); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all .15s; box-shadow:0 3px 10px var(--rose-glow); }
+    .kortl-send:hover { background:var(--rose-deep); transform:translateY(-1px); }
+    .kortl-send:disabled { opacity:.45; cursor:not-allowed; transform:none; }
+    .kortl-send svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; pointer-events:none; }
+    .kortl-hint { font-size:12px; color:var(--muted); margin-top:8px; text-align:center; }
+    .kortl-hint strong { color:var(--rose); font-weight:600; }
+
+    /* ── FASE 2: DIN PLAN ── */
+    .plan-generating { text-align:center; padding:56px 24px; }
+    .plan-spin { width:52px; height:52px; border:3px solid var(--rose-100); border-top-color:var(--rose); border-radius:50%; animation:spin .85s linear infinite; margin:0 auto 18px; }
+    @keyframes spin { to{transform:rotate(360deg);} }
+    .plan-spin-txt { font-size:15px; color:var(--muted); line-height:1.7; }
+    .plan-spin-txt strong { color:var(--ink); display:block; font-size:17px; margin-bottom:4px; }
+
+    .plan-hero { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); border-radius:var(--r-xl); padding:26px 28px; margin-bottom:22px; color:white; position:relative; overflow:hidden; }
+    .plan-hero::after { content:'C+'; position:absolute; right:20px; bottom:-10px; font-family:'Lora',serif; font-size:80px; font-weight:600; color:rgba(255,255,255,.07); line-height:1; }
+    .plan-hero-chip { display:inline-block; background:rgba(255,255,255,.15); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:3px 12px; border-radius:999px; margin-bottom:12px; }
+    .plan-hero-title { font-family:'Lora',serif; font-size:21px; font-weight:600; margin-bottom:8px; line-height:1.3; }
+    .plan-hero-sub { font-size:13.5px; color:rgba(255,255,255,.75); line-height:1.6; }
+    .plan-hero-meta { display:flex; gap:16px; margin-top:16px; flex-wrap:wrap; }
+    .plan-hero-meta-item { font-size:12.5px; color:rgba(255,255,255,.8); display:flex; align-items:center; gap:6px; }
+
+    .plan-section-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; }
+    .plan-items { display:flex; flex-direction:column; gap:10px; margin-bottom:28px; }
+    .plan-item { background:var(--white); border:1px solid var(--border); border-left:4px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:box-shadow .2s,transform .2s; }
+    .plan-item:hover { box-shadow:0 4px 16px rgba(0,0,0,.07); transform:translateY(-1px); }
+    .plan-item:nth-child(1) { border-left-color:var(--rose); }
+    .plan-item:nth-child(2) { border-left-color:#F97316; }
+    .plan-item:nth-child(3) { border-left-color:#EAB308; }
+    .plan-item-header { display:flex; align-items:center; gap:12px; padding:14px 18px; cursor:pointer; user-select:none; }
+    .plan-item-rank { width:30px; height:30px; border-radius:50%; font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .plan-item:nth-child(1) .plan-item-rank { background:var(--rose-50); color:var(--rose); }
+    .plan-item:nth-child(2) .plan-item-rank { background:#FFF7ED; color:#F97316; }
+    .plan-item:nth-child(3) .plan-item-rank { background:#FEFCE8; color:#CA8A04; }
+    .plan-item:nth-child(n+4) .plan-item-rank { background:#F3F4F6; color:var(--muted); }
+    .plan-item-info { flex:1; }
+    .plan-item-title { font-size:14px; font-weight:700; color:var(--ink); }
+    .plan-item-save { font-size:12px; color:var(--green); font-weight:600; margin-top:2px; }
+    .plan-item-arrow { color:#D1D5DB; font-size:16px; flex-shrink:0; transition:transform .2s,color .15s; }
+    .plan-item.open .plan-item-arrow { transform:rotate(180deg); color:var(--rose); }
+    .plan-item-body { display:none; padding:16px 20px 20px; border-top:1px solid var(--border); background:#FAFAFA; animation:fadeIn .2s ease; }
+    .plan-item.open .plan-item-body { display:block; }
+    .plan-item-desc { font-size:13.5px; color:var(--ink-soft); line-height:1.7; margin-bottom:16px; }
+
+    /* COPY BLOCK (arv fra C3) */
+    .copy-block { background:#0D1117; border-radius:var(--r); overflow:hidden; margin-bottom:0; border:1px solid #1E2530; }
+    .copy-topbar { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); gap:8px; }
+    .copy-label-txt { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#4B5563; }
+    .copy-topbar-actions { display:flex; align-items:center; gap:7px; }
+    .see-prompt-btn { display:flex; align-items:center; gap:6px; background:var(--rose); border:none; color:white; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .see-prompt-btn:hover { background:var(--rose-deep); }
+    .see-prompt-btn.open { background:#374151; }
+    .see-prompt-btn svg { width:12px; height:12px; flex-shrink:0; pointer-events:none; transition:transform .2s; }
+    .see-prompt-btn.open svg.chevron { transform:rotate(180deg); }
+    .copy-btn { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.11); color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .copy-btn:hover { background:rgba(255,255,255,.14); color:white; }
+    .copy-btn.copied { background:rgba(16,185,129,.15); border-color:rgba(16,185,129,.3); color:#6EE7B7; }
+    .copy-btn svg { width:13px; height:13px; flex-shrink:0; pointer-events:none; }
+    .copy-text { display:none; padding:14px 16px; font-family:'Courier New',monospace; font-size:13px; line-height:1.7; color:#E2E8F0; white-space:pre-wrap; word-break:break-word; border-top:1px solid rgba(255,255,255,.07); }
+    .copy-text.show { display:block; }
+
+    /* TOP 3 ØVELSE SEKTION */
+    .top3-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); margin-bottom:12px; margin-top:28px; display:flex; align-items:center; gap:8px; }
+    .top3-label::after { content:''; flex:1; height:1px; background:var(--border); }
+    .top3-items { display:flex; flex-direction:column; gap:12px; margin-bottom:28px; }
+    .top3-item { background:var(--white); border:1.5px solid var(--rose-200); border-radius:var(--r-lg); overflow:hidden; }
+    .top3-item-head { display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--rose-50); border-bottom:1px solid var(--rose-100); }
+    .top3-item-num { width:28px; height:28px; border-radius:50%; background:var(--rose); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .top3-item-title { font-size:14px; font-weight:700; color:var(--rose-deep); }
+    .top3-item-body { padding:16px 18px; display:flex; flex-direction:column; gap:12px; }
+    .top3-context { font-size:13.5px; color:var(--ink-soft); line-height:1.65; }
+    .top3-context strong { color:var(--ink); font-weight:600; }
+
+    /* ── FASE 3: DIN AI-DAG ── */
+    .aidag-card { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); border-radius:var(--r-xl); padding:28px; margin-bottom:20px; color:white; }
+    .aidag-card h2 { font-family:'Lora',serif; font-size:22px; font-weight:600; margin-bottom:8px; }
+    .aidag-card p { font-size:14px; color:rgba(255,255,255,.78); line-height:1.65; }
+    .aidag-days { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+    .aidag-day { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 20px; }
+    .aidag-day-title { font-size:13px; font-weight:700; color:var(--rose-deep); letter-spacing:.06em; text-transform:uppercase; margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+    .aidag-day-items { display:flex; flex-direction:column; gap:8px; }
+    .aidag-day-item { display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink-soft); line-height:1.55; }
+    .aidag-day-item-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    .aidag-day-item strong { color:var(--ink); font-weight:600; }
+
+    .aidag-download { background:var(--white); border:1.5px solid var(--rose-200); border-radius:var(--r-lg); padding:20px 24px; display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-bottom:20px; }
+    .aidag-dl-icon { width:48px; height:48px; border-radius:12px; background:var(--rose-50); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .aidag-dl-text { flex:1; min-width:180px; }
+    .aidag-dl-title { font-size:14px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+    .aidag-dl-sub { font-size:13px; color:var(--muted); }
+    .aidag-dl-btn { display:inline-flex; align-items:center; gap:8px; background:var(--rose); color:white; font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:700; padding:11px 22px; border-radius:var(--r-sm); border:none; cursor:pointer; transition:all .15s; box-shadow:0 3px 10px var(--rose-glow); }
+    .aidag-dl-btn:hover { background:var(--rose-deep); transform:translateY(-1px); }
+    .aidag-dl-btn svg { width:14px; height:14px; pointer-events:none; }
+
+    /* NOTICE */
+    .notice { display:flex; gap:13px; align-items:flex-start; border-radius:var(--r); padding:14px 16px; margin-bottom:14px; }
+    .notice-icon { font-size:17px; flex-shrink:0; margin-top:1px; }
+    .notice-head { font-size:12.5px; font-weight:700; margin-bottom:3px; }
+    .notice-body { font-size:13px; line-height:1.55; }
+    .notice.info { background:var(--rose-50); }
+    .notice.info .notice-head { color:var(--rose-deep); }
+    .notice.info .notice-body { color:var(--rose-deep); }
+
+    /* TILFØJ TIL BIBLIOTEK */
+    .lib-add-card { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); border-radius:var(--r-lg); padding:20px 22px; margin-bottom:10px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; box-shadow:0 4px 16px var(--rose-glow); }
+    .lib-add-icon { width:48px; height:48px; border-radius:12px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:22px; flex-shrink:0; }
+    .lib-add-text { flex:1; min-width:180px; }
+    .lib-add-title { font-size:14px; font-weight:700; color:white; margin-bottom:3px; }
+    .lib-add-sub { font-size:12.5px; color:rgba(255,255,255,.75); }
+    .lib-add-btn { display:inline-flex; align-items:center; gap:8px; background:white; color:var(--rose-deep); font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:none; cursor:pointer; flex-shrink:0; transition:transform .15s,box-shadow .15s; box-shadow:0 3px 10px rgba(0,0,0,.15); }
+    .lib-add-btn:hover { transform:translateY(-2px); }
+    .lib-add-btn.done { background:var(--green); color:white; cursor:default; transform:none; }
+    .lib-add-btn svg { width:14px; height:14px; pointer-events:none; }
+    .notice-green-box { background:var(--green-50); border:1px solid var(--green-100); border-radius:var(--r-sm); padding:10px 14px; font-size:13px; color:#065F46; font-weight:600; margin-bottom:16px; }
+
+    /* EGEN PROMPT ØVELSE */
+    .own-prompt-box { background:var(--white); border:1.5px solid var(--rose-200); border-radius:var(--r-lg); padding:20px 22px; margin-bottom:20px; }
+    .own-prompt-header { display:flex; gap:12px; align-items:flex-start; margin-bottom:14px; }
+    .own-prompt-icon { width:38px; height:38px; border-radius:10px; background:var(--rose-50); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .own-prompt-title { font-size:15px; font-weight:700; color:var(--ink); margin-bottom:3px; }
+    .own-prompt-sub { font-size:13px; color:var(--muted); line-height:1.55; }
+    .own-prompt-tips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
+    .own-tip { font-size:12px; color:var(--rose-deep); background:var(--rose-50); border:1px solid var(--rose-100); padding:4px 11px; border-radius:999px; font-weight:600; }
+    .own-prompt-ta { width:100%; min-height:100px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r-sm); padding:12px 14px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); resize:vertical; outline:none; line-height:1.6; transition:border-color .18s,box-shadow .18s; margin-bottom:12px; }
+    .own-prompt-ta:focus { border-color:var(--rose); box-shadow:0 0 0 3px var(--rose-glow); background:var(--white); }
+    .own-prompt-ta::placeholder { color:#9CA3AF; }
+    .own-prompt-actions { display:flex; gap:10px; flex-wrap:wrap; }
+    .own-prompt-save { display:inline-flex; align-items:center; gap:7px; background:var(--rose); color:white; font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:none; cursor:pointer; transition:background .15s,transform .15s; }
+    .own-prompt-save:hover { background:var(--rose-deep); transform:translateY(-1px); }
+    .own-prompt-save svg { width:14px; height:14px; pointer-events:none; }
+    .own-prompt-copy { display:inline-flex; align-items:center; gap:7px; background:var(--white); color:var(--rose-deep); font-family:'Outfit',sans-serif; font-size:13.5px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1.5px solid var(--rose-200); cursor:pointer; transition:background .15s; }
+    .own-prompt-copy:hover { background:var(--rose-50); }
+    .own-prompt-copy svg { width:14px; height:14px; pointer-events:none; }
+
+    /* TOAST */
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:11px 22px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.25); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+    @media(max-width:600px){
+      nav{padding:0 16px;} .hero{padding:32px 16px 28px;} .wrap{padding:24px 16px 60px;}
+      .stepper{border-radius:var(--r);} .step-label{font-size:10px;}
+      .kortl-head{padding:16px 18px;} .kortl-msgs{padding:16px 18px 10px;} .kortl-input{padding:0 18px 16px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
+  </a>
+  <span class="nav-tag">Kursus C<strong>+</strong></span>
+</nav>
+
+<!-- JOURNEY -->
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item done"><div class="j-dot">✓</div> C1</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> C2</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> C3</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> Eksamen</div>
+    <span class="j-sep">›</span>
+    <div class="j-item done"><div class="j-dot">✓</div> Bevis</div>
+    <span class="j-sep">›</span>
+    <div class="j-item active"><div class="j-dot">C+</div> Din hverdag</div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- STEPPER -->
+  <div class="stepper" id="stepper">
+    <div class="step-item active" id="st1">
+      <div class="step-num">1</div>
+      <div class="step-label">Fortæl om dig</div>
+    </div>
+    <div class="step-item" id="st2">
+      <div class="step-num">2</div>
+      <div class="step-label">Din AI-plan</div>
+    </div>
+    <div class="step-item" id="st3">
+      <div class="step-num">3</div>
+      <div class="step-label">Øv de vigtigste</div>
+    </div>
+    <div class="step-item" id="st4">
+      <div class="step-num">4</div>
+      <div class="step-label">Din AI-dag</div>
+    </div>
+  </div>
+
+  <!-- ── FASE 1: KORTLÆGNING ── -->
+  <div class="phase active" id="phase1">
+    <div class="kortl-card">
+      <div class="kortl-head">
+        <div class="kortl-head-icon">🗣️</div>
+        <div>
+          <div class="kortl-head-title">Fortæl mig om dig og dit arbejde</div>
+          <div class="kortl-head-sub">5 korte spørgsmål — svar naturligt, ingen rigtige svar</div>
+        </div>
+      </div>
+      <div class="kortl-progress">
+        <div class="kortl-prog-outer"><div class="kortl-prog-inner" id="kortl-prog"></div></div>
+        <div class="kortl-prog-txt" id="kortl-prog-txt">Spørgsmål 1 af 5</div>
+      </div>
+      <div class="kortl-msgs" id="kortl-msgs">
+        <!-- Beskeder indsættes her -->
+      </div>
+      <div class="c-typing" id="kortl-typing">
+        <div class="c-av ai">AI</div>
+        <div class="c-typing-dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="kortl-input">
+        <div class="kortl-input-row">
+          <textarea class="kortl-ta" id="kortl-ta" placeholder="Skriv dit svar her..." onkeydown="kortlKeydown(event)"></textarea>
+          <button class="kortl-send" id="kortl-send" onclick="kortlSend()">
+            <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+        <div class="kortl-hint">Tryk <strong>Enter</strong> for at sende · <strong>Shift+Enter</strong> for ny linje</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FASE 2: DIN PLAN ── -->
+  <div class="phase" id="phase2">
+    <!-- Genereres dynamisk -->
+  </div>
+
+  <!-- ── FASE 3: ØV DE VIGTIGSTE ── -->
+  <div class="phase" id="phase3">
+    <!-- Genereres dynamisk -->
+  </div>
+
+  <!-- ── FASE 4: DIN AI-DAG ── -->
+  <div class="phase" id="phase4">
+    <!-- Genereres dynamisk -->
+  </div>
+
+</div>
+
+<div id="toast">
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Kopieret!</span>
+</div>
+
+<script>
+// ── STEPPER ──────────────────────────────────────────────────
+function setStep(n) {
+  for (let i = 1; i <= 4; i++) {
+    const s = document.getElementById('st' + i);
+    const p = document.getElementById('phase' + i);
+    s.classList.remove('active','done');
+    p.classList.remove('active');
+    if (i < n)      s.classList.add('done');
+    else if (i===n) { s.classList.add('active'); p.classList.add('active'); }
+    const numEl = s.querySelector('.step-num');
+    numEl.textContent = i < n ? '✓' : i;
+  }
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── KORTLÆGNINGS-CHAT ────────────────────────────────────────
+const QUESTIONS = [
+  'Hej! 👋 Lad os starte med det vigtigste — <strong>hvad arbejder du med til daglig?</strong> Fortæl gerne lidt om din stilling og hvad du bruger mest tid på.',
+  'Tak! Næste spørgsmål: <strong>Hvad er de 2-3 opgaver der tager mest tid i din arbejdsuge?</strong> Det kan være møder, mails, rapporter, research — hvad som helst.',
+  'Godt. Nu det modsatte: <strong>Hvad hader du at bruge tid på?</strong> Hvad føles som spild, gentagelse eller unødvendigt besvær i dit arbejde?',
+  '<strong>Hvad vil du gerne blive bedre til?</strong> Det kan være fagligt, kommunikationsmæssigt, personligt — hvad har du tænkt "det burde jeg gøre smartere"?',
+  'Sidste spørgsmål: <strong>Hvor meget bruger du AI i dag?</strong> Er det dagligt, af og til, eller er du lige startet? Og til hvad bruger du det primært?'
+];
+
+let kortlStep = 0;
+const kortlAnswers = [];
+let kortlWaiting = false;
+
+function kortlAddMsg(role, html) {
+  const c = document.getElementById('kortl-msgs');
+  const d = document.createElement('div');
+  d.className = 'c-msg ' + role;
+  if (role === 'ai') {
+    d.innerHTML = `<div class="c-av ai">AI</div><div class="c-bub">${html}</div>`;
+  } else {
+    d.innerHTML = `<div class="c-av me">DIG</div><div class="c-bub">${escHtml(html)}</div>`;
+  }
+  c.appendChild(d);
+  c.scrollTop = 99999;
+}
+
+function kortlUpdateProgress() {
+  const pct = Math.round((kortlStep / QUESTIONS.length) * 100);
+  document.getElementById('kortl-prog').style.width = pct + '%';
+  document.getElementById('kortl-prog-txt').textContent =
+    kortlStep >= QUESTIONS.length ? 'Alle svar modtaget ✓' : `Spørgsmål ${kortlStep + 1} af ${QUESTIONS.length}`;
+}
+
+function kortlAsk() {
+  if (kortlStep >= QUESTIONS.length) return;
+  kortlWaiting = true;
+  document.getElementById('kortl-typing').classList.add('show');
+  setTimeout(() => {
+    document.getElementById('kortl-typing').classList.remove('show');
+    kortlAddMsg('ai', QUESTIONS[kortlStep]);
+    kortlWaiting = false;
+    document.getElementById('kortl-ta').focus();
+  }, 700 + Math.random() * 400);
+}
+
+function kortlKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); kortlSend(); }
+}
+
+function kortlSend() {
+  if (kortlWaiting) return;
+  const ta  = document.getElementById('kortl-ta');
+  const txt = ta.value.trim();
+  if (!txt) return;
+
+  ta.value = '';
+  ta.style.height = 'auto';
+  document.getElementById('kortl-send').disabled = true;
+
+  kortlAddMsg('user', txt);
+  kortlAnswers.push(txt);
+  kortlStep++;
+  kortlUpdateProgress();
+
+  if (kortlStep < QUESTIONS.length) {
+    kortlWaiting = true;
+    document.getElementById('kortl-typing').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('kortl-typing').classList.remove('show');
+      kortlAddMsg('ai', QUESTIONS[kortlStep]);
+      kortlWaiting = false;
+      document.getElementById('kortl-send').disabled = false;
+      document.getElementById('kortl-ta').focus();
+    }, 800 + Math.random() * 500);
+  } else {
+    // Alle svar modtaget — tak og gå til fase 2
+    kortlWaiting = true;
+    document.getElementById('kortl-typing').classList.add('show');
+    setTimeout(() => {
+      document.getElementById('kortl-typing').classList.remove('show');
+      kortlAddMsg('ai', 'Perfekt — det er præcis hvad jeg behøver. <strong>Jeg bygger din personlige AI-plan nu</strong> — det tager 15-20 sekunder. 🚀');
+      kortlWaiting = false;
+      document.getElementById('kortl-send').disabled = true;
+      document.getElementById('kortl-ta').disabled = true;
+      setTimeout(() => generatePlan(), 1800);
+    }, 700);
+  }
+}
+
+// ── STREAMING API ────────────────────────────────────────────
+async function streamAI(prompt, onChunk, maxTokens = 2000) {
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-6',
+      max_tokens: maxTokens,
+      stream: true,
+      messages: [{ role: 'user', content: prompt }]
+    })
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(`API fejl ${res.status}: ${err.slice(0,120)}`);
+  }
+
+  const reader  = res.body.getReader();
+  const decoder = new TextDecoder();
+  let   buffer  = '';
+  let   full    = '';
+
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    buffer += decoder.decode(value, { stream: true });
+    const lines = buffer.split('\n');
+    buffer = lines.pop();
+    for (const line of lines) {
+      if (!line.startsWith('data: ')) continue;
+      const data = line.slice(6).trim();
+      if (data === '[DONE]') continue;
+      try {
+        const evt = JSON.parse(data);
+        if (evt.type === 'content_block_delta' && evt.delta?.text) {
+          full += evt.delta.text;
+          onChunk && onChunk(full);
+        }
+      } catch {}
+    }
+  }
+  return full;
+}
+
+// Robust JSON-udtræk fra AI-svar
+function extractJSON(raw) {
+  // Fjern markdown-blokke
+  let s = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
+  // Find første { og sidste }
+  const start = s.indexOf('{');
+  const end   = s.lastIndexOf('}');
+  if (start === -1 || end === -1) throw new Error('Ingen JSON fundet i AI-svar');
+  s = s.slice(start, end + 1);
+  // Prøv direkte parse
+  try { return JSON.parse(s); } catch {}
+  // Prøv at reparere afskåret JSON ved at tilføje manglende lukkeparenteser
+  const opens  = (s.match(/\[/g) || []).length;
+  const closes = (s.match(/\]/g) || []).length;
+  const bopens  = (s.match(/\{/g) || []).length;
+  const bcloses = (s.match(/\}/g) || []).length;
+  // Fjern ufuldstændig sidst linje
+  const lastComma = s.lastIndexOf('",');
+  if (lastComma > s.length - 60) {
+    s = s.slice(0, lastComma + 1);
+  }
+  s += ']'.repeat(Math.max(0, opens - closes));
+  s += '}'.repeat(Math.max(0, bopens - bcloses));
+  return JSON.parse(s);
+}
+
+// ── FASE 2: GENERER PLAN ─────────────────────────────────────
+async function generatePlan() {
+  setStep(2);
+
+  const phase2 = document.getElementById('phase2');
+  phase2.innerHTML = `
+    <div class="plan-generating">
+      <div class="plan-spin"></div>
+      <div class="plan-spin-txt" id="gen-status">
+        <strong>Analyserer dine svar...</strong><br>
+        Bygger din personlige AI-plan
+      </div>
+    </div>`;
+
+  const userContext =
+    `Job: ${kortlAnswers[0] || ''}\n` +
+    `Tidssluger: ${kortlAnswers[1] || ''}\n` +
+    `Hader: ${kortlAnswers[2] || ''}\n` +
+    `Vil blive bedre til: ${kortlAnswers[3] || ''}\n` +
+    `AI-erfaring: ${kortlAnswers[4] || ''}`;
+
+  // Kompakt prompt — få korte felter så JSON passer i tokens
+  const planPrompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
+
+Person:
+${userContext}
+
+Returner dette JSON-objekt præcist:
+{"navn":"[jobtitel]-plan","intro":"Max 1 sætning om fokus","job_label":"[kort jobtitel]","tid_label":"[X-Y timer/uge]","anvendelser":[{"titel":"[maks 5 ord]","tid":"[fx 2t/uge]","beskrivelse":"[max 2 korte sætninger tilpasset DENNE persons job]","prompt":"[konkret prompt med [pladsholder] — max 60 ord]"},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."}]}
+
+PRÆCIS 4 anvendelser. Kort og konkret. Tilpasset til "${kortlAnswers[0] || 'personen'}".`;
+
+  try {
+    let rawJson = '';
+    let dotCount = 0;
+    const statusEl = document.getElementById('gen-status');
+
+    rawJson = await streamAI(planPrompt, (partial) => {
+      dotCount++;
+      if (statusEl && dotCount % 20 === 0) {
+        const dots = '.'.repeat((Math.floor(dotCount / 20) % 4));
+        statusEl.innerHTML = `<strong>Bygger din plan${dots}</strong><br>${partial.length} tegn genereret`;
+      }
+    }, 1800);
+
+    const json = extractJSON(rawJson);
+    renderPlan(json);
+
+  } catch(e) {
+    phase2.innerHTML = `
+      <div style="text-align:center;padding:40px;">
+        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+        <div style="font-weight:700;color:var(--ink);font-size:17px;margin-bottom:8px;">Noget gik galt</div>
+        <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">${escHtml(e.message)}</div>
+        <button onclick="generatePlan()" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--r);border:none;cursor:pointer;">
+          ↺ Prøv igen
+        </button>
+      </div>`;
+  }
+}
+
+function renderPlan(plan) {
+  window._plan = plan;
+
+  const itemsHtml = plan.anvendelser.map((a, i) => `
+    <div class="plan-item" id="pi${i}">
+      <div class="plan-item-header" onclick="togglePlanItem(${i})">
+        <div class="plan-item-rank">${i+1}</div>
+        <div class="plan-item-info">
+          <div class="plan-item-title">${escHtml(a.titel)}</div>
+          <div class="plan-item-save">⏱ ${escHtml(a.tid || a.tid_besparelse || '')}</div>
+        </div>
+        <div class="plan-item-arrow">▾</div>
+      </div>
+      <div class="plan-item-body">
+        <div class="plan-item-desc">${escHtml(a.beskrivelse)}</div>
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Prompt — ${escHtml(a.titel)}</span>
+            <div class="copy-topbar-actions">
+              <button class="see-prompt-btn" onclick="togglePrompt(this)">
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                Se prompt
+              </button>
+              <button class="copy-btn" onclick="copyBlock(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Kopiér
+              </button>
+            </div>
+          </div>
+          <div class="copy-text">${escHtml(a.prompt)}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('phase2').innerHTML = `
+    <div class="plan-hero">
+      <div class="plan-hero-chip">Din personlige AI-plan</div>
+      <div class="plan-hero-title">${escHtml(plan.navn)}</div>
+      <div class="plan-hero-sub">${escHtml(plan.intro)}</div>
+      <div class="plan-hero-meta">
+        <div class="plan-hero-meta-item">💼 ${escHtml(plan.job_label)}</div>
+        <div class="plan-hero-meta-item">⏱ Estimeret besparelse: <strong style="color:white;">${escHtml(plan.tid_label)}</strong></div>
+        <div class="plan-hero-meta-item">📋 ${plan.anvendelser.length} konkrete anvendelser</div>
+      </div>
+    </div>
+
+    <div class="plan-section-label">Dine ${plan.anvendelser.length} AI-anvendelser — rangeret efter tidsbesparelse</div>
+    <div class="plan-items">${itemsHtml}</div>
+
+    <!-- TILFØJ TIL BIBLIOTEK -->
+    <div class="lib-add-card" id="lib-add-section">
+      <div class="lib-add-icon">📚</div>
+      <div class="lib-add-text">
+        <div class="lib-add-title">${plan.anvendelser.length} personlige prompts klar til dit bibliotek</div>
+        <div class="lib-add-sub">Gem dem i en ny "C+"-kategori — så er de altid ét klik væk</div>
+      </div>
+      <button class="lib-add-btn" id="lib-add-btn" onclick="addCplusToLibrary()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tilføj til bibliotek
+      </button>
+    </div>
+    <div id="lib-add-confirm" style="display:none;" class="notice-green-box">
+      ✅ Gemt i dit bibliotek under kategorien "C+" — <a href="bibliotek.html" target="_blank" style="color:#065F46;font-weight:700;">Åbn biblioteket</a>
+    </div>
+
+    <!-- EGEN PROMPT ØVELSE -->
+    <div class="own-prompt-box">
+      <div class="own-prompt-header">
+        <div class="own-prompt-icon">✍️</div>
+        <div>
+          <div class="own-prompt-title">Din tur — skriv dit eget prompt</div>
+          <div class="own-prompt-sub">Baseret på din plan: hvad er den opgave du vil løse allermest? Skriv et prompt til den — brug det du har lært i C1-C3.</div>
+        </div>
+      </div>
+      <div class="own-prompt-tips">
+        <span class="own-tip">💡 Giv AI en rolle</span>
+        <span class="own-tip">💡 Vær specifik om opgaven</span>
+        <span class="own-tip">💡 Angiv format og længde</span>
+      </div>
+      <textarea class="own-prompt-ta" id="own-prompt-ta" placeholder="Skriv dit eget prompt her... Tænk på en konkret opgave fra din hverdag og skriv et prompt der løser den."></textarea>
+      <div class="own-prompt-actions">
+        <button class="own-prompt-save" onclick="saveOwnPrompt()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Gem i biblioteket
+        </button>
+        <button class="own-prompt-copy" onclick="copyOwnPrompt()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Kopiér og brug nu
+        </button>
+      </div>
+      <div id="own-prompt-saved" style="display:none;font-size:13px;color:var(--green);font-weight:600;margin-top:10px;">✅ Gemt i biblioteket under "C+"</div>
+    </div>
+
+    <div style="text-align:center; padding:8px 0 24px;">
+      <button onclick="goToPhase3()" style="display:inline-flex;align-items:center;gap:9px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:var(--r);border:none;cursor:pointer;box-shadow:0 4px 16px var(--rose-glow);transition:all .15s;">
+        Øv de 3 vigtigste →
+      </button>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:10px;">Vi dykker ned i dine top 3 med skræddersyede øvelser</div>
+    </div>`;
+}
+
+function togglePlanItem(i) {
+  const el = document.getElementById('pi' + i);
+  el.classList.toggle('open');
+}
+
+// ── BIBLIOTEK FUNKTIONER ─────────────────────────────────────
+function addCplusToLibrary() {
+  if (!window._plan) return;
+  const STORAGE_KEY     = 'learnai_prompt_library_v2';
+  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
+
+  try {
+    let library = [];
+    try { library = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+
+    const existingIds = new Set(library.map(p => p.id));
+    let added = 0;
+
+    window._plan.anvendelser.forEach((a, i) => {
+      const id = 'cplus_' + i + '_' + Date.now();
+      if (!existingIds.has(id)) {
+        library.push({
+          id, emoji: '🎯',
+          title: a.titel,
+          source: 'C+ — Din personlige plan',
+          category: 'C+',
+          text: a.prompt || a.beskrivelse || ''
+        });
+        added++;
+      }
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem(STORAGE_KEY_CAT) || '[]'); } catch {}
+    if (!cats.includes('C+')) { cats.push('C+'); localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats)); }
+
+    const btn = document.getElementById('lib-add-btn');
+    if (btn) { btn.classList.add('done'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tilføjet!'; }
+    const confirm = document.getElementById('lib-add-confirm');
+    if (confirm) confirm.style.display = 'block';
+    showToast(`✅ ${added} prompts gemt i biblioteket under "C+"`);
+  } catch(e) {
+    showToast('Fejl: ' + e.message);
+  }
+}
+
+function saveOwnPrompt() {
+  const ta  = document.getElementById('own-prompt-ta');
+  const txt = ta ? ta.value.trim() : '';
+  if (!txt) { showToast('Skriv et prompt først'); return; }
+
+  const STORAGE_KEY     = 'learnai_prompt_library_v2';
+  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
+
+  try {
+    let library = [];
+    try { library = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+
+    library.unshift({
+      id: 'own_cplus_' + Date.now(),
+      emoji: '✨',
+      title: 'Mit eget C+-prompt',
+      source: 'C+ — Egen øvelse',
+      category: 'C+',
+      text: txt
+    });
+
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem(STORAGE_KEY_CAT) || '[]'); } catch {}
+    if (!cats.includes('C+')) { cats.push('C+'); localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats)); }
+
+    const saved = document.getElementById('own-prompt-saved');
+    if (saved) saved.style.display = 'block';
+    showToast('✅ Eget prompt gemt i biblioteket');
+  } catch(e) {
+    showToast('Fejl: ' + e.message);
+  }
+}
+
+function copyOwnPrompt() {
+  const ta  = document.getElementById('own-prompt-ta');
+  const txt = ta ? ta.value.trim() : '';
+  if (!txt) { showToast('Skriv et prompt først'); return; }
+  copyText(txt, () => showToast('Prompt kopieret — indsæt med Ctrl+V ✓'));
+}
+
+// ── FASE 3: ØV TOP 3 ─────────────────────────────────────────
+async function goToPhase3() {
+  if (!window._plan) return;
+  setStep(3);
+
+  document.getElementById('phase3').innerHTML = `
+    <div class="plan-generating">
+      <div class="plan-spin"></div>
+      <div class="plan-spin-txt"><strong>Bygger dine øvelser...</strong></div>
+    </div>`;
+
+  const top3 = window._plan.anvendelser.slice(0, 3);
+
+  const top3Prompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
+
+Person: ${kortlAnswers[0]}. Opgaver: ${kortlAnswers[1]}
+
+Top 3 AI-anvendelser:
+${top3.map((a,i) => `${i+1}. ${a.titel}`).join("\n")}
+
+Returner præcist:
+{"oevelser":[{"titel":"[titel fra listen]","kontekst":"[max 1 sætning om hvorfor vigtigt for DENNE person]","opgave":"[konkret opgave max 2 sætninger]","tip":"[ét kort konkret tip]"},{"titel":"...","kontekst":"...","opgave":"...","tip":"..."},{"titel":"...","kontekst":"...","opgave":"...","tip":"..."}]}`;
+
+  try {
+    const raw  = await streamAI(top3Prompt, null, 700);
+    const json = extractJSON(raw);
+    renderTop3(json.oevelser || json, top3);
+  } catch(e) {
+    document.getElementById('phase3').innerHTML = `
+      <div style="text-align:center;padding:40px;">
+        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+        <div style="font-weight:700;color:var(--ink);margin-bottom:8px;">Noget gik galt</div>
+        <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">${escHtml(e.message)}</div>
+        <button onclick="goToPhase3()" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--r);border:none;cursor:pointer;">↺ Prøv igen</button>
+      </div>`;
+  }
+}
+
+function renderTop3(oevelser, top3Prompts) {
+  const html = oevelser.map((o, i) => `
+    <div class="top3-item">
+      <div class="top3-item-head">
+        <div class="top3-item-num">${i+1}</div>
+        <div class="top3-item-title">${escHtml(o.titel)}</div>
+      </div>
+      <div class="top3-item-body">
+        <div class="top3-context">${escHtml(o.kontekst)}</div>
+        <div style="background:var(--amber-50);border:1px solid #FDE68A;border-radius:var(--r-sm);padding:12px 14px;">
+          <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">🎯 Din opgave</div>
+          <div style="font-size:13.5px;color:#78350F;line-height:1.65;">${escHtml(o.opgave)}</div>
+        </div>
+        <div style="font-size:12.5px;color:var(--muted);display:flex;gap:7px;align-items:flex-start;">
+          <span style="flex-shrink:0;">💡</span>
+          <span><strong style="color:var(--ink);">Tip:</strong> ${escHtml(o.tip)}</span>
+        </div>
+        <div class="copy-block">
+          <div class="copy-topbar">
+            <span class="copy-label-txt">Prompt til øvelsen</span>
+            <div class="copy-topbar-actions">
+              <button class="see-prompt-btn" onclick="togglePrompt(this)">
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                Se prompt
+              </button>
+              <button class="copy-btn" onclick="copyBlock(this)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                Kopiér
+              </button>
+            </div>
+          </div>
+          <div class="copy-text">${escHtml(top3Prompts[i]?.prompt || '')}</div>
+        </div>
+      </div>
+    </div>`).join('');
+
+  document.getElementById('phase3').innerHTML = `
+    <div class="notice info" style="margin-bottom:20px;">
+      <div class="notice-icon">🎯</div>
+      <div>
+        <div class="notice-head">Dine 3 vigtigste AI-anvendelser — med øvelser</div>
+        <div class="notice-body">Åbn Claude eller ChatGPT ved siden af. Løs én øvelse ad gangen. Brug prompten som udgangspunkt og tilpas den til din situation.</div>
+      </div>
+    </div>
+    <div class="top3-label">Dine 3 vigtigste AI-anvendelser</div>
+    <div class="top3-items">${html}</div>
+    <div style="text-align:center;padding:8px 0 24px;">
+      <button onclick="goToPhase4()" style="display:inline-flex;align-items:center;gap:9px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:var(--r);border:none;cursor:pointer;box-shadow:0 4px 16px var(--rose-glow);transition:all .15s;">
+        Se din AI-dag →
+      </button>
+    </div>`;
+}
+
+// ── FASE 4: DIN AI-DAG ───────────────────────────────────────
+async function goToPhase4() {
+  if (!window._plan) return;
+  setStep(4);
+
+  document.getElementById('phase4').innerHTML = `
+    <div class="plan-generating">
+      <div class="plan-spin"></div>
+      <div class="plan-spin-txt"><strong>Bygger din AI-dag...</strong>En konkret oversigt over hvornår og hvordan du bruger AI i en typisk arbejdsdag</div>
+    </div>`;
+
+  const tidLabel = (window._plan && window._plan.tid_label) ? window._plan.tid_label : "2-4 timer/uge";
+  const top3titler = window._plan ? window._plan.anvendelser.slice(0,3).map(a=>a.titel).join(", ") : "";
+
+  const aiDagPrompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
+
+Job: ${kortlAnswers[0]}. Top AI-anvendelser: ${top3titler}
+
+Returner præcist:
+{"overskrift":"[Din AI-dag som job]","intro":"[1 sætning]","perioder":[{"tid":"Morgen","ikon":"☀️","titel":"[hvad de laver]","ai_brug":[{"ikon":"💬","tekst":"[konkret AI-brug]"},{"ikon":"📝","tekst":"[konkret AI-brug]"}]},{"tid":"Formiddag","ikon":"💼","titel":"[hvad de laver]","ai_brug":[{"ikon":"🔍","tekst":"[konkret AI-brug]"},{"ikon":"📊","tekst":"[konkret AI-brug]"}]},{"tid":"Eftermiddag","ikon":"🌇","titel":"[hvad de laver]","ai_brug":[{"ikon":"✉️","tekst":"[konkret AI-brug]"}]}],"ugentlig_besparelse":"${tidLabel}","afslutning":"[1 motiverende sætning]"}`;
+
+  try {
+    const raw  = await streamAI(aiDagPrompt, null, 700);
+    const json = extractJSON(raw);
+    renderAiDag(json);
+  } catch(e) {
+    document.getElementById('phase4').innerHTML = `
+      <div style="text-align:center;padding:40px;">
+        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
+        <div style="font-weight:700;color:var(--ink);margin-bottom:8px;">Noget gik galt</div>
+        <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">${escHtml(e.message)}</div>
+        <button onclick="goToPhase4()" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--r);border:none;cursor:pointer;">↺ Prøv igen</button>
+      </div>`;
+  }
+}
+
+function renderAiDag(dag) {
+  window._dag = dag;
+
+  const perioderHtml = dag.perioder.map(p => `
+    <div class="aidag-day">
+      <div class="aidag-day-title">${p.ikon} ${escHtml(p.tid)} — ${escHtml(p.titel)}</div>
+      <div class="aidag-day-items">
+        ${p.ai_brug.map(a => `
+          <div class="aidag-day-item">
+            <div class="aidag-day-item-icon">${a.ikon}</div>
+            <div>${escHtml(a.tekst)}</div>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+
+  document.getElementById('phase4').innerHTML = `
+    <div class="aidag-card">
+      <h2>${escHtml(dag.overskrift)}</h2>
+      <p>${escHtml(dag.intro)} Estimeret besparelse: <strong style="color:white;">${escHtml(dag.ugentlig_besparelse)}</strong> om ugen.</p>
+    </div>
+
+    <div class="plan-section-label">Din typiske arbejdsdag med AI</div>
+    <div class="aidag-days">${perioderHtml}</div>
+
+    <div class="aidag-download">
+      <div class="aidag-dl-icon">📄</div>
+      <div class="aidag-dl-text">
+        <div class="aidag-dl-title">Gem din AI-plan</div>
+        <div class="aidag-dl-sub">Download din personlige plan som en tekstfil du kan åbne og bruge hver dag</div>
+      </div>
+      <button class="aidag-dl-btn" onclick="downloadPlan()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download plan
+      </button>
+    </div>
+
+    <div style="background:linear-gradient(135deg,var(--rose-50),#FFF1F2);border:1.5px solid var(--rose-200);border-radius:var(--r-xl);padding:24px 28px;text-align:center;">
+      <div style="font-size:32px;margin-bottom:10px;">🏅</div>
+      <div style="font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:8px;">${escHtml(dag.afslutning)}</div>
+      <div style="font-size:13.5px;color:var(--muted);margin-bottom:20px;">Du har nu en personlig AI-plan, prompts til dine vigtigste opgaver og en konkret oversigt over hvornår du bruger dem.</div>
+      <a href="platform.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:12px 26px;border-radius:var(--r-sm);text-decoration:none;box-shadow:0 4px 14px var(--rose-glow);">
+        Tilbage til platformen
+      </a>
+    </div>`;
+}
+
+// ── DOWNLOAD PLAN ────────────────────────────────────────────
+function downloadPlan() {
+  if (!window._plan || !window._dag) return;
+  let txt = `MIN PERSONLIGE AI-PLAN\n${'='.repeat(40)}\n\n`;
+  txt += `${window._plan.navn}\n${window._plan.intro}\n\nEstimeret tidsbesparelse: ${window._plan.tid_label}\n\n`;
+  txt += `MINE ${window._plan.anvendelser.length} AI-ANVENDELSER\n${'-'.repeat(40)}\n`;
+  window._plan.anvendelser.forEach((a,i) => {
+    txt += `\n${i+1}. ${a.titel} (${a.tid_besparelse})\n${a.beskrivelse}\n\nPrompt:\n${a.prompt}\n`;
+  });
+  txt += `\n\nMIN AI-DAG\n${'-'.repeat(40)}\n`;
+  window._dag.perioder.forEach(p => {
+    txt += `\n${p.tid} — ${p.titel}\n`;
+    p.ai_brug.forEach(a => txt += `• ${a.tekst}\n`);
+  });
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'min-ai-plan.txt';
+  a.click(); URL.revokeObjectURL(url);
+  showToast('Plan downloadet ✓');
+}
+
+// ── COPY/PROMPT HELPERS ──────────────────────────────────────
+function togglePrompt(btn) {
+  const block  = btn.closest('.copy-block');
+  const textEl = block.querySelector('.copy-text');
+  const isOpen = textEl.classList.toggle('show');
+  btn.classList.toggle('open', isOpen);
+  btn.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = isOpen ? ' Luk' : ' Se prompt'; });
+}
+
+function copyBlock(btn) {
+  const block  = btn.closest('.copy-block');
+  const textEl = block.querySelector('.copy-text');
+  if (!textEl.classList.contains('show')) togglePrompt(block.querySelector('.see-prompt-btn'));
+  copyText(textEl.textContent, () => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kopieret';
+    showToast('Prompt kopieret ✓');
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér'; }, 2000);
+  });
+}
+
+function copyText(text, onSuccess) {
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.setAttribute('readonly','');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta); ta.focus(); ta.select(); ta.setSelectionRange(0,text.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch(e){}
+  document.body.removeChild(ta);
+  if (ok) { onSuccess && onSuccess(); return; }
+  if (navigator.clipboard) navigator.clipboard.writeText(text).then(() => onSuccess && onSuccess()).catch(()=>showToast('Kopiering fejlede'));
+  else showToast('Kopiering fejlede');
+}
+
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+let _tt;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(_tt);
+  _tt = setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// ── INIT ─────────────────────────────────────────────────────
+// Start med første spørgsmål
+setTimeout(() => kortlAsk(), 400);
+</script>
+</body>
+</html>
