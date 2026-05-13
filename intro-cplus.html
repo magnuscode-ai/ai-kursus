@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI — Kursus C+</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+
+    :root {
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
+      --border:#E5E7EB; --bg:#FFF1F2; --white:#FFFFFF;
+      --rose:#E11D48; --rose-deep:#9F1239;
+      --rose-50:#FFF1F2; --rose-100:#FFE4E6; --rose-200:#FECDD3;
+      --rose-glow:rgba(225,29,72,0.18);
+      --green:#059669; --green-50:#ECFDF5;
+      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
+    }
+
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; min-height:100vh; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,0.95); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--rose); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-tag { font-size:12px; font-weight:700; color:var(--rose-deep); background:var(--rose-100); padding:4px 14px; border-radius:999px; letter-spacing:.04em; }
+
+    /* HERO */
+    .hero { background:linear-gradient(135deg,var(--rose-deep) 0%,var(--rose) 60%,#FB7185 100%); min-height:480px; display:flex; align-items:center; position:relative; overflow:hidden; padding:60px 28px 56px; }
+    .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.7) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.7) 1px,transparent 1px); background-size:44px 44px; }
+
+    /* PUZZLE ANIMATION */
+    .puzzle-wrap { position:absolute; right:6%; top:50%; transform:translateY(-50%); width:220px; height:220px; }
+    @media(max-width:700px){ .puzzle-wrap { display:none; } }
+
+    .p-piece { opacity:0; }
+    @keyframes pieceIn1 { from{opacity:0;transform:translate(-60px,-50px) rotate(-20deg);} to{opacity:1;transform:translate(0,0) rotate(0deg);} }
+    @keyframes pieceIn2 { from{opacity:0;transform:translate(60px,-50px) rotate(18deg);} to{opacity:1;transform:translate(0,0) rotate(0deg);} }
+    @keyframes pieceIn3 { from{opacity:0;transform:translate(-60px,60px) rotate(15deg);} to{opacity:1;transform:translate(0,0) rotate(0deg);} }
+    @keyframes pieceIn4 { from{opacity:0;transform:translate(60px,60px) rotate(-15deg);} to{opacity:1;transform:translate(0,0) rotate(0deg);} }
+    @keyframes pieceIn5 { from{opacity:0;transform:scale(.3) rotate(25deg);} to{opacity:1;transform:scale(1) rotate(0deg);} }
+
+    .puzzle-glow { position:absolute; inset:30px; border-radius:50%; background:radial-gradient(circle,rgba(255,255,255,.2) 0%,transparent 70%); opacity:0; animation:glowIn .8s ease 2s forwards; }
+    @keyframes glowIn { to{opacity:1;} }
+    .puzzle-wrap.landed { animation:puzzleFloat 5s ease-in-out 2.2s infinite; }
+    @keyframes puzzleFloat { 0%,100%{transform:translateY(-50%);} 50%{transform:translateY(calc(-50% - 10px));} }
+
+    .hero-inner { max-width:560px; position:relative; z-index:1; }
+    .hero-eyebrow { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.2); color:rgba(255,255,255,.9); font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:22px; }
+    .hero-eyebrow-badge { background:rgba(255,255,255,.25); padding:2px 8px; border-radius:5px; font-size:13px; font-weight:800; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(30px,5.5vw,48px); font-weight:600; color:white; line-height:1.15; margin-bottom:16px; letter-spacing:-.5px; }
+    .hero h1 em { font-style:italic; color:rgba(255,255,255,.75); }
+    .hero-lead { font-size:16px; color:rgba(255,255,255,.78); line-height:1.7; margin-bottom:30px; max-width:480px; }
+    .hero-pills { display:flex; gap:10px; flex-wrap:wrap; margin-bottom:32px; }
+    .hero-pill { display:flex; align-items:center; gap:7px; background:rgba(255,255,255,.13); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:13px; font-weight:600; padding:8px 15px; border-radius:var(--r-sm); }
+    .hero-cta { display:inline-flex; align-items:center; gap:10px; background:white; color:var(--rose-deep); font-family:'Outfit',sans-serif; font-size:15px; font-weight:800; padding:15px 34px; border-radius:var(--r); text-decoration:none; box-shadow:0 6px 24px rgba(0,0,0,.2); transition:transform .15s,box-shadow .15s; }
+    .hero-cta:hover { transform:translateY(-2px); box-shadow:0 10px 32px rgba(0,0,0,.25); }
+    .hero-cta svg { width:16px; height:16px; pointer-events:none; }
+    .hero-require { display:inline-flex; align-items:center; gap:6px; margin-left:16px; font-size:13px; color:rgba(255,255,255,.65); }
+    .hero-require svg { width:14px; height:14px; }
+
+    /* CONTENT */
+    .wrap { max-width:740px; margin:0 auto; padding:48px 24px 80px; }
+
+    /* WHAT IS C+ */
+    .what-card { background:var(--white); border-radius:var(--r-xl); padding:32px 36px; margin-bottom:24px; box-shadow:0 2px 16px rgba(0,0,0,.06); border:1px solid var(--border); }
+    .what-label { font-size:11px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--rose); margin-bottom:12px; }
+    .what-title { font-family:'Lora',serif; font-size:24px; font-weight:600; color:var(--ink); margin-bottom:14px; line-height:1.3; }
+    .what-body { font-size:14.5px; color:var(--ink-soft); line-height:1.75; }
+    .what-body strong { color:var(--ink); font-weight:600; }
+
+    /* PHASES */
+    .phases-title { font-size:13px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+    .phases-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px; }
+    @media(max-width:520px){ .phases-grid { grid-template-columns:1fr; } }
+    .phase-card { background:var(--white); border:1.5px solid var(--border); border-radius:var(--r-lg); padding:18px 20px; transition:border-color .2s,box-shadow .2s; }
+    .phase-card:hover { border-color:var(--rose-200); box-shadow:0 4px 16px var(--rose-glow); }
+    .phase-card-num { width:30px; height:30px; border-radius:50%; background:var(--rose-50); color:var(--rose); font-size:13px; font-weight:800; display:flex; align-items:center; justify-content:center; margin-bottom:10px; border:1.5px solid var(--rose-200); }
+    .phase-card-title { font-size:14px; font-weight:700; color:var(--ink); margin-bottom:5px; }
+    .phase-card-body { font-size:13px; color:var(--muted); line-height:1.55; }
+
+    /* HVAD DU FÅR */
+    .get-grid { display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px; margin-bottom:28px; }
+    @media(max-width:560px){ .get-grid { grid-template-columns:1fr; } }
+    .get-item { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:20px; text-align:center; }
+    .get-icon { font-size:28px; margin-bottom:10px; }
+    .get-title { font-size:13.5px; font-weight:700; color:var(--ink); margin-bottom:4px; }
+    .get-body { font-size:12.5px; color:var(--muted); line-height:1.5; }
+
+    /* KRAV */
+    .require-box { background:linear-gradient(135deg,#FFF1F2,#FFE4E6); border:1.5px solid var(--rose-200); border-radius:var(--r-lg); padding:18px 22px; display:flex; gap:14px; align-items:flex-start; margin-bottom:28px; }
+    .require-icon { font-size:22px; flex-shrink:0; }
+    .require-title { font-size:14px; font-weight:700; color:var(--rose-deep); margin-bottom:4px; }
+    .require-body { font-size:13.5px; color:var(--rose-deep); line-height:1.6; opacity:.85; }
+
+    /* CTA SECTION */
+    .cta-section { background:linear-gradient(135deg,var(--rose-deep),var(--rose)); border-radius:var(--r-xl); padding:36px; text-align:center; box-shadow:0 8px 32px var(--rose-glow); }
+    .cta-section-icon { font-size:40px; margin-bottom:12px; }
+    .cta-section h2 { font-family:'Lora',serif; font-size:24px; font-weight:600; color:white; margin-bottom:10px; }
+    .cta-section p { font-size:14px; color:rgba(255,255,255,.75); line-height:1.65; margin-bottom:24px; max-width:420px; margin-left:auto; margin-right:auto; }
+    .cta-btn { display:inline-flex; align-items:center; gap:10px; background:white; color:var(--rose-deep); font-family:'Outfit',sans-serif; font-size:15px; font-weight:800; padding:15px 36px; border-radius:var(--r); text-decoration:none; box-shadow:0 6px 20px rgba(0,0,0,.2); transition:transform .15s,box-shadow .15s; }
+    .cta-btn:hover { transform:translateY(-2px); box-shadow:0 10px 28px rgba(0,0,0,.25); }
+    .cta-btn svg { width:16px; height:16px; pointer-events:none; }
+
+    /* STAGGERED REVEAL */
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .5s ease,transform .5s ease; }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+
+    @media(max-width:600px){
+      nav{padding:0 16px;}
+      .hero{padding:40px 16px 44px;}
+      .what-card{padding:22px 20px;}
+      .wrap{padding:32px 16px 60px;}
+      .cta-section{padding:26px 20px;}
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
+  </a>
+  <span class="nav-tag">Kursus C+</span>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+
+  <!-- PUZZLE ANIMATION -->
+  <div class="puzzle-wrap" id="puzzle-wrap">
+
+    <svg width="220" height="220" viewBox="0 0 220 220" xmlns="http://www.w3.org/2000/svg">
+
+      <!-- Brik 1: Top-venstre — C1 -->
+      <g class="p-piece" style="animation:pieceIn1 .65s cubic-bezier(.22,.68,0,1.4) .3s both;">
+        <path d="M10 10 L90 10 Q90 10 90 30 Q90 50 110 50 Q90 50 90 70 Q90 90 90 90 L10 90 Z"
+          fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+        <text x="44" y="55" font-family="Outfit,sans-serif" font-size="20" font-weight="800" fill="white" text-anchor="middle">C1</text>
+      </g>
+
+      <!-- Brik 2: Top-højre — C2 -->
+      <g class="p-piece" style="animation:pieceIn2 .65s cubic-bezier(.22,.68,0,1.4) .55s both;">
+        <path d="M130 10 L210 10 L210 90 L130 90 Q130 70 130 50 Q150 50 130 50 Q110 50 130 30 Q130 10 130 10 Z"
+          fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.45)" stroke-width="1.5"/>
+        <text x="170" y="55" font-family="Outfit,sans-serif" font-size="20" font-weight="800" fill="white" text-anchor="middle">C2</text>
+      </g>
+
+      <!-- Brik 3: Midt-venstre — C3 -->
+      <g class="p-piece" style="animation:pieceIn3 .65s cubic-bezier(.22,.68,0,1.4) .8s both;">
+        <path d="M10 130 L90 130 L90 210 L10 210 Q10 190 30 190 Q50 190 50 170 Q50 150 10 150 Z"
+          fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.4)" stroke-width="1.5"/>
+        <text x="50" y="177" font-family="Outfit,sans-serif" font-size="20" font-weight="800" fill="white" text-anchor="middle">C3</text>
+      </g>
+
+      <!-- Brik 4: Midt-højre — Bevis -->
+      <g class="p-piece" style="animation:pieceIn4 .65s cubic-bezier(.22,.68,0,1.4) 1.05s both;">
+        <path d="M130 130 L210 130 Q190 130 190 150 Q190 170 210 170 L210 210 L130 210 L130 130 Z"
+          fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.38)" stroke-width="1.5"/>
+        <text x="170" y="177" font-family="Lora,serif" font-size="14" font-weight="600" fill="white" text-anchor="middle" font-style="italic">Bevis</text>
+      </g>
+
+      <!-- Brik 5: Center — C+ (hvid, fremhævet) -->
+      <g class="p-piece" style="animation:pieceIn5 .7s cubic-bezier(.22,.68,0,1.4) 1.35s both;">
+        <rect x="82" y="82" width="56" height="56" rx="12"
+          fill="rgba(255,255,255,.92)" stroke="white" stroke-width="1.5"/>
+        <text x="110" y="117" font-family="Outfit,sans-serif" font-size="22" font-weight="800" fill="#9F1239" text-anchor="middle">C+</text>
+      </g>
+
+    </svg>
+
+    <div class="puzzle-glow"></div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      Kursus <span class="hero-eyebrow-badge">C+</span> — Eksklusivt for bevisindehavere
+    </div>
+    <h1>Fra kursus<br>til <em>din hverdag</em></h1>
+    <p class="hero-lead">Du har lært teknikkerne. Nu finder vi ud af præcis hvordan de passer til <strong style="color:white;">dit</strong> job og din dagligdag — og bygger en konkret plan du kan bruge fra i morgen.</p>
+    <div class="hero-pills">
+      <div class="hero-pill">🎯 100% personligt</div>
+      <div class="hero-pill">⏱ 20-30 min</div>
+      <div class="hero-pill">📋 Din personlige AI-plan</div>
+      <div class="hero-pill">📄 Download og gem</div>
+    </div>
+    <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
+      <a href="kursus-cplus.html" class="hero-cta">
+        Start C+
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+      <span class="hero-require">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+        Kræver Kursus C-bevis
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HVAD ER C+ -->
+  <div class="what-card reveal">
+    <div class="what-label">Hvad er Kursus C+?</div>
+    <div class="what-title">Ikke mere teori — din personlige AI-køreplan</div>
+    <div class="what-body">
+      <p>C+ er anderledes end alt andet på LearnAI. Der er ingen moduler, ingen gennemgange og ingen teknikker at lære. I stedet starter du med at fortælle AI om dit job og dine udfordringer — og AI bygger en skræddersyet plan der viser dig <strong>præcis hvornår, hvordan og til hvad</strong> du skal bruge AI i din dagligdag.</p>
+      <p style="margin-top:12px;">Ingen standardsvar. Ingen generiske eksempler. Alt er tilpasset til dig.</p>
+    </div>
+  </div>
+
+  <!-- DE 4 FASER -->
+  <div class="reveal">
+    <div class="phases-title">Sådan foregår det — 4 faser</div>
+    <div class="phases-grid">
+      <div class="phase-card">
+        <div class="phase-card-num">1</div>
+        <div class="phase-card-title">Fortæl om dig</div>
+        <div class="phase-card-body">5 korte spørgsmål om dit job, dine udfordringer og hvad du vil blive bedre til. AI stiller spørgsmålene ét ad gangen i en naturlig samtale.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-num">2</div>
+        <div class="phase-card-title">Din personlige AI-plan</div>
+        <div class="phase-card-body">AI genererer 6 konkrete anvendelser tilpasset dit job — rangeret efter tidsbesparelse. Alle med skræddersyede prompts.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-num">3</div>
+        <div class="phase-card-title">Øv de 3 vigtigste</div>
+        <div class="phase-card-body">De tre vigtigste punkter fra din plan bliver til konkrete øvelser med opgaver og tips tilpasset din hverdag.</div>
+      </div>
+      <div class="phase-card">
+        <div class="phase-card-num">4</div>
+        <div class="phase-card-title">Din AI-dag</div>
+        <div class="phase-card-body">En oversigt over hvornår du bruger AI i løbet af en typisk arbejdsdag — morgen, middag, eftermiddag. Download og gem den.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HVAD DU FÅR -->
+  <div class="reveal">
+    <div class="phases-title">Hvad du tager med hjem</div>
+    <div class="get-grid">
+      <div class="get-item">
+        <div class="get-icon">🗺️</div>
+        <div class="get-title">En personlig AI-køreplan</div>
+        <div class="get-body">6 konkrete anvendelser tilpasset præcis dit job og dine opgaver</div>
+      </div>
+      <div class="get-item">
+        <div class="get-icon">⚡</div>
+        <div class="get-title">Skræddersyede prompts</div>
+        <div class="get-body">Færdige prompts til dine vigtigste opgaver — klar til brug</div>
+      </div>
+      <div class="get-item">
+        <div class="get-icon">📄</div>
+        <div class="get-title">Et dokument du kan bruge</div>
+        <div class="get-body">Download din plan og åbn den hver morgen som en huskeliste</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KRAV -->
+  <div class="require-box reveal">
+    <div class="require-icon">🏅</div>
+    <div>
+      <div class="require-title">Kræver Kursus C-bevis</div>
+      <div class="require-body">C+ er kun tilgængeligt for dem der har bestået Kursus C-eksamen og modtaget deres sølv-badge. Du finder knappen til C+ på din profilside når beviset er på plads.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-section reveal">
+    <div class="cta-section-icon">🚀</div>
+    <h2>Klar til at omsætte det du har lært?</h2>
+    <p>Det tager 20-30 minutter. Du forlader siden med en konkret plan der er skræddersyet til dig — ikke til en generisk AI-bruger.</p>
+    <a href="kursus-cplus.html" class="cta-btn">
+      Start Kursus C+ nu
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+
+</div>
+
+<script>
+// Puzzle float animation after all pieces land
+setTimeout(() => {
+  document.getElementById('puzzle-wrap').classList.add('landed');
+}, 2300);
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+  });
+}, { threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
