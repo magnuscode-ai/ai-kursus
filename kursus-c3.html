@@ -91,12 +91,18 @@
     .mod-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
     .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.open .mod-time { background:var(--vio-100); color:var(--vio-deep); }
-    .mod.locked { opacity:.55; pointer-events:none; }
-    .mod.locked .mod-header { cursor:default; }
+    .mod.locked { opacity:.55; }
+    .mod.locked .mod-header { cursor:not-allowed; }
     .mod-locked-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.locked .mod-locked-badge { display:flex; }
     .mod.locked .mod-time { display:none; }
     .mod.locked .mod-arrow { display:none; }
+    .mod.unlocked-next { border-left-color:#F59E0B; box-shadow:0 2px 12px rgba(245,158,11,.15); }
+    .mod.unlocked-next .mod-header { background:#FFFBEB; }
+    .mod.unlocked-next .mod-num { background:#F59E0B; color:white; }
+    .mod.unlocked-next .mod-arrow { color:#F59E0B; }
+    #locked-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.92); background:#1E293B; color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; padding:14px 26px; border-radius:var(--r); box-shadow:0 12px 40px rgba(0,0,0,.3); opacity:0; pointer-events:none; z-index:9999; transition:opacity .2s,transform .2s; white-space:nowrap; display:flex; align-items:center; gap:10px; }
+    #locked-toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
     .mod-done-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.done .mod-done-badge { display:flex; }
     .mod.done .mod-time { display:none; }
@@ -1131,6 +1137,8 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
   </div>
 </div>
 
+<div id="locked-toast">🔒 <span>Gennemfør det forrige modul først</span></div>
+
 <div id="toast">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
   <span id="toast-msg">Kopieret!</span>
@@ -1147,13 +1155,15 @@ function unlockNext(id) {
   const idx  = modIds.indexOf(id);
   const next = modIds[idx + 1];
   if (!next) {
-    // Ingen næste modul — vi er på m5, lås eksamen op
     unlockExam();
     return;
   }
-  if (id === 'm4') return; // m4→m5 låses kun op af simulatoren
+  if (id === 'm4') return;
   const el = document.getElementById(next);
-  if (el) el.classList.remove('locked');
+  if (el) {
+    el.classList.remove('locked');
+    el.classList.add('unlocked-next');
+  }
 }
 
 function unlockExam() {
@@ -1168,29 +1178,39 @@ function unlockExam() {
 // Kaldes af simulatoren når m4 er bestået eller alle forsøg brugt
 function unlockM5() {
   const el = document.getElementById('m5');
-  if (el) el.classList.remove('locked');
+  if (el) {
+    el.classList.remove('locked');
+    el.classList.add('unlocked-next');
+  }
+  if (!modDone['m4']) { modDone['m4'] = true; document.getElementById('m4').classList.add('done'); updateProgress(); }
+}
+
+let _lockedToastTimer;
+function showLockedToast() {
+  const t = document.getElementById('locked-toast');
+  t.classList.add('show');
+  clearTimeout(_lockedToastTimer);
+  _lockedToastTimer = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
 function tog(id) {
   const m = document.getElementById(id);
   if (!m) return;
-  // Bloker hvis låst
-  if (m.classList.contains('locked')) return;
-  // Bloker hvis allerede åben
+  if (m.classList.contains('locked')) {
+    showLockedToast();
+    return;
+  }
   if (m.classList.contains('open')) return;
 
-  const idx = modIds.indexOf(id);
+  m.classList.remove('unlocked-next');
 
-  // Luk alle andre
   modIds.forEach((oid) => {
     const el = document.getElementById(oid);
     if (el) el.classList.remove('open');
   });
 
-  // Åbn dette modul
   m.classList.add('open');
 
-  // Markér som done og lås næste op
   if (!modDone[id]) {
     modDone[id] = true;
     m.classList.add('done');
@@ -1218,9 +1238,16 @@ function updateProgress() {
     else if (id === modIds.find(x => !modDone[x])) { s.classList.add('active'); s.classList.remove('done'); s.textContent = i+1; }
   });
 }
+
+// ── INIT ─────────────────────────────────────────────────────
+// Modul 1 er åben fra start og markeres straks som done
+modDone['m1'] = true;
+document.getElementById('m1').classList.add('done');
 updateProgress();
 
-// ── COPY BLOCK ───────────────────────────────────────────────
+// M2 starter klar (amber signal — ikke locked)
+const _m2 = document.getElementById('m2');
+if (_m2) { _m2.classList.remove('locked'); _m2.classList.add('unlocked-next'); }
 function togglePrompt(btn) {
   const block   = btn.closest('.copy-block');
   const textEl  = block.querySelector('.copy-text');
