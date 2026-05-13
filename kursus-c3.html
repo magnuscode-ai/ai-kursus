@@ -1186,18 +1186,24 @@ function unlockM5() {
 }
 
 let _lockedToastTimer;
-function showLockedToast() {
-  const t = document.getElementById('locked-toast');
+function showLockedToast(id) {
+  const t    = document.getElementById('locked-toast');
+  const span = t.querySelector('span');
+  if (id === 'm5') {
+    span.textContent = 'Du skal gennemføre møde-simulatoren i modul 4 først';
+  } else {
+    span.textContent = 'Gennemfør det forrige modul først';
+  }
   t.classList.add('show');
   clearTimeout(_lockedToastTimer);
-  _lockedToastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+  _lockedToastTimer = setTimeout(() => t.classList.remove('show'), 3000);
 }
 
 function tog(id) {
   const m = document.getElementById(id);
   if (!m) return;
   if (m.classList.contains('locked')) {
-    showLockedToast();
+    showLockedToast(id);
     return;
   }
   if (m.classList.contains('open')) return;
