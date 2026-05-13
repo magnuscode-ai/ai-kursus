@@ -35,7 +35,7 @@
     /* JOURNEY */
     .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
     .journey::-webkit-scrollbar { display:none; }
-    .journey-track { display:flex; align-items:stretch; min-width:max-content; }
+    .journey-track { display:flex; align-items:stretch; min-width:max-content; justify-content:center; margin:0 auto; }
     .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
     .j-item.active { color:var(--teal); border-bottom-color:var(--teal); }
     .j-item.done { color:var(--green); border-bottom-color:var(--green); }
@@ -86,6 +86,20 @@
     .mod.open .mod-time { background:var(--teal-100); color:var(--teal-deep); }
     .mod-done-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.done .mod-done-badge { display:flex; }
+    .mod.locked { opacity:.55; }
+    .mod.locked .mod-header { cursor:not-allowed; }
+    .mod-locked-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.locked .mod-locked-badge { display:flex; }
+    .mod.locked .mod-time { display:none; }
+    .mod.locked .mod-arrow { display:none; }
+    /* Ulåst men ikke åbnet endnu — amber signal */
+    .mod.unlocked-next { border-left-color:#F59E0B; box-shadow:0 2px 12px rgba(245,158,11,.15); }
+    .mod.unlocked-next .mod-header { background:#FFFBEB; }
+    .mod.unlocked-next .mod-num { background:#F59E0B; color:white; }
+    .mod.unlocked-next .mod-arrow { color:#F59E0B; }
+    /* Locked toast */
+    #locked-toast { position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.92); background:#1E293B; color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:600; padding:14px 26px; border-radius:var(--r); box-shadow:0 12px 40px rgba(0,0,0,.3); opacity:0; pointer-events:none; z-index:9999; transition:opacity .2s,transform .2s; white-space:nowrap; display:flex; align-items:center; gap:10px; }
+    #locked-toast.show { opacity:1; transform:translate(-50%,-50%) scale(1); }
     .mod.done .mod-time { display:none; }
     .mod-arrow { color:#D1D5DB; font-size:18px; flex-shrink:0; transition:transform .25s,color .2s; }
     .mod.open .mod-arrow { transform:rotate(180deg); color:var(--teal); }
@@ -670,7 +684,7 @@
 
   <!-- MODUL 2 — EMAIL-UDFORDRINGEN -->
   <div class="sect-label"><hr><span>Modul 2 af 5 — Live opgave</span><hr></div>
-  <div class="mod" id="m2">
+  <div class="mod locked" id="m2">
     <div class="mod-header" onclick="tog('m2')">
       <div class="mod-num">2</div>
       <div class="mod-text">
@@ -679,6 +693,7 @@
       </div>
       <div class="mod-time">15 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -757,7 +772,7 @@ PartnerCo</div>
 
   <!-- MODUL 3 — PRODUKTIVITET -->
   <div class="sect-label"><hr><span>Modul 3 af 5</span><hr></div>
-  <div class="mod" id="m3">
+  <div class="mod locked" id="m3">
     <div class="mod-header" onclick="tog('m3')">
       <div class="mod-num">3</div>
       <div class="mod-text">
@@ -766,6 +781,7 @@ PartnerCo</div>
       </div>
       <div class="mod-time">12 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -810,7 +826,7 @@ PartnerCo</div>
 
   <!-- MODUL 4 — TEKSTFORBEDRING -->
   <div class="sect-label"><hr><span>Modul 4 af 5</span><hr></div>
-  <div class="mod" id="m4">
+  <div class="mod locked" id="m4">
     <div class="mod-header" onclick="tog('m4')">
       <div class="mod-num">4</div>
       <div class="mod-text">
@@ -819,6 +835,7 @@ PartnerCo</div>
       </div>
       <div class="mod-time">10 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -874,7 +891,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
   <!-- MODUL 5 — GUIDE TIL PROMPT-BIBLIOTEKET -->
   <div class="sect-label"><hr><span>Modul 5 af 5 — Tag det med dig</span><hr></div>
-  <div class="mod" id="m5">
+  <div class="mod locked" id="m5">
     <div class="mod-header" onclick="tog('m5')">
       <div class="mod-num">5</div>
       <div class="mod-text">
@@ -883,6 +900,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
       </div>
       <div class="mod-time">8 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -896,7 +914,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
           <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
           <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
         </div>
-        <a href="bibliotek.html" target="_blank" class="lib-open-btn">
+        <a href="bibliotek.html" target="_blank" class="lib-open-btn" onclick="unlockExam()">
           Åbn biblioteket
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
@@ -1079,10 +1097,17 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
     <h2>Klar til mini-quizzen?</h2>
     <p>6 spørgsmål der tester om du har forstået Del C2. Du skal have mindst 5 rigtige for at låse Del C3 op.</p>
     <div class="cta-warn">⚠️ Quizzen skal bestås for at gå videre</div><br>
-    <a href="quiz-c2.html" class="btn-go">
+
+    <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#F3F4F6; color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
+      🔒 Åbn dit prompt-bibliotek først
+    </div>
+    <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mini-quizzen låses op når du har åbnet modul 5 og dit bibliotek</div>
+
+    <a href="quiz-c2.html" class="btn-go" id="exam-btn" style="display:none;">
       Start mini-quiz C2
       <svg viewBox="0 0 16 16"><polyline points="6 3 11 8 6 13"/></svg>
     </a>
+
     <div class="cta-sub">
       6 spørgsmål <span class="dot-sep">·</span>
       <span class="coins">+25 coins ved beståelse</span>
@@ -1091,6 +1116,8 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
   </div>
 
 </div>
+
+<div id="locked-toast">🔒 <span>Gennemfør det forrige modul først</span></div>
 
 <div id="toast">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1103,19 +1130,62 @@ const modIds  = ['m1','m2','m3','m4','m5'];
 const modDone = { m1:false, m2:false, m3:false, m4:false, m5:false };
 const TOTAL   = 5;
 
+function unlockNext(id) {
+  const idx  = modIds.indexOf(id);
+  const next = modIds[idx + 1];
+  if (!next) {
+    unlockExam();
+    return;
+  }
+  const el = document.getElementById(next);
+  if (el) {
+    el.classList.remove('locked');
+    el.classList.add('unlocked-next');
+  }
+}
+
+function unlockExam() {
+  const locked = document.getElementById('exam-locked');
+  const hint   = document.getElementById('exam-locked-hint');
+  const btn    = document.getElementById('exam-btn');
+  if (locked) locked.style.display = 'none';
+  if (hint)   hint.style.display   = 'none';
+  if (btn)    btn.style.display    = 'inline-flex';
+}
+
+let _lockedToastTimer;
+function showLockedToast() {
+  const t = document.getElementById('locked-toast');
+  t.classList.add('show');
+  clearTimeout(_lockedToastTimer);
+  _lockedToastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
 function tog(id) {
   const m = document.getElementById(id);
+  if (!m) return;
+  if (m.classList.contains('locked')) {
+    showLockedToast();
+    return;
+  }
   if (m.classList.contains('open')) return;
-  const idx = modIds.indexOf(id);
-  modIds.forEach((oid, i) => {
+
+  // Fjern amber fra dette modul når det åbnes
+  m.classList.remove('unlocked-next');
+
+  modIds.forEach(oid => {
     const o = document.getElementById(oid);
-    o.classList.remove('open');
-    if (i <= idx && !modDone[oid]) {
-      modDone[oid] = true;
-      o.classList.add('done');
-    }
+    if (o) o.classList.remove('open');
   });
+
   m.classList.add('open');
+
+  if (!modDone[id]) {
+    modDone[id] = true;
+    m.classList.add('done');
+    unlockNext(id);
+  }
+
   updateProgress();
   requestAnimationFrame(() => {
     const top = m.getBoundingClientRect().top + window.scrollY - 80;
@@ -1128,7 +1198,7 @@ function updateProgress() {
   const pct  = Math.round((done / TOTAL) * 100);
   document.getElementById('prog-bar').style.width = pct + '%';
   document.getElementById('prog-pct').textContent = pct + '%';
-  const labels = ['Åbn modul 1 for at starte','Godt begyndt — 4 moduler tilbage','Du er i gang!','Halvvejs forbi!','Næsten i mål — ét modul tilbage','Alle moduler gennemgået — tag quizzen! 🎯'];
+  const labels = ['Åbn modul 1 for at starte','Godt begyndt — 4 moduler tilbage','Du er i gang!','Halvvejs forbi!','Næsten i mål — ét modul tilbage','Alle moduler gennemgået — åbn dit bibliotek og tag quizzen! 🎯'];
   document.getElementById('prog-txt').textContent = labels[done];
   const openId = modIds.find(id => document.getElementById(id).classList.contains('open'));
   modIds.forEach((id, i) => {
@@ -1141,8 +1211,12 @@ function updateProgress() {
   });
 }
 
+// Modul 1 og 2 er ulåst fra start (m1 er åben, m2 er klar med amber signal)
 modDone['m1'] = true;
 document.getElementById('m1').classList.add('done');
+const m2 = document.getElementById('m2');
+m2.classList.remove('locked');
+m2.classList.add('unlocked-next');
 updateProgress();
 
 // ── AI Demo tabs ──────────────────────────────────────────────
