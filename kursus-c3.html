@@ -35,7 +35,7 @@
     /* JOURNEY */
     .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
     .journey::-webkit-scrollbar { display:none; }
-    .journey-track { display:flex; align-items:stretch; min-width:max-content; }
+    .journey-track { display:flex; align-items:stretch; min-width:max-content; justify-content:center; margin:0 auto; }
     .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
     .j-item.active { color:var(--vio); border-bottom-color:var(--vio); }
     .j-item.done { color:var(--green); border-bottom-color:var(--green); }
@@ -91,6 +91,12 @@
     .mod-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
     .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.open .mod-time { background:var(--vio-100); color:var(--vio-deep); }
+    .mod.locked { opacity:.55; pointer-events:none; }
+    .mod.locked .mod-header { cursor:default; }
+    .mod-locked-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod.locked .mod-locked-badge { display:flex; }
+    .mod.locked .mod-time { display:none; }
+    .mod.locked .mod-arrow { display:none; }
     .mod-done-badge { display:none; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.done .mod-done-badge { display:flex; }
     .mod.done .mod-time { display:none; }
@@ -203,37 +209,6 @@
     .ai-verdict.good { background:var(--green-50); color:#065F46; border:1px solid #A7F3D0; }
     .ai-verdict.good::before { content:'✅'; font-size:14px; }
 
-    /* LIVE OPGAVE (Projekt-briefing) */
-    .live-challenge { border:1.5px solid var(--vio-200); border-radius:var(--r-xl); overflow:hidden; margin-bottom:20px; box-shadow:0 4px 20px var(--vio-glow); }
-    .lc-header { background:linear-gradient(135deg,var(--vio-deep),var(--vio)); padding:18px 22px; display:flex; align-items:center; gap:12px; }
-    .lc-icon { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
-    .lc-title { font-size:15px; font-weight:700; color:white; }
-    .lc-sub { font-size:12.5px; color:rgba(255,255,255,.72); margin-top:2px; }
-    .lc-brief { background:var(--white); border-bottom:1px solid var(--border); }
-    .lc-brief-meta { display:flex; align-items:center; gap:10px; padding:14px 20px 10px; border-bottom:1px solid #F3F4F6; flex-wrap:wrap; gap:8px; }
-    .lc-badge { font-size:11px; font-weight:700; padding:3px 10px; border-radius:999px; }
-    .lc-badge.urgent { background:#FEE2E2; color:#991B1B; }
-    .lc-badge.project { background:var(--vio-50); color:var(--vio-deep); }
-    .lc-brief-body { padding:16px 20px; font-size:13.5px; line-height:1.8; color:var(--ink-soft); white-space:pre-line; }
-    .lc-brief-body strong { color:var(--ink); font-weight:600; }
-    .lc-stakeholders { padding:14px 20px; background:#FAFAFA; border-bottom:1px solid var(--border); }
-    .lc-s-title { font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:10px; }
-    .lc-s-list { display:flex; flex-direction:column; gap:8px; }
-    .lc-s-item { display:flex; gap:10px; align-items:flex-start; }
-    .lc-s-avatar { width:30px; height:30px; border-radius:50%; color:white; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-    .lc-s-name { font-size:13px; font-weight:700; color:var(--ink); }
-    .lc-s-want { font-size:12.5px; color:var(--muted); line-height:1.4; }
-
-    .lc-howto { background:linear-gradient(135deg,var(--vio-50),#F0EAFF); border:1.5px solid var(--vio-100); border-radius:var(--r-lg); padding:16px 18px; margin:18px 20px; }
-    .lc-howto-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--vio-100); }
-    .lc-howto-title { font-size:13.5px; font-weight:700; color:var(--vio-deep); }
-    .lc-howto-list { display:flex; flex-direction:column; gap:10px; }
-    .lc-howto-step { display:flex; gap:12px; align-items:flex-start; }
-    .lc-howto-num { width:26px; height:26px; border-radius:50%; background:var(--vio); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; box-shadow:0 2px 6px rgba(124,58,237,.3); }
-    .lc-howto-text { font-size:13px; color:var(--vio-deep); line-height:1.6; padding-top:2px; }
-    .lc-howto-text strong { color:var(--ink); font-weight:700; }
-
-    .lc-chat { background:var(--white); padding:0 20px 18px; }
     .chat-messages { min-height:60px; max-height:380px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; margin-bottom:14px; padding-right:4px; }
     .chat-messages::-webkit-scrollbar { width:4px; }
     .chat-messages::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
@@ -263,6 +238,13 @@
     .chat-send-btn svg { width:18px; height:18px; fill:none; stroke:white; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; }
     .chat-hint { font-size:11.5px; color:var(--muted); text-align:center; margin-top:10px; }
     .chat-hint strong { color:var(--vio); font-weight:600; }
+
+    .c3-intro { background:linear-gradient(135deg,var(--vio-50),#F0EAFF); border:1.5px solid var(--vio-200); border-radius:var(--r-lg); padding:18px 22px; margin-bottom:28px; }
+    .c3-intro-label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--vio-deep); margin-bottom:12px; }
+    .c3-intro-items { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    @media(max-width:520px){ .c3-intro-items { grid-template-columns:1fr; } }
+    .c3-intro-item { display:flex; align-items:center; gap:9px; font-size:13px; font-weight:600; color:var(--ink-soft); background:white; padding:9px 13px; border-radius:var(--r-sm); border:1px solid var(--vio-100); }
+    .c3-intro-item span { font-size:16px; flex-shrink:0; }
 
     /* PROGRESS BAR */
     .progress-track-wrap { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:18px 22px; margin-bottom:28px; display:flex; align-items:center; gap:16px; }
@@ -397,6 +379,25 @@
     .sim-result-item.red { background:var(--red-50); color:#991B1B; }
     .sim-restart-btn { display:inline-flex; align-items:center; gap:8px; background:var(--vio-50); color:var(--vio-deep); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1px solid var(--vio-200); cursor:pointer; margin-top:14px; transition:background .15s; }
     .sim-restart-btn:hover { background:var(--vio-100); }
+
+    /* HINT MODAL */
+    .hint-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.5); backdrop-filter:blur(3px); z-index:500; align-items:center; justify-content:center; padding:20px; animation:fadeIn .2s ease; }
+    .hint-overlay.show { display:flex; }
+    .hint-box { background:white; border-radius:var(--r-xl); max-width:400px; width:100%; box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalSlide .25s ease; overflow:hidden; }
+    .hint-head { background:linear-gradient(135deg,var(--vio-deep),var(--vio)); padding:18px 22px; display:flex; align-items:center; gap:12px; }
+    .hint-head-icon { width:38px; height:38px; border-radius:10px; background:rgba(255,255,255,.15); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .hint-head-title { font-size:15px; font-weight:700; color:white; }
+    .hint-head-sub { font-size:12px; color:rgba(255,255,255,.72); margin-top:2px; }
+    .hint-body { padding:20px 22px; }
+    .hint-attempts { display:inline-flex; align-items:center; gap:7px; background:var(--amber-50); color:var(--amber); font-size:13px; font-weight:700; padding:6px 14px; border-radius:999px; border:1px solid #FDE68A; margin-bottom:14px; }
+    .hint-text { font-size:13.5px; color:var(--ink-soft); line-height:1.7; margin-bottom:14px; }
+    .hint-text strong { color:var(--ink); font-weight:600; }
+    .hint-prompts { display:flex; flex-direction:column; gap:7px; margin-bottom:4px; }
+    .hint-prompt-item { display:flex; align-items:center; gap:9px; background:var(--vio-50); border:1px solid var(--vio-100); border-radius:var(--r-sm); padding:9px 12px; font-size:12.5px; color:var(--vio-deep); font-weight:600; }
+    .hint-prompt-item span { font-size:15px; flex-shrink:0; }
+    .hint-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; }
+    .hint-ok-btn { display:inline-flex; align-items:center; gap:8px; background:var(--vio); color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; padding:11px 28px; border-radius:var(--r-sm); border:none; cursor:pointer; transition:background .15s,transform .15s; box-shadow:0 3px 10px var(--vio-glow); }
+    .hint-ok-btn:hover { background:var(--vio-deep); transform:translateY(-1px); }
     .sim-solution-btn { display:inline-flex; align-items:center; gap:8px; background:var(--amber-50); color:var(--amber); font-family:'Outfit',sans-serif; font-size:13px; font-weight:700; padding:10px 20px; border-radius:var(--r-sm); border:1px solid #FDE68A; cursor:pointer; margin-top:10px; transition:background .15s; }
     .sim-solution-btn:hover { background:var(--amber-100); }
     .sim-solution { background:var(--amber-50); border:1px solid #FDE68A; border-radius:var(--r); padding:16px 18px; margin-top:14px; }
@@ -416,9 +417,6 @@
       .hero { padding:32px 16px 28px; }
       .wrap { padding:24px 16px 60px; }
       .mod-body { padding:18px 18px 22px; }
-      .lc-brief-body { padding:14px 16px; }
-      .lc-howto { margin:14px 14px; }
-      .lc-chat { padding:0 14px 14px; }
     }
   </style>
 </head>
@@ -445,7 +443,11 @@
     <span class="j-sep">›</span>
     <div class="j-item active"><div class="j-dot">C3</div> Møder & indhold</div>
     <span class="j-sep">›</span>
-    <div class="j-item"><div class="j-dot">🏆</div> Eksamen</div>
+    <div class="j-item"><div class="j-dot">E1</div> Eksamen del 1</div>
+    <span class="j-sep">›</span>
+    <div class="j-item"><div class="j-dot">E2</div> Eksamen del 2</div>
+    <span class="j-sep">›</span>
+    <div class="j-item"><div class="j-dot">🏅</div> Bevis & coins</div>
   </div>
 </div>
 
@@ -468,11 +470,24 @@
 
 <div class="wrap">
 
-  <div class="notice info" style="margin-bottom:28px;">
+  <div class="notice info" style="margin-bottom:20px;">
     <div class="notice-icon">💡</div>
     <div>
       <div class="notice-head">Sådan bruger du C3</div>
       <div class="notice-body">Åbn modulerne i rækkefølge — hvert modul markeres automatisk som færdigt. Brug øvelserne aktivt: åbn Claude eller ChatGPT ved siden af og prøv det med det samme. Modul 4 er en live opgave ligesom email-udfordringen i C2.</div>
+    </div>
+  </div>
+
+  <!-- C3 INTRO -->
+  <div class="c3-intro">
+    <div class="c3-intro-inner">
+      <div class="c3-intro-label">Hvad du kan når C3 er færdigt</div>
+      <div class="c3-intro-items">
+        <div class="c3-intro-item"><span>📅</span> Forberede og følge op på møder på under 10 minutter</div>
+        <div class="c3-intro-item"><span>🔍</span> Dykke ind i et nyt emne og forstå det hurtigt og kritisk</div>
+        <div class="c3-intro-item"><span>✍️</span> Omskrive det samme indhold til fire forskellige kanaler</div>
+        <div class="c3-intro-item"><span>🏢</span> Lede et møde med modstridende interessenter frem til en beslutning</div>
+      </div>
     </div>
   </div>
 
@@ -591,6 +606,7 @@ Skriv professionelt dansk — maks 200 ord.</div>
       </div>
       <div class="mod-time">15 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -694,7 +710,7 @@ for at verificere det vi har talt om?</div>
 
   <!-- ── MODUL 3: INDHOLD ── -->
   <div class="sect-label"><hr><span>Modul 3 af 5</span><hr></div>
-  <div class="mod" id="m3">
+  <div class="mod locked" id="m3">
     <div class="mod-header" onclick="tog('m3')">
       <div class="mod-num">3</div>
       <div class="mod-text">
@@ -703,6 +719,7 @@ for at verificere det vi har talt om?</div>
       </div>
       <div class="mod-time">15 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -777,7 +794,7 @@ Hvad lærte vi? At teste tidligt betaler sig.</div>
 
   <!-- ── MODUL 4: MØDE-SIMULATOR ── -->
   <div class="sect-label"><hr><span>Modul 4 af 5 — Interaktiv øvelse</span><hr></div>
-  <div class="mod" id="m4">
+  <div class="mod locked" id="m4">
     <div class="mod-header" onclick="tog('m4')">
       <div class="mod-num">4</div>
       <div class="mod-text">
@@ -786,6 +803,7 @@ Hvad lærte vi? At teste tidligt betaler sig.</div>
       </div>
       <div class="mod-time">15 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -977,7 +995,7 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
 
   <!-- ── MODUL 5: BIBLIOTEK ── -->
   <div class="sect-label"><hr><span>Modul 5 af 5 — Tag det med dig</span><hr></div>
-  <div class="mod" id="m5">
+  <div class="mod locked" id="m5">
     <div class="mod-header" onclick="tog('m5')">
       <div class="mod-num">5</div>
       <div class="mod-text">
@@ -986,6 +1004,7 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
       </div>
       <div class="mod-time">5 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
       <div class="mod-arrow">▾</div>
     </div>
     <div class="mod-body">
@@ -1065,10 +1084,19 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
     <h2>Klar til den afsluttende eksamen?</h2>
     <p>Eksamenen tester at du kan anvende det du har lært i C1, C2 og C3 — ikke bare genkende det. Del 1 er 15 multiple choice. Del 2 er en praktisk prompt-opgave.</p>
     <div class="cta-warn">⚠️ Eksamenen er markant sværere end mini-quizzerne</div><br>
-    <a href="eksamen-c.html" class="btn-go">
+
+    <!-- Låst eksamen-knap (vises indtil m5 er åbnet) -->
+    <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#F3F4F6; color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
+      🔒 Gennemfør alle moduler først
+    </div>
+    <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Eksamen låses op når du har åbnet modul 5</div>
+
+    <!-- Aktiv eksamen-knap (skjult indtil m5 åbnes) -->
+    <a href="eksamen-c.html" class="btn-go" id="exam-btn" style="display:none;">
       Start eksamen
       <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
     </a>
+
     <div class="cta-sub">
       15 + praktisk opgave <span class="dot-sep">·</span>
       <span class="coins">+150 coins + Sølv-badge ved beståelse</span>
@@ -1076,6 +1104,31 @@ Vurdér mit svar: var det konstruktivt? Hvad kunne jeg have sagt bedre for at be
     </div>
   </div>
 
+</div>
+
+<!-- HINT MODAL -->
+<div class="hint-overlay" id="hint-overlay">
+  <div class="hint-box">
+    <div class="hint-head">
+      <div class="hint-head-icon">💡</div>
+      <div>
+        <div class="hint-head-title">Inden du prøver igen</div>
+        <div class="hint-head-sub" id="hint-attempts-head">Du har 2 forsøg tilbage</div>
+      </div>
+    </div>
+    <div class="hint-body">
+      <div class="hint-attempts" id="hint-attempts-badge">⚠️ 2 forsøg tilbage</div>
+      <p class="hint-text">Brug AI til at forberede dig bedre inden næste forsøg. Åbn AI-guiden ovenfor og prøv disse prompts i Claude eller ChatGPT:</p>
+      <div class="hint-prompts">
+        <div class="hint-prompt-item"><span>🎯</span> Prompt 1 — Forstå alle tre konflikter og find et realistisk kompromis</div>
+        <div class="hint-prompt-item"><span>❓</span> Prompt 2 — Forbered åbne spørgsmål der bevæger folk</div>
+        <div class="hint-prompt-item"><span>🎭</span> Prompt 3 — Øv dig på en svær reaktion med AI som modspiller</div>
+      </div>
+    </div>
+    <div class="hint-foot">
+      <button class="hint-ok-btn" onclick="closeHintAndRestart()">Forstået — prøv igen</button>
+    </div>
+  </div>
 </div>
 
 <div id="toast">
@@ -1089,20 +1142,61 @@ const modIds  = ['m1','m2','m3','m4','m5'];
 const modDone = { m1:false, m2:false, m3:false, m4:false, m5:false };
 const TOTAL   = 5;
 
+// Lås op for næste modul (undtagen m4→m5 som styres af simulatoren)
+function unlockNext(id) {
+  const idx  = modIds.indexOf(id);
+  const next = modIds[idx + 1];
+  if (!next) {
+    // Ingen næste modul — vi er på m5, lås eksamen op
+    unlockExam();
+    return;
+  }
+  if (id === 'm4') return; // m4→m5 låses kun op af simulatoren
+  const el = document.getElementById(next);
+  if (el) el.classList.remove('locked');
+}
+
+function unlockExam() {
+  const locked = document.getElementById('exam-locked');
+  const hint   = document.getElementById('exam-locked-hint');
+  const btn    = document.getElementById('exam-btn');
+  if (locked) locked.style.display = 'none';
+  if (hint)   hint.style.display   = 'none';
+  if (btn)    btn.style.display    = 'inline-flex';
+}
+
+// Kaldes af simulatoren når m4 er bestået eller alle forsøg brugt
+function unlockM5() {
+  const el = document.getElementById('m5');
+  if (el) el.classList.remove('locked');
+}
+
 function tog(id) {
   const m = document.getElementById(id);
+  if (!m) return;
+  // Bloker hvis låst
+  if (m.classList.contains('locked')) return;
+  // Bloker hvis allerede åben
   if (m.classList.contains('open')) return;
+
   const idx = modIds.indexOf(id);
-  modIds.forEach((oid, i) => {
+
+  // Luk alle andre
+  modIds.forEach((oid) => {
     const el = document.getElementById(oid);
-    if (i < idx && !modDone[oid]) {
-      modDone[oid] = true;
-      el.classList.add('done');
-    }
-    el.classList.remove('open');
+    if (el) el.classList.remove('open');
   });
+
+  // Åbn dette modul
   m.classList.add('open');
-  if (!modDone[id]) { modDone[id] = true; m.classList.add('done'); }
+
+  // Markér som done og lås næste op
+  if (!modDone[id]) {
+    modDone[id] = true;
+    m.classList.add('done');
+    unlockNext(id);
+  }
+
   requestAnimationFrame(() => {
     const top = m.getBoundingClientRect().top + window.scrollY - 80;
     window.scrollTo({ top, behavior:'smooth' });
@@ -1452,7 +1546,7 @@ function endSimulator(outcome) {
 
     // Marker modul som done
     const m4 = document.getElementById('m4');
-    if (m4 && !modDone['m4']) { modDone['m4'] = true; m4.classList.add('done'); updateProgress(); }
+    if (!modDone['m4']) { modDone['m4'] = true; document.getElementById('m4').classList.add('done'); updateProgress(); } unlockM5();
     return;
   }
 
@@ -1517,17 +1611,36 @@ function endSimulator(outcome) {
 
     // Lås modul op alligevel
     const m4 = document.getElementById('m4');
-    if (m4 && !modDone['m4']) { modDone['m4'] = true; m4.classList.add('done'); updateProgress(); }
+    if (!modDone['m4']) { modDone['m4'] = true; document.getElementById('m4').classList.add('done'); updateProgress(); } unlockM5();
   }
 }
 
 function restartSimulator() {
+  // Vis hint-modal på forsøg 1 og 2 (ikke 3 — der vises løsningsforslaget i stedet)
+  const attemptsLeft = SIM_MAX_ATTEMPTS - simAttempt;
+  if (attemptsLeft > 0 && attemptsLeft < SIM_MAX_ATTEMPTS) {
+    // Opdatér modal-tekst
+    document.getElementById('hint-attempts-head').textContent = `Du har ${attemptsLeft} forsøg tilbage`;
+    document.getElementById('hint-attempts-badge').textContent = `⚠️ ${attemptsLeft} forsøg tilbage`;
+    document.getElementById('hint-overlay').classList.add('show');
+    return; // Vent på "Forstået"-knap
+  }
+  // Første fejl (forsøg 0 brugt) eller anden vej rundt — start direkte
+  doRestart();
+}
+
+function closeHintAndRestart() {
+  document.getElementById('hint-overlay').classList.remove('show');
+  doRestart();
+}
+
+function doRestart() {
   simRunning  = false;
   simRound    = 0;
   simHistory  = [];
   simScores   = { sara:1, mikkel:1, lone:1 };
-  document.getElementById('sim-result').style.display   = 'none';
-  document.getElementById('sim-result').innerHTML        = '';
+  document.getElementById('sim-result').style.display    = 'none';
+  document.getElementById('sim-result').innerHTML         = '';
   document.getElementById('sim-input-area').style.display = 'block';
   document.getElementById('sim-msgs').innerHTML =
     '<div style="text-align:center;font-size:12.5px;color:var(--muted);padding:16px 8px;font-style:italic;">Skriv din første besked for at starte mødet igen.</div>';
