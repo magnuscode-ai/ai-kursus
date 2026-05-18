@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eksamen: AI for Iværksættere | LearnAI DK</title>
+  <style>
+    /* Premium Design System - Matcher "Bronze-eksamen" billedet */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-warm: #fcf9f5;
+      --brown-deep: #4a2c11;
+      --brown-dark: #2c1a0a;
+      --ink: #1a1f2e;
+      --ink-soft: #4a5568;
+      --ink-mute: #718096;
+      --line: #e8eaf0;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(15,23,42,0.04);
+      --shadow-md: 0 4px 12px rgba(15,23,42,0.06);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-warm);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    /* Topbar (Mørkebrun som på billedet) */
+    .topbar {
+      background: var(--brown-dark);
+      color: white;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .home-btn:hover { background: rgba(255,255,255,0.2); }
+
+    /* Hero Section (Brun gradient som på billedet) */
+    .hero {
+      background: linear-gradient(to bottom, var(--brown-deep), #8b5a2b);
+      color: white;
+      text-align: center;
+      padding: 4rem 1.5rem 3rem;
+      position: relative;
+    }
+
+    .hero-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      background: rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 50px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      font-family: 'Georgia', serif; /* Giver det lidt mere "diplom" stil */
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.7;
+    }
+
+    /* Content Area */
+    .content {
+      max-width: 800px;
+      margin: -2rem auto 4rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Progress Card */
+    .progress-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--ink-soft);
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #8b5a2b;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-mute);
+    }
+
+    /* Question Card */
+    .question-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .question-num {
+      width: 28px;
+      height: 28px;
+      background: var(--brown-deep);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .question-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-mute);
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1e293b;
+    }
+
+    /* Options */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-item:hover { background: #f1f5f9; }
+
+    .option-letter {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+
+    .option-text {
+      font-size: 15px;
+      font-weight: 500;
+      color: #334155;
+    }
+
+    /* Correct/Incorrect Styles */
+    .option-item.correct {
+      background: #dcfce7 !important;
+      border-color: #22c55e !important;
+    }
+    .option-item.correct .option-letter {
+      background: #22c55e;
+      color: white;
+      border-color: #22c55e;
+    }
+
+    .option-item.incorrect {
+      background: #fee2e2 !important;
+      border-color: #ef4444 !important;
+    }
+    .option-item.incorrect .option-letter {
+      background: #ef4444;
+      color: white;
+      border-color: #ef4444;
+    }
+
+    /* Navigation Buttons */
+    .nav-box {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .btn-nav {
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-prev { background: white; border: 1px solid var(--line); color: var(--ink); }
+    .btn-next { background: var(--brown-deep); color: white; }
+
+    /* Practical Task */
+    .practical-box {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 2px solid #8b5a2b;
+    }
+
+    textarea {
+      width: 100%;
+      height: 150px;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid #cbd5e1;
+      margin: 1rem 0;
+      font-family: inherit;
+    }
+
+    .btn-submit { background: #059669; color: white; }
+
+    @media (max-width: 600px) {
+      .stats-grid { gap: 1rem; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="sidekursus-ivaerksaetter.html" class="home-btn">← Tilbage til kurset</a>
+    <div style="font-weight: 700;">LearnAI DK</div>
+    <div></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-label">Kursus Eksamen</div>
+    <h1 class="hero-title">Iværksætter-Eksamen</h1>
+    <p class="hero-sub">15 avancerede spørgsmål på tværs af hele kurset. Du bedømmes på ægte forståelse. Du får svar med det samme på hvert spørgsmål.</p>
+    
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">15</div>
+        <div class="stat-label">Spørgsmål</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Skal bestå</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">80%</div>
+        <div class="stat-label">Beståelseskrav</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- Progress Card -->
+    <div class="progress-card">
+      <div class="progress-header">
+        <span>FREMGANG</span>
+        <span id="progress-text">0/15</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-footer">
+        <span id="score-correct">Rigtige: 0</span>
+        <span id="score-incorrect">Forkerte: 0</span>
+        <span>Kravet: 12/15</span>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card" id="question-area">
+      <!-- Genereres af JS -->
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav-box">
+      <button class="btn-nav btn-prev" id="quiz-prev-btn" onclick="prevQuestion()" style="display:none;">← Forrige</button>
+      <button class="btn-nav btn-next" id="quiz-next-btn" onclick="nextQuestion()">Næste →</button>
+    </div>
+
+    <!-- Praktisk Opgave (Separat sektion) -->
+    <div id="practical-section" style="display: none; margin-top: 3rem;">
+      <div class="practical-box">
+        <div class="hero-label" style="background: #8b5a2b; color: white;">Del 2</div>
+        <h3 style="margin: 0.5rem 0; font-size: 24px; font-weight: 800;">Praktisk Opgave 🛠</h3>
+        <p>Du har besvaret de 15 spørgsmål. Nu skal du løse den praktiske opgave for at bestå helt.</p>
+        <p><strong>Opgave:</strong> Skriv et professionelt prompt, der får en AI til at agere som en <strong>kritisk forretningskonsulent</strong> for en ny webshop, der sælger bæredygtigt tøj til børn. Promptet skal tvinge AI'en til at finde mindst 3 svagheder i idéen.</p>
+        
+        <textarea id="practical-prompt" placeholder="Skriv dit prompt her..." oninput="savePractical()"></textarea>
+        
+        <button class="btn-nav btn-submit" style="width:100%;" onclick="submitExam()">Aflever Eksamen</button>
+      </div>
+    </div>
+
+    <div id="exam-results" style="display: none; margin-top: 2rem; text-align: center; background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-md);">
+      <!-- Resultater vises her -->
+    </div>
+
+  </div>
+
+  <script>
+    const questions = [
+      { q: "Hvad er den største risiko ved at uploade en rå CSV-fil med salgsdata til en offentlig AI-model?", options: ["At den regner forkert på tallene.", "At du uforvarende deler personfølsom data eller forretningshemmeligheder.", "At den ikke kan læse formatet.", "At konkurrenten ser det med det samme."], correct: 1 },
+      { q: "Du vil have AI'en til at fungere som 'Djævlens Advokat'. Hvilket prompt-element er vigtigst?", options: ["At være så flink som muligt.", "At give den rollen som en benhård, skeptisk investor og bede specifikt om kritik.", "At bede om en punktliste.", "At give den 5 stjerner."], correct: 1 },
+      { q: "Hvad betyder det at give AI'en en 'Tone of Voice'?", options: ["At optage sin egen stemme.", "At definere skrivestilen, så teksten passer til virksomhedens brand.", "At tale i et bestemt toneleje.", "At kun bruge engelske ord."], correct: 1 },
+      { q: "Du skal bruge en AI til at lave en markedsanalyse. Hvad skal du være særligt opmærksom på?", options: ["At den overhovedet ikke kan søge.", "At den kan hallucisere fiktive markedsandele, hvis den presses.", "At det koster 100 kr.", "At den kender til alt."], correct: 1 },
+      { q: "Hvad er 'hallucination' i forbindelse med LLM-modeller?", options: ["Når den genererer information, der lyder overbevisende, men er forkert.", "Når computeren bliver for varm.", "Når teksten bliver for lang.", "Når man ser syner."], correct: 0 },
+      { q: "Hvorfor er det vigtigt at definere 'Format' i dit prompt til en forretningsplan?", options: ["Fordi den ellers ikke kan skrive på dansk.", "For at sikre at du får et output, der er struktureret og direkte anvendeligt.", "Det er det faktisk ikke.", "Fordi det sparer strøm."], correct: 1 },
+      { q: "Hvilket værktøj er bedst egledt til lynhurtigt at bygge en funktionel frontend-prototype?", options: ["Midjourney", "v0.dev (eller Claude Artifacts)", "ElevenLabs", "Excel"], correct: 1 },
+      { q: "Du vil automatisere svar på kundeservice-mails. Hvilken arkitektur er sikrest?", options: ["Lad AI'en sende direkte uden kontrol.", "Lad AI'en lave et udkast, som en medarbejder godkender.", "Brug slet ikke AI.", "Skriv koderne selv."], correct: 1 },
+      { q: "Hvad er den primære fordel ved at bruge Claude Projects eller OpenAI GPTs?", options: ["De er gratis.", "Du kan uploade dine specifikke brand guidelines og dokumenter.", "De kan lave videoer.", "De kræver ikke internet."], correct: 1 },
+      { q: "Hvordan undgår du, at dine prompts bliver for 'generiske'?", options: ["Brug mange udråbstegn.", "Giv specifikke detaljer om din unikke målgruppe og dine USP'er.", "Skriv altid på engelsk.", "Gør promptet så kort som muligt."], correct: 1 },
+      { q: "Du skal bruge AI til at vurdere en kontrakt. Hvad er den bedste fremgangsmåde?", options: ["Stol 100% på analysen.", "Brug den til at finde 'røde flag', men lad altid en jurist færdiggøre arbejdet.", "Uploade kontrakten med alle navne.", "Lad være med at læse den."], correct: 1 },
+      { q: "Hvad er 'Few-shot prompting'?", options: ["At skyde efter målet få gange.", "At give AI'en et par eksempler på det ønskede output direkte i promptet.", "At bruge AI'en i under 5 minutter.", "At skrive med store bogstaver."], correct: 1 },
+      { q: "Hvis en AI-model siger 'Jeg kender ikke svaret på dagsaktuelle nyheder', hvad skyldes det så?", options: ["Modellens 'Knowledge Cutoff'.", "At den ikke vil hjælpe.", "At internettet er nede.", "At du ikke har betalt nok."], correct: 0 },
+      { q: "Hvad er den bedste måde at håndtere AI-genererede marketingtekster på?", options: ["Udgiv dem direkte.", "Rediger dem manuelt for at tilføje personlighed og faktatjekke.", "Bed en anden AI om at godkende.", "Oversæt dem til tysk."], correct: 1 },
+      { q: "Hvordan kan AI bedst hjælpe en iværksætter med 'ideation'?", options: ["Ved at give den ene perfekte idé.", "Ved at fungere som en uendelig brainstorm-partner.", "Ved at sige nej.", "Ved at overtage din hjerne."], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    
+    // Hent gemte data
+    let savedAnswers = localStorage.getItem('userAnswers_v4');
+    let userAnswers = savedAnswers ? JSON.parse(savedAnswers) : new Array(15).fill(null);
+    let savedPrompt = localStorage.getItem('practicalPrompt_v4');
+
+    function renderQuestion() {
+      const container = document.getElementById('question-area');
+      const qData = questions[currentQuestion];
+      const answered = userAnswers[currentQuestion] !== null;
+      
+      const letters = ['A', 'B', 'C', 'D'];
+      
+      container.innerHTML = `
+        <div class="question-header">
+          <div class="question-num">${currentQuestion + 1}</div>
+          <div class="question-tag">SYSTEM-PROMPTS · IV-26</div>
+        </div>
+        <div class="question-text">${qData.q}</div>
+        <div class="options-list">
+          ${qData.options.map((opt, i) => {
+            let className = 'option-item';
+            if (answered) {
+              if (i === qData.correct) className += ' correct';
+              else if (i === userAnswers[currentQuestion]) className += ' incorrect';
+            }
+            return `
+              <div class="${className}" onclick="selectOption(${i})">
+                <div class="option-letter">${letters[i]}</div>
+                <div class="option-text">${opt}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+      
+      updateProgress();
+      
+      // Navigation knapper
+      document.getElementById('quiz-prev-btn').style.display = currentQuestion === 0 ? 'none' : 'block';
+      
+      const nextBtn = document.getElementById('quiz-next-btn');
+      if (currentQuestion === questions.length - 1) {
+        nextBtn.textContent = "Videre til Del 2 →";
+        nextBtn.style.background = "#8b5a2b";
+        nextBtn.onclick = () => { 
+          document.getElementById('practical-section').style.display = 'block'; 
+          window.scrollTo({ top: document.getElementById('practical-section').offsetTop, behavior: 'smooth' }); 
+        };
+      } else {
+        nextBtn.textContent = "Næste →";
+        nextBtn.style.background = "var(--brown-deep)";
+        nextBtn.onclick = nextQuestion;
+      }
+    }
+
+    function selectOption(index) {
+      if (userAnswers[currentQuestion] !== null) return; // Forhindr at skifte svar
+      userAnswers[currentQuestion] = index;
+      localStorage.setItem('userAnswers_v4', JSON.stringify(userAnswers));
+      renderQuestion(); // Vis farver med det samme
+    }
+
+    function updateProgress() {
+      const answeredCount = userAnswers.filter(ans => ans !== null).length;
+      document.getElementById('progress-text').textContent = `${answeredCount}/15`;
+      document.getElementById('progress-fill').style.width = `${(answeredCount / 15) * 100}%`;
+      
+      let correct = 0;
+      let incorrect = 0;
+      userAnswers.forEach((ans, i) => {
+        if (ans !== null) {
+          if (ans === questions[i].correct) correct++;
+          else incorrect++;
+        }
+      });
+      
+      document.getElementById('score-correct').textContent = `Rigtige: ${correct}`;
+      document.getElementById('score-incorrect').textContent = `Forkerte: ${incorrect}`;
+    }
+
+    function savePractical() {
+      const text = document.getElementById('practical-prompt').value;
+      localStorage.setItem('practicalPrompt_v4', text);
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function submitExam() {
+      const score = userAnswers.reduce((acc, ans, i) => acc + (ans === questions[i].correct ? 1 : 0), 0);
+      const practicalText = document.getElementById('practical-prompt').value.trim();
+      const resultsDiv = document.getElementById('exam-results');
+      resultsDiv.style.display = 'block';
+      
+      let resultHTML = `<h3 style="font-size:28px; font-weight:800; margin-bottom:1rem;">Resultat</h3><p style="font-size: 24px; font-weight: 800; color: var(--brown-deep);">Score: ${score} ud af 15</p>`;
+      
+      if (score >= 12 && practicalText.length > 20) {
+        resultHTML += `
+          <div style="background: #dcfce7; color: #065f46; padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
+            <div style="font-weight:700; font-size:18px;">Tillykke! Du har bestået.</div>
+            <p style="margin-top:0.5rem;">Du har opnået bronzeniveau i Iværksætter-kurset.</p>
+            <p><strong>Din beståelseskode:</strong> AI-ENT-BRONZE-2026</p>
+          </div>
+        `;
+        localStorage.removeItem('userAnswers_v4');
+        localStorage.removeItem('practicalPrompt_v4');
+      } else {
+        resultHTML += `
+          <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
+            <div style="font-weight:700; font-size:18px;">Ikke helt bestået endnu</div>
+            <p style="margin-top:0.5rem;">Du skal have mindst 12 rigtige og have besvaret den praktiske opgave uddybende.</p>
+            <p>Du kan gå tilbage og læse i kurset. Dine svar er gemt.</p>
+          </div>
+        `;
+      }
+      
+      resultsDiv.innerHTML = resultHTML;
+      window.scrollTo({ top: resultsDiv.offsetTop, behavior: 'smooth' });
+    }
+
+    // Initialiser
+    if (savedPrompt) {
+      setTimeout(() => {
+        document.getElementById('practical-prompt').value = savedPrompt;
+      }, 100);
+    }
+    renderQuestion();
+  </script>
+</body>
+</html>
