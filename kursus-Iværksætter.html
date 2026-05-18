@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sidekursus: AI for Iværksættere | LearnAI DK</title>
+  <meta name="description" content="Lær hvordan du bruger AI til at starte og drive din virksomhed. Sidekursus for iværksættere med praktiske opgaver og svære eksamener.">
+  <style>
+    /* Genbrug af styles fra Kursus D med tilpasninger */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg-warm: #fbf8f3;
+      --bg-soft: #fefdfa;
+      --ink: #1a1f2e;
+      --ink-soft: #4a5568;
+      --ink-mute: #718096;
+      --primary: #2563eb;
+      --primary-deep: #1d4ed8;
+      --primary-soft: #dbeafe;
+      --primary-glow: #3b82f6;
+      --accent-orange: #ea580c;
+      --accent-orange-soft: #fff1e8;
+      --accent-green: #059669;
+      --accent-green-soft: #dcfce7;
+      --accent-red: #dc2626;
+      --accent-red-soft: #fee2e2;
+      --accent-purple: #7c3aed;
+      --accent-purple-soft: #ede9fe;
+      --accent-amber: #d97706;
+      --accent-amber-soft: #fef3c7;
+      --line: #e8eaf0;
+      --line-soft: #f0f2f7;
+      --shadow-sm: 0 1px 3px rgba(15,23,42,0.04), 0 1px 2px rgba(15,23,42,0.06);
+      --shadow-md: 0 4px 12px rgba(15,23,42,0.06), 0 2px 6px rgba(15,23,42,0.04);
+      --shadow-lg: 0 12px 32px rgba(15,23,42,0.08), 0 4px 12px rgba(15,23,42,0.05);
+      --shadow-xl: 0 24px 60px rgba(15,23,42,0.10), 0 8px 24px rgba(15,23,42,0.06);
+      --shadow-3d: 0 1px 0 rgba(255,255,255,0.9) inset, 0 -1px 0 rgba(15,23,42,0.04) inset, 0 8px 24px rgba(15,23,42,0.07), 0 2px 6px rgba(15,23,42,0.04);
+      --radius-sm: 10px;
+      --radius: 14px;
+      --radius-lg: 20px;
+      --radius-xl: 28px;
+    }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg-warm);
+      color: var(--ink);
+      line-height: 1.65;
+      font-size: 17px;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 800px 600px at 10% 0%, rgba(59,130,246,0.08), transparent 60%),
+        radial-gradient(ellipse 700px 500px at 95% 20%, rgba(124,58,237,0.06), transparent 60%),
+        radial-gradient(ellipse 600px 400px at 50% 90%, rgba(5,150,105,0.05), transparent 60%),
+        radial-gradient(ellipse 500px 400px at 0% 70%, rgba(234,88,12,0.04), transparent 60%);
+    }
+    .page-wrap { position: relative; z-index: 1; }
+    .topbar {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--ink);
+      padding: 9px 16px 9px 12px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .home-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .topbar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+    }
+    .topbar-logo-icon {
+      width: 34px;
+      height: 34px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+    }
+    .topbar-logo-icon svg { width: 18px; height: 18px; fill: white; }
+    .topbar-right {
+      font-size: 13px;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+    .scene { display: none; min-height: calc(100vh - 64px); }
+    .scene.active { display: block; }
+    #scene-welcome {
+      padding: 2rem 1.5rem 4rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .welcome-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid var(--line);
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 7px 16px;
+      border-radius: 50px;
+      margin-bottom: 1rem;
+      box-shadow: var(--shadow-sm);
+    }
+    .welcome-header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      padding-top: 2rem;
+    }
+    .welcome-title {
+      font-size: clamp(32px, 5.5vw, 52px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+      color: var(--ink);
+    }
+    .welcome-title .accent {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent-purple) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .welcome-sub {
+      font-size: clamp(16px, 2.2vw, 19px);
+      color: var(--ink-soft);
+      max-width: 600px;
+      margin: 0 auto 0;
+    }
+    .puzzle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      perspective: 1200px;
+      max-width: 880px;
+      margin: 0 auto 2.5rem;
+    }
+    .puzzle-piece {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.25rem;
+      box-shadow: var(--shadow-3d);
+      opacity: 0;
+      transform: translate(0, 0) scale(0.5);
+      transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .puzzle-piece.placed { opacity: 1; transform: translate(0, 0) scale(1); }
+    .puzzle-piece-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 0.75rem;
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+    .puzzle-piece-num { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--ink-mute); text-transform: uppercase; margin-bottom: 4px; }
+    .puzzle-piece-title { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+    .puzzle-piece-desc { font-size: 13.5px; color: var(--ink-soft); line-height: 1.55; }
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-deep) 100%);
+      color: white;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 18px 38px;
+      border-radius: 50px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 12px 28px rgba(37,99,235,0.35);
+      transition: all 0.25s;
+    }
+    .btn-start:hover { transform: translateY(-2px); box-shadow: 0 18px 38px rgba(37,99,235,0.42); }
+    .progress-bar-wrap {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 0.85rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+    }
+    .progress-steps { display: flex; gap: 6px; flex: 1; max-width: 600px; }
+    .progress-step { height: 5px; flex: 1; border-radius: 3px; background: var(--line); transition: background 0.4s; }
+    .progress-step.active { background: var(--primary); }
+    .progress-step.done { background: var(--accent-green); }
+    .module-nav {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--line);
+      padding: 0 1.5rem;
+      display: flex;
+      overflow-x: auto;
+      position: sticky;
+      top: 122px;
+      z-index: 89;
+      justify-content: center;
+    }
+    .module-tab {
+      padding: 0.95rem 1.1rem;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--ink-mute);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2.5px solid transparent;
+      transition: all 0.2s;
+    }
+    .module-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .module-tab.exam { color: var(--accent-green); }
+    .module-tab.exam.active { border-bottom-color: var(--accent-green); }
+    .module-section { display: none; }
+    .module-section.active { display: block; }
+    .content { max-width: 740px; margin: 0 auto; padding: 2.75rem 1.5rem 4rem; }
+    .callout { border-radius: var(--radius); padding: 1.1rem 1.25rem; margin: 1.25rem 0; display: flex; gap: 0.85rem; box-shadow: var(--shadow-sm); }
+    .callout.tip { background: #dbeafe; border: 1px solid #bfd5fb; }
+    .callout.warning { background: #fef3c7; border: 1px solid #fcd34d; }
+    .callout.exercise { background: #fff7ed; border: 2px solid var(--accent-orange); }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 1.25rem 0; }
+    .col-card { background: white; border: 1px solid var(--line); border-radius: var(--radius); padding: 1.15rem 1.25rem; }
+    .col-card.green { border-top: 4px solid var(--accent-green); }
+    .col-card.red { border-top: 4px solid var(--accent-red); }
+    /* Eksamensspecifikke styles */
+    .quiz-question { margin-bottom: 2rem; padding: 1.5rem; background: white; border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow-sm); }
+    .quiz-question h4 { font-size: 16px; font-weight: 700; margin-bottom: 1rem; }
+    .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+    .quiz-option { padding: 12px; background: var(--bg-warm); border: 1px solid var(--line); border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s; }
+    .quiz-option:hover { background: var(--primary-soft); }
+    .quiz-option.selected { border-color: var(--primary); background: var(--primary-soft); font-weight: 600; }
+    
+    .btn-nav { padding: 12px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-prev { background: white; border: 1px solid var(--line); }
+    .btn-next { background: var(--primary); color: white; }
+    .btn-submit { background: var(--accent-green); color: white; }
+    .exam-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 2rem; }
+    .exam-nav-btn { padding: 10px; background: white; border: 1px solid var(--line); border-radius: var(--radius-sm); cursor: pointer; }
+    .exam-nav-btn.active { border-color: var(--primary); background: var(--primary-soft); }
+    .exam-nav-btn.answered { background: #e0f2fe; }
+    @media (max-width: 600px) { .puzzle-grid { grid-template-columns: 1fr; } .two-col { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <a href="learnai_final.html" class="home-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      <span>Tilbage til platformen</span>
+    </a>
+    <a href="#" class="topbar-logo">
+      <div class="topbar-logo-icon">LA</div>
+      <span>LearnAI DK</span>
+    </a>
+    <div class="topbar-right">Sidekursus · Iværksætteri</div>
+  </div>
+  <!-- SCENE: WELCOME -->
+  <section class="scene active" id="scene-welcome">
+    <div class="welcome-header">
+      <div class="welcome-badge">✦ Sidekursus</div>
+      <h1 class="welcome-title">AI for <span class="accent">Iværksættere</span></h1>
+      <p class="welcome-sub">Lær hvordan du bruger kunstig intelligens til at accelerere din opstart og automatisere din forretning.</p>
+    </div>
+    <div class="puzzle-grid" id="welcome-grid">
+      <!-- Modul 1 -->
+      <div class="puzzle-piece placed">
+        <div class="puzzle-piece-icon">💡</div>
+        <div class="puzzle-piece-num">Modul 1</div>
+        <div class="puzzle-piece-title">AI som Medstifter</div>
+        <div class="puzzle-piece-desc">Idégenerering, forretningsplan og markedsanalyse på rekordtid.</div>
+      </div>
+      <!-- Modul 2 -->
+      <div class="puzzle-piece placed">
+        <div class="puzzle-piece-icon">📣</div>
+        <div class="puzzle-piece-num">Modul 2</div>
+        <div class="puzzle-piece-title">Automatisering & Marketing</div>
+        <div class="puzzle-piece-desc">Skab indhold, kør kampagner og find leads med AI.</div>
+      </div>
+      <!-- Modul 3 -->
+      <div class="puzzle-piece placed">
+        <div class="puzzle-piece-icon">📈</div>
+        <div class="puzzle-piece-num">Modul 3</div>
+        <div class="puzzle-piece-title">Økonomi & Workflows</div>
+        <div class="puzzle-piece-desc">Få styr på tallene og lad AI håndtere de kedelige rutineopgaver.</div>
+      </div>
+    </div>
+    <div style="text-align: center;">
+      <button class="btn-start" onclick="startCourse()">Start kurset nu</button>
+    </div>
+  </section>
+  <!-- SCENE: COURSE -->
+  <section class="scene" id="scene-course">
+    
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar-wrap">
+      <div class="progress-steps">
+        <div class="progress-step active" id="bar-1"></div>
+        <div class="progress-step" id="bar-2"></div>
+        <div class="progress-step" id="bar-3"></div>
+        <div class="progress-step" id="bar-4"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">Modul 1 af 3</div>
+    </div>
+    <!-- MODULE NAV -->
+    <div class="module-nav">
+      <button class="module-tab active" data-mod="1" onclick="showModule(1)">Modul 1</button>
+      <button class="module-tab" data-mod="2" onclick="showModule(2)">Modul 2</button>
+      <button class="module-tab" data-mod="3" onclick="showModule(3)">Modul 3</button>
+      <button class="module-tab exam" data-mod="4" onclick="showModule(4)">🎓 Eksamen</button>
+    </div>
+    <!-- MODUL 1 -->
+    <div class="module-section active" id="module-1">
+      <div class="content">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 32px; font-weight: 800;">AI som Medstifter 🧠</h2>
+          <p style="color: var(--ink-soft);">Brug AI til at validere dine idéer og bygge fundamentet for din virksomhed.</p>
+        </div>
+        <h3>Fra Idé til Forretningsplan</h3>
+        <p>Mange iværksættere bruger uger på at skrive forretningsplaner. Med AI kan du gøre det på timer — og få mere kvalificeret modspil end fra de fleste rådgivere.</p>
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Prompt tip: Rollen som Djævlens Advokat</div>
+            <p class="callout-text">Bed AI'en om at kritisere din idé. Brug promptet: "Jeg har denne idé til en virksomhed: [indsæt idé]. Tag rollen som en kritisk investor og fortæl mig de 5 største grunde til, at dette vil fejle."</p>
+          </div>
+        </div>
+        <h3>Hvad du kan bruge AI til i denne fase:</h3>
+        <div class="two-col">
+          <div class="col-card green">
+            <div class="col-card-title">✅ Store fordele</div>
+            <ul>
+              <li>Markedsanalyse på få minutter</li>
+              <li>Generering af 50+ navneforslag</li>
+              <li>Udkast til en komplet "Lean Canvas"</li>
+              <li>Identificering af målgrupper</li>
+            </ul>
+          </div>
+          <div class="col-card red">
+            <div class="col-card-title">🛑 Husk faldgruberne</div>
+            <ul>
+              <li>AI kender ikke lokale danske love perfekt</li>
+              <li>Markedsdata kan være forældet</li>
+              <li>AI'en er altid "ja-siger" hvis ikke du beder den om kritik</li>
+            </ul>
+          </div>
+        </div>
+        <div class="callout exercise">
+          <div class="callout-icon">✏️</div>
+          <div class="callout-body">
+            <div class="callout-title">Øvelse</div>
+            <p class="callout-text">Åbn Claude eller ChatGPT. Giv den din idé og bed den lave en SWOT-analyse (Styrker, Svagheder, Muligheder, Trusler). Kopier resultatet og gem det.</p>
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 2rem;">
+          <button class="btn-nav btn-next" onclick="showModule(2)">Næste modul →</button>
+        </div>
+      </div>
+    </div>
+    <!-- MODUL 2 -->
+    <div class="module-section" id="module-2">
+      <div class="content">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 32px; font-weight: 800;">Automatisering & Marketing 📣</h2>
+          <p style="color: var(--ink-soft);">Få AI til at skabe dit indhold og finde dine kunder.</p>
+        </div>
+        <h3>Indholdsskabelse i Skala</h3>
+        <p>Som iværksætter skal du være direktør, sælger og SoMe-manager på samme tid. AI kan overtage 80% af skrivearbejdet.</p>
+        <div class="callout tip">
+          <div class="callout-icon">🤖</div>
+          <div class="callout-body">
+            <div class="callout-title">Tone of Voice</div>
+            <p class="callout-text">Giv altid AI'en eksempler på din skrivestil. Ellers lyder det let som en amerikansk reklame fra 90'erne.</p>
+          </div>
+        </div>
+        <h3>Værktøjer der gør en forskel:</h3>
+        <p>Brug ikke kun tekst-AI. Kombiner værktøjer for maksimal effekt:</p>
+        <ul>
+          <li><strong>Midjourney / DALL-E:</strong> Til unikke billeder til dine opslag.</li>
+          <li><strong>v0.dev / Claude Artifacts:</strong> Til hurtigt at bygge prototyper på hjemmesider.</li>
+          <li><strong>ElevenLabs:</strong> Til realistisk stemmegenerering til videoer.</li>
+        </ul>
+        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+          <button class="btn-nav btn-prev" onclick="showModule(1)">← Forrige</button>
+          <button class="btn-nav btn-next" onclick="showModule(3)">Næste modul →</button>
+        </div>
+      </div>
+    </div>
+    <!-- MODUL 3 -->
+    <div class="module-section" id="module-3">
+      <div class="content">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 32px; font-weight: 800;">Økonomi & Workflows 📈</h2>
+          <p style="color: var(--ink-soft);">Lad AI håndtere tallene og de gentagne opgaver.</p>
+        </div>
+        <h3>Forstå dine tal uden en revisor</h3>
+        <p>Du kan uploade dine rå tal (uden personfølsom data!) til en avanceret dataanalyse-model (som ChatGPT Plus eller Claude Projects) og bede den forklare dine trends.</p>
+        <div class="callout warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <div class="callout-title">Sikkerhed først</div>
+            <p class="callout-text">Uploade aldrig rå kontoudtog med fulde navne, CPR-numre eller hemmelige virksomhedshemmeligheder. Anonymiser altid data først.</p>
+          </div>
+        </div>
+        <h3>Automatiserede Workflows</h3>
+        <p>Brug værktøjer som Zapier eller Make kombineret med AI til at:</p>
+        <ul>
+          <li>Svare automatisk på simple kundehenvendelser.</li>
+          <li>Sende personlige opfølgningsmails baseret på kundens adfærd.</li>
+          <li>Oprette opgaver i dit projektstyringsværktøj ud fra dine noter.</li>
+        </ul>
+        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+          <button class="btn-nav btn-prev" onclick="showModule(2)">← Forrige</button>
+          <button class="btn-nav btn-next btn-submit" onclick="showModule(4)">Gå til eksamen 🎓</button>
+        </div>
+      </div>
+    </div>
+    <!-- MODUL 4: EKSAMEN -->
+    <div class="module-section" id="module-4">
+      <div class="content">
+        <div style="text-align: center; margin-bottom: 2rem;">
+          <h2 style="font-size: 32px; font-weight: 800;">Eksamen: AI for Iværksættere 🎓</h2>
+          <p style="color: var(--ink-soft);">Test din viden med 15 svære spørgsmål og en praktisk opgave. Du kan altid gå tilbage til modulerne for at læse op — dine svar bliver gemt!</p>
+        </div>
+        <!-- Eksamen Navigation -->
+        <div class="exam-grid" id="exam-nav">
+          <!-- Genereres af JS -->
+        </div>
+        <!-- Spørgsmål Container -->
+        <div id="quiz-container">
+          <!-- Vises ét spørgsmål af gangen -->
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 2rem;">
+          <button class="btn-nav btn-prev" id="quiz-prev-btn" onclick="prevQuestion()">← Forrige</button>
+          <button class="btn-nav btn-next" id="quiz-next-btn" onclick="nextQuestion()">Næste →</button>
+        </div>
+        <!-- Praktisk Opgave (Vises når quizzen er færdig eller som sidste trin) -->
+        <div id="practical-task" style="display: none; margin-top: 3rem; padding: 1.5rem; background: white; border-radius: var(--radius); border: 2px solid var(--accent-orange);">
+          <h3 style="margin-top: 0; color: var(--accent-orange);">Del 2: Praktisk Opgave 🛠</h3>
+          <p>Du skal nu skrive et professionelt prompt, der får en AI til at agere som en <strong>kritisk forretningskonsulent</strong> for en ny webshop, der sælger bæredygtigt tøj til børn.</p>
+          <p>Promptet skal overholde de 3 regler, du lærte i Kursus D (Specifik, Kontekst, Format), men her skal du demonstrere, hvordan du får AI'en til at være *virkelig* kritisk og give dybdegående analyse.</p>
+          
+          <textarea id="practical-prompt" style="width: 100%; height: 150px; padding: 10px; border-radius: var(--radius-sm); border: 1px solid var(--line); margin: 1rem 0;" placeholder="Skriv dit prompt her..."></textarea>
+          
+          <button class="btn-nav btn-submit" onclick="submitExam()">Aflever Eksamen</button>
+        </div>
+        <div id="exam-results" style="display: none; margin-top: 3rem; text-align: center;">
+          <!-- Resultater vises her -->
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+  // STATE MANAGEMENT
+  let currentModule = 1;
+  let currentQuestion = 0;
+  
+  // Eksamen State (Gemmes så længe siden ikke genstartes)
+  let userAnswers = new Array(15).fill(null);
+  let practicalResponse = "";
+  // 15 Svære Spørgsmål
+  const questions = [
+    {
+      q: "1. Hvad er den største risiko ved at uploade en rå CSV-fil med salgsdata til en offentlig AI-model for at få lavet en analyse?",
+      options: [
+        "At AI'en regner forkert på tallene.",
+        "At du uforvarende deler personfølsom data eller forretningshemmeligheder, som bruges til træning.",
+        "At AI'en ikke kan læse formatet.",
+        "At konkurrenten ser din data med det samme."
+      ],
+      correct: 1
+    },
+    {
+      q: "2. Du vil have AI'en til at fungere som 'Djævlens Advokat' for din nye idé. Hvilket prompt-element er vigtigst her?",
+      options: [
+        "At fortælle AI'en at den skal være så flink som muligt.",
+        "At give den rollen som en benhård, skeptisk investor og bede specifikt om kritik.",
+        "At bede den skrive svaret som en punktliste.",
+        "At give den 5 stjerner."
+      ],
+      correct: 1
+    },
+    {
+      q: "3. Hvad betyder det at give AI'en en 'Tone of Voice'?",
+      options: [
+        "At man optager sin egen stemme og uploader den.",
+        "At man definerer skrivestilen (f.eks. 'professionel men uhøjtidelig'), så teksten passer til virksomhedens brand.",
+        "At man beder den tale i et bestemt toneleje.",
+        "At man kun bruger engelske ord."
+      ],
+      correct: 1
+    },
+    {
+      q: "4. Du skal bruge en AI til at lave en markedsanalyse. Hvad skal du være særligt opmærksom på?",
+      options: [
+        "At AI'en overhovedet ikke kan søge på internettet.",
+        "At AI'en kan hallucisere fiktive markedsandele og kilder, hvis den presses til at give præcise tal.",
+        "At det koster 100 kr. pr. søgning.",
+        "At AI'en kun kender til amerikanske forhold."
+      ],
+      correct: 1
+    },
+    {
+      q: "5. Hvad er 'hallucination' i forbindelse med LLM-modeller (Large Language Models)?",
+      options: [
+        "Når modellen genererer information, der lyder overbevisende, men er faktuelt forkert.",
+        "Når computeren bliver for varm.",
+        "Når teksten bliver for lang.",
+        "Når man ser syner."
+      ],
+      correct: 0
+    },
+    {
+      q: "6. Hvorfor er det vigtigt at definere 'Format' i dit prompt til en forretningsplan?",
+      options: [
+        "Fordi AI'en ellers ikke kan skrive på dansk.",
+        "For at sikre at du får et output, der er struktureret og direkte anvendeligt (f.eks. som Lean Canvas eller tabeller).",
+        "Det er det faktisk ikke, AI'en finder selv det bedste format.",
+        "Fordi det sparer på strømmen."
+      ],
+      correct: 1
+    },
+    {
+      q: "7. Hvilket værktøj er bedst egnet til lynhurtigt at bygge en funktionel frontend-prototype ud fra en prompt?",
+      options: [
+        "Midjourney",
+        "v0.dev (eller Claude Artifacts)",
+        "ElevenLabs",
+        "Excel"
+      ],
+      correct: 1
+    },
+    {
+      q: "8. Du vil automatisere svar på kundeservice-mails. Hvilken arkitektur er sikrest for en lille virksomhed?",
+      options: [
+        "Lad AI'en sende svaret direkte til kunden uden menneskelig kontrol.",
+        "Lad AI'en lave et udkast, som en medarbejder godkender, før det sendes.",
+        "Brug slet ikke AI til kundeservice.",
+        "Skriv koderne selv."
+      ],
+      correct: 1
+    },
+    {
+      q: "9. Hvad er den primære fordel ved at bruge Claude Projects eller OpenAI GPTs til din virksomhed?",
+      options: [
+        "De er gratis.",
+        "Du kan uploade dine specifikke brand guidelines og dokumenter, så AI'en altid svarer ud fra din virksomheds kontekst.",
+        "De kan lave videoer i biografkvalitet.",
+        "De kræver ikke internet."
+      ],
+      correct: 1
+    },
+    {
+      q: "10. Hvordan undgår du, at dine prompts bliver for 'generiske' og giver ligegyldige svar?",
+      options: [
+        "Brug mange udråbstegn.",
+        "Giv AI'en specifikke detaljer om din unikke målgruppe, dine USP'er (Unique Selling Points) og specifikke begrænsninger.",
+        "Skriv altid på engelsk.",
+        "Gør promptet så kort som muligt."
+      ],
+      correct: 1
+    },
+    {
+      q: "11. Du skal bruge AI til at vurdere en kontrakt. Hvad er den bedste fremgangsmåde?",
+      options: [
+        "Stol 100% på AI'ens analyse — den kender al jura.",
+        "Brug den til at finde 'røde flag' og forklare svære termer, men lad altid en rigtig jurist færdiggøre arbejdet.",
+        "Uploade kontrakten med alle navne og beløb direkte til en offentlig model.",
+        "Lad være med at læse kontrakten."
+      ],
+      correct: 1
+    },
+    {
+      q: "12. Hvad er 'Few-shot prompting'?",
+      options: [
+        "At skyde efter målet få gange.",
+        "At give AI'en et par eksempler på det ønskede output direkte i promptet for at guide stilen.",
+        "At bruge AI'en i under 5 minutter.",
+        "At skrive med store bogstaver."
+      ],
+      correct: 1
+    },
+    {
+      q: "13. Hvis en AI-model siger 'Jeg kender ikke svaret på dagsaktuelle nyheder', hvad skyldes det så typisk?",
+      options: [
+        "Modellens 'Knowledge Cutoff' (træningsdata stopper på et bestemt tidspunkt).",
+        "At den ikke vil hjælpe dig.",
+        "At internettet er nede.",
+        "At du ikke har betalt nok."
+      ],
+      correct: 0
+    },
+    {
+      q: "14. Hvad er den bedste måde at håndtere AI-genererede marketingtekster på, før de udgives?",
+      options: [
+        "Udgiv dem direkte for at spare tid.",
+        "Rediger dem manuelt for at tilføje personlighed, faktatjekke og sikre, at de ikke lyder 'AI-agtige'.",
+        "Bed en anden AI om at godkende dem.",
+        "Oversæt dem til tysk."
+      ],
+      correct: 1
+    },
+    {
+      q: "15. Hvordan kan AI bedst hjælpe en iværksætter med 'ideation' (idégenerering)?",
+      options: [
+        "Ved at give den ene perfekte idé med det samme.",
+        "Ved at fungere som en uendelig brainstorm-partner, der kan kombinere urelaterede koncepter og give 100 forslag på 10 sekunder.",
+        "Ved at sige nej til alle dine idéer.",
+        "Ved at overtage din hjerne."
+      ],
+      correct: 1
+    }
+  ];
+  function startCourse() {
+    document.getElementById('scene-welcome').classList.remove('active');
+    document.getElementById('scene-course').classList.add('active');
+    showModule(1);
+  }
+  function showModule(num) {
+    currentModule = num;
+    document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
+    
+    document.getElementById('module-' + num).classList.add('active');
+    const tab = document.querySelector(`.module-tab[data-mod="${num}"]`);
+    if (tab) tab.classList.add('active');
+    
+    // Opdater progress bar
+    for (let i = 1; i <= 4; i++) {
+      const bar = document.getElementById('bar-' + i);
+      if (i < num) bar.className = 'progress-step done';
+      else if (i === num) bar.className = 'progress-step active';
+      else bar.className = 'progress-step';
+    }
+    
+    const labels = ['Modul 1 af 3', 'Modul 2 af 3', 'Modul 3 af 3', 'Eksamen'];
+    document.getElementById('progressLabel').textContent = labels[num - 1];
+    
+    if (num === 4) {
+      renderQuizNav();
+      renderQuestion();
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  // QUIZ LOGIC
+  function renderQuizNav() {
+    const nav = document.getElementById('exam-nav');
+    nav.innerHTML = '';
+    questions.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'exam-nav-btn';
+      if (i === currentQuestion) btn.classList.add('active');
+      if (userAnswers[i] !== null) btn.classList.add('answered');
+      btn.textContent = i + 1;
+      btn.onclick = () => { currentQuestion = i; renderQuestion(); };
+      nav.appendChild(btn);
+    });
+  }
+  function renderQuestion() {
+    const container = document.getElementById('quiz-container');
+    const qData = questions[currentQuestion];
+    
+    container.innerHTML = `
+      <div class="quiz-question">
+        <h4>${qData.q}</h4>
+        <div class="quiz-options">
+          ${qData.options.map((opt, i) => `
+            <div class="quiz-option ${userAnswers[currentQuestion] === i ? 'selected' : ''}" onclick="selectOption(${i})">
+              ${opt}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    renderQuizNav();
+    
+    // Opdater knapper
+    document.getElementById('quiz-prev-btn').style.display = currentQuestion === 0 ? 'none' : 'block';
+    
+    const nextBtn = document.getElementById('quiz-next-btn');
+    if (currentQuestion === questions.length - 1) {
+      nextBtn.textContent = "Videre til Del 2 →";
+      nextBtn.classList.add('btn-submit');
+      nextBtn.onclick = () => { document.getElementById('practical-task').style.display = 'block'; window.scrollTo({ top: document.getElementById('practical-task').offsetTop, behavior: 'smooth' }); };
+    } else {
+      nextBtn.textContent = "Næste →";
+      nextBtn.classList.remove('btn-submit');
+      nextBtn.onclick = nextQuestion;
+    }
+  }
+  function selectOption(index) {
+    userAnswers[currentQuestion] = index;
+    renderQuestion();
+  }
+  function nextQuestion() {
+    if (currentQuestion < questions.length - 1) {
+      currentQuestion++;
+      renderQuestion();
+    }
+  }
+  function prevQuestion() {
+    if (currentQuestion > 0) {
+      currentQuestion--;
+      renderQuestion();
+    }
+  }
+  function submitExam() {
+    const score = userAnswers.reduce((acc, ans, i) => {
+      return acc + (ans === questions[i].correct ? 1 : 0);
+    }, 0);
+    
+    const practicalText = document.getElementById('practical-prompt').value.trim();
+    
+    const resultsDiv = document.getElementById('exam-results');
+    resultsDiv.style.display = 'block';
+    
+    let resultHTML = `
+      <h3>Dine Resultater</h3>
+      <p style="font-size: 24px; font-weight: 800; color: var(--primary);">Score: ${score} ud af ${questions.length}</p>
+    `;
+    
+    if (score >= 12 && practicalText.length > 20) {
+      resultHTML += `
+        <div class="callout tip" style="background: #dcfce7; border-color: #86efac; color: #065f46;">
+          <div class="callout-icon">🏆</div>
+          <div class="callout-body">
+            <div class="callout-title">Tillykke! Du har bestået.</div>
+            <p class="callout-text">Du har svaret rigtigt på nok spørgsmål og afleveret en praktisk opgave. Du har nu gennemført sidekurset!</p>
+            <p><strong>Din beståelseskode:</strong> AI-ENT-2026-X</p>
+          </div>
+        </div>
+      `;
+    } else {
+      resultHTML += `
+        <div class="callout warning">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-body">
+            <div class="callout-title">Ikke helt i mål endnu</div>
+            <p class="callout-text">Du skal have mindst 12 rigtige svar og have skrevet et uddybende prompt i den praktiske opgave for at bestå.</p>
+            <p>Du kan gå tilbage og rette dine svar eller læse i modulerne igen. Dine nuværende svar er gemt!</p>
+          </div>
+        </div>
+      `;
+    }
+    
+    resultsDiv.innerHTML = resultHTML;
+    window.scrollTo({ top: resultsDiv.offsetTop, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
