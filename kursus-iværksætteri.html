@@ -62,6 +62,10 @@
     .scene { display: none; }
     .scene.active { display: block; }
 
+    /* FIX: Skjul moduler som standard */
+    .module-section { display: none; }
+    .module-section.active { display: block; }
+
     .content { max-width: 740px; margin: 0 auto; padding: 2.75rem 1.5rem 4rem; }
 
     /* Progress Bar */
@@ -144,7 +148,7 @@
         </div>
 
         <h3>Fra Idé til Forretningsplan</h3>
-        <p>Lad os sige, du har en løs idé om at starte en virksomhed. Måske vil du sælge noget, eller tilbyde en service. Du kan starte med at beskrive din idé for AI'en i grove træk. Bed den derefter om at hjælpe dig med at udfolde den. Du kan bede den om at lave en "Lean Canvas" — en populer en-sides forretningsplan, der dækker problem, løsning, målgruppe, kanaler og økonomi. AI'en vil stille dig de rigtige spørgsmål og hjælpe dig med at udfylde hullerne.</p>
+        <p>Lad os sige, du har en løs idé om at starte en virksomhed. Måske vil du sælge noget, eller tilbyde en service. Du kan starte med at beskrive din idé for AI'en i grove træk. Bed den derefter om at hjælpe dig med at udfolde den. Du kan bede den om at lave en "Lean Canvas" — en populær en-sides forretningsplan, der dækker problem, løsning, målgruppe, kanaler og økonomi. AI'en vil stille dig de rigtige spørgsmål og hjælpe dig med at udfylde hullerne.</p>
 
         <p>En af de mest kraftfulde måder at bruge AI på i denne fase er at bede den om at være kritisk. Vi har alle en tendens til at forelske os i vores egne idéer og overse de åbenlyse svagheder. AI'en har ikke følelser og vil give dig et fuldstændig ærligt svar, hvis du beder den om det. Dette kaldes at give den rollen som "Djævlens Advokat".</p>
 
@@ -181,7 +185,6 @@
           </div>
         </div>
 
-        <!-- NY NAVIGATION KASSE -->
         <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: var(--radius); border: 1px solid var(--line);">
           <h3 style="margin-top: 0;">Du har gennemført Modul 1! 🎉</h3>
           <p style="color: var(--ink-soft); margin-bottom: 1.5rem;">Du er nu klar til at lære om kundeanskaffelse og marketing i næste modul.</p>
@@ -246,7 +249,6 @@
           </div>
         </div>
 
-        <!-- NY NAVIGATION KASSE -->
         <div style="text-align: center; margin-top: 3rem; padding: 2rem; background: white; border-radius: var(--radius); border: 1px solid var(--line);">
           <h3 style="margin-top: 0;">Du har gennemført Modul 2! 🎉</h3>
           <p style="color: var(--ink-soft); margin-bottom: 1.5rem;">Du er nu klar til at lære om drift, tal og automatisering i næste modul.</p>
@@ -330,13 +332,16 @@
   }
 
   function showModule(num) {
+    // Skjul alle moduler
     document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
     
+    // Vis det valgte modul
     document.getElementById('module-' + num).classList.add('active');
     const tab = document.querySelector(`.module-tab[data-mod="${num}"]`);
     if (tab) tab.classList.add('active');
     
+    // Opdater progress bar
     for (let i = 1; i <= 3; i++) {
       const bar = document.getElementById('bar-' + i);
       if (bar) {
