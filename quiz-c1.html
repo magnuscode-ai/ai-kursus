@@ -1,631 +1,1283 @@
 <!DOCTYPE html>
 <html lang="da">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnAI DK — Mini-quiz C1</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini-quiz C1 — Prompt-teknik · LearnAI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     QUIZ C1 — DESIGN TOKENS
+     Lysere blå end C1-kursets indigo (#4F46E5).
+  ============================================================ */
+  :root {
+    --c1:        #3B82F6;
+    --c1-light:  #60A5FA;
+    --c1-deep:   #2563EB;
+    --c1-ink:    #1E3A8A;
+    --c1-glow:   rgba(96,165,250,.55);
+    --c1-soft:   rgba(59,130,246,.10);
 
-    :root {
-      --blue:       #185FA5;
-      --blue-light: #E6F1FB;
-      --blue-mid:   #D0E6F7;
-      --green:      #0F6E56;
-      --green-light:#E1F5EE;
-      --red:        #C0392B;
-      --red-light:  #FDECEA;
-      --yellow:     #856404;
-      --yellow-bg:  #FFF3CD;
-      --bg:         #F4F7FB;
-      --white:      #FFFFFF;
-      --text:       #1A1A1A;
-      --muted:      #6B7280;
-      --border:     #E2E8F0;
-      --radius:     14px;
-      --shadow:     0 4px 24px rgba(24,95,165,0.10);
-    }
+    --ink:       #0F172A;
+    --ink-2:     #1E293B;
+    --muted:     #64748B;
+    --muted-2:   #94A3B8;
+    --bg:        #F8FAFC;
+    --card:      #FFFFFF;
+    --border:    #E2E8F0;
 
-    body {
-      font-family: 'DM Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 2rem 1rem 4rem;
-    }
+    --green:     #10B981;
+    --green-bg:  #ECFDF5;
+    --red:       #EF4444;
+    --red-bg:    #FEF2F2;
+    --amber:     #F59E0B;
 
-    /* ── HEADER ── */
-    .logo-bar {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      margin-bottom: 2.5rem;
-      text-decoration: none;
-    }
-    .logo-icon {
-      width: 32px; height: 32px;
-      background: var(--blue);
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-    }
-    .logo-icon svg { width: 16px; height: 16px; fill: white; }
-    .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+    --shadow-md: 0 4px 16px rgba(15,23,42,.06), 0 2px 4px rgba(15,23,42,.04);
+    --shadow-lg: 0 20px 60px rgba(30,58,138,.18), 0 8px 20px rgba(15,23,42,.08);
 
-    /* ── CARD WRAPPER ── */
-    .card {
-      background: var(--white);
-      border-radius: 20px;
-      box-shadow: var(--shadow);
-      width: 100%;
-      max-width: 640px;
-      overflow: hidden;
-    }
+    --r:    16px;
+    --r-lg: 22px;
+    --r-xl: 28px;
+  }
 
-    /* ── QUIZ HEADER ── */
-    .quiz-header {
-      background: var(--blue);
-      padding: 2rem 2rem 1.5rem;
-      color: white;
-    }
-    .quiz-tag {
-      display: inline-block;
-      background: rgba(255,255,255,0.18);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 20px;
-      margin-bottom: 0.75rem;
-    }
-    .quiz-header h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: 26px;
-      font-weight: 400;
-      line-height: 1.25;
-      margin-bottom: 0.4rem;
-    }
-    .quiz-header p {
-      font-size: 14px;
-      opacity: 0.8;
-    }
+  *,*::before,*::after { box-sizing: border-box; }
+  html,body { margin:0; padding:0; }
+  body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
 
-    /* ── PROGRESS ── */
-    .progress-bar-wrap {
-      padding: 1.25rem 2rem 0;
-    }
-    .progress-meta {
-      display: flex;
-      justify-content: space-between;
-      font-size: 13px;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .progress-track {
-      height: 6px;
-      background: var(--border);
-      border-radius: 99px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: var(--blue);
-      border-radius: 99px;
-      transition: width 0.4s ease;
-    }
+  /* ATMOSFÆRE */
+  .scene-bg {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(ellipse 60% 50% at 15% 20%, rgba(96,165,250,.18), transparent 60%),
+      radial-gradient(ellipse 50% 60% at 85% 80%, rgba(59,130,246,.14), transparent 60%),
+      radial-gradient(ellipse 80% 40% at 50% 100%, rgba(37,99,235,.10), transparent 70%),
+      linear-gradient(180deg, #F0F7FF 0%, #F8FAFC 50%, #EFF6FF 100%);
+    animation: bgDrift 24s ease-in-out infinite alternate;
+  }
+  @keyframes bgDrift {
+    0%   { background-position: 0% 0%, 100% 100%, 50% 100%, 0 0; }
+    100% { background-position: 10% 5%, 90% 95%, 55% 95%, 0 0; }
+  }
+  .scene-grid {
+    position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(59,130,246,.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 30%, #000 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 30%, #000 30%, transparent 80%);
+  }
+  .orb {
+    position: fixed; border-radius: 50%; filter: blur(60px);
+    pointer-events: none; z-index: -1; opacity: .55;
+  }
+  .orb-1 { width: 380px; height: 380px; top: -120px; left: -100px;
+           background: radial-gradient(circle, var(--c1-light), transparent 70%);
+           animation: float1 18s ease-in-out infinite; }
+  .orb-2 { width: 320px; height: 320px; bottom: -100px; right: -80px;
+           background: radial-gradient(circle, var(--c1), transparent 70%);
+           animation: float2 22s ease-in-out infinite; opacity: .45; }
+  @keyframes float1 { 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(40px,30px); } }
+  @keyframes float2 { 0%,100%{ transform: translate(0,0); } 50%{ transform: translate(-30px,-40px); } }
 
-    /* ── QUESTION ── */
-    .question-wrap {
-      padding: 1.75rem 2rem 0;
-    }
-    .q-number {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--blue);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-    }
-    .q-text {
-      font-size: 17px;
-      font-weight: 600;
-      line-height: 1.5;
-      color: var(--text);
-    }
+  /* TOP BAR */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: blur(14px) saturate(180%);
+    -webkit-backdrop-filter: blur(14px) saturate(180%);
+    background: rgba(248,250,252,.72);
+    border-bottom: 1px solid rgba(226,232,240,.6);
+  }
+  .topbar-inner {
+    max-width: 1100px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: var(--ink);
+    font-weight: 800; font-size: 16px;
+  }
+  .brand-mark {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--c1), var(--c1-light));
+    box-shadow: 0 4px 12px var(--c1-glow);
+    display: grid; place-items: center;
+    color: #fff; font-weight: 800; font-size: 13px;
+  }
+  .crumb { display: flex; align-items: center; gap: 10px;
+           font-size: 13px; color: var(--muted); font-weight: 500; }
+  .crumb .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--muted-2); }
+  .crumb a { color: var(--muted); text-decoration: none; transition: color .2s; }
+  .crumb a:hover { color: var(--c1); }
+  .crumb .here { color: var(--c1); font-weight: 600; }
 
-    /* ── OPTIONS ── */
-    .options {
-      padding: 1.25rem 2rem 0;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .option-btn {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      background: var(--bg);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      padding: 13px 16px;
-      cursor: pointer;
-      text-align: left;
-      transition: border-color 0.15s, background 0.15s, transform 0.1s;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.5;
-      width: 100%;
-    }
-    .option-btn:hover:not(:disabled) {
-      border-color: var(--blue);
-      background: var(--blue-light);
-      transform: translateY(-1px);
-    }
-    .option-letter {
-      flex-shrink: 0;
-      width: 26px; height: 26px;
-      border-radius: 50%;
-      background: var(--white);
-      border: 2px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--muted);
-      transition: background 0.15s, border-color 0.15s, color 0.15s;
-    }
-    .option-btn:hover:not(:disabled) .option-letter {
-      background: var(--blue);
-      border-color: var(--blue);
-      color: white;
-    }
+  /* INTRO */
+  .intro {
+    position: fixed; inset: 0; z-index: 100;
+    display: grid; place-items: center;
+    background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(37,99,235,.95), rgba(30,58,138,.98) 70%, #0B1E47 100%);
+    overflow: hidden;
+    transition: opacity .8s cubic-bezier(.4,0,.2,1), transform 1.1s cubic-bezier(.7,0,.3,1);
+  }
+  .intro.hidden { opacity: 0; transform: scale(1.08); pointer-events: none; }
+  .intro-stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+      radial-gradient(1px 1px at 28% 70%, #fff, transparent),
+      radial-gradient(2px 2px at 45% 25%, #fff, transparent),
+      radial-gradient(1px 1px at 67% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 83% 35%, #fff, transparent),
+      radial-gradient(2px 2px at 91% 80%, #fff, transparent),
+      radial-gradient(1px 1px at 55% 88%, #fff, transparent),
+      radial-gradient(1px 1px at 8% 50%, #fff, transparent);
+    opacity: .7;
+    animation: starsTwinkle 3s ease-in-out infinite;
+  }
+  @keyframes starsTwinkle { 0%,100%{ opacity:.5; } 50%{ opacity:.9; } }
+  .intro-center {
+    position: relative; text-align: center; color: #fff;
+    opacity: 0; transform: translateY(20px) scale(.95);
+    animation: introIn 1.4s cubic-bezier(.16,1,.3,1) .2s forwards;
+    padding: 0 24px;
+  }
+  @keyframes introIn {
+    0%   { opacity: 0; transform: translateY(20px) scale(.95); filter: blur(8px); }
+    100% { opacity: 1; transform: translateY(0)    scale(1);   filter: blur(0); }
+  }
+  .intro-badge {
+    display: inline-block; padding: 8px 18px; border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase;
+    margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+  .intro-title {
+    font-family: 'Lora', serif; font-weight: 600;
+    font-size: clamp(40px, 7vw, 76px);
+    line-height: 1.05; letter-spacing: -.025em;
+    margin: 0 0 18px;
+  }
+  .intro-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, #60A5FA, #DBEAFE);
+    -webkit-background-clip: text; background-clip: text;
+    color: transparent;
+  }
+  .intro-sub {
+    font-size: clamp(15px, 1.8vw, 18px);
+    opacity: .85; max-width: 540px;
+    margin: 0 auto 36px;
+    font-weight: 400; line-height: 1.6;
+  }
+  .intro-stats {
+    display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .intro-stat { text-align: center; }
+  .intro-stat-num {
+    font-family: 'Lora', serif;
+    font-size: 32px; font-weight: 600;
+    color: var(--c1-light); line-height: 1;
+  }
+  .intro-stat-lbl {
+    font-size: 11px; text-transform: uppercase;
+    letter-spacing: .15em; opacity: .7; margin-top: 6px;
+  }
+  .intro-start {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 16px 36px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--c1-light), var(--c1));
+    color: #fff; border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 17px; font-weight: 700; cursor: pointer;
+    box-shadow: 0 10px 40px rgba(96,165,250,.5), inset 0 1px 0 rgba(255,255,255,.3);
+    transition: transform .2s, box-shadow .2s;
+    position: relative; overflow: hidden;
+  }
+  .intro-start::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
+    transform: translateX(-100%);
+    animation: shimmer 2.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%   { transform: translateX(-100%); }
+    60%, 100% { transform: translateX(100%); }
+  }
+  .intro-start:hover { transform: translateY(-2px); box-shadow: 0 16px 50px rgba(96,165,250,.6), inset 0 1px 0 rgba(255,255,255,.3); }
+  .intro-start:active { transform: translateY(0); }
 
-    /* correct / wrong states */
-    .option-btn.correct {
-      border-color: var(--green);
-      background: var(--green-light);
-    }
-    .option-btn.correct .option-letter {
-      background: var(--green); border-color: var(--green); color: white;
-    }
-    .option-btn.wrong {
-      border-color: var(--red);
-      background: var(--red-light);
-    }
-    .option-btn.wrong .option-letter {
-      background: var(--red); border-color: var(--red); color: white;
-    }
-    .option-btn.dimmed {
-      opacity: 0.4;
-    }
-    .option-btn:disabled { cursor: default; transform: none; }
+  /* STAGE */
+  .stage {
+    max-width: 760px; margin: 0 auto;
+    padding: 40px 24px 80px;
+    opacity: 0;
+    transition: opacity .6s ease .4s;
+  }
+  .stage.live { opacity: 1; }
 
-    /* ── FEEDBACK ── */
-    .feedback {
-      margin: 1rem 2rem 0;
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-      display: none;
-      align-items: flex-start;
-      gap: 10px;
-      line-height: 1.5;
-    }
-    .feedback.show { display: flex; }
-    .feedback.correct-fb { background: var(--green-light); color: var(--green); }
-    .feedback.wrong-fb   { background: var(--red-light);   color: var(--red); }
-    .feedback-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .progress-wrap { margin-bottom: 32px; }
+  .progress-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 13px; color: var(--muted); font-weight: 600;
+  }
+  .progress-row strong { color: var(--c1); font-weight: 700; }
+  .progress-bar {
+    height: 6px; border-radius: 999px;
+    background: rgba(59,130,246,.12);
+    overflow: hidden; position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--c1) 0%, var(--c1-light) 100%);
+    border-radius: 999px;
+    transition: width .8s cubic-bezier(.16,1,.3,1);
+    position: relative; overflow: hidden;
+  }
+  .progress-fill::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.6) 50%, transparent 100%);
+    animation: barShimmer 2s ease-in-out infinite;
+  }
+  @keyframes barShimmer {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+  .dots {
+    display: flex; gap: 6px; align-items: center;
+    margin-top: 14px; justify-content: center;
+  }
+  .dots span {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--border);
+    transition: all .3s;
+  }
+  .dots span.correct  { background: var(--green); }
+  .dots span.wrong    { background: var(--red); }
+  .dots span.current  { background: var(--c1-light); transform: scale(1.5); box-shadow: 0 0 0 4px rgba(96,165,250,.2); }
 
-    /* ── NEXT BTN ── */
-    .next-wrap {
-      padding: 1.25rem 2rem 2rem;
-      display: flex;
-      justify-content: flex-end;
-    }
-    .btn-next {
-      background: var(--blue);
-      color: white;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      display: none;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.15s, transform 0.1s;
-    }
-    .btn-next.show { display: flex; }
-    .btn-next:hover { background: #1352a0; transform: translateY(-1px); }
+  /* CARDS */
+  .card-stack { position: relative; min-height: 420px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--r-xl);
+    padding: 36px 36px 32px;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid rgba(255,255,255,.8);
+    position: relative; overflow: hidden;
+    transform-origin: center center;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, var(--c1), var(--c1-light), var(--c1-deep));
+    background-size: 200% 100%;
+    animation: cardTopShine 4s ease-in-out infinite;
+  }
+  @keyframes cardTopShine {
+    0%,100% { background-position: 0% 0%; }
+    50%     { background-position: 100% 0%; }
+  }
+  .card.enter-right { animation: swoopInRight .7s cubic-bezier(.16,1,.3,1) forwards; }
+  @keyframes swoopInRight {
+    0%   { opacity: 0; transform: translateX(120px) rotate(2deg) scale(.96); filter: blur(6px); }
+    100% { opacity: 1; transform: translateX(0)     rotate(0)    scale(1);   filter: blur(0); }
+  }
+  .card.exit-left { animation: swoopOutLeft .5s cubic-bezier(.7,0,.84,0) forwards; }
+  @keyframes swoopOutLeft {
+    0%   { opacity: 1; transform: translateX(0)      rotate(0)     scale(1);   filter: blur(0); }
+    100% { opacity: 0; transform: translateX(-160px) rotate(-3deg) scale(.94); filter: blur(8px); }
+  }
+  .card.shake { animation: shake .55s cubic-bezier(.36,.07,.19,.97); }
+  @keyframes shake {
+    10%, 90% { transform: translateX(-2px); }
+    20%, 80% { transform: translateX(4px); }
+    30%, 50%, 70% { transform: translateX(-8px); }
+    40%, 60% { transform: translateX(8px); }
+  }
 
-    /* ── RESULT SCREEN ── */
-    .result-screen {
-      display: none;
-      padding: 2.5rem 2rem;
-      text-align: center;
-      flex-direction: column;
-      align-items: center;
-    }
-    .result-screen.show { display: flex; }
+  .q-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 14px; border-radius: 999px;
+    background: var(--c1-soft);
+    color: var(--c1-deep);
+    font-size: 12px; font-weight: 700;
+    letter-spacing: .08em; text-transform: uppercase;
+    margin-bottom: 18px;
+  }
+  .q-tag .num { color: var(--c1); }
+  .q-text {
+    font-family: 'Lora', serif; font-weight: 500;
+    font-size: clamp(20px, 2.4vw, 26px);
+    line-height: 1.35; color: var(--ink);
+    margin: 0 0 28px; letter-spacing: -.01em;
+  }
 
-    .result-icon {
-      font-size: 56px;
-      margin-bottom: 1rem;
-      animation: pop 0.5s cubic-bezier(.36,1.6,.6,1) both;
-    }
-    @keyframes pop {
-      0%  { transform: scale(0.4); opacity: 0; }
-      100%{ transform: scale(1);   opacity: 1; }
-    }
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 18px;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: var(--r);
+    cursor: pointer;
+    transition: all .18s cubic-bezier(.4,0,.2,1);
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px; line-height: 1.5;
+    color: var(--ink-2);
+    width: 100%; position: relative; overflow: hidden;
+  }
+  .opt:hover:not(.locked) {
+    border-color: var(--c1-light);
+    background: linear-gradient(135deg, #FAFCFF 0%, #F0F7FF 100%);
+    transform: translateX(4px);
+    box-shadow: 0 4px 16px rgba(59,130,246,.08);
+  }
+  .opt-letter {
+    flex: 0 0 32px; width: 32px; height: 32px;
+    border-radius: 8px;
+    background: var(--bg);
+    border: 1.5px solid var(--border);
+    display: grid; place-items: center;
+    font-weight: 700; font-size: 13px;
+    color: var(--muted);
+    transition: all .18s;
+  }
+  .opt:hover:not(.locked) .opt-letter {
+    background: var(--c1-soft);
+    border-color: var(--c1-light);
+    color: var(--c1-deep);
+  }
+  .opt-text { flex: 1; padding-top: 4px; padding-right: 36px; }
 
-    .result-title {
-      font-family: 'DM Serif Display', serif;
-      font-size: 28px;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-    .result-sub {
-      font-size: 15px;
-      color: var(--muted);
-      margin-bottom: 1.5rem;
-      max-width: 360px;
-      line-height: 1.6;
-    }
-    .score-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      border-radius: 99px;
-      font-size: 20px;
-      font-weight: 700;
-      margin-bottom: 1.75rem;
-    }
-    .score-badge.pass { background: var(--green-light); color: var(--green); }
-    .score-badge.fail { background: var(--red-light);   color: var(--red); }
+  .opt.correct {
+    border-color: var(--green);
+    background: linear-gradient(135deg, var(--green-bg) 0%, #D1FAE5 100%);
+    animation: correctPulse .8s cubic-bezier(.4,0,.2,1);
+  }
+  .opt.correct .opt-letter { background: var(--green); border-color: var(--green); color: #fff; }
+  .opt.correct::after {
+    content: '✓'; position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--green); font-weight: 800; font-size: 18px;
+    animation: checkPop .4s cubic-bezier(.5,1.6,.4,1) .1s both;
+  }
+  @keyframes correctPulse {
+    0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.4); }
+    50%  { box-shadow: 0 0 0 14px rgba(16,185,129,0); }
+    100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+  }
+  @keyframes checkPop {
+    0%   { opacity: 0; transform: translateY(-50%) scale(.3); }
+    100% { opacity: 1; transform: translateY(-50%) scale(1); }
+  }
+  .opt.wrong {
+    border-color: var(--red);
+    background: linear-gradient(135deg, var(--red-bg) 0%, #FEE2E2 100%);
+  }
+  .opt.wrong .opt-letter { background: var(--red); border-color: var(--red); color: #fff; }
+  .opt.wrong::after {
+    content: '✕'; position: absolute; right: 20px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--red); font-weight: 800; font-size: 18px;
+  }
+  .opt.locked { cursor: default; pointer-events: none; }
+  .opt.dim { opacity: .45; }
 
-    .result-message {
-      background: var(--bg);
-      border-radius: var(--radius);
-      padding: 1rem 1.25rem;
-      font-size: 14px;
-      color: var(--muted);
-      line-height: 1.6;
-      text-align: left;
-      width: 100%;
-      margin-bottom: 1.5rem;
-    }
-    .result-message strong { color: var(--text); }
+  /* EXPLAIN */
+  .explain {
+    margin-top: 0;
+    padding: 0 20px;
+    border-left: 4px solid var(--c1);
+    background: linear-gradient(135deg, #F0F7FF 0%, #FAFCFF 100%);
+    border-radius: var(--r);
+    font-size: 14.5px; line-height: 1.6;
+    color: var(--ink-2);
+    opacity: 0; max-height: 0;
+    overflow: hidden;
+    transition: all .4s cubic-bezier(.4,0,.2,1);
+  }
+  .explain.show {
+    opacity: 1; max-height: 320px;
+    padding: 18px 20px; margin-top: 22px;
+  }
+  .explain strong { color: var(--c1-deep); }
 
-    .btn-retry {
-      background: white;
-      border: 2px solid var(--border);
-      color: var(--text);
-      padding: 12px 26px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-right: 10px;
-      transition: border-color 0.15s;
-    }
-    .btn-retry:hover { border-color: var(--blue); color: var(--blue); }
+  /* NEXT BUTTON */
+  .actions { margin-top: 26px; display: flex; justify-content: flex-end; }
+  .next-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 14px 28px; border-radius: 999px;
+    background: linear-gradient(135deg, var(--c1), var(--c1-light));
+    color: #fff; border: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px; font-weight: 700; cursor: pointer;
+    opacity: 0; pointer-events: none;
+    transform: translateY(8px);
+    transition: opacity .3s, transform .3s, box-shadow .2s;
+    box-shadow: 0 8px 24px rgba(59,130,246,.3);
+  }
+  .next-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  .next-btn:hover { box-shadow: 0 12px 32px rgba(59,130,246,.4); transform: translateY(-2px); }
+  .next-btn:active { transform: translateY(0); }
+  .next-btn svg { transition: transform .2s; }
+  .next-btn:hover svg { transform: translateX(4px); }
 
-    .btn-continue {
-      background: var(--green);
-      color: white;
-      border: none;
-      padding: 12px 26px;
-      border-radius: 10px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.15s;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-continue:hover { background: #0a5640; }
-    .btn-continue.hidden { display: none; }
+  /* VICTORY */
+  .victory {
+    position: fixed; inset: 0; z-index: 200;
+    background: radial-gradient(ellipse 70% 70% at 50% 40%, rgba(96,165,250,.92), rgba(30,58,138,.98) 70%, #0B1E47 100%);
+    display: grid; place-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .6s ease;
+    overflow: hidden;
+  }
+  .victory.show { opacity: 1; pointer-events: auto; }
+  .victory-stars {
+    position: absolute; inset: 0; opacity: 0;
+    background-image:
+      radial-gradient(1px 1px at 12% 18%, #fff, transparent),
+      radial-gradient(2px 2px at 28% 70%, #fff, transparent),
+      radial-gradient(1px 1px at 45% 25%, #fff, transparent),
+      radial-gradient(2px 2px at 67% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 83% 35%, #fff, transparent),
+      radial-gradient(2px 2px at 91% 80%, #fff, transparent);
+  }
+  .victory.show .victory-stars { animation: starsIn .8s ease forwards, starsTwinkle 3s ease-in-out infinite 1s; }
+  @keyframes starsIn { to { opacity: .8; } }
+  .victory-inner {
+    text-align: center; color: #fff;
+    transform: translateY(20px) scale(.92);
+    opacity: 0;
+    transition: all .8s cubic-bezier(.16,1,.3,1) .2s;
+    position: relative; z-index: 2;
+    padding: 0 24px;
+  }
+  .victory.show .victory-inner { transform: translateY(0) scale(1); opacity: 1; }
+  .v-trophy {
+    width: 120px; height: 120px;
+    margin: 0 auto 28px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #FCD34D, #F59E0B);
+    display: grid; place-items: center;
+    font-size: 60px;
+    box-shadow: 0 0 60px rgba(252,211,77,.6), inset 0 -4px 12px rgba(0,0,0,.15);
+    animation: trophyPulse 2s ease-in-out infinite;
+  }
+  @keyframes trophyPulse {
+    0%,100% { transform: scale(1); box-shadow: 0 0 60px rgba(252,211,77,.6), inset 0 -4px 12px rgba(0,0,0,.15); }
+    50%     { transform: scale(1.05); box-shadow: 0 0 80px rgba(252,211,77,.8), inset 0 -4px 12px rgba(0,0,0,.15); }
+  }
+  .v-title {
+    font-family: 'Lora', serif; font-weight: 600;
+    font-size: clamp(36px, 6vw, 60px);
+    line-height: 1.1; margin: 0 0 14px;
+    letter-spacing: -.02em;
+  }
+  .v-sub {
+    font-size: 17px; opacity: .9;
+    margin: 0 0 32px; line-height: 1.5;
+  }
+  .v-score {
+    display: inline-flex; align-items: center; gap: 16px;
+    padding: 16px 28px; border-radius: 999px;
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.25);
+    backdrop-filter: blur(10px);
+    margin-bottom: 28px;
+    font-weight: 600;
+  }
+  .v-score-num {
+    font-family: 'Lora', serif; font-size: 28px;
+    color: var(--c1-light);
+  }
+  .v-coin {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 12px 20px; border-radius: 999px;
+    background: linear-gradient(135deg, #FCD34D, #F59E0B);
+    color: #422006;
+    font-weight: 700; font-size: 15px;
+    margin-bottom: 36px;
+    animation: coinPop .6s cubic-bezier(.5,1.5,.4,1) .8s both;
+    box-shadow: 0 8px 24px rgba(245,158,11,.4);
+  }
+  @keyframes coinPop {
+    0%   { opacity: 0; transform: scale(.5); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  .v-actions {
+    display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+  }
+  .v-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 14px 28px; border-radius: 999px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; border: none;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .v-btn.primary {
+    background: linear-gradient(135deg, var(--c1-light), var(--c1));
+    color: #fff;
+    box-shadow: 0 8px 24px rgba(96,165,250,.5);
+  }
+  .v-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(96,165,250,.6); }
+  .v-btn.ghost {
+    background: rgba(255,255,255,.1); color: #fff;
+    border: 1px solid rgba(255,255,255,.25);
+  }
+  .v-btn.ghost:hover { background: rgba(255,255,255,.18); }
 
-    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  /* ROCKET */
+  .rocket-stage {
+    position: fixed; inset: 0; z-index: 300;
+    background: radial-gradient(circle at 50% 100%, #1E3A8A 0%, #0B1E47 60%, #000 100%);
+    display: grid; place-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .4s ease;
+    overflow: hidden;
+  }
+  .rocket-stage.show { opacity: 1; pointer-events: auto; }
+  .rocket-stars {
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, #fff, transparent),
+      radial-gradient(1px 1px at 25% 60%, #fff, transparent),
+      radial-gradient(2px 2px at 40% 30%, #fff, transparent),
+      radial-gradient(1px 1px at 60% 80%, #fff, transparent),
+      radial-gradient(1px 1px at 78% 40%, #fff, transparent),
+      radial-gradient(2px 2px at 90% 70%, #fff, transparent),
+      radial-gradient(1px 1px at 50% 90%, #fff, transparent);
+    animation: starsTwinkle 2s ease-in-out infinite;
+  }
+  .rocket {
+    position: relative;
+    transform: translateY(40vh);
+    animation: rocketLaunch 2.6s cubic-bezier(.5,0,.3,1) .3s forwards;
+    font-size: 100px; line-height: 1;
+  }
+  @keyframes rocketLaunch {
+    0%   { transform: translateY(40vh) scale(1) rotate(0); }
+    25%  { transform: translateY(20vh) scale(1.05) rotate(-3deg); }
+    100% { transform: translateY(-80vh) scale(.5) rotate(8deg); }
+  }
+  .rocket-flame {
+    position: absolute;
+    bottom: -50px; left: 50%;
+    transform: translateX(-50%);
+    width: 30px; height: 80px;
+    background: linear-gradient(180deg, #FBBF24, #F59E0B 40%, #EF4444 80%, transparent);
+    border-radius: 50% 50% 30% 30%;
+    filter: blur(4px);
+    animation: flameFlicker .12s ease-in-out infinite alternate;
+  }
+  @keyframes flameFlicker {
+    0%   { transform: translateX(-50%) scaleY(1)   scaleX(1); }
+    100% { transform: translateX(-50%) scaleY(1.2) scaleX(.9); }
+  }
+  .rocket-msg {
+    position: absolute; bottom: 12vh;
+    width: 100%; text-align: center;
+    color: #fff; opacity: 0;
+    animation: rocketMsg 1.2s ease 1.6s forwards;
+  }
+  @keyframes rocketMsg {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .rocket-msg-title {
+    font-family: 'Lora', serif;
+    font-size: 28px; font-weight: 600;
+    margin: 0 0 6px;
+  }
+  .rocket-msg-sub { font-size: 14px; opacity: .8; }
 
-    /* ── DIVIDER LINE ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 0 2rem;
-    }
+  /* FAIL */
+  .fail {
+    position: fixed; inset: 0; z-index: 200;
+    background: radial-gradient(ellipse at center, #1E293B 0%, #0F172A 100%);
+    display: grid; place-items: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .5s ease;
+  }
+  .fail.show { opacity: 1; pointer-events: auto; }
+  .fail-inner {
+    text-align: center; color: #fff;
+    max-width: 480px; padding: 0 24px;
+    transform: scale(.94); opacity: 0;
+    transition: all .6s cubic-bezier(.16,1,.3,1) .2s;
+  }
+  .fail.show .fail-inner { transform: scale(1); opacity: 1; }
+  .fail-icon {
+    width: 80px; height: 80px;
+    margin: 0 auto 24px;
+    border-radius: 50%;
+    background: rgba(245,158,11,.15);
+    border: 2px solid var(--amber);
+    display: grid; place-items: center;
+    font-size: 36px;
+  }
+  .fail h2 {
+    font-family: 'Lora', serif;
+    font-size: 36px; font-weight: 600;
+    margin: 0 0 14px;
+  }
+  .fail p {
+    font-size: 16px; opacity: .85; line-height: 1.6;
+    margin: 0 0 30px;
+  }
+  .fail-stats {
+    display: flex; gap: 24px; justify-content: center;
+    margin-bottom: 30px;
+    padding: 18px 24px;
+    background: rgba(255,255,255,.08);
+    border-radius: var(--r);
+    border: 1px solid rgba(255,255,255,.12);
+  }
+  .fail-stat-num { font-family: 'Lora', serif; font-size: 28px; font-weight: 600; color: var(--c1-light); }
+  .fail-stat-lbl { font-size: 12px; opacity: .7; text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+  .fail-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 
-    @media (max-width: 480px) {
-      .quiz-header { padding: 1.5rem 1.25rem 1.25rem; }
-      .progress-bar-wrap, .question-wrap, .options, .feedback, .next-wrap { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .feedback { margin: 1rem 1.25rem 0; }
-      .divider { margin: 0 1.25rem; }
-      .result-screen { padding: 2rem 1.25rem; }
-      .q-text { font-size: 15px; }
-    }
-  </style>
+  /* ALREADY */
+  .already-banner {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(248,250,252,.95);
+    backdrop-filter: blur(8px);
+    display: grid; place-items: center;
+    padding: 24px;
+  }
+  .already-card {
+    background: var(--card);
+    border-radius: var(--r-xl);
+    padding: 48px 40px;
+    max-width: 460px; text-align: center;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+  }
+  .already-icon {
+    width: 72px; height: 72px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), #34D399);
+    display: grid; place-items: center;
+    font-size: 32px; color: #fff;
+    box-shadow: 0 8px 24px rgba(16,185,129,.3);
+  }
+  .already-card h2 {
+    font-family: 'Lora', serif;
+    font-size: 28px; font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .already-card p {
+    font-size: 15px; color: var(--muted); line-height: 1.6;
+    margin: 0 0 28px;
+  }
+  .already-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+  /* LOGIN */
+  .login-prompt {
+    position: fixed; inset: 0; z-index: 90;
+    background: rgba(248,250,252,.95);
+    backdrop-filter: blur(8px);
+    display: grid; place-items: center;
+    padding: 24px;
+  }
+  .login-card {
+    background: var(--card);
+    border-radius: var(--r-xl);
+    padding: 48px 40px;
+    max-width: 440px; text-align: center;
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border);
+  }
+  .login-icon {
+    width: 72px; height: 72px; margin: 0 auto 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--c1), var(--c1-light));
+    display: grid; place-items: center;
+    font-size: 32px; color: #fff;
+    box-shadow: 0 8px 24px rgba(59,130,246,.3);
+  }
+  .login-card h2 {
+    font-family: 'Lora', serif;
+    font-size: 26px; font-weight: 600;
+    margin: 0 0 12px;
+  }
+  .login-card p {
+    font-size: 15px; color: var(--muted); line-height: 1.6;
+    margin: 0 0 28px;
+  }
+
+  /* LOADER */
+  .loader {
+    position: fixed; inset: 0; z-index: 500;
+    background: var(--bg);
+    display: grid; place-items: center;
+    transition: opacity .4s ease;
+  }
+  .loader.gone { opacity: 0; pointer-events: none; }
+  .loader-spin {
+    width: 36px; height: 36px;
+    border: 3px solid var(--border);
+    border-top-color: var(--c1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* CONFETTI */
+  .confetti {
+    position: fixed; inset: 0; pointer-events: none; z-index: 250;
+    overflow: hidden;
+  }
+  .confetti span {
+    position: absolute; top: -20px;
+    width: 10px; height: 14px; opacity: 0;
+    animation: confettiFall 2.8s ease-out forwards;
+  }
+  @keyframes confettiFall {
+    0%   { opacity: 1; transform: translateY(0) rotate(0); }
+    100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 640px) {
+    .topbar-inner { padding: 12px 16px; }
+    .crumb { display: none; }
+    .stage { padding: 24px 16px 60px; }
+    .card { padding: 26px 22px 24px; border-radius: var(--r-lg); }
+    .q-text { font-size: 19px; }
+    .opt { padding: 14px 14px; font-size: 14px; gap: 12px; }
+    .opt-letter { width: 28px; height: 28px; flex-basis: 28px; font-size: 12px; }
+    .opt-text { padding-right: 30px; }
+    .intro-title { font-size: 38px; }
+    .intro-stats { gap: 20px; }
+    .v-title { font-size: 32px; }
+    .v-trophy { width: 96px; height: 96px; font-size: 48px; }
+    .actions { justify-content: stretch; }
+    .next-btn { width: 100%; justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+</style>
 </head>
 <body>
 
-  <a href="kursus-c.html" class="logo-bar">
-    <div class="logo-icon">
-      <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
-    </div>
-    <span class="logo-text">LearnAI DK</span>
-  </a>
+<div class="scene-bg"></div>
+<div class="scene-grid"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 
-  <div class="card">
+<div class="loader" id="loader"><div class="loader-spin"></div></div>
 
-    <!-- QUIZ HEADER -->
-    <div class="quiz-header">
-      <div class="quiz-tag">Del C1 &nbsp;·&nbsp; Mini-quiz</div>
-      <h1>Tjek din forståelse</h1>
-      <p>6 spørgsmål &nbsp;·&nbsp; Minimum 5 rigtige for at gå videre</p>
-    </div>
-
-    <!-- PROGRESS -->
-    <div class="progress-bar-wrap">
-      <div class="progress-meta">
-        <span id="prog-label">Spørgsmål 1 af 6</span>
-        <span id="prog-score">0 rigtige</span>
-      </div>
-      <div class="progress-track">
-        <div class="progress-fill" id="progress-fill" style="width:0%"></div>
-      </div>
-    </div>
-
-    <!-- QUESTION -->
-    <div class="question-wrap">
-      <div class="q-number" id="q-number">Spørgsmål 1</div>
-      <div class="q-text" id="q-text"></div>
-    </div>
-
-    <!-- OPTIONS -->
-    <div class="options" id="options"></div>
-
-    <!-- FEEDBACK -->
-    <div class="feedback" id="feedback">
-      <span class="feedback-icon" id="fb-icon"></span>
-      <span id="fb-text"></span>
-    </div>
-
-    <div class="divider" style="margin-top:1.25rem;"></div>
-
-    <!-- NEXT -->
-    <div class="next-wrap">
-      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
-        Næste spørgsmål <span>→</span>
-      </button>
-    </div>
-
-    <!-- RESULT SCREEN -->
-    <div class="result-screen" id="result-screen">
-      <div class="result-icon" id="result-icon"></div>
-      <h2 class="result-title" id="result-title"></h2>
-      <p class="result-sub" id="result-sub"></p>
-      <div class="score-badge" id="score-badge"></div>
-      <div class="result-message" id="result-message"></div>
-      <div class="btn-row">
-        <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
-        <a href="kursus-c2.html" class="btn-continue hidden" id="btn-continue">
-          Fortsæt til Del C2 →
-        </a>
-      </div>
-    </div>
-
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="platform.html">
+      <span class="brand-mark">LA</span>
+      <span>LearnAI</span>
+    </a>
+    <nav class="crumb">
+      <a href="kursus-c1.html">Kursus C1</a>
+      <span class="dot"></span>
+      <span class="here">Mini-quiz</span>
+    </nav>
   </div>
+</header>
 
-<script>
-const questions = [
+<!-- CINEMATIC INTRO -->
+<section class="intro" id="intro">
+  <div class="intro-stars"></div>
+  <div class="intro-center">
+    <span class="intro-badge">Mini-quiz · Kursus C1</span>
+    <h1 class="intro-title">Tid til at <em>teste</em><br>din forståelse</h1>
+    <p class="intro-sub">
+      Syv spørgsmål om prompt-teknik. Få seks rigtige for at låse Del C2 op
+      og hæve dit niveau som AI-bruger.
+    </p>
+    <div class="intro-stats">
+      <div class="intro-stat">
+        <div class="intro-stat-num">7</div>
+        <div class="intro-stat-lbl">Spørgsmål</div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">6/7</div>
+        <div class="intro-stat-lbl">For at bestå</div>
+      </div>
+      <div class="intro-stat">
+        <div class="intro-stat-num">+30</div>
+        <div class="intro-stat-lbl">Coins</div>
+      </div>
+    </div>
+    <button class="intro-start" id="startBtn">
+      Start quizzen
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </button>
+  </div>
+</section>
+
+<!-- QUIZ STAGE -->
+<main class="stage" id="stage">
+  <div class="progress-wrap">
+    <div class="progress-row">
+      <span>Spørgsmål <strong id="curNum">1</strong> af 7</span>
+      <span><strong id="curScore">0</strong> rigtige</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="dots" id="dots"></div>
+  </div>
+  <div class="card-stack" id="cardStack"></div>
+</main>
+
+<!-- VICTORY -->
+<section class="victory" id="victory">
+  <div class="victory-stars"></div>
+  <div class="victory-inner">
+    <div class="v-trophy">🏆</div>
+    <h1 class="v-title">Du klarede det!</h1>
+    <p class="v-sub">Du har bevist at du forstår de fire teknikker. Klar til Del C2.</p>
+    <div class="v-score">
+      <span class="v-score-num" id="vScoreNum">7</span>
+      <span>ud af 7 rigtige</span>
+    </div>
+    <div class="v-coin">
+      <span>🪙</span>
+      <span>+30 coins tilføjet til din profil</span>
+    </div>
+    <div class="v-actions">
+      <button class="v-btn primary" id="launchBtn">
+        Fortsæt til Del C2
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>
+      <a class="v-btn ghost" href="platform.html">Til platformen</a>
+    </div>
+  </div>
+</section>
+
+<!-- ROCKET -->
+<section class="rocket-stage" id="rocketStage">
+  <div class="rocket-stars"></div>
+  <div class="rocket">
+    🚀
+    <div class="rocket-flame"></div>
+  </div>
+  <div class="rocket-msg">
+    <h2 class="rocket-msg-title">På vej til Del C2</h2>
+    <p class="rocket-msg-sub">Emails og professionel kommunikation venter</p>
+  </div>
+</section>
+
+<!-- FAIL -->
+<section class="fail" id="fail">
+  <div class="fail-inner">
+    <div class="fail-icon">⚡</div>
+    <h2>Næsten i mål</h2>
+    <p>Du mangler lige et par rigtige svar for at gå videre. Læs C1 igen og prøv quizzen igen — der er ingen begrænsning på forsøg.</p>
+    <div class="fail-stats">
+      <div>
+        <div class="fail-stat-num" id="failScore">0</div>
+        <div class="fail-stat-lbl">Rigtige</div>
+      </div>
+      <div>
+        <div class="fail-stat-num">6/7</div>
+        <div class="fail-stat-lbl">Kræves</div>
+      </div>
+    </div>
+    <div class="fail-actions">
+      <button class="v-btn primary" id="retryBtn">Prøv igen</button>
+      <a class="v-btn ghost" href="kursus-c1.html">Tilbage til C1</a>
+    </div>
+  </div>
+</section>
+
+<!-- ALREADY -->
+<div class="already-banner" id="alreadyBanner" style="display:none;">
+  <div class="already-card">
+    <div class="already-icon">✓</div>
+    <h2>Du har allerede bestået</h2>
+    <p>Mini-quiz C1 er gennemført. Du kan gå videre til Del C2 — eller tage quizzen igen for sjov uden at få coins igen.</p>
+    <div class="already-actions">
+      <a class="v-btn primary" href="kursus-c2.html" style="background:linear-gradient(135deg,var(--c1),var(--c1-light));color:#fff;">Fortsæt til C2</a>
+      <button class="v-btn ghost" id="retakeBtn" style="background:var(--bg);color:var(--ink-2);border:1px solid var(--border);">Tag quiz igen</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div class="login-prompt" id="loginPrompt" style="display:none;">
+  <div class="login-card">
+    <div class="login-icon">🔐</div>
+    <h2>Log ind for at tage quizzen</h2>
+    <p>Du skal være logget ind på LearnAI for at gemme dit resultat og få coins.</p>
+    <a class="v-btn primary" href="platform.html" style="background:linear-gradient(135deg,var(--c1),var(--c1-light));color:#fff;">Gå til log ind</a>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion, increment }
+  from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d"
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+// ============================================================
+// SPØRGSMÅLSPULJE — 7 svære spørgsmål
+// Korrekte svar (før shuffle): B, C, D, B, A, C, A
+// Distribution: A=2 B=2 C=2 D=1 (svarmuligheder shuffles desuden)
+// ============================================================
+const RAW_QUESTIONS = [
   {
-    // Rigtigt: A (index 0)
-    q: "Du bruger AI mandag til at researche et emne. Tirsdag åbner du en ny samtale og spørger AI om hvad I talte om. AI svarer at den ikke ved det. Hvad skyldes det?",
+    q: "Du arbejder på tre projekter i Claude: en rapport, en madplan og en jobansøgning. Hvordan struktureres samtalerne bedst?",
     options: [
-      "Hver ny samtale starter med et tomt kontekstvindue — AI har ingen adgang til tidligere sessioner",
-      "AI sletter samtaler efter 24 timer af sikkerhedshensyn",
-      "Du skal opgradere til en betalt konto for at få samtalehukommelse",
-      "AI husker kun samtaler hvis du er logget ind med samme konto"
+      { t: "Hold alt i én lang samtale så AI får mest mulig kontekst om dig som person", correct: false },
+      { t: "Brug en separat samtale til hvert projekt så konteksten forbliver fokuseret", correct: true  },
+      { t: "Skift samtale dagligt og start altid forfra hver morgen med nye chats",       correct: false },
+      { t: "Saml alle projekter i én samtale men brug overskrifter til at skille dem ad", correct: false }
     ],
-    correct: 0,
-    explanation: "Kontekstvinduet er kun aktivt i den igangværende samtale. Lukker du den og starter en ny, begynder AI helt forfra — uanset konto eller abonnement."
+    explain: "Kontekstvinduet er fokuseret hukommelse, ikke et arkiv. Når flere emner blandes, trækker AI på irrelevant kontekst og kvaliteten falder. Én samtale per projekt holder hver enkelt skarp."
   },
   {
-    // Rigtigt: C (index 2)
-    q: "En kollega siger: 'AI hallucination sker fordi modellen ikke gider tjekke sine kilder.' Hvad er problemet med den forklaring?",
+    q: "Du stiller AI det samme spørgsmål to gange og får to forskellige svar. Hvad er den mest sandsynlige forklaring?",
     options: [
-      "Den er korrekt — modellen er designet til at spare tid ved at springe kildekontrol over",
-      "Hallucination skyldes lav temperature, ikke manglende kildekontrol",
-      "AI har ingen adgang til kilder overhovedet, så den kan ikke 'gide' eller 'ikke gide'",
-      "Forklaringen er præcis nok til praksis, selv om den er teknisk upræcis"
+      { t: "AI har lært nyt mellem de to forsøg og opdateret sin viden om emnet",        correct: false },
+      { t: "Et af svarene er forkert, AI giver kun ét rigtigt svar per spørgsmål",       correct: false },
+      { t: "AI varierer sine svar med en indstilling der hedder temperature",            correct: true  },
+      { t: "Du har formentlig formuleret de to spørgsmål en smule forskelligt",          correct: false }
     ],
-    correct: 2,
-    explanation: "AI 'tjekker' ikke kilder — den genererer sandsynlige svar baseret på mønstre i træningsdata. Der er ingen bevidst valg om at springe noget over. Hallucination opstår fordi modellen producerer plausibel tekst, ikke verificeret fakta."
+    explain: "Temperature er kreativitetsknappen — den styrer hvor varieret AI svarer. Claude og ChatGPT justerer den automatisk, så samme spørgsmål kan give to forskellige men begge gyldige svar."
   },
   {
-    // Rigtigt: D (index 3)
-    q: "Du vil have AI til at skrive et jobopslag i en bestemt tone. Du prøver: 'Skriv et jobopslag til en marketingmedarbejder.' Svaret er for generisk. Hvad er det mest effektive næste skridt?",
+    q: "Hvilken af disse fire prompts er det stærkeste rolleprompt?",
     options: [
-      "Starte en ny samtale og skrive prompten på engelsk i stedet",
-      "Bede AI om at prøve igen med højere kreativitet",
-      "Skrive en meget længere prompt med alle detaljer på én gang",
-      "Tilføje en rolleprompt: 'Du er HR-chef i et kreativt bureau' og beskrive kulturen"
+      { t: "Forklar økonomi som om jeg var en gymnasieelev der lige er startet på det",  correct: false },
+      { t: "Du er ekspert i økonomi, forklar mig venligst hvad inflation betyder",       correct: false },
+      { t: "Skriv en forklaring på inflation som en lærer ville gøre det for en elev",   correct: false },
+      { t: "Du er økonom. Forklar inflation til en gymnasieelev. Brug ét hverdagseksempel", correct: true  }
     ],
-    correct: 3,
-    explanation: "Rolleprompt giver AI kontekst og perspektiv — den ved nu hvem den skriver som og til hvem. Én ekstra sætning med rolle og kultur slår en lang upersonlig prompt."
+    explain: "Et stærkt rolleprompt har tre ting: rolle, opgave og kontekst/begrænsning. Her er alle tre med — rolle (\"Du er økonom\"), opgave (\"Forklar inflation\") og begrænsning (\"gymnasieelev — ét hverdagseksempel\")."
   },
   {
-    // Rigtigt: A (index 0)
-    q: "Hvornår er kædetænkning ('tænk skridt for skridt') MINDST nyttig?",
+    q: "I hvilken situation giver \"Tænk skridt for skridt\" mindst ekstra værdi?",
     options: [
-      "Når du beder AI skrive en kort velkomsttekst til en hjemmeside",
-      "Når du beder AI analysere et komplekst argument",
-      "Når du beder AI om at løse en matematikopgave med flere trin",
-      "Når du beder AI vurdere fordele og ulemper ved en beslutning"
+      { t: "Når AI skal regne et regnestykke med flere mellemtrin og udregne byttepenge", correct: false },
+      { t: "Når du beder AI om at oversætte en enkelt sætning fra dansk til engelsk",    correct: true  },
+      { t: "Når AI skal vurdere et juridisk argument der spænder over flere paragraffer", correct: false },
+      { t: "Når AI skal analysere fordele og ulemper ved en større forretningsbeslutning", correct: false }
     ],
-    correct: 0,
-    explanation: "Kædetænkning hjælper ved komplekse, logiske opgaver. En kort velkomsttekst kræver ikke trinvis ræsonnement — her kan teknikken faktisk gøre svaret omstændeligt og overkompliceret."
+    explain: "Kædetænkning hjælper når der er flere mellemtrin der kan gå galt. En direkte oversættelse har ingen mellemtrin — så bliver det bare ekstra støj. Brug det hvor logikken er flerstrenget."
   },
   {
-    // Rigtigt: D (index 3)
-    q: "Du spørger AI om prisen på en bestemt bil fra 2024. AI svarer præcist og selvsikkert. Hvad bør du gøre?",
+    q: "Du har bedt AI skrive en LinkedIn-bio og fået et svar fyldt med floskler. Hvilken opfølgning er bedst?",
     options: [
-      "Stole på det — priser er faktuelle og AI er præcis med tal",
-      "Bede AI om at bruge kædetænkning for at bekræfte svaret",
-      "Spørge igen i en ny samtale for at få et second opinion",
-      "Tjekke det eksternt — priser ændrer sig og AI's viden har en skæringsdato"
+      { t: "Skriv om — undgå buzzwords som \"passioneret\" og generiske sætninger",       correct: true  },
+      { t: "Skriv en LinkedIn-bio der er rigtig god og virker professionel for mig",     correct: false },
+      { t: "Prøv igen og gør det meget bedre denne gang, det forrige var ikke godt",     correct: false },
+      { t: "Lav en ny version der er mere unik og skiller sig ud fra mængden",           correct: false }
     ],
-    correct: 3,
-    explanation: "AI's træningsdata har en skæringsdato, og priser ændrer sig løbende. Selvsikkerhed i svaret er ingen garanti — faktatjek er særlig vigtigt ved priser, love og datoer."
+    explain: "Negativ afgrænsning eliminerer de generiske standardsvar AI falder tilbage på. \"Bedre\" og \"mere unikt\" siger ingenting til AI — at navngive de specifikke ord du vil undgå, gør forskellen."
   },
   {
-    // Rigtigt: B (index 1)
-    q: "Du har bedt AI skrive en email. Den er god, men bruger udtrykket 'Jeg håber denne email finder dig vel' som du hader. I din næste besked skriver du: 'Fjern den indledning.' AI retter det. Hvilken teknik brugte du?",
+    q: "Du har skrevet ét langt prompt med alle dine krav, men resultatet rammer ikke. Hvad er bedst?",
     options: [
-      "Rolleprompt — du gav AI en ny identitet",
-      "Negativ afgrænsning kombineret med iterativ forfining",
-      "Kædetænkning — du bad AI ræsonnere trin for trin",
-      "Få-skuds prompting — du viste AI et eksempel"
+      { t: "Skriv et endnu mere detaljeret prompt og start en helt ny samtale med det",  correct: false },
+      { t: "Skift til en anden AI-model og send dit oprindelige prompt igen der",        correct: false },
+      { t: "Bliv i samme samtale og bed om én konkret ændring ad gangen til resultatet", correct: true  },
+      { t: "Skriv prompt'et om i en anden formulering og prøv et tredje forsøg derefter", correct: false }
     ],
-    correct: 1,
-    explanation: "Du brugte iterativ forfining (du byggede videre i samme samtale) og negativ afgrænsning (du specificerede hvad AI skal undgå). De to teknikker arbejder godt sammen."
+    explain: "Iterativ forfining er kernen i C1: de bedste resultater kommer fra dialog, ikke fra det perfekte enkeltprompt. Bliv i samme samtale så AI husker konteksten, og guid det trinvist mod det du vil have."
+  },
+  {
+    q: "Du bruger AI til research om en specifik dansk lovparagraf til dit arbejde. Hvilken kombination er rigtig?",
+    options: [
+      { t: "Bed om kilder, verificér paragraffen selv, og del kun offentlig information", correct: true  },
+      { t: "Stol på svaret hvis AI lyder selvsikker og citerer et konkret paragrafnummer", correct: false },
+      { t: "Indtast hele lovteksten og bed AI om at finde det relevante afsnit hurtigt",  correct: false },
+      { t: "Spørg AI om den er sikker, og hvis ja, brug svaret uden yderligere kontrol",  correct: false }
+    ],
+    explain: "Lovparagraffer er præcis hvor AI hallucinerer — specifikke numre og citater. Reglen er trippel: bed om kilder, verificér selv, og del aldrig fortrolig info med AI uden arbejdsgivers godkendelse."
   }
 ];
 
-const PASS_SCORE = 5;
-let current = 0;
-let score    = 0;
-let answered = false;
-
-function render() {
-  const q = questions[current];
-  document.getElementById('q-number').textContent = `Spørgsmål ${current + 1}`;
-  document.getElementById('q-text').textContent   = q.q;
-  document.getElementById('prog-label').textContent = `Spørgsmål ${current + 1} af ${questions.length}`;
-  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
-  updateScoreLabel();
-
-  const optEl = document.getElementById('options');
-  optEl.innerHTML = '';
-  const letters = ['A','B','C','D'];
-  q.options.forEach((opt, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'option-btn';
-    btn.innerHTML = `<span class="option-letter">${letters[i]}</span><span>${opt}</span>`;
-    btn.onclick = () => selectAnswer(i);
-    optEl.appendChild(btn);
-  });
-
-  // reset feedback + next
-  const fb = document.getElementById('feedback');
-  fb.className = 'feedback';
-  document.getElementById('btn-next').className = 'btn-next';
-  answered = false;
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+function buildQuestions() {
+  return shuffle(RAW_QUESTIONS).map(q => ({
+    q: q.q,
+    options: shuffle(q.options),
+    explain: q.explain
+  }));
 }
 
-function updateScoreLabel() {
-  document.getElementById('prog-score').textContent =
-    score === 1 ? '1 rigtig' : `${score} rigtige`;
+const STATE = {
+  user: null, userData: null,
+  questions: [], current: 0, correct: 0,
+  answered: false, results: [],
+  alreadyPassed: false
+};
+const PASS_THRESHOLD = 6;
+const TOTAL_Q = 7;
+const COURSE_KEY = 'quiz-c1';
+const COINS_REWARD = 30;
+
+onAuthStateChanged(auth, async (user) => {
+  const loader = document.getElementById('loader');
+  if (!user) {
+    loader.classList.add('gone');
+    document.getElementById('intro').style.display = 'none';
+    document.getElementById('loginPrompt').style.display = 'grid';
+    return;
+  }
+  STATE.user = user;
+  try {
+    const userRef = doc(db, 'users', user.uid);
+    const snap = await getDoc(userRef);
+    if (snap.exists()) {
+      STATE.userData = snap.data();
+      const completed = STATE.userData.completedCourses || [];
+      if (completed.includes(COURSE_KEY)) {
+        STATE.alreadyPassed = true;
+        loader.classList.add('gone');
+        document.getElementById('intro').style.display = 'none';
+        document.getElementById('alreadyBanner').style.display = 'grid';
+        return;
+      }
+    }
+  } catch (e) { console.warn('Kunne ikke hente bruger:', e); }
+  loader.classList.add('gone');
+});
+
+document.getElementById('retakeBtn').addEventListener('click', () => {
+  document.getElementById('alreadyBanner').style.display = 'none';
+  document.getElementById('intro').style.display = 'grid';
+});
+
+document.getElementById('startBtn').addEventListener('click', startQuiz);
+
+function startQuiz() {
+  STATE.questions = buildQuestions();
+  STATE.current = 0;
+  STATE.correct = 0;
+  STATE.results = [];
+  STATE.answered = false;
+
+  const intro = document.getElementById('intro');
+  intro.classList.add('hidden');
+  setTimeout(() => {
+    intro.style.display = 'none';
+    document.getElementById('stage').classList.add('live');
+    renderDots();
+    renderQuestion();
+    updateProgress();
+  }, 500);
 }
 
-function selectAnswer(idx) {
-  if (answered) return;
-  answered = true;
-  const q       = questions[current];
-  const buttons = document.querySelectorAll('.option-btn');
-  const fb      = document.getElementById('feedback');
-  const isRight = idx === q.correct;
-
-  if (isRight) score++;
-
-  buttons.forEach((btn, i) => {
-    btn.disabled = true;
-    if (i === q.correct) btn.classList.add('correct');
-    else if (i === idx && !isRight) btn.classList.add('wrong');
-    else btn.classList.add('dimmed');
-  });
-
-  fb.className = `feedback show ${isRight ? 'correct-fb' : 'wrong-fb'}`;
-  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
-  document.getElementById('fb-text').textContent = q.explanation;
-
-  const nextBtn = document.getElementById('btn-next');
-  const isLast  = current === questions.length - 1;
-  nextBtn.className = 'btn-next show';
-  nextBtn.innerHTML = isLast
-    ? 'Se resultat <span>→</span>'
-    : 'Næste spørgsmål <span>→</span>';
-
-  updateScoreLabel();
-}
-
-function nextQuestion() {
-  current++;
-  if (current >= questions.length) {
-    showResult();
-  } else {
-    render();
+function renderDots() {
+  const dotsEl = document.getElementById('dots');
+  dotsEl.innerHTML = '';
+  for (let i = 0; i < TOTAL_Q; i++) {
+    const span = document.createElement('span');
+    if (i < STATE.current) {
+      span.classList.add(STATE.results[i] === 'correct' ? 'correct' : 'wrong');
+    } else if (i === STATE.current) {
+      span.classList.add('current');
+    }
+    dotsEl.appendChild(span);
   }
 }
 
-function showResult() {
-  // hide quiz elements
-  document.querySelector('.progress-bar-wrap').style.display = 'none';
-  document.querySelector('.question-wrap').style.display     = 'none';
-  document.querySelector('.options').style.display           = 'none';
-  document.querySelector('.feedback').style.display          = 'none';
-  document.querySelector('.divider').style.display           = 'none';
-  document.querySelector('.next-wrap').style.display         = 'none';
-
-  const passed = score >= PASS_SCORE;
-  document.getElementById('result-icon').textContent  = passed ? '🎉' : '💪';
-  document.getElementById('result-title').textContent = passed ? 'Godt klaret!' : 'Ikke helt endnu';
-  document.getElementById('result-sub').textContent   = passed
-    ? `Du svarede rigtigt på ${score} ud af ${questions.length} spørgsmål — du er klar til Del C2!`
-    : `Du fik ${score} ud af ${questions.length} rigtige. Du skal have mindst ${PASS_SCORE} for at gå videre. Prøv igen!`;
-
-  const badge = document.getElementById('score-badge');
-  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
-  badge.textContent = `${score} / ${questions.length} rigtige`;
-
-  document.getElementById('result-message').innerHTML = passed
-    ? `<strong>Næste skridt:</strong> Du har styr på de grundlæggende begreber fra Del C1 — kontekstvindue, hallucination, rolleprompt, kædetænkning, negativ afgrænsning og iterativ forfining. Nu er du klar til at anvende det i Del C2.`
-    : `<strong>Tip:</strong> Gå tilbage og læs de moduler du var usikker på. Du må gerne bruge kursusmaterialet som hjælp. Der er ingen grænse for antal forsøg — det er meningen at du skal lykkes.`;
-
-  if (passed) document.getElementById('btn-continue').classList.remove('hidden');
-
-  document.getElementById('result-screen').className = 'result-screen show';
+function updateProgress() {
+  const pct = (STATE.current / TOTAL_Q) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('curNum').textContent = Math.min(STATE.current + 1, TOTAL_Q);
+  document.getElementById('curScore').textContent = STATE.correct;
 }
 
-function restartQuiz() {
-  current  = 0;
-  score    = 0;
-  answered = false;
+function renderQuestion() {
+  const stack = document.getElementById('cardStack');
+  const q = STATE.questions[STATE.current];
+  STATE.answered = false;
 
-  document.querySelector('.progress-bar-wrap').style.display = '';
-  document.querySelector('.question-wrap').style.display     = '';
-  document.querySelector('.options').style.display           = '';
-  document.querySelector('.divider').style.display           = '';
-  document.querySelector('.next-wrap').style.display         = '';
-  document.getElementById('result-screen').className = 'result-screen';
-  document.getElementById('btn-continue').classList.add('hidden');
+  const card = document.createElement('div');
+  card.className = 'card enter-right';
+  const letters = ['A','B','C','D'];
 
-  render();
+  card.innerHTML = `
+    <div class="q-tag"><span>Spørgsmål</span> · <span class="num">${STATE.current + 1} af ${TOTAL_Q}</span></div>
+    <h2 class="q-text">${q.q}</h2>
+    <div class="options">
+      ${q.options.map((opt, i) => `
+        <button class="opt" data-idx="${i}">
+          <span class="opt-letter">${letters[i]}</span>
+          <span class="opt-text">${opt.t}</span>
+        </button>
+      `).join('')}
+    </div>
+    <div class="explain" id="explain"></div>
+    <div class="actions">
+      <button class="next-btn" id="nextBtn">
+        <span>${STATE.current === TOTAL_Q - 1 ? 'Se resultat' : 'Næste spørgsmål'}</span>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+      </button>
+    </div>
+  `;
+
+  stack.innerHTML = '';
+  stack.appendChild(card);
+
+  card.querySelectorAll('.opt').forEach(btn => {
+    btn.addEventListener('click', () => handleAnswer(btn, card));
+  });
+  card.querySelector('#nextBtn').addEventListener('click', () => goNext(card));
 }
 
-// init
-render();
+function handleAnswer(btn, card) {
+  if (STATE.answered) return;
+  STATE.answered = true;
+
+  const idx = parseInt(btn.dataset.idx, 10);
+  const q = STATE.questions[STATE.current];
+  const isCorrect = q.options[idx].correct;
+
+  card.querySelectorAll('.opt').forEach((o, i) => {
+    o.classList.add('locked');
+    if (q.options[i].correct) {
+      o.classList.add('correct');
+    } else if (i === idx && !isCorrect) {
+      o.classList.add('wrong');
+    } else if (i !== idx) {
+      o.classList.add('dim');
+    }
+  });
+
+  if (isCorrect) {
+    STATE.correct++;
+    STATE.results.push('correct');
+  } else {
+    STATE.results.push('wrong');
+    card.classList.add('shake');
+    setTimeout(() => card.classList.remove('shake'), 600);
+  }
+
+  const ex = card.querySelector('#explain');
+  ex.innerHTML = `<strong>${isCorrect ? 'Rigtigt.' : 'Forkert.'}</strong> ${q.explain}`;
+  ex.classList.add('show');
+
+  card.querySelector('#nextBtn').classList.add('show');
+  renderDots();
+  document.getElementById('curScore').textContent = STATE.correct;
+}
+
+function goNext(card) {
+  if (STATE.current >= TOTAL_Q - 1) {
+    card.classList.remove('enter-right');
+    card.classList.add('exit-left');
+    setTimeout(() => finishQuiz(), 500);
+    return;
+  }
+  card.classList.remove('enter-right');
+  card.classList.add('exit-left');
+  setTimeout(() => {
+    STATE.current++;
+    updateProgress();
+    renderQuestion();
+  }, 500);
+}
+
+async function finishQuiz() {
+  const passed = STATE.correct >= PASS_THRESHOLD;
+  document.getElementById('stage').classList.remove('live');
+
+  if (passed) {
+    await savePass();
+    const victory = document.getElementById('victory');
+    document.getElementById('vScoreNum').textContent = STATE.correct;
+    victory.classList.add('show');
+    spawnConfetti();
+  } else {
+    const fail = document.getElementById('fail');
+    document.getElementById('failScore').textContent = STATE.correct;
+    fail.classList.add('show');
+  }
+}
+
+async function savePass() {
+  if (!STATE.user) return;
+  try {
+    const userRef = doc(db, 'users', STATE.user.uid);
+    const snap = await getDoc(userRef);
+    if (!snap.exists()) return;
+    const data = snap.data();
+    const completed = data.completedCourses || [];
+    if (completed.includes(COURSE_KEY)) return;
+    await updateDoc(userRef, {
+      completedCourses: arrayUnion(COURSE_KEY),
+      coins: increment(COINS_REWARD)
+    });
+  } catch (e) { console.warn('Kunne ikke gemme resultat:', e); }
+}
+
+function spawnConfetti() {
+  const colors = ['#3B82F6','#60A5FA','#FCD34D','#10B981','#F472B6','#A78BFA'];
+  const wrap = document.createElement('div');
+  wrap.className = 'confetti';
+  for (let i = 0; i < 60; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + 'vw';
+    s.style.background = colors[Math.floor(Math.random() * colors.length)];
+    s.style.animationDelay = (Math.random() * 0.6) + 's';
+    s.style.animationDuration = (2.2 + Math.random() * 1.4) + 's';
+    s.style.transform = `rotate(${Math.random() * 360}deg)`;
+    wrap.appendChild(s);
+  }
+  document.body.appendChild(wrap);
+  setTimeout(() => wrap.remove(), 4000);
+}
+
+document.getElementById('launchBtn').addEventListener('click', () => {
+  document.getElementById('victory').classList.remove('show');
+  const rocket = document.getElementById('rocketStage');
+  rocket.classList.add('show');
+  setTimeout(() => { window.location.href = 'kursus-c2.html'; }, 3200);
+});
+
+document.getElementById('retryBtn').addEventListener('click', () => {
+  document.getElementById('fail').classList.remove('show');
+  startQuiz();
+});
 </script>
 </body>
 </html>
