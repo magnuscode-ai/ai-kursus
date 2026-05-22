@@ -280,8 +280,20 @@
 
   <div class="content">
 
+    <!-- Login Required Box -->
+    <div id="login-box" style="display: none; background: white; border-radius: var(--radius); padding: 2.5rem 2rem; box-shadow: var(--shadow-md); text-align: center; margin-bottom: 2rem; border: 1px solid var(--line);">
+      <div style="font-size: 48px; margin-bottom: 1rem;">🔒</div>
+      <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Georgia', serif;">Log ind for at tage eksamen</h2>
+      <p style="color: var(--ink-soft); margin-bottom: 1.5rem; font-size: 15px;">Du skal være logget ind på LearnAI-platformen for at kunne besvare spørgsmålene og modtage dit certifikat.</p>
+      
+      <form id="exam-login-form" onsubmit="handleExamLogin(event)" style="max-width: 400px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px;">
+        <input type="email" id="exam-login-email" placeholder="Indtast din e-mailadresse" required style="width: 100%; padding: 12px; border-radius: var(--radius-sm); border: 1px solid #cbd5e1; font-size: 15px; text-align: center; margin: 0;">
+        <button type="submit" class="btn-nav btn-next" style="width: 100%; display: inline-flex; justify-content: center; font-size: 15px; background: var(--brown-deep); color: white; border: none; cursor: pointer;">Log ind og start eksamen ⚡</button>
+      </form>
+    </div>
+
     <!-- Progress Card -->
-    <div class="progress-card">
+    <div class="progress-card" id="prog-card">
       <div class="progress-header">
         <span>FREMGANG</span>
         <span id="progress-text">0/15</span>
@@ -300,10 +312,12 @@
     <div class="question-card" id="question-area"></div>
 
     <!-- Navigation -->
-    <div class="nav-box">
+    <div class="nav-box" id="quiz-nav-box">
       <button class="btn-nav btn-prev" id="quiz-prev-btn" onclick="prevQuestion()" style="display:none;">← Forrige</button>
       <button class="btn-nav btn-next" id="quiz-next-btn" onclick="nextQuestion()">Næste →</button>
     </div>
+
+    <div id="exam-results" style="display: none; margin-top: 2rem; text-align: center; background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-md);"></div>
 
     <!-- Praktisk Opgave -->
     <div id="practical-section" style="display: none; margin-top: 3rem;">
@@ -311,15 +325,13 @@
         <div class="hero-label" style="background: #8b5a2b; color: white;">Del 2</div>
         <h3 style="margin: 0.5rem 0; font-size: 24px; font-weight: 800;">Praktisk Opgave 🛠</h3>
         <p>Du har besvaret de 15 spørgsmål. Nu skal du løse den praktiske opgave. En AI vil bagefter vurdere dit svar!</p>
-        <p><strong>Opgave:</strong> Skriv et professionelt prompt, der får en AI til at agere som en <strong>kritisk forretningskonsulent</strong> for en ny webshop, der sælger bæredygtigt tøj til børn. Promptet skal tvinge AI'en til at finde mindst 3 svagheder i idéen.</p>
+        <p><strong>Opgave:</strong> Skriv et professionelt prompt, der får en AI to agere som en <strong>kritisk forretningskonsulent</strong> for en ny webshop, der sælger bæredygtigt tøj til børn. Promptet skal tvinge AI'en til at finde mindst 3 svagheder i idéen.</p>
         
         <textarea id="practical-prompt" placeholder="Skriv dit prompt her..." oninput="savePractical()"></textarea>
         
         <button class="btn-nav btn-submit" style="width:100%;" onclick="submitExam()">Aflever Eksamen</button>
       </div>
     </div>
-
-    <div id="exam-results" style="display: none; margin-top: 2rem; text-align: center; background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-md);"></div>
 
   </div>
 
@@ -344,9 +356,44 @@
     ];
 
     let currentQuestion = 0;
-    let savedAnswers = localStorage.getItem('userAnswers_v4');
+    
+    // Auth Check
+    const user = JSON.parse(localStorage.getItem('learnai_user'));
+    const isLoggedIn = user && user.loggedIn;
+    
+    let savedAnswers = isLoggedIn ? localStorage.getItem('userAnswers_v4') : null;
     let userAnswers = savedAnswers ? JSON.parse(savedAnswers) : new Array(15).fill(null);
-    let savedPrompt = localStorage.getItem('practicalPrompt_v4');
+    let savedPrompt = isLoggedIn ? localStorage.getItem('practicalPrompt_v4') : null;
+
+    function handleExamLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('exam-login-email').value.trim();
+      if (email) {
+        localStorage.setItem('learnai_user', JSON.stringify({ email, loggedIn: true }));
+        location.reload();
+      }
+    }
+
+    function initPage() {
+      if (!isLoggedIn) {
+        document.getElementById('login-box').style.display = 'block';
+        document.getElementById('prog-card').style.display = 'none';
+        document.getElementById('question-area').style.display = 'none';
+        document.getElementById('quiz-prev-btn').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+      } else {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('prog-card').style.display = 'block';
+        document.getElementById('question-area').style.display = 'block';
+        
+        // Hvis brugeren allerede har svaret på alle 15 spørgsmål tidligere, tjek score
+        if (!userAnswers.includes(null)) {
+          checkPart1(true); // silent check uden at rulle skærmen med det samme
+        } else {
+          renderQuestion();
+        }
+      }
+    }
 
     function renderQuestion() {
       const container = document.getElementById('question-area');
@@ -382,12 +429,16 @@
       document.getElementById('quiz-prev-btn').style.display = currentQuestion === 0 ? 'none' : 'block';
       
       const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.style.display = 'block';
       if (currentQuestion === questions.length - 1) {
-        nextBtn.textContent = "Videre til Del 2 →";
+        nextBtn.textContent = "Afslut Del 1 & Tjek Score →";
         nextBtn.style.background = "#8b5a2b";
         nextBtn.onclick = () => { 
-          document.getElementById('practical-section').style.display = 'block'; 
-          window.scrollTo({ top: document.getElementById('practical-section').offsetTop, behavior: 'smooth' }); 
+          if (userAnswers.includes(null)) {
+            alert("Du skal besvare alle 15 spørgsmål, før du kan tjekke dit resultat!");
+            return;
+          }
+          checkPart1(false);
         };
       } else {
         nextBtn.textContent = "Næste →";
@@ -399,7 +450,9 @@
     function selectOption(index) {
       if (userAnswers[currentQuestion] !== null) return;
       userAnswers[currentQuestion] = index;
-      localStorage.setItem('userAnswers_v4', JSON.stringify(userAnswers));
+      if (isLoggedIn) {
+        localStorage.setItem('userAnswers_v4', JSON.stringify(userAnswers));
+      }
       renderQuestion();
     }
 
@@ -423,7 +476,9 @@
 
     function savePractical() {
       const text = document.getElementById('practical-prompt').value;
-      localStorage.setItem('practicalPrompt_v4', text);
+      if (isLoggedIn) {
+        localStorage.setItem('practicalPrompt_v4', text);
+      }
     }
 
     function nextQuestion() {
@@ -440,11 +495,70 @@
       }
     }
 
+    function checkPart1(silent) {
+      const score = userAnswers.reduce((acc, ans, i) => acc + (ans === questions[i].correct ? 1 : 0), 0);
+      const resultsDiv = document.getElementById('exam-results');
+      resultsDiv.style.display = 'block';
+      
+      if (score >= 12) {
+        resultsDiv.innerHTML = `
+          <div style="background: #dcfce7; color: #065f46; padding: 1.5rem; border-radius: 10px; border: 1px solid #bbf7d0; text-align: left; margin-bottom: 1.5rem;">
+            <div style="font-weight:700; font-size:18px;">Del 1 Bestået! 🎉</div>
+            <p style="margin-top:0.5rem;">Du svarede rigtigt på <strong>${score} ud af 15</strong> spørgsmål. Du kan nu udfylde den praktiske opgave i Del 2 nedenfor for at færdiggøre din eksamen.</p>
+          </div>
+        `;
+        document.getElementById('practical-section').style.display = 'block';
+        document.getElementById('quiz-prev-btn').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        
+        if (!silent) {
+          setTimeout(() => {
+            window.scrollTo({ top: document.getElementById('practical-section').offsetTop - 100, behavior: 'smooth' });
+          }, 150);
+        }
+      } else {
+        resultsDiv.innerHTML = `
+          <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; border: 1px solid #fca5a5; text-align: left; margin-bottom: 1.5rem;">
+            <div style="font-weight:700; font-size:18px;">Eksamen ikke bestået ❌</div>
+            <p style="margin-top:0.5rem;">Du fik <strong>${score} ud af 15</strong> rigtige. Du skal have mindst <strong>12 rigtige</strong> for at låse op for den praktiske opgave.</p>
+            <button onclick="resetExam()" class="btn-nav btn-next" style="margin-top: 1rem; background: #991b1b; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; color: white;">Prøv igen 🔁</button>
+          </div>
+        `;
+        document.getElementById('practical-section').style.display = 'none';
+        document.getElementById('quiz-prev-btn').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        
+        if (!silent) {
+          setTimeout(() => {
+            window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
+          }, 150);
+        }
+      }
+    }
+
+    function resetExam() {
+      currentQuestion = 0;
+      userAnswers = new Array(15).fill(null);
+      if (isLoggedIn) {
+        localStorage.removeItem('userAnswers_v4');
+        localStorage.removeItem('practicalPrompt_v4');
+      }
+      
+      document.getElementById('practical-section').style.display = 'none';
+      document.getElementById('exam-results').style.display = 'none';
+      document.getElementById('exam-results').innerHTML = '';
+      document.getElementById('practical-prompt').value = '';
+      
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function submitExam() {
       const practicalText = document.getElementById('practical-prompt').value.trim();
       const resultsDiv = document.getElementById('exam-results');
       resultsDiv.style.display = 'block';
       resultsDiv.innerHTML = `<p style="font-weight:700; color:var(--brown-deep);">AI analyserer dit prompt... ⏳</p>`;
+      window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
       
       setTimeout(() => {
         const score = userAnswers.reduce((acc, ans, i) => acc + (ans === questions[i].correct ? 1 : 0), 0);
@@ -466,32 +580,36 @@
           aiFeedback = "Fremragende! Du har givet AI'en en klar rolle (kritisk forretningskonsulent), nævnt den specifikke case og bedt om konkret modspil vedrørende svagheder. Dette vil give dig et yderst værdifuldt output!";
         }
         
-        let resultHTML = `<h3 style="font-size:24px; font-weight:800; margin-bottom:1rem;">Resultat af Eksamen</h3>`;
-        resultHTML += `<p style="font-size: 18px; font-weight: 700;">Score på spørgsmål: ${score} ud af 15</p>`;
+        let resultHTML = `<h3 style="font-size:24px; font-weight:800; margin-bottom:1rem; text-align: center;">Resultat af Eksamen</h3>`;
+        resultHTML += `<p style="font-size: 18px; font-weight: 700; text-align: center;">Score på spørgsmål: ${score} ud af 15</p>`;
         resultHTML += `<div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border: 1px solid #cbd5e1; text-align:left;"><strong>AI Vurdering:</strong> <br>${aiFeedback}</div>`;
         
         if (score >= 12 && passedAI) {
           resultHTML += `
-            <div style="background: #dcfce7; color: #065f46; padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
-              <div style="font-weight:700; font-size:18px;">Tillykke! Du har bestået det fulde kursus.</div>
+            <div style="background: #dcfce7; color: #065f46; padding: 1.5rem; border-radius: 10px; margin-top: 1rem; border: 1px solid #bbf7d0; text-align: left;">
+              <div style="font-weight:700; font-size:18px;">Tillykke! Du har bestået det fulde kursus. 🎉</div>
               <p style="margin-top:0.5rem;">Du har opnået det officielle certifikat for AI til Iværksættere.</p>
               <p><strong>Din beståelseskode:</strong> AI-ENT-BRONZE-2026</p>
+              <button onclick="resetExam()" class="btn-nav btn-next" style="margin-top: 1.5rem; background: var(--brown-deep); border: none; cursor: pointer; color: white;">Tag testen igen 🔁</button>
             </div>
           `;
-          localStorage.removeItem('userAnswers_v4');
-          localStorage.removeItem('practicalPrompt_v4');
+          if (isLoggedIn) {
+            localStorage.removeItem('userAnswers_v4');
+            localStorage.removeItem('practicalPrompt_v4');
+          }
         } else {
           resultHTML += `
-            <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; margin-top: 1rem;">
-              <div style="font-weight:700; font-size:18px;">Ikke bestået endnu</div>
+            <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; margin-top: 1rem; border: 1px solid #fca5a5; text-align: left;">
+              <div style="font-weight:700; font-size:18px;">Ikke bestået endnu ❌</div>
               <p style="margin-top:0.5rem;">Du skal have mindst 12 rigtige og bestå AI-vurderingen af din opgave for at få dit certifikat.</p>
-              <p>Du kan rette i dit prompt ovenfor og trykke "Aflever" igen, eller tage testen om.</p>
+              <p>Du kan rette i dit prompt ovenfor og trykke "Aflever" igen, eller tage hele testen om.</p>
+              <button onclick="resetExam()" class="btn-nav btn-next" style="margin-top: 1.5rem; background: #991b1b; border: none; cursor: pointer; color: white;">Tag testen om 🔁</button>
             </div>
           `;
         }
         
         resultsDiv.innerHTML = resultHTML;
-        window.scrollTo({ top: resultsDiv.offsetTop, behavior: 'smooth' });
+        window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
       }, 2000);
     }
 
@@ -500,7 +618,7 @@
         document.getElementById('practical-prompt').value = savedPrompt;
       }, 100);
     }
-    renderQuestion();
+    initPage();
   </script>
 </body>
 </html>
