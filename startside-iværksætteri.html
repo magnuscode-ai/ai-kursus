@@ -3,85 +3,569 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LearnAI — AI som din digitale medstifter</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  <title>Sidekursus: AI for Iværksættere | LearnAI DK</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --blue-deep:   #060d1a;
-      --blue-glow:   #1a3a6e;
-      --blue-accent: #60a5fa;
-      --text:        #eff6ff;
-      --text-soft:   rgba(239,246,255,0.72);
-      --text-muted:  rgba(239,246,255,0.45);
+      --bg-warm:      #0f0905;
+      --bg-soft:      #160c06;
+      --ink:          #fef3c7;
+      --ink-soft:     #e8d5b0;
+      --muted:        #a08060;
+      --border:       #3d2010;
+      --bg:           #1a0f08;
+      --white:        #1f1208;
+      --primary:      #d97706;
+      --primary-soft: #78350f;
+      --indigo:       #d97706;
+      --indigo-deep:  #1a0a03;
+      --indigo-50:    #2a1505;
+      --indigo-100:   #3d1f0a;
+      --indigo-200:   #5c2d0a;
+      --indigo-glow:  rgba(217,119,6,0.15);
+      --accent-orange: #d97706;
+      --orange-50:     #1f1208;
+      --orange-100:    #2a1505;
+      --orange-glow:   rgba(217,119,6,0.15);
+      --amber:        #d97706;
+      --amber-100:    #2a1505;
+      --green:        #059669;
+      --green-50:     #022c22;
+      --red:          #DC2626;
+      --red-50:       #2d0a0a;
+      --teal:         #0D9488;
+      --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px;
     }
-    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--blue-deep); color: var(--text); overflow-x: hidden; }
-    body { animation: fadeIn 0.6s ease forwards; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-    .page-out { animation: fadeOut 0.5s ease forwards !important; }
-    @keyframes fadeOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-12px) scale(0.98); } }
-    .bg-blobs { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
-    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
-    .blob-1 { width: 650px; height: 650px; background: radial-gradient(circle, #1e40af 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: blobFloat 9s ease-in-out infinite; }
-    .blob-2 { width: 380px; height: 380px; background: radial-gradient(circle, #1e3a8a 0%, transparent 70%); top: -80px; right: -40px; opacity: 0.5; }
-    .blob-3 { width: 280px; height: 280px; background: radial-gradient(circle, #0c1a3a 0%, transparent 70%); bottom: 40px; left: -60px; opacity: 0.6; }
-    @keyframes blobFloat { 0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0); } 50% { transform: translate(-50%, -50%) scale(1.07) translateY(-20px); } }
-    .grid-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.04; background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 40px 40px; }
-    .landing { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-    .top-nav { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; }
-    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 700; font-size: 15px; }
-    .nav-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--blue-glow); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(96,165,250,0.3); }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg-warm); color: var(--ink); line-height: 1.6; }
+
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      height: 58px; background: rgba(15,9,5,0.95);
+      backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-orange); display: flex; align-items: center; justify-content: center; }
     .nav-mark svg { width: 15px; height: 15px; fill: white; }
-    .nav-pill { font-size: 12px; font-weight: 600; color: var(--blue-accent); background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); padding: 5px 14px; border-radius: 999px; }
-    .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 24px 80px; max-width: 700px; margin: 0 auto; width: 100%; }
-    .badge { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, var(--blue-glow), #0f2252); color: var(--text); font-size: 20px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 28px; box-shadow: 0 0 0 1px rgba(96,165,250,0.25), 0 0 40px rgba(30,64,175,0.6), 0 0 80px rgba(30,64,175,0.3); }
-    .eyebrow { font-size: 11.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
-    .title { font-family: 'Playfair Display', serif; font-size: clamp(30px, 5.5vw, 52px); font-weight: 700; line-height: 1.15; color: var(--text); letter-spacing: -0.3px; margin-bottom: 20px; }
-    .title em { font-style: italic; color: var(--blue-accent); }
-    .subtitle { font-size: clamp(14px, 2vw, 16px); color: var(--text-soft); line-height: 1.75; margin-bottom: 40px; max-width: 540px; }
-    .start-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.95); color: var(--blue-deep); font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 30px; border-radius: 999px; text-decoration: none; transition: background 0.18s, transform 0.18s, box-shadow 0.18s; box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
-    .start-btn:hover { background: #ffffff; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
-    .start-btn svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: var(--blue-deep); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-    @media (max-width: 480px) { .top-nav { padding: 16px 20px; } .badge { width: 54px; height: 54px; font-size: 17px; } }
+    .nav-tag { font-size: 12px; font-weight: 600; color: var(--accent-orange); background: var(--orange-50); border: 1px solid var(--border); padding: 4px 12px; border-radius: 999px; }
+
+    .journey { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; padding: 0 28px; }
+    .journey::-webkit-scrollbar { display: none; }
+    .journey-track { display: flex; align-items: stretch; min-width: max-content; justify-content: center; margin: 0 auto; }
+    .j-item { display: flex; align-items: center; gap: 7px; padding: 13px 14px; font-size: 12px; font-weight: 600; color: #7c6040; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; white-space: nowrap; }
+    .j-item.active { color: var(--accent-orange); border-bottom-color: var(--accent-orange); }
+    .j-item.done   { color: var(--green); border-bottom-color: var(--green); }
+    .j-dot { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; background: #2a1a0a; color: #7c6040; transition: background .2s, color .2s; }
+    .j-item.active .j-dot { background: var(--accent-orange); color: white; }
+    .j-item.done   .j-dot { background: var(--green); color: white; }
+    .j-sep { color: #5c3a1a; font-size: 14px; align-self: center; }
+
+    .hero { background: var(--indigo-deep); padding: 52px 28px 44px; position: relative; overflow: hidden; }
+    .hero-grid { position: absolute; inset: 0; opacity: .045; background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-blob { position: absolute; width: 420px; height: 420px; background: radial-gradient(circle, rgba(217,119,6,.30) 0%, transparent 70%); top: -140px; right: -60px; border-radius: 50%; animation: blobFloat 8s ease-in-out infinite; }
+    @keyframes blobFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+    .hero-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.85); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 20px; }
+    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: inline-block; }
+    .hero h1 { font-family: 'Lora', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 600; color: white; line-height: 1.18; margin-bottom: 14px; letter-spacing: -.4px; }
+    .hero h1 em { font-style: italic; color: #fcd34d; }
+    .hero-lead { font-size: 15.5px; color: rgba(255,255,255,.72); max-width: 500px; line-height: 1.7; margin-bottom: 28px; }
+    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
+    .hero-pill { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.8); font-size: 13px; padding: 7px 13px; border-radius: var(--r-sm); }
+
+    .wrap { max-width: 740px; margin: 0 auto; padding: 36px 24px 80px; }
+
+    .notice { display: flex; gap: 13px; align-items: flex-start; border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+    .notice-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+    .notice-head { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
+    .notice-body { font-size: 13px; line-height: 1.55; }
+    .notice.warn  { background: #2a1505; border: 1px solid #5c2d0a; }
+    .notice.warn  .notice-head { color: #f59e0b; }
+    .notice.warn  .notice-body { color: #e8d5b0; }
+    .notice.info  { background: #2a1505; border: 1px solid #5c2d0a; }
+    .notice.info  .notice-head { color: #fcd34d; }
+    .notice.info  .notice-body { color: #e8d5b0; }
+
+    .mod { background: #1c1008; border: 1px solid #4a2010; border-left: 4px solid #78350f; border-radius: var(--r-xl); margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.3); transition: box-shadow .25s, border-color .25s, border-left-color .25s; }
+    .mod:hover { box-shadow: 0 4px 20px rgba(217,119,6,.13); border-left-color: var(--accent-orange); }
+    .mod.open { border-color: #5c2d0a; border-left-color: var(--accent-orange); box-shadow: 0 6px 28px var(--orange-glow); background: #1f1208; }
+    .mod-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; cursor: pointer; transition: background .15s; }
+    .mod-header:hover { background: #2a1505; }
+    .mod.open .mod-header { background: #2a1505; }
+    .mod-num { width: 40px; height: 40px; border-radius: 11px; background: #2a1a0a; color: #7c6040; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; transition: background .2s, color .2s; }
+    .mod.open .mod-num { background: var(--accent-orange); color: white; }
+    .mod-text { flex: 1; }
+    .mod-title { font-size: 15px; font-weight: 700; color: var(--ink); }
+    .mod-sub   { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+    .mod-time  { font-size: 11.5px; font-weight: 600; color: var(--muted); background: #2a1a0a; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod.open .mod-time { background: var(--orange-100); color: #fcd34d; }
+    .mod-arrow { color: #5c3a1a; font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; }
+    .mod.open .mod-arrow { transform: rotate(180deg); color: var(--accent-orange); }
+    .mod-body { display: none; padding: 24px 28px 30px; border-top: 1px solid var(--border); animation: fadeSlide .22s ease; }
+    .mod.open .mod-body { display: block; }
+    @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    .sect-label { display: flex; align-items: center; gap: 12px; margin: 30px 0 16px; }
+    .sect-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .sect-label span { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+    p.prose { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
+    p.prose strong { color: var(--ink); font-weight: 600; }
+
+    .concept-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    @media(max-width:560px){ .concept-row { grid-template-columns: 1fr; } }
+    .cc { border-radius: var(--r); padding: 16px 18px; position: relative; overflow: hidden; }
+    .cc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .cc.blue   { background: #1a1208; border: 1px solid #3d2a10; } .cc.blue::before   { background: #d97706; }
+    .cc.yellow { background: #1f1008; border: 1px solid #4a2010; } .cc.yellow::before { background: var(--accent-orange); }
+    .cc.teal   { background: #0a1a18; border: 1px solid #0d2e2a; } .cc.teal::before   { background: var(--teal); }
+    .cc.wide { grid-column: 1/-1; }
+    .cc-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .cc.blue .cc-title   { color: #fcd34d; }
+    .cc.yellow .cc-title { color: #f59e0b; }
+    .cc.teal .cc-title   { color: #5eead4; }
+    .cc-body { font-size: 13px; line-height: 1.6; }
+    .cc.blue .cc-body   { color: #e8d5b0; }
+    .cc.yellow .cc-body { color: #e8d5b0; }
+    .cc.teal .cc-body   { color: #99f6e4; }
+    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.07); font-size: 12px; font-weight: 600; }
+    .cc.blue .cc-tip   { color: #d97706; }
+    .cc.yellow .cc-tip { color: var(--accent-orange); }
+    .cc.teal .cc-tip   { color: var(--teal); }
+
+    .tech { margin-bottom: 30px; }
+    .tech-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-orange); color: white; font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 11px; }
+    .tech-pill .num { background: rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; font-size: 10px; }
+    h3.tech-h { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+
+    .copy-block { background: #0a0603; border-radius: var(--r); overflow: hidden; margin-bottom: 16px; border: 1px solid #3d2010; }
+    .copy-topbar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.05); }
+    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7c6040; }
+    .copy-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.11); color: #a08060; font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all .18s; }
+    .copy-btn:hover { background: rgba(255,255,255,.14); color: #fef3c7; }
+    .copy-btn.copied { background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); color: #6EE7B7; }
+    .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .copy-text { padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; color: #e8d5b0; white-space: pre-wrap; word-break: break-word; }
+    .copy-text .hl  { color: #fcd34d; }
+    .copy-text .hlg { color: #6EE7B7; }
+    .copy-text .hly { color: #FCD34D; }
+
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+    @media(max-width:500px){ .compare { grid-template-columns: 1fr; } }
+    .cmp { border-radius: var(--r); padding: 14px 16px; }
+    .cmp.bad  { background: #2d0a0a; border: 1px solid #5c1a1a; }
+    .cmp.good { background: #022c22; border: 1px solid #065f46; }
+    .cmp-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 7px; }
+    .cmp.bad  .cmp-label { color: #f87171; }
+    .cmp.good .cmp-label { color: #6ee7b7; }
+    .cmp-text { font-size: 13px; line-height: 1.6; font-style: italic; }
+    .cmp.bad  .cmp-text { color: #fca5a5; }
+    .cmp.good .cmp-text { color: #a7f3d0; }
+
+    .practice { background: #1f1208; border: 1px solid #5c2d0a; border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px; }
+    .practice-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
+    .p-tag { background: var(--accent-orange); color: white; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+    .p-title { font-size: 13.5px; font-weight: 700; color: #fcd34d; }
+    .p-body { font-size: 13px; line-height: 1.7; color: #e8d5b0; }
+    .p-body ol, .p-body ul { padding-left: 1.2rem; margin-top: 7px; }
+    .p-body li { margin-bottom: 4px; }
+    .p-body em { font-style: italic; }
+    .p-body strong { color: #f59e0b; }
+
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a0a03; color: #fef3c7; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,.4); opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    .mod.done .mod-num { background: var(--green); color: white; }
+    .mod.done { border-color: #065f46; }
+    .mod.done .mod-header { background: #022c22; }
+    .mod-done-badge { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--green); background: #022c22; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod.done .mod-done-badge { display: flex; }
+    .mod.done .mod-time { display: none; }
+    .mod.locked { opacity: .5; }
+    .mod.locked .mod-header { cursor: not-allowed; }
+    .mod-locked-badge { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--muted); background: #2a1a0a; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod.locked .mod-locked-badge { display: flex; }
+    .mod.locked .mod-time { display: none; }
+    .mod.locked .mod-arrow { display: none; }
+    .mod.unlocked-next { border-left-color: #f59e0b; box-shadow: 0 2px 12px rgba(245,158,11,.15); }
+    .mod.unlocked-next .mod-header { background: #2a1a05; }
+    .mod.unlocked-next .mod-num { background: #f59e0b; color: white; }
+    .mod.unlocked-next .mod-arrow { color: #f59e0b; }
+
+    .progress-track-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+    .prog-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
+    .prog-bar-outer { flex: 1; height: 7px; background: #2a1a0a; border-radius: 999px; overflow: hidden; }
+    .prog-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent-orange), #f59e0b); border-radius: 999px; width: 0%; transition: width .6s ease; }
+    .prog-pct { font-size: 13px; font-weight: 700; color: var(--accent-orange); white-space: nowrap; min-width: 36px; text-align: right; }
+    .prog-steps { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .prog-step { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #2a1a0a; color: #7c6040; border: 2px solid #3d2010; pointer-events: none; user-select: none; transition: all .35s ease; position: relative; }
+    .prog-step:not(:last-child)::after { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); width: 6px; height: 2px; background: #3d2010; margin-left: 0; }
+    .prog-step.active { background: #2a1505; border-color: var(--accent-orange); color: var(--accent-orange); }
+    .prog-step.active::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--accent-orange); opacity: 0; animation: stepPulse 1.8s ease-out infinite; }
+    @keyframes stepPulse { 0% { transform: scale(0.85); opacity: 0.6; } 70% { transform: scale(1.4); opacity: 0; } 100% { transform: scale(1.4); opacity: 0; } }
+    .prog-step.done { background: var(--green); border-color: var(--green); color: white; }
+    .prog-step.done::after { background: var(--green); }
+
+    .cta { background: var(--white); border: 1.5px solid #5c2d0a; border-radius: var(--r-xl); padding: 34px 28px; text-align: center; box-shadow: 0 8px 36px var(--orange-glow); }
+    .cta-icon { font-size: 40px; margin-bottom: 10px; }
+    .cta h2 { font-family: 'Lora', serif; font-size: 23px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
+    .cta p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+    .btn-go { display: inline-flex; align-items: center; gap: 9px; background: var(--accent-orange); color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 38px; border-radius: var(--r); text-decoration: none; box-shadow: 0 4px 18px var(--orange-glow); transition: background .15s, transform .15s, box-shadow .15s; }
+    .btn-go:hover { background: #b45309; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(217,119,6,.35); }
+    .btn-go svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    @media(max-width:480px){
+      nav, .journey { padding-left: 16px; padding-right: 16px; }
+      .hero { padding: 36px 16px 30px; }
+      .wrap { padding: 24px 16px 60px; }
+      .mod-header { padding: 16px 18px; gap: 12px; }
+      .mod-body { padding: 18px 18px 22px; }
+      .cta { padding: 26px 18px; }
+    }
   </style>
 </head>
 <body>
-<div class="bg-blobs">
-  <div class="blob blob-1"></div>
-  <div class="blob blob-2"></div>
-  <div class="blob blob-3"></div>
+
+<nav>
+  <a class="nav-logo" href="learnai_final.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI
+  </a>
+  <div class="nav-tag">Sidekursus &nbsp;·&nbsp; AI for Iværksættere</div>
+</nav>
+
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item active"><div class="j-dot">1</div>Idégenerering</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">2</div>Kundeanskaffelse</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">3</div>Drift & workflows</div>
+    <div class="j-sep">›</div>
+    <div class="j-item"><div class="j-dot">🎓</div>Eksamen</div>
+  </div>
 </div>
-<div class="grid-overlay"></div>
-<div class="landing">
-  <nav class="top-nav">
-    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="nav-logo">
-      <div class="nav-mark">
-        <svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg>
+
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="hero-chip-dot"></span> Sidekursus &nbsp;·&nbsp; Iværksætteri</div>
+    <h1>AI som din<br><em>digitale medstifter</em></h1>
+    <p class="hero-lead">Lær hvordan du sparer måneder på forretningsplaner, bygger en personlig markedsføringskanal og automatiserer den daglige drift med kunstig intelligens.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><span>⏱</span> Ca. 45 minutter</div>
+      <div class="hero-pill"><span>📋</span> 3 moduler</div>
+      <div class="hero-pill"><span>⚡</span> Nemt & praktisk</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="progress-track-wrap">
+    <div class="prog-steps">
+      <div class="prog-step active" id="ps1">1</div>
+      <div class="prog-step" id="ps2">2</div>
+      <div class="prog-step" id="ps3">3</div>
+    </div>
+    <div style="flex: 1; min-width: 0;">
+      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+        <span class="prog-label" id="prog-txt">Åbn modul 1 for at starte</span>
+        <span class="prog-pct" id="prog-pct">0%</span>
       </div>
-      LearnAI DK
+      <div class="prog-bar-outer">
+        <div class="prog-bar-inner" id="prog-bar"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notice info" style="margin-bottom:20px;">
+    <div class="notice-icon">💡</div>
+    <div>
+      <div class="notice-head">Inden du starter</div>
+      <div class="notice-body">Åbn Claude.ai eller ChatGPT i et andet vindue. Dette sidekursus har 6 konkrete prompts og øvelser, du kan kopiere med ét klik og afprøve med det samme.</div>
+    </div>
+  </div>
+
+  <div class="sect-label"><hr><span>Modul 1 af 3</span><hr></div>
+  <div class="mod open" id="m1">
+    <div class="mod-header" onclick="tog('m1')">
+      <div class="mod-num">1</div>
+      <div class="mod-text">
+        <div class="mod-title">Idégenerering og Validering</div>
+        <div class="mod-sub">Brug AI som en erfaren og kritisk sparringspartner</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">AI kan fungere som din digitale medstifter. I stedet for ugers brainstorm kan du med sprogmodeller validere idéer, skrive forretningsplaner og hente kvalificeret feedback på minutter — 24/7.</p>
+      <div class="concept-row">
+        <div class="cc blue">
+          <div class="cc-title">🧠 AI-Medstifter</div>
+          <div class="cc-body">Sparr med en model, der kender alle forretningsteorier, strategier og iværksætterbøger i verden.</div>
+          <div class="cc-tip">→ Udfordr dine egne antagelser.</div>
+        </div>
+        <div class="cc yellow">
+          <div class="cc-title">⚠️ Djævlens Advokat</div>
+          <div class="cc-body">Bed din AI om at være hudløst ærlig og give dig de mest kritiske grunde til, at dit projekt kan fejle.</div>
+          <div class="cc-tip">→ Find de blinde vinkler før dine konkurrenter.</div>
+        </div>
+      </div>
+      <p class="prose"><strong>Sammenlign prompts:</strong> Se hvor stor forskel der er på det generiske standardsvar og det professionelle resultat, når du guider AI'en præcist.</p>
+      <div class="compare">
+        <div class="cmp bad">
+          <div class="cmp-label">❌ Svagt Prompt</div>
+          <div class="cmp-text">"Er min idé om at åbne en specialkaffebar i Odense god?"</div>
+        </div>
+        <div class="cmp good">
+          <div class="cmp-label">✓ Stærkt Prompt</div>
+          <div class="cmp-text">"Du er en kritisk investor. Jeg vil åbne en specialkaffebar i Odense C rettet mod studerende. Giv mig de 5 største økonomiske faldgruber og foreslå et unikt værditilbud."</div>
+        </div>
+      </div>
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse 1</div><div class="p-title">Find de svage punkter</div></div>
+        <div class="p-body"><p>Kopier promptet nedenfor, indsæt det i ChatGPT/Claude, og få en hudløst ærlig vurdering af dit projekt:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt til validering</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p1">Jeg har denne idé til en virksomhed: [indsæt din idé]. Tag rollen som en kritisk investor og fortæl mig de 5 største grunde til, at dette projekt vil fejle. Vær hudløst ærlig.</div>
+      </div>
+      <div class="practice" style="margin-top: 24px;">
+        <div class="practice-bar"><div class="p-tag">Øvelse 2</div><div class="p-title">Skab din kundepersona</div></div>
+        <div class="p-body"><p>En markedsanalyse behøver ikke tage uger. Definer din målgruppe med dette stærke prompt:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt til persona</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p2">Jeg vil sælge [dit produkt] til [din målgruppe]. Lav en detaljeret kundepersona for mig. Inkluder navn, alder, job, deres største udfordring i hverdagen, og hvordan mit produkt løser den.</div>
+      </div>
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m1')">Modul 1 gennemført — Gå videre ✓</button>
+    </div>
+  </div>
+
+  <div class="sect-label"><hr><span>Modul 2 af 3</span><hr></div>
+  <div class="mod locked" id="m2">
+    <div class="mod-header" onclick="tog('m2')">
+      <div class="mod-num">2</div>
+      <div class="mod-text">
+        <div class="mod-title">Kundeanskaffelse og Indhold</div>
+        <div class="mod-sub">Skaler din markedsføring med en skarp Tone of Voice</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">Som soloiværksætter skal du også være marketingchef. AI kan producere opslag, blogtekster og salgs-e-mails i en skala, der normalt kræver et helt bureau. Lad AI'en lave 80% af udkastet, og brug din stemme på de sidste 20%.</p>
+      <div class="concept-row">
+        <div class="cc blue">
+          <div class="cc-title">📝 Tone of Voice</div>
+          <div class="cc-body">Undgå at lyde som en dårlig oversættelse. Lær AI'en at matche din præcise stil, humor og troværdighed.</div>
+          <div class="cc-tip">→ Giv den eksempler på dine egne tekster.</div>
+        </div>
+        <div class="cc teal">
+          <div class="cc-title">📧 Nyhedsbreve</div>
+          <div class="cc-body">Planlæg et helt års nyhedsbreve på en enkelt eftermiddag ved hjælp af strukturerede prompts.</div>
+          <div class="cc-tip">→ Hav altid værdifuldt indhold klar.</div>
+        </div>
+      </div>
+      <div class="compare">
+        <div class="cmp bad">
+          <div class="cmp-label">❌ Svagt Prompt</div>
+          <div class="cmp-text">"Skriv et opslag til LinkedIn om min nye rådgivningsvirksomhed."</div>
+        </div>
+        <div class="cmp good">
+          <div class="cmp-label">✓ Stærkt Prompt</div>
+          <div class="cmp-text">"Du er copywriter. Skriv et kort LinkedIn-opslag om min rådgivning. Tonen skal være nede-på-jorden, professionel og uden tomme floskler. Afslut med en klar opfordring til dialog."</div>
+        </div>
+      </div>
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse 3</div><div class="p-title">LinkedIn opslag med personlighed</div></div>
+        <div class="p-body"><p>Kopier dette prompt og få et udkast, der lyder som en professionel, men autentisk person:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">LinkedIn prompt</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p3')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p3">Jeg driver en virksomhed, der sælger [indsæt dit produkt/service]. Skriv et opslag til LinkedIn om [et emne i din branche]. Tonen skal være professionel, men letforståelig og uden brug af for mange floskler. Afslut med et spørgsmål, der lægger op til debat.</div>
+      </div>
+      <div class="practice" style="margin-top: 24px;">
+        <div class="practice-bar"><div class="p-tag">Øvelse 4</div><div class="p-title">Generer 5 nyhedsbrevs-idéer</div></div>
+        <div class="p-body"><p>Engager dine kunder uden at virke for anmassende eller sælgende. Brug dette prompt til at få kreative vinkler:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">E-mail idé-prompt</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p4')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p4">Jeg har en målgruppe af [beskriv målgruppe]. Giv mig 5 konkrete idéer til nyhedsbreve, som vil give dem værdi og ikke bare handle om salg. For hver idé, skriv et fængende emnefelt.</div>
+      </div>
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m2')">Modul 2 gennemført — Gå videre ✓</button>
+    </div>
+  </div>
+
+  <div class="sect-label"><hr><span>Modul 3 af 3</span><hr></div>
+  <div class="mod locked" id="m3">
+    <div class="mod-header" onclick="tog('m3')">
+      <div class="mod-num">3</div>
+      <div class="mod-text">
+        <div class="mod-title">Drift, Tal og Automatisering</div>
+        <div class="mod-sub">Få overblik over dit budget og skab smarte workflows</div>
+      </div>
+      <div class="mod-time">15 min</div>
+      <div class="mod-done-badge">✓ Færdig</div>
+      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-arrow">▾</div>
+    </div>
+    <div class="mod-body">
+      <p class="prose">Mange iværksættere taber pusten på driften. Upload eller beskriv dine budgettal for din AI (husk at fjerne personfølsom data som navne og CPR-numre først) og lad den spotte besparelser eller lave lynhurtige scenarie-analyser.</p>
+      <div class="concept-row">
+        <div class="cc blue">
+          <div class="cc-title">📈 Økonomi-Sparring</div>
+          <div class="cc-body">Udfør scenarieanalyser på sekunder. Hvad sker der ved en prisstigning, eller hvis du fjerner en fast omkostning?</div>
+          <div class="cc-tip">→ Få overblik over komplekse tal.</div>
+        </div>
+        <div class="cc teal">
+          <div class="cc-title">🤖 Smarte Workflows</div>
+          <div class="cc-body">Brug Zapier eller Make og lad AI'en sortere mails, oprette fakturaer og opdatere dit regnskab automatisk.</div>
+          <div class="cc-tip">→ Spar hundredvis af administrative timer.</div>
+        </div>
+      </div>
+      <div class="practice">
+        <div class="practice-bar"><div class="p-tag">Øvelse 5</div><div class="p-title">Budget-sparring</div></div>
+        <div class="p-body"><p>Læg et budget sammen med AI. Brug denne fordeling til at få realistiske inputs til din branche:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Budget prompt</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p5">Jeg er en nystartet konsulentvirksomhed. Mit budget er 10.000 kr. om måneden. Hvordan bør jeg fordele pengene mellem software, markedsføring og opsparing til skat? Giv mig et realistisk forslag.</div>
+      </div>
+      <div class="practice" style="margin-top: 24px;">
+        <div class="practice-bar"><div class="p-tag">Øvelse 6</div><div class="p-title">Design et automatisk workflow</div></div>
+        <div class="p-body"><p>Automatiser dine gentagne opgaver. Bed AI'en designe din integration helt uden at skulle programmere:</p></div>
+      </div>
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Automatisering prompt</span>
+          <button class="copy-btn" onclick="doCopy(this, 'p6')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text" id="p6">Jeg vil gerne automatisere denne proces: [beskriv processen, f.eks. at sende kvitteringer fra mail til Excel]. Hvordan kan jeg sætte det op i Zapier ved hjælp af AI? Følg guiden trin-for-trin.</div>
+      </div>
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m3')">Modul 3 gennemført — Afslut kurset ✓</button>
+    </div>
+  </div>
+
+  <div class="sect-label" id="exam-label" style="display:none;"><hr><span>Eksamen klar</span><hr></div>
+  <div class="cta" id="exam-card" style="display:none; margin-top: 30px;">
+    <div class="cta-icon">🎓</div>
+    <h2>Tid til at teste din viden!</h2>
+    <p>Du har nu gennemført alle tre moduler i sidekurset for iværksættere. Tag eksamen for at få dit kursusbevis.</p>
+    <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-iv%C3%A6rks%C3%A6tteri.html" class="btn-go">
+      Gå til eksamen
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
-    <div class="nav-pill">Sidekursus &nbsp;·&nbsp; Iværksætteri</div>
-  </nav>
-  <main class="center">
-    <div class="badge">I1</div>
-    <p class="eyebrow">Sidekursus · Del 1 af 3</p>
-    <h1 class="title">AI som din<br><em>digitale medstifter</em></h1>
-    <p class="subtitle">
-      Lær hvordan du sparer måneder på forretningsplaner, bygger en personlig markedsføringskanal og automatiserer den daglige drift med kunstig intelligens.
-    </p>
-    <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-iv%C3%A6rks%C3%A6tteri.html" class="start-btn" id="startBtn">
-      Begynd kurset
-      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-    </a>
-  </main>
+  </div>
+
 </div>
+
+<div id="toast"><span id="toast-icon">📋</span><span id="toast-msg">Prompt kopieret</span></div>
+
 <script>
-  document.getElementById('startBtn').addEventListener('click', function(e) {
-    e.preventDefault();
-    var dest = this.href;
-    document.body.classList.add('page-out');
-    setTimeout(function() { window.location.href = dest; }, 480);
-  });
+  function tog(id) {
+    const el = document.getElementById(id);
+    if (el.classList.contains('locked')) { showToast('🔒 Dette modul er låst. Gennemfør det forrige modul først!'); return; }
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.mod').forEach(m => m.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+    updateProgressVisuals();
+  }
+  function doCopy(btn, elId) {
+    const text = document.getElementById(elId).innerText;
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => showCopiedState(btn)).catch(() => fallbackCopy(btn, text));
+    } else { fallbackCopy(btn, text); }
+  }
+  function fallbackCopy(btn, text) {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;top:-9999px;opacity:0;';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand('copy'); showCopiedState(btn); } catch(e) { showToast('Kunne ikke kopiere automatisk — marker teksten og kopier manuelt.'); }
+    document.body.removeChild(ta);
+  }
+  function showCopiedState(btn) {
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Kopieret!`;
+    showToast('Prompt kopieret til udklipsholderen ✓');
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér`; }, 2000);
+  }
+  let toastTimer;
+  function showToast(msg) {
+    const toast = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    toast.classList.add('show'); clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+  const modIds = ['m1', 'm2', 'm3'];
+  const modDone = { m1: false, m2: false, m3: false };
+  function markDone(id) {
+    modDone[id] = true;
+    const el = document.getElementById(id);
+    el.classList.add('done'); el.classList.remove('open');
+    const currentIndex = modIds.indexOf(id);
+    if (currentIndex < modIds.length - 1) {
+      const nextEl = document.getElementById(modIds[currentIndex + 1]);
+      nextEl.classList.remove('locked'); nextEl.classList.add('unlocked-next', 'open');
+      showToast(`Modul ${currentIndex + 1} gennemført! Næste modul er nu åbent 🎉`);
+    } else {
+      document.getElementById('exam-label').style.display = 'block';
+      document.getElementById('exam-card').style.display = 'block';
+      showToast('Tillykke! Alle moduler er gennemført. Tag din eksamen nu 🎓');
+      const lastJourneyItem = document.querySelector('.j-item:last-child');
+      if (lastJourneyItem) lastJourneyItem.classList.add('active');
+    }
+    updateProgressVisuals();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  function updateProgressVisuals() {
+    const doneCount = Object.values(modDone).filter(Boolean).length;
+    const pct = Math.round((doneCount / modIds.length) * 100);
+    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('prog-pct').textContent = pct + '%';
+    const labels = ['Åbn modul 1 for at starte','Godt begyndt — 2 moduler tilbage','Halvvejs — du klarer det!','Alle moduler gennemgået — klar til eksamen! 🎓'];
+    document.getElementById('prog-txt').textContent = labels[doneCount];
+    modIds.forEach((id, i) => {
+      const jItem = document.querySelectorAll('.j-item')[i];
+      if (!jItem) return;
+      jItem.classList.remove('active', 'done');
+      if (modDone[id]) jItem.classList.add('done');
+      else if (document.getElementById(id).classList.contains('open')) jItem.classList.add('active');
+      const step = document.getElementById('ps' + (i + 1));
+      if (step) {
+        step.classList.remove('active', 'done');
+        if (modDone[id]) { step.classList.add('done'); step.textContent = '✓'; }
+        else if (document.getElementById(id).classList.contains('open')) { step.classList.add('active'); step.textContent = i + 1; }
+        else { step.textContent = i + 1; }
+      }
+    });
+  }
+  updateProgressVisuals();
 </script>
+
 </body>
 </html>
