@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LearnAI — Sidekursus: AI til kreativ skrivning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:          #0D1117;
+      --ink-soft:     #374151;
+      --muted:        #6B7280;
+      --border:       #E5E7EB;
+      --bg:           #F9FAFB;
+      --white:        #FFFFFF;
+      --rose:         #BE185D;
+      --rose-deep:    #9D174D;
+      --rose-50:      #FFF1F2;
+      --rose-100:     #FFE4E6;
+      --rose-200:     #FECDD3;
+      --rose-glow:    rgba(190,24,93,0.13);
+      --amber:        #D97706;
+      --amber-50:     #FFFBEB;
+      --amber-100:    #FEF3C7;
+      --green:        #059669;
+      --green-50:     #ECFDF5;
+      --red:          #DC2626;
+      --red-50:       #FEF2F2;
+      --teal:         #0D9488;
+      --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--ink); line-height: 1.6; min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 200;
+      height: 58px; background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px; }
+    .nav-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--rose); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .nav-mark svg { width: 15px; height: 15px; fill: white; }
+    .nav-tag { font-size: 12px; font-weight: 600; color: var(--rose); background: var(--rose-50); padding: 4px 12px; border-radius: 999px; }
+
+    /* JOURNEY BAR */
+    .journey { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; padding: 0 28px; }
+    .journey::-webkit-scrollbar { display: none; }
+    .journey-track { display: flex; align-items: stretch; min-width: max-content; justify-content: center; margin: 0 auto; }
+    .j-item { display: flex; align-items: center; gap: 7px; padding: 13px 16px; font-size: 12px; font-weight: 600; color: #9CA3AF; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; white-space: nowrap; cursor: pointer; user-select: none; }
+    .j-item:hover:not(.active) { color: var(--muted); background: var(--bg); }
+    .j-item.active { color: var(--rose); border-bottom-color: var(--rose); }
+    .j-item.done   { color: var(--green); border-bottom-color: var(--green); }
+    .j-dot { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; background: #F3F4F6; color: #9CA3AF; transition: background .2s, color .2s; flex-shrink: 0; }
+    .j-item.active .j-dot { background: var(--rose); color: white; }
+    .j-item.done   .j-dot { background: var(--green); color: white; }
+    .j-sep { color: #D1D5DB; font-size: 14px; align-self: center; }
+
+    /* VIEWS */
+    .view { display: none; animation: viewIn .25s ease; }
+    .view.active { display: block; }
+    @keyframes viewIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* HERO */
+    .hero { background: var(--rose-deep); padding: 48px 28px 40px; position: relative; overflow: hidden; }
+    .hero-grid { position: absolute; inset: 0; opacity: .045; background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px); background-size: 40px 40px; }
+    .hero-blob { position: absolute; width: 380px; height: 380px; background: radial-gradient(circle, rgba(251,113,133,.35) 0%, transparent 70%); top: -120px; right: -40px; border-radius: 50%; animation: blobFloat 8s ease-in-out infinite; pointer-events: none; }
+    @keyframes blobFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-18px) scale(1.05); } }
+    .hero-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
+    .hero-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.18); color: rgba(255,255,255,.85); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 16px; }
+    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #FDA4AF; display: inline-block; }
+    .hero h1 { font-family: 'Lora', serif; font-size: clamp(26px, 4.5vw, 38px); font-weight: 600; color: white; line-height: 1.2; margin-bottom: 12px; letter-spacing: -.3px; }
+    .hero h1 em { font-style: italic; color: #FDA4AF; }
+    .hero-lead { font-size: 15px; color: rgba(255,255,255,.72); max-width: 520px; line-height: 1.65; margin-bottom: 24px; }
+    .hero-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hero-pill { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.8); font-size: 12.5px; padding: 6px 12px; border-radius: var(--r-sm); }
+
+    /* MAIN CONTENT AREA */
+    .wrap { max-width: 740px; margin: 0 auto; padding: 32px 24px 40px; }
+
+    /* NOTICES */
+    .notice { display: flex; gap: 13px; align-items: flex-start; border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+    .notice-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
+    .notice-head { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
+    .notice-body { font-size: 13px; line-height: 1.55; }
+    .notice.info  { background: var(--rose-50); }
+    .notice.info  .notice-head { color: var(--rose-deep); }
+    .notice.info  .notice-body { color: var(--rose-deep); }
+    .notice.warn  { background: var(--amber-100); }
+    .notice.warn  .notice-head { color: #92400E; }
+    .notice.warn  .notice-body { color: #78350F; }
+
+    /* MODULE CONTENT CARD */
+    .mod-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-xl); padding: 28px 32px; margin-bottom: 16px; box-shadow: 0 2px 12px rgba(0,0,0,.05); }
+    .mod-card-label { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--rose); margin-bottom: 6px; }
+    .mod-card h2 { font-family: 'Lora', serif; font-size: 22px; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .mod-card-sub { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+    /* SECTION LABEL */
+    .sect-label { display: flex; align-items: center; gap: 12px; margin: 28px 0 14px; }
+    .sect-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
+    .sect-label span { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+
+    /* PROSE */
+    p.prose { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
+    p.prose strong { color: var(--ink); font-weight: 600; }
+
+    /* CONCEPT CARDS */
+    .concept-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    @media(max-width:560px){ .concept-row { grid-template-columns: 1fr; } }
+    .cc { border-radius: var(--r); padding: 15px 17px; position: relative; overflow: hidden; }
+    .cc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .cc.rose   { background: var(--rose-50); }   .cc.rose::before   { background: var(--rose); }
+    .cc.blue   { background: #EEF2FF; }           .cc.blue::before   { background: #4F46E5; }
+    .cc.yellow { background: var(--amber-100); }  .cc.yellow::before { background: var(--amber); }
+    .cc.teal   { background: #F0FDFA; }            .cc.teal::before   { background: var(--teal); }
+    .cc.green  { background: var(--green-50); }   .cc.green::before  { background: var(--green); }
+    .cc.wide   { grid-column: 1/-1; }
+    .cc-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .cc.rose .cc-title   { color: var(--rose-deep); }
+    .cc.blue .cc-title   { color: #3730A3; }
+    .cc.yellow .cc-title { color: #92400E; }
+    .cc.teal .cc-title   { color: #134E4A; }
+    .cc.green .cc-title  { color: #065F46; }
+    .cc-body { font-size: 13px; line-height: 1.6; }
+    .cc.rose .cc-body   { color: #9D174D; }
+    .cc.blue .cc-body   { color: #3730A3; }
+    .cc.yellow .cc-body { color: #78350F; }
+    .cc.teal .cc-body   { color: #134E4A; }
+    .cc.green .cc-body  { color: #064E3B; }
+    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,.07); font-size: 12px; font-weight: 600; }
+    .cc.rose .cc-tip   { color: var(--rose); }
+    .cc.blue .cc-tip   { color: #4F46E5; }
+    .cc.yellow .cc-tip { color: var(--amber); }
+    .cc.teal .cc-tip   { color: var(--teal); }
+    .cc.green .cc-tip  { color: var(--green); }
+
+    /* TECHNIQUE */
+    .tech { margin-bottom: 28px; }
+    .tech-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--rose); color: white; font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 10px; }
+    .tech-pill .num { background: rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; font-size: 10px; }
+    h3.tech-h { font-size: 17px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
+
+    /* COPY BLOCK */
+    .copy-block { background: #0D1117; border-radius: var(--r); overflow: hidden; margin-bottom: 14px; border: 1px solid #1E2530; }
+    .copy-topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 14px; background: rgba(255,255,255,.04); border-bottom: 1px solid rgba(255,255,255,.07); }
+    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #4B5563; }
+    .copy-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.11); color: #9CA3AF; font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all .18s; }
+    .copy-btn:hover { background: rgba(255,255,255,.14); color: white; }
+    .copy-btn.copied { background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); color: #6EE7B7; }
+    .copy-text { padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; color: #E2E8F0; white-space: pre-wrap; word-break: break-word; }
+    .copy-text .hl  { color: #FDA4AF; }
+    .copy-text .hlg { color: #6EE7B7; }
+    .copy-text .hly { color: #FCD34D; }
+
+    /* COMPARE */
+    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    @media(max-width:500px){ .compare { grid-template-columns: 1fr; } }
+    .cmp { border-radius: var(--r); padding: 13px 15px; }
+    .cmp.bad  { background: var(--red-50);   border: 1px solid #FECACA; }
+    .cmp.good { background: var(--green-50); border: 1px solid #A7F3D0; }
+    .cmp-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 6px; }
+    .cmp.bad  .cmp-label { color: var(--red); }
+    .cmp.good .cmp-label { color: var(--green); }
+    .cmp-text { font-size: 13px; line-height: 1.6; font-style: italic; }
+    .cmp.bad  .cmp-text { color: #7F1D1D; }
+    .cmp.good .cmp-text { color: #064E3B; }
+
+    /* PRACTICE */
+    .practice { background: linear-gradient(135deg, #FFFBF5, #FFF8EC); border: 1px solid #FDE68A; border-radius: var(--r); padding: 17px 19px; margin-bottom: 12px; }
+    .practice-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+    .p-tag { background: var(--amber); color: white; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
+    .p-title { font-size: 13.5px; font-weight: 700; color: #78350F; }
+    .p-body { font-size: 13px; line-height: 1.7; color: #7C2D12; }
+    .p-body ol, .p-body ul { padding-left: 1.2rem; margin-top: 7px; }
+    .p-body li { margin-bottom: 4px; }
+    .p-body em { font-style: italic; }
+    .p-body strong { color: #92400E; }
+
+    /* HIGHLIGHT BOX */
+    .highlight-box { display: flex; gap: 12px; align-items: flex-start; background: linear-gradient(135deg, var(--rose-50), #FFF5F9); border: 1px solid var(--rose-200); border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+    .hb-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .hb-title { font-size: 12.5px; font-weight: 700; color: var(--rose-deep); margin-bottom: 3px; }
+    .hb-text  { font-size: 13px; line-height: 1.6; color: #9D174D; }
+
+    hr.div { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+    /* CHECKLIST */
+    .checklist { display: flex; flex-direction: column; gap: 9px; margin-bottom: 14px; }
+    .chk { display: flex; gap: 12px; align-items: flex-start; background: var(--white); border: 1px solid var(--border); border-radius: var(--r-sm); padding: 12px 14px; transition: border-color .2s, box-shadow .2s; }
+    .chk:hover { border-color: var(--rose-200); box-shadow: 0 2px 10px var(--rose-glow); }
+    .chk-icon { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .chk-icon.r { background: var(--rose-50); }
+    .chk-icon.g { background: var(--green-50); }
+    .chk-title { font-size: 13px; font-weight: 700; color: var(--ink); margin-bottom: 2px; }
+    .chk-desc  { font-size: 12.5px; color: var(--muted); line-height: 1.55; }
+
+    /* SUMMARY */
+    .summary { background: var(--rose-deep); border-radius: var(--r-xl); padding: 28px; color: white; margin: 28px 0 20px; position: relative; overflow: hidden; }
+    .summary::after { content: 'SK'; position: absolute; right: 20px; top: 10px; font-family: 'Lora', serif; font-size: 72px; font-weight: 600; color: rgba(255,255,255,.05); line-height: 1; pointer-events: none; }
+    .summary h3 { font-family: 'Lora', serif; font-size: 20px; font-weight: 600; margin-bottom: 16px; }
+    .sum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    @media(max-width:480px){ .sum-grid { grid-template-columns: 1fr; } }
+    .sum-item { display: flex; gap: 9px; background: rgba(255,255,255,.07); border-radius: var(--r-sm); padding: 11px 13px; font-size: 13px; color: rgba(255,255,255,.82); line-height: 1.5; }
+    .sum-item::before { content: '✓'; color: #FDA4AF; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+    /* BOTTOM NAVIGATION — fast i bunden af hvert view */
+    .bottom-nav { border-top: 1px solid var(--border); margin-top: 32px; padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .bottom-nav-left { font-size: 13px; color: var(--muted); }
+    .btn-next { display: inline-flex; align-items: center; gap: 9px; background: var(--rose); color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; padding: 13px 26px; border-radius: var(--r); border: none; cursor: pointer; box-shadow: 0 4px 18px var(--rose-glow); transition: background .15s, transform .15s, box-shadow .15s; text-decoration: none; }
+    .btn-next:hover { background: var(--rose-deep); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(190,24,93,.28); }
+    .btn-next svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    .btn-next.outline { background: white; color: var(--rose); border: 2px solid var(--rose-200); box-shadow: none; }
+    .btn-next.outline:hover { background: var(--rose-50); }
+    .btn-next.outline svg { stroke: var(--rose); }
+    .btn-finish { display: inline-flex; align-items: center; gap: 9px; background: var(--green); color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; padding: 13px 26px; border-radius: var(--r); text-decoration: none; box-shadow: 0 4px 18px rgba(5,150,105,.2); transition: background .15s, transform .15s; }
+    .btn-finish:hover { background: #047857; transform: translateY(-2px); }
+    .btn-finish svg { width: 16px; height: 16px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* TOAST */
+    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1E293B; color: white; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 999px; box-shadow: 0 8px 32px rgba(0,0,0,.2); opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9999; white-space: nowrap; }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    @media(max-width:480px){
+      nav { padding: 0 16px; }
+      .journey { padding: 0 12px; }
+      .hero { padding: 32px 16px 28px; }
+      .wrap { padding: 20px 16px 32px; }
+      .mod-card { padding: 20px 18px; }
+      .bottom-nav { flex-direction: column; align-items: stretch; }
+      .btn-next, .btn-finish { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    LearnAI DK
+  </a>
+  <div class="nav-tag">Sidekursus &nbsp;·&nbsp; Kreativ skrivning</div>
+</nav>
+
+<!-- JOURNEY BAR -->
+<div class="journey">
+  <div class="journey-track">
+    <div class="j-item active" id="j1" onclick="showView(1)"><div class="j-dot">M1</div>AI som medskaber</div>
+    <div class="j-sep">›</div>
+    <div class="j-item" id="j2" onclick="showView(2)"><div class="j-dot">M2</div>Skriveteknik</div>
+    <div class="j-sep">›</div>
+    <div class="j-item" id="j3" onclick="showView(3)"><div class="j-dot">M3</div>Idébygger</div>
+    <div class="j-sep">›</div>
+    <div class="j-item" id="j4"><div class="j-dot">✦</div>Færdig</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 1 — AI som kreativ medskaber
+══════════════════════════════════════════════════════ -->
+<div class="view active" id="view-1">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-inner">
+      <div class="hero-chip"><span class="hero-chip-dot"></span> Modul 1 af 3 &nbsp;·&nbsp; ca. 40 min</div>
+      <h1>AI som kreativ<br><em>medskaber</em></h1>
+      <p class="hero-lead">Forstå hvad AI er god til — og hvad den ikke kan erstatte. Lær tre teknikker der knækker writers block og giver dig bedre idéer på 2 minutter.</p>
+      <div class="hero-pills">
+        <div class="hero-pill"><span>⏱</span> Ca. 40 min</div>
+        <div class="hero-pill"><span>🧠</span> 3 teknikker</div>
+        <div class="hero-pill"><span>🔥</span> 1 øvelse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="notice info">
+      <div class="notice-icon">✍️</div>
+      <div>
+        <div class="notice-head">Inden du starter</div>
+        <div class="notice-body">Åbn Claude.ai eller ChatGPT i et andet vindue <strong>nu</strong>. Kreativitet læres bedst ved at gøre, ikke ved at læse.</div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Hvad AI er — og hvad det ikke er</span><hr></div>
+
+    <p class="prose">Den tomme side er skræmmende. En deadline, et oplæg der skal skrives, en roman der skal have et plot — og ingenting kommer. Det er præcis her AI er allerbedst: ikke som ghostwriter, men som <strong>kreativ sparringspartner</strong> der aldrig løber tør for idéer og aldrig dømmer dine udkast.</p>
+
+    <div class="concept-row">
+      <div class="cc rose">
+        <div class="cc-title">🎨 Hvad AI er god til</div>
+        <div class="cc-body">Brainstorming i skala, variationer over et tema, overkomme writers block, give feedback på udkast, generere mange mulige retninger hurtigt.</div>
+        <div class="cc-tip">→ AI genererer; du vælger og former.</div>
+      </div>
+      <div class="cc yellow">
+        <div class="cc-title">🚫 Hvad AI ikke kan</div>
+        <div class="cc-body">Have din personlige stemme. Kende din læsers kontekst. Føle det emne du skriver om. Sikre at teksten er sand og autentisk.</div>
+        <div class="cc-tip">→ Den originale tanke og afgørelsen er altid din.</div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Teknik 1 — Stormmandens metode</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Generér 10 idéer på 2 minutter</h3>
+      <p class="prose">Den bedste måde at overkomme kreativ blokering er at bede AI om <strong>mange</strong> idéer på én gang — ikke den bedste. Når du har 10, vil 2-3 altid overraske dig.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — brainstorm på kvantitet</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Giv mig <span class="hl">10 idéer</span> til [din situation].
+Vær kreativ og varieret — bland realistiske og vilde forslag.
+<span class="hlg">Ingen forklaringer</span>, kun nummererede idéer.
+
+Eksempel: "Giv mig 10 idéer til en korthistorie om en robot
+der ikke kan sove. Bland hverdagslige og absurde forslag."</div>
+      </div>
+
+      <div class="compare">
+        <div class="cmp bad">
+          <div class="cmp-label">✗ Svag prompt</div>
+          <div class="cmp-text">"Hjælp mig med at skrive en korthistorie."</div>
+        </div>
+        <div class="cmp good">
+          <div class="cmp-label">✓ Stærk prompt</div>
+          <div class="cmp-text">"Giv mig 10 meget forskellige idéer til en korthistorie om ensomhed. Variér genre, perspektiv og tone. Kun idéerne — ingen forklaringer."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Teknik 2 — Sparringspartneren</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">AI som kritiker, ikke ghostwriter</h3>
+      <p class="prose">En af de kraftigste kreative teknikker: skriv dit eget udkast og brug AI til at <strong>udfordre det</strong>, ikke erstatte det. Det giver dig ejerskab over teksten og bedre kvalitet.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — få konstruktiv kritik</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Her er mit udkast:
+<span class="hly">[indsæt din tekst]</span>
+
+Giv mig <span class="hl">3 konkrete forbedringer</span> — ikke generel ros.
+Fokusér på: åbningslinje, tempo og den svageste sætning.
+Foreslå en alternativ formulering for den svageste sætning.</div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="hb-icon">💡</div>
+        <div>
+          <div class="hb-title">Gylden regel for kreativ brug af AI</div>
+          <div class="hb-text">Skriv ALTID dit eget første udkast — uanset hvor dårligt det er. AI's feedback på noget du selv har skrevet er 10x mere værdifuld end AI's tekst fra bunden.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Teknik 3 — Rollen og tonen</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Slip AI'en fri med en personlighed</h3>
+      <p class="prose">AI giver meget klogere kreativ hjælp når den har fået en rolle. Ikke "hjælp mig" — men "du er en erfaren romanforfatter der specialiserer sig i..."</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — kreativ rolle-prompt</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text"><span class="hl">Du er en erfaren redaktør</span> på et litterært tidsskrift.
+Du er direkte og ærlig — du roser ikke, medmindre det er fortjent.
+
+Jeg arbejder på: <span class="hly">[beskriv dit projekt]</span>
+Mit største problem lige nu er: <span class="hlg">[beskriv problemet]</span>
+
+Hvad ville du råde mig til at gøre nu?</div>
+      </div>
+    </div>
+
+    <div class="practice">
+      <div class="practice-bar"><span class="p-tag">Øvelse</span><span class="p-title">Stormmandens udfordring</span></div>
+      <div class="p-body">
+        <ol>
+          <li>Tænk på et kreativt projekt du har liggende — en tekst, et indhold, en idé du aldrig startede.</li>
+          <li>Brug Stormmandens metode: bed AI om <strong>10 idéer</strong> til netop dit projekt.</li>
+          <li>Vælg den idé der overraskede dig mest — ikke den "sikre". Skriv 3 sætninger om den.</li>
+          <li>Giv AI din 3-sætnings-idé og brug Sparringspartner-prompten til at forbedre den.</li>
+        </ol>
+        <p style="margin-top:0.75rem;"><em>Mål: Du skal have et lille idé-frø du selv har valgt og AI har hjulpet med at forme.</em></p>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <span class="bottom-nav-left">Modul 1 af 3</span>
+      <button class="btn-next" onclick="showView(2)">
+        Næste: Skriveteknik med AI
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 2 — Skriveteknik med AI
+══════════════════════════════════════════════════════ -->
+<div class="view" id="view-2">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-inner">
+      <div class="hero-chip"><span class="hero-chip-dot"></span> Modul 2 af 3 &nbsp;·&nbsp; ca. 40 min</div>
+      <h1>Skriveteknik<br><em>med AI</em></h1>
+      <p class="hero-lead">Fortælling, lyrik og indhold — genre-specifikke prompter der virker. Lær hvad der adskiller klichéfyldt AI-tekst fra noget der faktisk er godt.</p>
+      <div class="hero-pills">
+        <div class="hero-pill"><span>⏱</span> Ca. 40 min</div>
+        <div class="hero-pill"><span>📖</span> 3 genrer</div>
+        <div class="hero-pill"><span>🔥</span> 1 øvelse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="sect-label"><hr><span>Genre 1 — Fortælling og fiktion</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">De 5 byggesten</h3>
+      <p class="prose">Kreativ skrivning er ikke én ting. En roman, et blog-indlæg og et digt har fundamentalt forskellige krav — og dine prompts skal afspejle det.</p>
+
+      <div class="concept-row">
+        <div class="cc rose">
+          <div class="cc-title">🧑 Karakter</div>
+          <div class="cc-body">Giv karakteren en <strong>intern konflikt</strong>, ikke bare en ydre. "Han er bange for at skuffe sin far" er stærkere end "han er modig."</div>
+          <div class="cc-tip">→ Prompt: "Giv karakteren en indre frygt der styrer hendes valg."</div>
+        </div>
+        <div class="cc blue">
+          <div class="cc-title">⚡ Konflikt</div>
+          <div class="cc-body">De bedste historier har to lag: <em>ydre</em> konflikt (hvad der sker) og <em>indre</em> konflikt (hvad det betyder for karakteren).</div>
+          <div class="cc-tip">→ Prompt: "Hvad er den ydre og indre konflikt i min scene?"</div>
+        </div>
+        <div class="cc teal">
+          <div class="cc-title">🌍 Setting</div>
+          <div class="cc-body">Miljø sætter tone og symbolik. "En forladt kirke under et uvejr" giver et helt andet rum end "en tom bygning".</div>
+          <div class="cc-tip">→ Giv altid 3 sanselige detaljer om stedet.</div>
+        </div>
+        <div class="cc yellow">
+          <div class="cc-title">📐 Struktur</div>
+          <div class="cc-body">Prøv tre-akters modellen: <em>Opstilling → Konfrontation → Løsning</em>. Bed AI om at kortlægge en scene inden du skriver den.</div>
+          <div class="cc-tip">→ "Kortlæg tre-akter for denne scene: [beskriv]"</div>
+        </div>
+        <div class="cc green wide">
+          <div class="cc-title">🗣 Dialog med subtext</div>
+          <div class="cc-body">Dialog afslører karakter — folk siger ikke hvad de mener. Brug subtext. Prompt AI: "Omskriv denne dialog så de to har en skjult konflikt under overfladen. De taler om vejret, men det handler om noget andet."</div>
+          <div class="cc-tip">→ Test: Læs dialogen højt. Lyder det som rigtige mennesker?</div>
+        </div>
+      </div>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — scene-generator</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Skriv <span class="hl">åbningsscenen</span> til en kort fortælling med:
+- Karakter: <span class="hly">[navn og én indre frygt]</span>
+- Setting: <span class="hlg">[sted + 2-3 sanselige detaljer]</span>
+- Stemning: <span class="hl">[ét adjektiv]</span>
+- Åbn in medias res — midt i handlingen, ingen baggrundsbeskrivelse.
+- Slut scenen på et spørgsmål (eksplicit eller implicit).
+Maks 200 ord.</div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Genre 2 — Lyrik og poesi</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Stemme, billede, rytme</h3>
+      <p class="prose">AI's poesi er ofte klichéfyldt og glat. Men det kan du styre. Tricket er at tvinge AI til <strong>konkrete sanseindtryk</strong> frem for abstrakte følelser.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — konkret lyrik</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Skriv et digt om <span class="hly">[emne]</span>.
+Regler:
+- <span class="hl">Ingen abstrakte ord</span>: "kærlighed", "sorg", "tid", "sjæl" er forbudt.
+- Brug kun <span class="hlg">konkrete sanseindtryk</span>: lyd, lugt, berøring, farve.
+- Form: <span class="hl">3 strofer à 4 linjer</span>, fri rytme.
+- Slutlinjen skal overraske.</div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="hb-icon">✨</div>
+        <div>
+          <div class="hb-title">Genskriv-teknikken</div>
+          <div class="hb-text">Bed AI om at skrive et digt — og brug det derefter som råmateriale. Tag de to bedste linjer, smid resten, og skriv resten selv. Det er den ægte kreative brug af AI i lyrik.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>Genre 3 — Indhold og blogtekster</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Struktur der holder læseren</h3>
+      <p class="prose">Indhold til en hjemmeside, et opslag eller en blog har ét mål: <strong>holde læseren</strong>. AI er god til at lave skelet og fyld — du sætter vinklen og den personlige stemme.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — blog-struktur</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Lav et skelet til en blogpost om: <span class="hly">[emne]</span>
+Målgruppe: <span class="hl">[hvem læser det]</span>
+Tone: <span class="hlg">[fx: uformel og direkte / faglig og præcis]</span>
+
+Format:
+1. Fængende titel (3 varianter)
+2. Åbningshook (2 sætninger der fanger)
+3. 4 afsnits-overskrifter med 1-linje beskrivelse
+4. En konkret opfordring til sidst
+
+Skriv IKKE brødteksten — kun strukturen.</div>
+      </div>
+
+      <div class="compare">
+        <div class="cmp bad">
+          <div class="cmp-label">✗ Kedelig åbning</div>
+          <div class="cmp-text">"I denne artikel vil vi gennemgå, hvordan AI kan hjælpe med kreativ skrivning på mange måder..."</div>
+        </div>
+        <div class="cmp good">
+          <div class="cmp-label">✓ Hook der fanger</div>
+          <div class="cmp-text">"Jeg sad med en deadline om 3 timer og ingenting i tankerne. Så bad jeg AI om 10 dårlige idéer — og fandt den bedste jeg nogensinde har haft."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="practice">
+      <div class="practice-bar"><span class="p-tag">Øvelse</span><span class="p-title">Genresprint</span></div>
+      <div class="p-body">
+        Vælg ÉN opgave og gennemfør den:
+        <ol>
+          <li><strong>Fiktion:</strong> Brug scene-generator-prompten. Skriv din åbningsscene på maks 150 ord. Bed AI om feedback på åbningslinjen.</li>
+          <li><strong>Lyrik:</strong> Brug den konkrete lyrik-prompt på et emne du holder af. Tag de 2 bedste linjer fra AI's svar og skriv resten selv.</li>
+          <li><strong>Indhold:</strong> Brug blog-struktur-prompten til noget du faktisk har brug for at skrive.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-next outline" onclick="showView(1)">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage: Modul 1
+      </button>
+      <button class="btn-next" onclick="showView(3)">
+        Næste: Idébygger
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+     VIEW 3 — Byg din personlige idébygger
+══════════════════════════════════════════════════════ -->
+<div class="view" id="view-3">
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-blob"></div>
+    <div class="hero-inner">
+      <div class="hero-chip"><span class="hero-chip-dot"></span> Modul 3 af 3 &nbsp;·&nbsp; ca. 40 min</div>
+      <h1>Byg din personlige<br><em>idébygger</em></h1>
+      <p class="hero-lead">Et kreativt system du gemmer og bruger igen og igen — persona-metoden, idémaskinen og overwind-teknikken til når du sidder fast midt i et projekt.</p>
+      <div class="hero-pills">
+        <div class="hero-pill"><span>⏱</span> Ca. 40 min</div>
+        <div class="hero-pill"><span>🔧</span> 3 systemer</div>
+        <div class="hero-pill"><span>🔥</span> 1 øvelse</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="wrap">
+
+    <div class="sect-label"><hr><span>System 1 — Persona-metoden</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Giv din AI en fast kreativ identitet</h3>
+      <p class="prose">I stedet for at starte fra nul hver gang: skriv én gang en system-prompt der beskriver din kreative AI-assistent. Gem den og brug den som udgangspunkt fremover.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">System-prompt — din kreative assistent</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text"><span class="hl">Du er min kreative sparringspartner.</span>
+Din stil: direkte, ærlig og konstruktiv — du roser kun det der fortjener det.
+Du genererer <span class="hlg">altid minimum 5 variationer</span> når jeg beder om idéer.
+
+Mine projekter arbejder typisk med: <span class="hly">[fx korthistorier / blog / lyrik]</span>
+Min foretrukne tone: <span class="hly">[fx: personlig og uformel / skarp og præcis]</span>
+
+Regler:
+- Aldrig starte med "Selvfølgelig!" eller generel begejstring
+- Altid pege på det svageste punkt i mine udkast
+- Foreslå altid én "vild" idé ved siden af de realistiske
+
+Vent på min første opgave.</div>
+      </div>
+
+      <div class="highlight-box">
+        <div class="hb-icon">🔧</div>
+        <div>
+          <div class="hb-title">Tilpas din persona</div>
+          <div class="hb-text">Erstat de gule felter med dine egne præferencer. Gem i en note-app eller i Claude Projects under "Custom instructions". Brug den som start på hver ny kreativ session.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>System 2 — Idémaskinen</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Fra diffus tanke til konkret projekt</h3>
+      <p class="prose">Du har en vag følelse af noget du vil skrive — men du kan ikke formulere det præcist. Idémaskinen er en trin-for-trin prompt-sekvens der tager dig fra "noget med ensomhed og togstationer" til et konkret projekt du kan starte på.</p>
+
+      <div class="checklist">
+        <div class="chk"><div class="chk-icon r">1️⃣</div><div><div class="chk-title">Trin 1 — Dump idéen</div><div class="chk-desc">Skriv til AI: <em>"Jeg har en vag idé om [beskriv helt frit]. Stil mig 5 spørgsmål der hjælper mig med at præcisere hvad jeg egentlig vil."</em></div></div></div>
+        <div class="chk"><div class="chk-icon r">2️⃣</div><div><div class="chk-title">Trin 2 — Besvar spørgsmålene</div><div class="chk-desc">Svar kortfattet på AI's 5 spørgsmål — dine egne ord. Bekymr dig ikke om kvaliteten.</div></div></div>
+        <div class="chk"><div class="chk-icon r">3️⃣</div><div><div class="chk-title">Trin 3 — Opsummering og vinkel</div><div class="chk-desc">Bed AI: <em>"Baseret på mine svar: hvad er det centrale tema? Giv mig 3 mulige vinkler — fra den mest personlige til den mest universelle."</em></div></div></div>
+        <div class="chk"><div class="chk-icon g">4️⃣</div><div><div class="chk-title">Trin 4 — Den første sætning</div><div class="chk-desc">Vælg den vinkel der resonerer mest og bed AI: <em>"Skriv 5 mulige første sætninger til dette projekt."</em> Vælg én — eller kombiner to.</div></div></div>
+        <div class="chk"><div class="chk-icon g">5️⃣</div><div><div class="chk-title">Trin 5 — Start</div><div class="chk-desc">Nu skriver du. Ikke AI. Du har en vinkel, et tema og en første sætning. Det er alt du behøver.</div></div></div>
+      </div>
+    </div>
+
+    <div class="sect-label"><hr><span>System 3 — Overwind-teknikken</span><hr></div>
+    <div class="tech">
+      <h3 class="tech-h">Når du sidder fast midt i et projekt</h3>
+      <p class="prose">Du er i gang — men kapitel 3 er muddervand og du ved ikke hvad næste afsnit skal sige. Overwind-teknikken redder dig.</p>
+
+      <div class="copy-block">
+        <div class="copy-topbar">
+          <span class="copy-label-txt">Prompt — overwind</span>
+          <button class="copy-btn" onclick="copyBlock(this)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+        </div>
+        <div class="copy-text">Jeg sidder fast i mit projekt.
+Her er hvad jeg har skrevet indtil nu:
+<span class="hly">[indsæt det du har]</span>
+
+Hvad jeg prøver at opnå med næste del: <span class="hl">[beskriv]</span>
+Problemet er: <span class="hlg">[hvad der blokerer dig]</span>
+
+Giv mig:
+1. Én diagnose: hvad er det reelle problem i det jeg allerede har?
+2. To mulige retninger fremad — én "sikker", én der overrasker
+3. Den første sætning i næste afsnit for begge retninger</div>
+      </div>
+
+      <div class="concept-row">
+        <div class="cc rose">
+          <div class="cc-title">📋 Gem dine bedste prompts</div>
+          <div class="cc-body">Opret en note kaldt "Mine AI-prompts". Kopier de prompts der virker. Over tid får du et personligt bibliotek der er dit vigtigste kreative værktøj.</div>
+          <div class="cc-tip">→ Start med de 3 prompts fra dette kursus.</div>
+        </div>
+        <div class="cc teal">
+          <div class="cc-title">🔄 Iterationsreglen</div>
+          <div class="cc-body">Første AI-output er aldrig det bedste. Brug altid mindst 2-3 runder med AI på vigtige projekter — bed om forbedringer og variationer.</div>
+          <div class="cc-tip">→ "Det her er godt — men gør det 30% mere [adjektiv]."</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="practice">
+      <div class="practice-bar"><span class="p-tag">Afsluttende øvelse</span><span class="p-title">Byg din idébygger</span></div>
+      <div class="p-body">
+        <ol>
+          <li><strong>Tilpas persona-prompten</strong> med dine egne præferencer. Gem den i en note-app.</li>
+          <li><strong>Brug idémaskinen</strong> (trin 1-5) på et vagt projekt du har haft i tankerne. Du skal ende med en første sætning du faktisk kan lide.</li>
+          <li><strong>Valgfrit:</strong> Skriv minimum 100 ord med din første sætning som udgangspunkt.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="summary">
+      <h3>Det har du lært i dette sidekursus</h3>
+      <div class="sum-grid">
+        <div class="sum-item">Stormmandens metode — 10 idéer på 2 min</div>
+        <div class="sum-item">Sparringspartner-teknikken — AI som kritiker af dine udkast</div>
+        <div class="sum-item">Genre-specifikke prompter til fiktion, lyrik og indhold</div>
+        <div class="sum-item">Lyrik-prompt der tvinger AI ud af klichéer</div>
+        <div class="sum-item">Persona-metoden — én system-prompt du genbruger</div>
+        <div class="sum-item">Idémaskinen — 5 trin fra vag tanke til konkret projekt</div>
+        <div class="sum-item">Overwind-teknikken — kom videre når du sidder fast</div>
+        <div class="sum-item">Iterationsreglen — første output er aldrig det bedste</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="btn-next outline" onclick="showView(2)">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+        Tilbage: Modul 2
+      </button>
+      <a class="btn-finish" href="eksamen-kreativ.html">
+        Gå til eksamen
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ Kopieret til udklipsholder</div>
+
+<script>
+  const done = new Set();
+
+  function showView(n) {
+    done.add(currentView);
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + n).classList.add('active');
+    currentView = n;
+    updateJourney();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  let currentView = 1;
+
+  function updateJourney() {
+    [1, 2, 3].forEach(i => {
+      const j = document.getElementById('j' + i);
+      j.classList.remove('active', 'done');
+      if (i === currentView) j.classList.add('active');
+      else if (done.has(i)) j.classList.add('done');
+    });
+    if (done.has(3)) document.getElementById('j4').classList.add('done');
+  }
+
+  function copyBlock(btn) {
+    const text = btn.closest('.copy-block').querySelector('.copy-text').innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.classList.add('copied');
+      btn.textContent = '✓ Kopieret';
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér';
+      }, 1800);
+    });
+  }
+</script>
+
+</body>
+</html>
