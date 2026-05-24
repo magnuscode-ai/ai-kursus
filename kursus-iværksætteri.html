@@ -1,566 +1,514 @@
-import React, { useState } from "react";
-import { motion } from "framer-motion";
-import { CheckCircle, Trophy, Sparkles, AlertCircle, Coins, Star, Zap, ArrowRight, ExternalLink } from "lucide-react";
-import { useTiltEffect } from "../hooks/use-tilt";
+import React, { useState, useRef, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Brain, CheckCircle, AlertCircle, Trophy, Star,
+  ArrowLeft, Sparkles, Coins, ChevronRight,
+  Send, Award, ShieldCheck, RotateCcw
+} from "lucide-react";
 
-function TakeawayBox({ children }: { children: React.ReactNode }) {
+const PASS_THRESHOLD = 12;
+
+// ─── 15 exam questions ────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    q: "Hvad er den primære fordel ved at bruge AI til idégenerering i opstartsfasen?",
+    options: ["AI kan garantere succes for din forretning", "AI genererer mange idéer hurtigt, som du filtrerer og prioriterer", "AI erstatter behovet for markedsresearch", "AI vælger automatisk den bedste forretningsmodel"],
+    correct: 1,
+  },
+  {
+    q: "Hvad beskriver TAM/SAM/SOM-modellen?",
+    options: ["Team, Strategy, Operations, Marketing", "Total, Serviceable og Obtainable Market", "Target, Segment, Offer og Message", "Trend, Adoption, Scale og Monetization"],
+    correct: 1,
+  },
+  {
+    q: "Hvad er en ICP i en markedsføringsstrategi?",
+    options: ["Internal Communication Protocol", "Ideal Customer Profile", "Integrated Campaign Plan", "Internet Content Provider"],
+    correct: 1,
+  },
+  {
+    q: "Hvilken pitch-struktur lærte vi i Modul 2 for investorpitches?",
+    options: ["Marked → Team → Produkt → Budget", "Vision → Mission → Values → Strategy", "Problem → Løsning → Marked → Team → Traction → Funding Ask", "Introduktion → Demo → Pris → Næste skridt"],
+    correct: 2,
+  },
+  {
+    q: "Hvad måler CAC (Customer Acquisition Cost)?",
+    options: ["Den samlede omsætning pr. kunde", "Prisen på at skaffe én ny betalende kunde", "Antallet af nye kunder pr. måned", "Kundens månedlige forbrug"],
+    correct: 1,
+  },
+  {
+    q: "Hvad er LTV (Lifetime Value) et udtryk for?",
+    options: ["Virksomhedens samlede levetid på markedet", "Den samlede omsætning én kunde genererer over hele kunderelationen", "Produktets tekniske levetid", "Antal måneder til break-even"],
+    correct: 1,
+  },
+  {
+    q: "Hvilken AI-model anbefales i kurset til at analysere og forbedre skriftlige dokumenter?",
+    options: ["Midjourney", "Perplexity", "Claude", "Stable Diffusion"],
+    correct: 2,
+  },
+  {
+    q: "Hvad er formålet med en Go-to-Market (GTM) strategi?",
+    options: ["At beskrive produktets tekniske arkitektur i detaljer", "At definere aktionærstrukturen og kapitalindskud", "At planlægge, hvordan virksomheden når sine målkunder og skaber omsætning", "At opstille virksomhedens interne HR-processer"],
+    correct: 2,
+  },
+  {
+    q: "Hvad er det primære formål med et Executive Summary i en forretningsplan?",
+    options: ["At redegøre for virksomhedens teknologistak", "At give et hurtigt, overbevisende overblik over hele forretningen", "At opremse alle ansatte og deres roller", "At dokumentere udgifter i detaljer"],
+    correct: 1,
+  },
+  {
+    q: "Hvad måler 'churn rate' i en abonnementsvirksomhed?",
+    options: ["Antal nye kunder pr. kvartal", "Andelen af kunder der forlader produktet i en given periode", "Virksomhedens vækstrate i procent", "Gennemsnitlig svartid i kundeservice"],
+    correct: 1,
+  },
+  {
+    q: "Hvad er det første ChatGPT-prompt vi brugte i GreenBite-casen (Modul 5)?",
+    options: ["Lav et 6-måneders budget med 2 ansatte", "Skriv 3 LinkedIn-posts til launch-ugen", "Definer en MVP, USP, målgruppe og 3 kerneprodukter for madlevering", "Analyser konkurrenterne på det danske marked"],
+    correct: 2,
+  },
+  {
+    q: "Hvad betyder 'break-even' i en forretningssammenhæng?",
+    options: ["At virksomheden har nået sua maksimale vækst", "Det punkt, hvor omsætning præcis dækker alle omkostninger", "At virksomheden sælges til investorer", "At produktet lanceres på markedet"],
+    correct: 1,
+  },
+  {
+    q: "Hvad er en MVP (Minimum Viable Product)?",
+    options: ["Det dyreste og mest funktionsrige produkt", "En simpel version af produktet med nok funktioner til at validere idéen", "En marketingplan for produktlancering", "En finansiel prognose for de første 5 år"],
+    correct: 1,
+  },
+  {
+    q: "Hvilken AI-platform bruger vi i kurset til markeds-research og faktacheck?",
+    options: ["Midjourney", "Perplexity", "Canva AI", "Runway ML"],
+    correct: 1,
+  },
+  {
+    q: "Hvad er den vigtigste teknik for at skrive effektive AI-prompts ifølge kurset?",
+    options: ["At bruge flest mulige ord for at give kontekst", "At definere en klar rolle, kontekst, præcis opgave og begrænsninger", "At stille spørgsmålet på engelsk for bedre resultater", "At bede AI om at være kreativ og fri"],
+    correct: 1,
+  },
+];
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function fireConfetti() {
+  const colors = ["#D4AF37", "#FFDF00", "#F9F1A5", "#fff8dc", "#C0A040"];
+  for (let i = 0; i < 80; i++) {
+    const el = document.createElement("div");
+    el.style.cssText = `position:fixed;width:${6 + Math.random() * 6}px;height:${6 + Math.random() * 6}px;z-index:9999;pointer-events:none;border-radius:${Math.random() > 0.5 ? "50%" : "2px"};background:${colors[Math.floor(Math.random() * colors.length)]};left:${Math.random() * 100}vw;top:-12px;`;
+    document.body.appendChild(el);
+    const anim = el.animate(
+      [
+        { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate3d(${Math.random() * 200 - 100}px,105vh,0) rotate(${Math.random() * 720}deg)`, opacity: 0 },
+      ],
+      { duration: Math.random() * 1400 + 1200, easing: "cubic-bezier(.37,0,.63,1)" }
+    );
+    anim.onfinish = () => el.remove();
+  }
+}
+
+function useTilt() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [style, setStyle] = useState<React.CSSProperties>({});
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      setStyle({ transform: `perspective(900px) rotateY(${x * 12}deg) rotateX(${-y * 12}deg) scale(1.025)`, transition: "transform 0.1s ease" });
+    };
+    const onLeave = () => setStyle({ transform: "perspective(900px) rotateY(0) rotateX(0) scale(1)", transition: "transform 0.4s ease" });
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => { el.removeEventListener("mousemove", onMove); el.removeEventListener("mouseleave", onLeave); };
+  }, []);
+
+  return { ref, style };
+}
+
+// ─── Sub-components ────────────────────────────────────────────────────────────
+
+function GoldBadge({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mt-12 p-6 rounded-xl border-2 border-primary/30 bg-primary/5 relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10" />
-      <h4 className="text-primary font-bold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
-        <Sparkles className="w-4 h-4" />
-        Key Takeaway
-      </h4>
-      <p className="font-serif text-lg lg:text-xl text-foreground/90 leading-relaxed italic">
-        "{children}"
-      </p>
-    </div>
+    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest border"
+      style={{ background: "linear-gradient(135deg,#D4AF37,#F9F1A5,#C0A040)", color: "#0a0a14", borderColor: "#D4AF37" }}>
+      {children}
+    </span>
   );
 }
 
-function SectionHeader({ title }: { title: string }) {
-  return (
-    <h3 className="text-xl font-bold font-serif text-foreground mt-10 mb-4 pb-2 border-b border-border/50">
-      {title}
-    </h3>
-  );
-}
-
-function StepCard({
-  step,
-  title,
-  content,
-  isCompleted,
-  onComplete
-}: {
-  step: number,
-  title: string,
-  content: React.ReactNode,
-  isCompleted: boolean,
-  onComplete: () => void
+function QuizCard({ q, idx, selected, onSelect }: {
+  q: typeof QUESTIONS[0]; idx: number; selected: number | null; onSelect: (i: number) => void;
 }) {
-  const [isOpen, setIsOpen] = useState(step === 1 || isCompleted);
-
-  return (
-    <div className={`mb-4 rounded-xl border transition-all duration-300 ${isCompleted ? 'border-primary/40 bg-primary/5' : 'border-border bg-card'}`}>
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-5 text-left"
-      >
-        <div className="flex items-center gap-4">
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isCompleted ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
-            {step}
-          </div>
-          <h4 className={`font-serif text-lg font-medium ${isCompleted ? 'text-primary' : 'text-foreground'}`}>
-            {title}
-          </h4>
-        </div>
-        {isCompleted && <CheckCircle className="w-5 h-5 text-primary" />}
-      </button>
-
-      {isOpen && (
-        <div className="px-5 pb-5 pt-2 border-t border-border/50">
-          <div className="text-muted-foreground space-y-3 mb-6">
-            {content}
-          </div>
-          {!isCompleted && (
-            <button
-              onClick={onComplete}
-              className="px-6 py-2 bg-foreground text-background font-medium rounded-lg hover:bg-primary hover:text-primary-foreground transition-all active:scale-95 flex items-center gap-2 shadow-lg hover:shadow-primary/20"
-            >
-              <CheckCircle className="w-4 h-4" />
-              Fuldfør trin
-            </button>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-function QuizQuestion({
-  q,
-  num,
-  selected,
-  onSelect,
-}: {
-  q: { question: string; options: { text: string }[]; correct: number };
-  num: number;
-  selected: number | null;
-  onSelect: (idx: number) => void;
-}) {
+  const tilt = useTilt();
   const answered = selected !== null;
 
   return (
-    <div className="mb-6 bg-card p-6 rounded-xl border border-border">
-      <h3 className="font-serif text-lg font-medium mb-4 text-foreground">
-        <span className="text-primary mr-2">Q{num}.</span> {q.question}
-      </h3>
-      <div className="space-y-3">
-        {q.options.map((opt, idx) => {
-          const isSelected = selected === idx;
-          const isCorrect = idx === q.correct;
-
-          let btnClass = "border-border hover:border-primary/50 text-foreground bg-muted/20 cursor-pointer";
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: idx * 0.04 }}
+      ref={tilt.ref}
+      style={{ background: "rgba(255,255,255,0.03)", backdropFilter: "blur(12px)", borderColor: "rgba(212,175,55,0.15)", boxShadow: "0 25px 60px -15px rgba(0,0,0,0.5)", ...tilt.style }}
+      className="mb-5 rounded-2xl border p-6"
+    >
+      <p className="font-serif text-lg font-semibold text-white mb-4 leading-snug">
+        <span style={{ color: "#D4AF37" }} className="mr-2 font-mono">{String(idx + 1).padStart(2, "0")}.</span>
+        {q.q}
+      </p>
+      <div className="space-y-2.5">
+        {q.options.map((opt, i) => {
+          const isCorrect = i === q.correct;
+          const isSelected = selected === i;
+          let bg = "bg-white/5 border-white/10 hover:border-amber-400/40 hover:bg-white/10 cursor-pointer";
           let icon = null;
-
           if (answered) {
-            if (isCorrect) {
-              btnClass = "border-green-500/50 bg-green-500/10 text-green-400 cursor-default";
-              icon = <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />;
-            } else if (isSelected) {
-              btnClass = "border-destructive/50 bg-destructive/10 text-destructive cursor-default";
-              icon = <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0" />;
-            } else {
-              btnClass = "border-border opacity-40 cursor-default";
-            }
+            if (isCorrect) { bg = "border-emerald-500/60 bg-emerald-500/10 cursor-default"; icon = <CheckCircle className="w-4 h-4 text-emerald-400 flex-shrink-0" />; }
+            else if (isSelected) { bg = "border-red-500/50 bg-red-500/10 cursor-default"; icon = <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />; }
+            else { bg = "border-white/5 opacity-40 cursor-default"; }
           } else if (isSelected) {
-            btnClass = "border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(var(--primary),0.15)] cursor-pointer";
+            bg = "border-amber-400/60 bg-amber-400/10 cursor-pointer";
           }
-
           return (
-            <button
-              key={idx}
-              disabled={answered}
-              onClick={() => !answered && onSelect(idx)}
-              className={`w-full flex items-center justify-between p-4 rounded-lg border text-left transition-all duration-200 ${btnClass} ${!answered ? "active:scale-[0.98]" : ""}`}
-            >
-              <span className="flex-1">{opt.text}</span>
+            <button key={i} disabled={answered} onClick={() => !answered && onSelect(i)}
+              className={`w-full flex items-center justify-between p-3.5 rounded-xl border text-left transition-all duration-200 ${bg}`}>
+              <span className={`flex-1 text-sm ${answered && isCorrect ? "text-emerald-300" : answered && isSelected ? "text-red-300" : "text-gray-200"}`}>{opt}</span>
               {icon}
             </button>
           );
         })}
       </div>
       {answered && (
-        <motion.p
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          className={`mt-3 text-sm font-medium ${selected === q.correct ? "text-green-400" : "text-destructive"}`}
-        >
-          {selected === q.correct ? "Korrekt!" : `Forkert — det rigtige svar er: "${q.options[q.correct].text}"`}
+        <motion.p initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+          className={`mt-3 text-xs font-medium ${selected === q.correct ? "text-emerald-400" : "text-red-400"}`}>
+          {selected === q.correct ? "✓ Korrekt!" : `✗ Rigtigt svar: "${q.options[q.correct]}"`}
         </motion.p>
       )}
+    </motion.div>
+  );
+}
+
+// ─── Phase 1: Exam ─────────────────────────────────────────────────────────────
+function Phase1({ onPass, onFail }: { onPass: () => void; onFail: () => void }) {
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [done, setDone] = useState(false);
+  const [score, setScore] = useState(0);
+
+  const handleSelect = (qi: number, idx: number) => {
+    if (answers[qi] !== undefined) return;
+    const next = { ...answers, [qi]: idx };
+    setAnswers(next);
+    if (Object.keys(next).length === QUESTIONS.length) {
+      const s = QUESTIONS.filter((q, i) => next[i] === q.correct).length;
+      setScore(s);
+      setDone(true);
+      if (s >= PASS_THRESHOLD) {
+        fireConfetti();
+        setTimeout(onPass, 2200);
+      }
+    }
+  };
+
+  const passed = done && score >= PASS_THRESHOLD;
+
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-12 pb-32">
+      {/* Header */}
+      <div className="mb-10">
+        <GoldBadge><Sparkles className="w-3 h-3" /> Fase 1 — Eksamenstest</GoldBadge>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-white mt-4 mb-3 leading-tight">
+          Den Store <span style={{ background: "linear-gradient(135deg,#D4AF37,#F9F1A5)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Afgørende Eksamen</span>
+        </h1>
+        <p className="text-gray-400 text-lg leading-relaxed">
+          15 avancerede spørgsmål om AI i iværksætteri. Du skal besvare mindst <span style={{ color: "#D4AF37" }} className="font-bold">12 ud af 15</span> korrekt for at bestå og låse op for Fase 2.
+        </p>
+        <div className="mt-4 flex items-center gap-4">
+          <div className="h-1.5 flex-1 rounded-full bg-white/10 overflow-hidden">
+            <div className="h-full rounded-full transition-all duration-500"
+              style={{ width: `${(Object.keys(answers).length / QUESTIONS.length) * 100}%`, background: "linear-gradient(90deg,#D4AF37,#F9F1A5)" }} />
+          </div>
+          <span className="text-sm text-gray-400 font-mono">{Object.keys(answers).length}/{QUESTIONS.length}</span>
+        </div>
+      </div>
+
+      {/* Questions */}
+      <div>
+        {QUESTIONS.map((q, i) => (
+          <QuizCard key={i} q={q} idx={i} selected={answers[i] !== undefined ? answers[i] : null} onSelect={(idx) => handleSelect(i, idx)} />
+        ))}
+      </div>
+
+      {/* Result banner */}
+      <AnimatePresence>
+        {done && (
+          <motion.div initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+            className={`mt-10 p-8 rounded-2xl border-2 text-center ${passed ? "border-amber-400/40" : "border-red-500/30"}`}
+            style={{ background: passed ? "rgba(212,175,55,0.06)" : "rgba(239,68,68,0.06)", backdropFilter: "blur(12px)" }}>
+            {passed ? (
+              <>
+                <Trophy className="w-12 h-12 mx-auto mb-3" style={{ color: "#D4AF37" }} />
+                <h3 className="font-serif text-2xl font-bold text-white mb-1">Eksamen Bestået!</h3>
+                <p style={{ color: "#D4AF37" }} className="font-medium mb-2">{score} af 15 korrekte</p>
+                <p className="text-gray-400 text-sm">Låser op for Fase 2 om et øjeblik...</p>
+              </>
+            ) : (
+              <>
+                <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-3" />
+                <h3 className="font-serif text-2xl font-bold text-white mb-1">Ikke Bestået</h3>
+                <p className="text-gray-400 mb-2">Du scorede {score} af 15. Minimum krav er {PASS_THRESHOLD}.</p>
+                <button onClick={onFail}
+                  className="mt-4 px-6 py-2.5 rounded-xl border border-white/20 text-white font-medium hover:bg-white/10 transition-all flex items-center gap-2 mx-auto">
+                  <RotateCcw className="w-4 h-4" /> Prøv Igen
+                </button>
+              </>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-export function Modules({ activeModule, completedSteps, setCompletedSteps, onQuizComplete }: {
-  activeModule: number;
-  completedSteps: number[];
-  setCompletedSteps: (s: number[]) => void;
-  onQuizComplete: () => void;
-}) {
+// ─── Phase 2: Practical Prompt Task (self-assessment) ─────────────────────────
+function Phase2({ coins, onComplete }: { coins: number; onComplete: (newCoins: number) => void }) {
+  const tilt = useTilt();
+  const [prompt, setPrompt] = useState("");
+  const [checked, setChecked] = useState<Record<string, boolean>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [certified, setCertified] = useState(false);
+  const [error, setError] = useState("");
 
-  if (activeModule === 1) {
+  const CRITERIA = [
+    { key: "rolle", label: "Rolle", desc: "Jeg har defineret en klar rolle eller persona for AI'en (f.eks. 'Du er en erfaren markedsanalytiker...')" },
+    { key: "kontekst", label: "Kontekst", desc: "Jeg har givet tilstrækkelig baggrundsinformation om virksomheden og situationen" },
+    { key: "præcision", label: "Præcision", desc: "Opgaven er specifik og målbar — jeg undgår vage formuleringer som 'analyser det'" },
+    { key: "begrænsninger", label: "Begrænsninger", desc: "Jeg har angivet format, omfang eller begrænsninger (f.eks. 'returner som punktliste med max 5 punkter')" },
+  ];
+
+  const allChecked = CRITERIA.every(c => checked[c.key]);
+
+  const handleSubmit = () => {
+    if (prompt.trim().length < 40) { setError("Skriv et mere udførligt prompt — mindst 40 tegn."); return; }
+    if (!allChecked) { setError("Bekræft alle fire kriterier før du indsender."); return; }
+    setError("");
+    setSubmitted(true);
+    fireConfetti();
+    setTimeout(() => { setCertified(true); onComplete(coins + 50); }, 900);
+  };
+
+  const toggleCheck = (key: string) => {
+    setChecked(prev => ({ ...prev, [key]: !prev[key] }));
+    setError("");
+  };
+
+  if (certified) {
     return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-          AI som din <span className="text-primary italic">Co-founder</span>
-        </h1>
-        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-          AI er ikke bare et værktøj — det er din mest tilgængelige samarbejdspartner og strategiske rådgiver. I dette modul lærer du, hvordan du bruger AI til at generere, validere og forfine forretningsidéer med lynets hast.
-        </p>
-
-        <SectionHeader title="Idégenerering med AI" />
-        <p className="text-muted-foreground mb-4">Brug promptteknikker til brainstorm for at udforske utallige retninger på få minutter.</p>
-        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
-          "Act as a startup advisor with 20 years of experience. Suggest 5 B2B SaaS ideas targeting the real estate market in Denmark, focusing on sustainability."
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto px-6 py-16 flex flex-col items-center">
+        <div ref={tilt.ref}
+          style={{ borderColor: "#D4AF37", background: "linear-gradient(135deg,#0d1117,#1a1400)", boxShadow: "0 0 80px rgba(212,175,55,0.25)", ...tilt.style }}
+          className="w-full max-w-2xl rounded-2xl border-2 p-1">
+          <div className="p-10 text-center border border-amber-400/20 rounded-xl" style={{ background: "rgba(212,175,55,0.04)" }}>
+            <Award className="w-16 h-16 mx-auto mb-4" style={{ color: "#D4AF37" }} />
+            <div className="flex gap-1 justify-center mb-4">
+              {[1,2,3,4,5].map(i => <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />)}
+            </div>
+            <h2 className="font-serif text-3xl font-bold text-white mb-2">Iværksætter Certifikat</h2>
+            <p className="text-lg mb-4 font-serif italic" style={{ color: "#D4AF37" }}>AI til Iværksætteri — Officielt Bestået</p>
+            <p className="text-gray-400 text-sm mb-6">Du har demonstreret ekspertniveau i AI-drevet iværksætteri og prompt engineering.</p>
+            <div className="flex items-center justify-center gap-2 mb-8 px-4 py-2 rounded-full border mx-auto w-fit"
+              style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.08)" }}>
+              <Coins className="w-5 h-5" style={{ color: "#D4AF37" }} />
+              <span style={{ color: "#D4AF37" }} className="font-bold">+50 Coins optjent!</span>
+            </div>
+            <div className="border-t border-amber-400/10 pt-6 flex justify-between items-end">
+              <div className="text-left">
+                <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Dato</div>
+                <div className="font-mono text-sm text-gray-300">{new Date().toLocaleDateString('da-DK')}</div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Udstedt af</div>
+                <div className="font-serif italic text-gray-300">LearnAI Academy</div>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <SectionHeader title="Markedsvalidering" />
-        <p className="text-muted-foreground mb-6">Brug Claude til at analysere markedsstørrelse, konkurrenter og kundebehov. Du kan anvende frameworks som TAM/SAM/SOM og lade AI udfylde de indledende estimater baseret på åbne data.</p>
-
-        <SectionHeader title="Koncepttest" />
-        <p className="text-muted-foreground mb-6">Byg en mini-landingsside-beskrivelse med AI på under 1 time. Bed ChatGPT om at generere en overbevisende overskrift, 3 value propositions og en kundeinterview-guide, så du kan validere dit koncept i virkeligheden.</p>
-
-        <TakeawayBox>
-          AI kan generere 10 forretningsidéer på 2 minutter. Din opgave er at vælge den rigtige — og AI kan hjælpe dig med det også.
-        </TakeawayBox>
-      </div>
+      </motion.div>
     );
   }
 
-  if (activeModule === 2) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-          Forretningsplaner & <span className="text-primary italic">Pitch Decks</span>
+  return (
+    <div className="max-w-3xl mx-auto px-6 py-12 pb-32">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+        <div className="mb-4 flex items-center gap-3">
+          <ShieldCheck className="w-6 h-6" style={{ color: "#D4AF37" }} />
+          <GoldBadge>Fase 2 — Ulåst</GoldBadge>
+        </div>
+        <h1 className="font-serif text-4xl md:text-5xl font-bold text-white mb-3 leading-tight">
+          Den <span style={{ background: "linear-gradient(135deg,#D4AF37,#F9F1A5)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>Praktiske Udfordring</span>
         </h1>
-        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-          Investorer er travle. Du har 3 minutter til at overbevise dem. AI kan skrive en investor-pitch, der fanger interesse — men du skal vide, hvad der skal i den.
+        <p className="text-gray-400 text-lg leading-relaxed mb-10">
+          Skriv et professionelt AI-prompt til at generere en markedsanalyse for en dansk startup. Evaluer dit eget prompt på de fire kriterier fra kurset, og indsend når du er tilfreds.
         </p>
 
-        <SectionHeader title="Investor-pitch med AI" />
-        <p className="text-muted-foreground mb-4">Den gyldne struktur: Problem → Løsning → Marked → Forretningsmodel → Team → Traction → Funding Ask.</p>
-        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
-          "Write a compelling investor pitch for [din ide]. The company solves [problem] for [målgruppe]. We make money by [forretningsmodel]. Our traction so far is [traction]."
+        {/* Task card */}
+        <div className="mb-8 p-6 rounded-2xl border" style={{ background: "rgba(212,175,55,0.05)", borderColor: "rgba(212,175,55,0.2)" }}>
+          <h3 className="font-serif text-lg font-bold text-white mb-3 flex items-center gap-2">
+            <Sparkles className="w-4 h-4" style={{ color: "#D4AF37" }} /> Din opgave
+          </h3>
+          <p className="text-gray-300 leading-relaxed mb-4">
+            Skriv et AI-prompt der beder AI'en om at udarbejde en <strong className="text-white">komplet markedsanalyse for en ny dansk tech-startup</strong> inden for bæredygtig logistik.
+          </p>
+          <div className="p-3 rounded-lg font-mono text-xs text-gray-500 border border-white/5" style={{ background: "rgba(0,0,0,0.3)" }}>
+            Husk: Rolle → Kontekst → Præcis opgave → Format/Begrænsninger
+          </div>
         </div>
 
-        <SectionHeader title="Forretningsplanen" />
-        <p className="text-muted-foreground mb-6">Få AI til at skrive det første udkast af dit Executive Summary, Markedsanalyse og Konkurrentanalyse. Brug derefter Claude til at gennemse, stramme op og fjerne 'fluff', så dokumentet lyder professionelt og præcist.</p>
-
-        <SectionHeader title="Pitch Deck Slides" />
-        <p className="text-muted-foreground mb-6">Kombinér Canva og AI. Lad AI skrive den præcise tekst (max 15 ord pr. slide) til hvert slide i dit dæk, og brug AI billedgeneratorer til at skabe unikke baggrundsbilleder, der matcher dit brand.</p>
-
-        <TakeawayBox>
-          En AI-genereret pitch er 80% klar på 20 minutter. De resterende 20% er din personlige touch og markedskendskab.
-        </TakeawayBox>
-      </div>
-    );
-  }
-
-  if (activeModule === 3) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-          Økonomi & <span className="text-primary italic">Data</span>
-        </h1>
-        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-          Tal taler for sig selv — men kun hvis du forstår dem. AI + Excel er dit finansielle kontrolcenter.
-        </p>
-
-        <SectionHeader title="Budget med AI" />
-        <p className="text-muted-foreground mb-6">Lad ChatGPT generere et komplet 12-måneders startup-budget-skabelon. Du beskriver dine primære udgifter (husleje, SaaS, lønninger) og indtægtskilder, og AI'en opstiller strukturen for dig.</p>
-
-        <SectionHeader title="Excel & Regneark-prompts" />
-        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
-          "Skriv en Excel-formel der beregner mit break-even point i måneder, givet en månedlig burn rate på 50k DKK, og en månedlig omsætningsvækst på 10k DKK."
+        {/* Textarea */}
+        <div className="mb-8">
+          <label className="block text-sm font-medium text-gray-300 mb-2">Dit prompt</label>
+          <textarea
+            value={prompt}
+            onChange={e => { setPrompt(e.target.value); setError(""); }}
+            placeholder="Skriv dit professionelle AI-prompt her..."
+            rows={8}
+            disabled={submitted}
+            className="w-full px-5 py-4 rounded-xl border text-white placeholder-gray-600 font-mono text-sm focus:outline-none transition-colors resize-none disabled:opacity-60 bg-white/5 border-white/10"
+            style={{ lineHeight: 1.7 }}
+          />
+          <div className="flex justify-end mt-1">
+            <span className="text-xs text-gray-600 font-mono">{prompt.length} tegn</span>
+          </div>
         </div>
 
-        <SectionHeader title="Cashflow & KPI'er" />
-        <p className="text-muted-foreground mb-6">Brug AI til at forklare komplicerede cashflow-begreber og identificere risici i din nuværende model. Få AI'en til at definere og opstille formler for dine vigtigste nøgletal: Revenue, CAC (Customer Acquisition Cost), LTV (Life Time Value) og churn rate.</p>
-
-        <TakeawayBox>
-          ChatGPT kan generere hele Excel-modeller fra en simpel beskrivelse. Du behøver ikke være økonom for at have styr på dine tal.
-        </TakeawayBox>
-      </div>
-    );
-  }
-
-  if (activeModule === 4) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-          Go-to-Market & <span className="text-primary italic">Branding</span>
-        </h1>
-        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-          Det bedste produkt vinder ikke altid. Den bedste markedsføringsstrategi gør. Lær at bruge AI til at dominere din niche.
-        </p>
-
-        <SectionHeader title="Go-to-Market Strategi" />
-        <p className="text-muted-foreground mb-6">Få AI til at udarbejde en GTM-plan opdelt i organisk, betalt og partnerskaber. Start med at definere din ICP (Ideal Customer Profile) detaljeret i samarbejde med Claude.</p>
-
-        <SectionHeader title="Social Media Content" />
-        <p className="text-muted-foreground mb-6">Skab en content-kalender for en hel måned på 5 minutter. Bed ChatGPT skrive alt fra dybdegående LinkedIn-posts til korte Instagram captions og fængende TikTok-scripts.</p>
-
-        <SectionHeader title="Brand Identitet & Email" />
-        <p className="text-muted-foreground mb-6">Brainstorm brandnavne, taglines og find din unikke tone-of-voice. Brug Midjourney til at udvikle visuelle logo-koncepter. Udarbejd derefter høj-konverterende cold email-sekvenser og nyhedsbreve, som er A/B testet af AI'en på forhånd.</p>
-
-        <TakeawayBox>
-          En komplet markedsføringsstrategi + 30 stykker indhold kan genereres med AI på én eftermiddag. Det tog tidligere uger.
-        </TakeawayBox>
-      </div>
-    );
-  }
-
-  if (activeModule === 5) {
-    return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
-          <Zap className="w-3.5 h-3.5" /> Interactive Case
-        </div>
-        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-          Hands-on <span className="text-primary italic">Iværksætter-Case</span>
-        </h1>
-        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-          Nu sætter du det hele sammen. Du skal opsætte en fiktiv virksomheds MVP på under 40 minutter ved hjælp af AI-værktøjer.
-        </p>
-
-        <div className="bg-card border border-border p-6 rounded-xl mb-10 shadow-lg relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full" />
-          <h2 className="font-serif text-2xl font-bold mb-2">Casen: "GreenBite"</h2>
-          <p className="text-muted-foreground">En sund madleverings-service til travle by-beboere i København.</p>
-        </div>
-
-        <div className="space-y-2">
-          <StepCard
-            step={1}
-            title="Definer virksomheden (5 min)"
-            isCompleted={completedSteps.includes(1)}
-            onComplete={() => setCompletedSteps([...completedSteps, 1])}
-            content={
-              <>
-                <p>Brug ChatGPT til at definere kernen i forretningen.</p>
-                <div className="font-mono text-sm bg-background p-3 rounded border border-border text-primary/80">
-                  "Hjælp mig med at definere en MVP for en sund madleverings-service i København. Giv mig USP, målgruppe og 3 kerneprodukter."
+        {/* Self-assessment checklist */}
+        <div className="mb-8">
+          <h3 className="text-sm font-semibold text-gray-300 uppercase tracking-widest mb-4">Selvevaluering — bekræft alle fire kriterier</h3>
+          <div className="space-y-3">
+            {CRITERIA.map(c => (
+              <button key={c.key} onClick={() => !submitted && toggleCheck(c.key)}
+                disabled={submitted}
+                className={`w-full flex items-start gap-4 p-4 rounded-xl border text-left transition-all duration-200 ${
+                  checked[c.key]
+                    ? "border-amber-400/40 bg-amber-400/5"
+                    : "border-white/10 bg-white/5 hover:border-white/20"
+                } ${submitted ? "cursor-default" : "cursor-pointer"}`}>
+                <div className={`w-6 h-6 rounded-md border-2 flex-shrink-0 flex items-center justify-center mt-0.5 transition-all ${
+                  checked[c.key] ? "border-amber-400 bg-amber-400" : "border-gray-600"
+                }`}>
+                  {checked[c.key] && <CheckCircle className="w-4 h-4 text-gray-900" />}
                 </div>
-              </>
-            }
-          />
-          <StepCard
-            step={2}
-            title="Forretningsplan-skelet (10 min)"
-            isCompleted={completedSteps.includes(2)}
-            onComplete={() => setCompletedSteps([...completedSteps, 2])}
-            content={
-              <p>Tag outputtet fra Step 1 og indsæt det i Claude. Bed den om at skrive et formelt Executive Summary og en detaljeret problemstilling. Læs det igennem og tilpas sproget.</p>
-            }
-          />
-          <StepCard
-            step={3}
-            title="Budget-estimat (10 min)"
-            isCompleted={completedSteps.includes(3)}
-            onComplete={() => setCompletedSteps([...completedSteps, 3])}
-            content={
-              <>
-                <p>Opret de finansielle rammer.</p>
-                <div className="font-mono text-sm bg-background p-3 rounded border border-border text-primary/80">
-                  "Lav et simpelt 6-måneders budget for en madleverings-startup med 2 ansatte i Danmark. Inkluder køkkenleje og marketing."
+                <div>
+                  <span className="font-semibold text-sm" style={{ color: checked[c.key] ? "#D4AF37" : "#9ca3af" }}>{c.label}</span>
+                  <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{c.desc}</p>
                 </div>
-              </>
-            }
-          />
-          <StepCard
-            step={4}
-            title="Marketing-strategi (10 min)"
-            isCompleted={completedSteps.includes(4)}
-            onComplete={() => setCompletedSteps([...completedSteps, 4])}
-            content={
-              <p>Bed din foretrukne AI om at generere 3 engagerende LinkedIn-posts til launch-ugen, samt en cold email template rettet mod HR-chefer for B2B frokostordninger.</p>
-            }
-          />
-          <StepCard
-            step={5}
-            title="Pitch den til en investor (5 min)"
-            isCompleted={completedSteps.includes(5)}
-            onComplete={() => setCompletedSteps([...completedSteps, 5])}
-            content={
-              <p>Brug pitch-strukturen fra Modul 2. Sammensæt alle elementerne til et stærkt 1-sides pitch-dokument, som er klar til at blive sendt som PDF.</p>
-            }
-          />
+              </button>
+            ))}
+          </div>
         </div>
 
-        {completedSteps.length === 5 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="mt-10"
-          >
-            <TakeawayBox>
-              Du har netop bygget grundlaget for en rigtig virksomhed — med AI som co-founder, CFO, og CMO på én gang.
-            </TakeawayBox>
-          </motion.div>
+        {/* Progress */}
+        <div className="mb-6">
+          <div className="flex justify-between mb-1.5">
+            <span className="text-xs text-gray-500">Kriterier opfyldt</span>
+            <span className="text-xs font-mono" style={{ color: "#D4AF37" }}>{Object.values(checked).filter(Boolean).length}/4</span>
+          </div>
+          <div className="h-1.5 bg-white/10 rounded-full overflow-hidden">
+            <motion.div className="h-full rounded-full" animate={{ width: `${(Object.values(checked).filter(Boolean).length / 4) * 100}%` }}
+              transition={{ duration: 0.4 }} style={{ background: "linear-gradient(90deg,#D4AF37,#F9F1A5)" }} />
+          </div>
+        </div>
+
+        {error && (
+          <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }}
+            className="mb-4 text-red-400 text-sm flex items-center gap-1.5">
+            <AlertCircle className="w-4 h-4" />{error}
+          </motion.p>
         )}
-      </div>
-    );
-  }
 
-  if (activeModule === 6) {
-    const QuizView = () => {
-      const tilt = useTiltEffect();
-      const [answers, setAnswers] = useState<Record<number, number>>({});
-      const [allCorrect, setAllCorrect] = useState(false);
-      const [quizDone, setQuizDone] = useState(false);
+        <button onClick={handleSubmit} disabled={submitted || !allChecked || prompt.trim().length < 40}
+          className="flex items-center gap-2.5 px-8 py-3.5 rounded-xl font-bold text-sm transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed"
+          style={{ background: "linear-gradient(135deg,#D4AF37,#C0A040)", color: "#0a0a14", boxShadow: "0 8px 32px rgba(212,175,55,0.3)" }}>
+          <Send className="w-4 h-4" />
+          Indsend og få dit certifikat
+        </button>
+      </motion.div>
+    </div>
+  );
+}
 
-      // Questions: correct answer must NEVER be the longest option
-      const questions = [
-        {
-          question: "Hvad er den primære fordel ved at bruge AI til idégenerering?",
-          options: [
-            { text: "AI kan erstatte al menneskelig kreativitet og intuition" },
-            { text: "AI genererer mange idéer hurtigt, som du kan filtrere" },
-            { text: "AI kender altid præcis det bedste marked for dig" },
-            { text: "AI garanterer succes for alle virksomheder" }
-          ],
-          correct: 1
-          // Correct: "AI genererer mange idéer hurtigt, som du kan filtrere" (shorter than option 0 and 2)
-        },
-        {
-          question: "Hvilken investor-pitch-struktur lærte vi i Modul 2?",
-          options: [
-            { text: "Vision → Mission → Produkt → Marked → Team → Budget → Exitstrategi" },
-            { text: "Problem → Løsning → Marked → Team → Traction → Funding Ask" },
-            { text: "Marked → Team → Problem → Løsning" },
-            { text: "Produkt → Pris → Promotion → Place" }
-          ],
-          correct: 1
-          // Correct: option 1 is shorter than option 0 (the decoy)
-        },
-        {
-          question: "Hvad står KPI for?",
-          options: [
-            { text: "Knowledge Performance Indicator" },
-            { text: "Key Performance Indicator" },
-            { text: "Key Product Innovation" },
-            { text: "Key Profit Index" }
-          ],
-          correct: 1
-          // Correct: "Key Performance Indicator" — same length as option 0
-        },
-        {
-          question: "Hvad er en ICP i en markedsføringsstrategi?",
-          options: [
-            { text: "Internet Content Provider" },
-            { text: "Ideal Customer Profile" },
-            { text: "Internal Communication Protocol" },
-            { text: "Income Calculation Platform" }
-          ],
-          correct: 1
-          // Correct: "Ideal Customer Profile" — shorter than options 2 and 3
-        }
-      ];
+// ─── Main Eksamen component ────────────────────────────────────────────────────
+export default function Eksamen() {
+  const [phase, setPhase] = useState<1 | 2>(1);
+  const [coins, setCoins] = useState(75);
+  const [key, setKey] = useState(0);
 
-      const handleSelect = (qi: number, idx: number) => {
-        if (answers[qi] !== undefined) return;
-        const newAnswers = { ...answers, [qi]: idx };
-        setAnswers(newAnswers);
+  useEffect(() => { document.documentElement.classList.add("dark"); }, []);
 
-        if (Object.keys(newAnswers).length === questions.length) {
-          const correct = questions.every((q, i) => newAnswers[i] === q.correct);
-          setAllCorrect(correct);
-          setQuizDone(true);
-          if (correct) {
-            onQuizComplete();
-            for (let i = 0; i < 60; i++) {
-              const confetti = document.createElement('div');
-              confetti.style.cssText = `position:fixed;width:8px;height:8px;z-index:9999;pointer-events:none;border-radius:2px;background:${['#D4AF37','#FFDF00','#F9F1A5','#fff'][Math.floor(Math.random()*4)]};left:${Math.random()*100}vw;top:-10px;transform:rotate(${Math.random()*360}deg)`;
-              document.body.appendChild(confetti);
-              const anim = confetti.animate([
-                { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
-                { transform: `translate3d(${Math.random()*160-80}px,100vh,0) rotate(${Math.random()*720}deg)`, opacity: 0 }
-              ], { duration: Math.random()*1200+1400, easing: 'cubic-bezier(.37,0,.63,1)' });
-              anim.onfinish = () => confetti.remove();
-            }
-          }
-        }
-      };
+  const handleReset = () => { setKey(k => k + 1); setPhase(1); };
 
-      const handleReset = () => {
-        setAnswers({});
-        setAllCorrect(false);
-        setQuizDone(false);
-      };
-
-      const score = questions.filter((q, i) => answers[i] === q.correct).length;
-
-      return (
-        <div className="animate-in fade-in duration-500 pb-20">
-          {!allCorrect ? (
-            <>
-              <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
-                Den Store <span className="text-primary italic">Afsluttende Quiz</span>
-              </h1>
-              <p className="text-xl text-muted-foreground leading-relaxed mb-10">
-                Test din viden fra kurset. Svar vises med det samme — svar rigtigt på alle 4 for at låse op for dit certifikat.
-              </p>
-
-              <div className="space-y-2">
-                {questions.map((q, i) => (
-                  <QuizQuestion
-                    key={i}
-                    num={i + 1}
-                    q={q}
-                    selected={answers[i] !== undefined ? answers[i] : null}
-                    onSelect={(idx) => handleSelect(i, idx)}
-                  />
-                ))}
-              </div>
-
-              {quizDone && !allCorrect && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="mt-8 p-6 bg-destructive/10 border border-destructive/30 rounded-xl flex items-center justify-between"
-                >
-                  <div>
-                    <p className="font-serif text-lg font-medium text-foreground">Du fik {score} af 4 rigtige.</p>
-                    <p className="text-sm text-muted-foreground mt-1">Prøv igen — du kan se de rigtige svar ovenfor.</p>
-                  </div>
-                  <button
-                    onClick={handleReset}
-                    className="px-6 py-2 bg-card border border-border text-foreground font-medium rounded-lg hover:bg-muted/50 transition-all active:scale-95 flex items-center gap-2"
-                  >
-                    <ArrowRight className="w-4 h-4" /> Prøv Igen
-                  </button>
-                </motion.div>
-              )}
-
-              <div className="mt-8 pt-8 border-t border-border">
-                <a
-                  href="/eksamen"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-3 w-full py-5 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-lg"
-                  style={{ background: "linear-gradient(135deg,#D4AF37,#C0A040)", color: "#0a0a14", boxShadow: "0 8px 40px rgba(212,175,55,0.35)" }}
-                >
-                  <Trophy className="w-5 h-5" />
-                  Gå til Eksamen
-                </a>
-              </div>
-            </>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex flex-col items-center justify-center pt-10"
-            >
-              <div
-                ref={tilt.ref}
-                style={{ boxShadow: '0 0 60px rgba(212,175,55,0.15)', ...tilt.style }}
-                className="w-full max-w-2xl aspect-[1.4] rounded-2xl relative flex items-center justify-center p-1 border border-primary/30"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-card to-background rounded-2xl opacity-90" />
-                <div className="relative z-10 text-center p-12 border-2 border-primary/20 w-full h-full rounded-xl flex flex-col items-center justify-center">
-                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/30">
-                    <Trophy className="w-10 h-10 text-primary" />
-                  </div>
-                  <h2 className="font-serif text-3xl text-foreground font-bold mb-2">Tillykke!</h2>
-                  <p className="text-xl font-serif text-primary italic mb-8">Du har gennemført AI til Iværksætteri</p>
-                  <div className="flex gap-1 mb-8">
-                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-5 h-5 text-primary fill-primary" />)}
-                  </div>
-                  <div className="w-full border-t border-border pt-6 flex justify-between items-end">
-                    <div className="text-left">
-                      <div className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Dato</div>
-                      <div className="font-mono text-sm">{new Date().toLocaleDateString('da-DK')}</div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Signatur</div>
-                      <div className="font-serif italic text-lg text-foreground/70">LearnAI Academy</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <p className="mt-8 text-muted-foreground flex items-center gap-2">
-                <Coins className="w-5 h-5 text-primary" /> Du har optjent 50 bonus Coins!
-              </p>
-
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6 }}
-                className="mt-8 w-full max-w-2xl"
-              >
-                <a
-                  href="/eksamen"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center justify-center gap-3 w-full py-5 rounded-xl font-bold text-lg transition-all active:scale-[0.98]"
-                  style={{ background: "linear-gradient(135deg,#D4AF37,#C0A040)", color: "#0a0a14", boxShadow: "0 8px 40px rgba(212,175,55,0.35)" }}
-                >
-                  <Trophy className="w-5 h-5" />
-                  Gå til Eksamen
-                </a>
-              </motion.div>
-            </motion.div>
-          )}
+  return (
+    <div className="min-h-screen text-white" style={{ background: "linear-gradient(160deg,#020617 0%,#0a0a1a 50%,#020617 100%)" }}>
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 h-14 flex items-center justify-between px-6 border-b"
+        style={{ background: "rgba(2,6,23,0.85)", backdropFilter: "blur(20px)", borderColor: "rgba(212,175,55,0.1)" }}>
+        <div className="flex items-center gap-2">
+          <Brain className="w-5 h-5" style={{ color: "#D4AF37" }} />
+          <span className="font-serif font-bold text-lg tracking-tight">Learn<span style={{ color: "#D4AF37" }}>AI</span></span>
+          <ChevronRight className="w-4 h-4 text-gray-600" />
+          <span className="text-sm text-gray-400 font-medium">Den Store Eksamen</span>
         </div>
-      );
-    };
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border text-sm"
+            style={{ borderColor: "rgba(212,175,55,0.3)", background: "rgba(212,175,55,0.08)" }}>
+            <Coins className="w-4 h-4" style={{ color: "#D4AF37" }} />
+            <span style={{ color: "#D4AF37" }} className="font-bold font-mono">{coins}</span>
+            <span className="text-gray-500 text-xs">Coins</span>
+          </div>
+          <a href="/" className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-white transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Kurset
+          </a>
+        </div>
+      </header>
 
-    return <QuizView />;
-  }
+      <div className="pt-14">
+        <AnimatePresence mode="wait">
+          <motion.div key={`phase-${phase}-${key}`} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            {/* Phase indicator */}
+            <div className="sticky top-14 z-40 border-b px-6 py-3 flex items-center gap-4"
+              style={{ background: "rgba(2,6,23,0.9)", backdropFilter: "blur(16px)", borderColor: "rgba(255,255,255,0.06)" }}>
+              <div className={`flex items-center gap-2 text-sm font-medium ${phase === 1 ? "" : "text-gray-600"}`}
+                style={phase === 1 ? { color: "#D4AF37" } : {}}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${phase === 1 ? "border-amber-400" : "border-emerald-500 bg-emerald-500"}`}
+                  style={phase === 1 ? { background: "rgba(212,175,55,0.2)", color: "#D4AF37" } : {}}>
+                  {phase > 1 ? <CheckCircle className="w-3.5 h-3.5 text-white" /> : "1"}
+                </div>
+                Fase 1 — Eksamen
+              </div>
+              <ChevronRight className="w-4 h-4 text-gray-700" />
+              <div className={`flex items-center gap-2 text-sm font-medium ${phase === 2 ? "" : "text-gray-600"}`}
+                style={phase === 2 ? { color: "#D4AF37" } : {}}>
+                <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold border ${phase === 2 ? "border-amber-400" : "border-gray-700"}`}
+                  style={phase === 2 ? { background: "rgba(212,175,55,0.2)", color: "#D4AF37" } : {}}>
+                  2
+                </div>
+                Fase 2 — Praktisk Opgave
+              </div>
+            </div>
 
-  return null;
+            {phase === 1 && (
+              <Phase1
+                onPass={() => { setPhase(2); setCoins(c => c + 25); }}
+                onFail={handleReset}
+              />
+            )}
+            {phase === 2 && (
+              <Phase2 coins={coins} onComplete={(c) => setCoins(c)} />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </div>
+  );
 }
