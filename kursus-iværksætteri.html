@@ -1,1012 +1,566 @@
-<!DOCTYPE html>
-<html lang="da">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sidekursus: AI for Iværksættere | LearnAI DK</title>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { CheckCircle, Trophy, Sparkles, AlertCircle, Coins, Star, Zap, ArrowRight, ExternalLink } from "lucide-react";
+import { useTiltEffect } from "../hooks/use-tilt";
 
-    :root {
-      --bg-deep:      #0a0105;
-      --bg-soft:      #120208;
-      --bg-card:      #160309;
-      --bg-card2:     #1c040c;
-      --ink:          #fef0ef;
-      --ink-soft:     #e8c8c5;
-      --muted:        #a06870;
-      --border:       #3d1018;
-      --border2:      #5c1820;
-
-      --primary:      #c41e3a;
-      --primary-deep: #7b1414;
-      --primary-soft: #3d0a0e;
-      --primary-glow: rgba(196,30,58,.20);
-      --primary-hot:  #e53935;
-
-      --gold:         #d4af37;
-      --gold-soft:    #b8962e;
-      --gold-glow:    rgba(212,175,55,.15);
-
-      --green:        #059669;
-      --green-50:     #022c22;
-      --red:          #ef4444;
-      --red-50:       #2d0a0a;
-      --teal:         #0D9488;
-
-      --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px;
-    }
-
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Outfit', sans-serif;
-      background: var(--bg-deep);
-      color: var(--ink);
-      line-height: 1.6;
-      animation: bodyFadeIn .7s ease forwards;
-    }
-    @keyframes bodyFadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: sticky; top: 0; z-index: 200;
-      height: 60px;
-      background: rgba(10,1,5,.96);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(196,30,58,.25);
-      box-shadow:
-        0 1px 0 rgba(212,175,55,.08),
-        0 4px 24px rgba(0,0,0,.5);
-      display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
-    }
-    .nav-logo {
-      display: flex; align-items: center; gap: 10px;
-      text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px;
-    }
-    .nav-mark {
-      width: 32px; height: 32px; border-radius: 9px;
-      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 14px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,.15);
-    }
-    .nav-mark svg { width: 15px; height: 15px; fill: white; }
-    .nav-tag {
-      font-size: 12px; font-weight: 600; color: var(--gold);
-      background: rgba(212,175,55,.08);
-      border: 1px solid rgba(212,175,55,.22);
-      padding: 4px 12px; border-radius: 999px;
-      letter-spacing: .04em;
-    }
-
-    /* ── JOURNEY BAR ── */
-    .journey {
-      background: rgba(16,3,9,.98);
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 2px 12px rgba(0,0,0,.4);
-      overflow-x: auto; scrollbar-width: none; padding: 0 28px;
-    }
-    .journey::-webkit-scrollbar { display: none; }
-    .journey-track {
-      display: flex; align-items: stretch; min-width: max-content;
-      justify-content: center; margin: 0 auto;
-    }
-    .j-item {
-      display: flex; align-items: center; gap: 7px;
-      padding: 13px 14px; font-size: 12px; font-weight: 600;
-      color: #7c4050; border-bottom: 2px solid transparent;
-      transition: color .2s, border-color .2s; white-space: nowrap;
-    }
-    .j-item.active { color: var(--primary); border-bottom-color: var(--primary); }
-    .j-item.done   { color: var(--green);   border-bottom-color: var(--green); }
-    .j-dot {
-      width: 19px; height: 19px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 9px; font-weight: 700;
-      background: #2a0a10; color: #7c4050;
-      transition: background .2s, color .2s;
-    }
-    .j-item.active .j-dot { background: var(--primary); color: white; box-shadow: 0 0 8px var(--primary-glow); }
-    .j-item.done   .j-dot { background: var(--green);   color: white; }
-    .j-sep { color: #5c1820; font-size: 14px; align-self: center; }
-
-    /* ── HERO ── */
-    .hero {
-      background: linear-gradient(145deg, #160108 0%, #2d0510 40%, #3d0812 100%);
-      padding: 56px 28px 48px; position: relative; overflow: hidden;
-    }
-    /* Atmospheric glow layers */
-    .hero::before {
-      content: ''; position: absolute; inset: 0;
-      background:
-        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(196,30,58,.35) 0%, transparent 65%),
-        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(120,10,25,.4) 0%, transparent 60%);
-    }
-    /* Gold shimmer line at top */
-    .hero::after {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(212,175,55,.6), rgba(196,30,58,.4), rgba(212,175,55,.6), transparent);
-    }
-    .hero-grid {
-      position: absolute; inset: 0; opacity: .04;
-      background-image:
-        linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-    .hero-blob {
-      position: absolute; width: 520px; height: 520px;
-      background: radial-gradient(circle, rgba(196,30,58,.25) 0%, transparent 70%);
-      top: -160px; right: -80px; border-radius: 50%;
-      animation: blobFloat 8s ease-in-out infinite;
-    }
-    .hero-blob2 {
-      position: absolute; width: 300px; height: 300px;
-      background: radial-gradient(circle, rgba(212,175,55,.1) 0%, transparent 70%);
-      bottom: -100px; left: -60px; border-radius: 50%;
-      animation: blobFloat 12s ease-in-out infinite reverse;
-    }
-    @keyframes blobFloat {
-      0%,100% { transform: translateY(0) scale(1); }
-      50%      { transform: translateY(-22px) scale(1.06); }
-    }
-    .hero-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
-    .hero-chip {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: rgba(196,30,58,.12);
-      border: 1px solid rgba(196,30,58,.3);
-      color: rgba(255,220,215,.85); font-size: 11px; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      padding: 5px 14px; border-radius: 999px; margin-bottom: 20px;
-    }
-    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
-    .hero h1 {
-      font-family: 'Lora', serif; font-size: clamp(28px, 5vw, 44px);
-      font-weight: 600; color: white; line-height: 1.16;
-      margin-bottom: 14px; letter-spacing: -.4px;
-      text-shadow: 0 2px 20px rgba(196,30,58,.4);
-    }
-    .hero h1 em { font-style: italic; color: var(--gold); text-shadow: 0 0 30px rgba(212,175,55,.5); }
-    .hero-lead { font-size: 15.5px; color: rgba(255,230,225,.72); max-width: 500px; line-height: 1.7; margin-bottom: 28px; }
-    .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-    .hero-pill {
-      display: flex; align-items: center; gap: 7px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(196,30,58,.25);
-      color: rgba(255,230,225,.8); font-size: 13px;
-      padding: 7px 13px; border-radius: var(--r-sm);
-      backdrop-filter: blur(8px);
-    }
-
-    /* ── LAYOUT ── */
-    .wrap { max-width: 740px; margin: 0 auto; padding: 36px 24px 80px; }
-
-    /* ── NOTICES ── */
-    .notice {
-      display: flex; gap: 13px; align-items: flex-start;
-      border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px;
-    }
-    .notice-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
-    .notice-head { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
-    .notice-body { font-size: 13px; line-height: 1.55; }
-    .notice.warn  { background: #220510; border: 1px solid #5c1018; }
-    .notice.warn  .notice-head { color: var(--gold); }
-    .notice.warn  .notice-body { color: var(--ink-soft); }
-    .notice.info  { background: #1c0408; border: 1px solid rgba(196,30,58,.35); }
-    .notice.info  .notice-head { color: var(--gold); }
-    .notice.info  .notice-body { color: var(--ink-soft); }
-
-    /* ── MODULES — 3D PRESTIGE ── */
-    .mod {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--primary-deep);
-      border-radius: var(--r-xl);
-      margin-bottom: 14px; overflow: hidden;
-      box-shadow:
-        0 4px 16px rgba(0,0,0,.4),
-        0 1px 0 rgba(212,175,55,.05) inset,
-        0 -1px 0 rgba(0,0,0,.3) inset;
-      transition: box-shadow .3s, border-left-color .3s, transform .3s;
-    }
-    .mod:hover:not(.locked):not(.done) {
-      box-shadow:
-        0 8px 32px rgba(196,30,58,.18),
-        0 2px 8px rgba(0,0,0,.5),
-        0 1px 0 rgba(212,175,55,.08) inset;
-      border-left-color: var(--primary);
-      transform: translateY(-2px);
-    }
-    .mod.open {
-      border-color: rgba(196,30,58,.4);
-      border-left-color: var(--primary);
-      background: var(--bg-card2);
-      box-shadow:
-        0 0 0 1px rgba(196,30,58,.15),
-        0 12px 40px var(--primary-glow),
-        0 4px 16px rgba(0,0,0,.5),
-        0 1px 0 rgba(212,175,55,.10) inset;
-    }
-    .mod-header {
-      display: flex; align-items: center; gap: 16px;
-      padding: 20px 24px; cursor: pointer; transition: background .15s;
-    }
-    .mod-header:hover { background: rgba(196,30,58,.06); }
-    .mod.open .mod-header { background: rgba(196,30,58,.06); }
-    .mod-num {
-      width: 42px; height: 42px; border-radius: 12px;
-      background: var(--primary-soft);
-      color: #a06070; display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 15px; flex-shrink: 0;
-      transition: background .25s, color .25s, box-shadow .25s;
-      box-shadow: inset 0 -2px 4px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.06);
-    }
-    .mod.open .mod-num {
-      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
-      color: white;
-      box-shadow: 0 4px 14px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,.15);
-    }
-    .mod-text { flex: 1; }
-    .mod-title { font-size: 15px; font-weight: 700; color: var(--ink); }
-    .mod-sub   { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-    .mod-time  {
-      font-size: 11.5px; font-weight: 600; color: var(--muted);
-      background: rgba(255,255,255,.04); border: 1px solid var(--border);
-      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
-    }
-    .mod.open .mod-time { background: rgba(196,30,58,.12); border-color: rgba(196,30,58,.3); color: #f4a0a8; }
-    .mod-arrow { color: #5c1820; font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; }
-    .mod.open .mod-arrow { transform: rotate(180deg); color: var(--primary); }
-    .mod-body {
-      display: none; padding: 24px 28px 30px;
-      border-top: 1px solid rgba(196,30,58,.15);
-      animation: fadeSlide .22s ease;
-    }
-    .mod.open .mod-body { display: block; }
-    @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
-
-    /* ── SECTION LABEL ── */
-    .sect-label { display: flex; align-items: center; gap: 12px; margin: 30px 0 16px; }
-    .sect-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
-    .sect-label span {
-      font-size: 11px; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--gold); white-space: nowrap;
-      text-shadow: 0 0 12px var(--gold-glow);
-    }
-
-    /* ── PROSE ── */
-    p.prose { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
-    p.prose strong { color: var(--ink); font-weight: 600; }
-
-    /* ── CONCEPT CARDS — 3D ── */
-    .concept-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    @media(max-width:560px){ .concept-row { grid-template-columns: 1fr; } }
-    .cc {
-      border-radius: var(--r); padding: 16px 18px; position: relative; overflow: hidden;
-      transition: transform .25s, box-shadow .25s;
-    }
-    .cc:hover { transform: translateY(-3px) scale(1.01); }
-    .cc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-    /* Gold shimmer top-right corner accent */
-    .cc::after {
-      content: ''; position: absolute; top: 0; right: 0;
-      width: 60px; height: 60px;
-      background: radial-gradient(circle at top right, rgba(212,175,55,.08) 0%, transparent 70%);
-    }
-    .cc.blue   {
-      background: linear-gradient(145deg, #1c0308, #16020a);
-      border: 1px solid rgba(196,30,58,.3);
-      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .cc.blue::before   { background: linear-gradient(90deg, var(--primary), var(--gold)); }
-    .cc.yellow {
-      background: linear-gradient(145deg, #200408, #180306);
-      border: 1px solid rgba(196,30,58,.25);
-      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .cc.yellow::before { background: linear-gradient(90deg, var(--gold-soft), var(--primary)); }
-    .cc.teal   {
-      background: linear-gradient(145deg, #051a18, #040f0e);
-      border: 1px solid #0d2e2a;
-      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .cc.teal::before   { background: linear-gradient(90deg, var(--teal), #0d9488); }
-    .cc.wide { grid-column: 1/-1; }
-    .cc-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-    .cc.blue .cc-title   { color: var(--gold); }
-    .cc.yellow .cc-title { color: #f4a0a8; }
-    .cc.teal .cc-title   { color: #5eead4; }
-    .cc-body { font-size: 13px; line-height: 1.6; }
-    .cc.blue .cc-body    { color: var(--ink-soft); }
-    .cc.yellow .cc-body  { color: var(--ink-soft); }
-    .cc.teal .cc-body    { color: #99f6e4; }
-    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06); font-size: 12px; font-weight: 600; }
-    .cc.blue .cc-tip     { color: var(--primary); }
-    .cc.yellow .cc-tip   { color: var(--gold); }
-    .cc.teal .cc-tip     { color: var(--teal); }
-
-    /* ── TECHNIQUE ── */
-    .tech { margin-bottom: 30px; }
-    .tech-pill {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
-      color: white; font-size: 10.5px; font-weight: 700;
-      letter-spacing: .09em; text-transform: uppercase;
-      padding: 5px 12px; border-radius: 999px; margin-bottom: 11px;
-      box-shadow: 0 4px 12px var(--primary-glow);
-    }
-    .tech-pill .num { background: rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; font-size: 10px; }
-    h3.tech-h { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-
-    /* ── COPY BLOCK ── */
-    .copy-block {
-      background: #06010a;
-      border-radius: var(--r); overflow: hidden; margin-bottom: 16px;
-      border: 1px solid rgba(196,30,58,.2);
-      box-shadow: 0 4px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(196,30,58,.08);
-    }
-    .copy-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 9px 14px;
-      background: rgba(196,30,58,.06);
-      border-bottom: 1px solid rgba(196,30,58,.12);
-    }
-    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
-    .copy-btn {
-      display: flex; align-items: center; gap: 6px;
-      background: rgba(196,30,58,.10); border: 1px solid rgba(196,30,58,.25);
-      color: var(--muted); font-family: 'Outfit', sans-serif;
-      font-size: 11.5px; font-weight: 600; padding: 4px 10px;
-      border-radius: 6px; cursor: pointer; transition: all .18s;
-    }
-    .copy-btn:hover { background: rgba(196,30,58,.2); color: var(--ink); }
-    .copy-btn.copied { background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); color: #6EE7B7; }
-    .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
-    .copy-text {
-      padding: 14px 16px; font-family: 'Courier New', monospace;
-      font-size: 13px; line-height: 1.7; color: #e8c8c5;
-      white-space: pre-wrap; word-break: break-word;
-    }
-    .copy-text .hl  { color: var(--gold); }
-    .copy-text .hlg { color: #6EE7B7; }
-    .copy-text .hly { color: var(--gold); }
-
-    /* ── COMPARE ── */
-    .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
-    @media(max-width:500px){ .compare { grid-template-columns: 1fr; } }
-    .cmp { border-radius: var(--r); padding: 14px 16px; }
-    .cmp.bad  { background: #2d0a0a; border: 1px solid #5c1a1a; }
-    .cmp.good { background: #022c22; border: 1px solid #065f46; }
-    .cmp-label { font-size: 11px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 7px; }
-    .cmp.bad  .cmp-label { color: #f87171; }
-    .cmp.good .cmp-label { color: #6ee7b7; }
-    .cmp-text { font-size: 13px; line-height: 1.6; font-style: italic; }
-    .cmp.bad  .cmp-text { color: #fca5a5; }
-    .cmp.good .cmp-text { color: #a7f3d0; }
-
-    /* ── PRACTICE ── */
-    .practice {
-      background: linear-gradient(145deg, #1c0408, #160206);
-      border: 1px solid rgba(196,30,58,.3);
-      border-left: 3px solid var(--primary);
-      border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px;
-      box-shadow: 0 2px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
-    }
-    .practice-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
-    .p-tag {
-      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
-      color: white; font-size: 10px; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase;
-      padding: 3px 9px; border-radius: 999px;
-      box-shadow: 0 2px 8px var(--primary-glow);
-    }
-    .p-title { font-size: 13.5px; font-weight: 700; color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
-    .p-body { font-size: 13px; line-height: 1.7; color: var(--ink-soft); }
-    .p-body ol, .p-body ul { padding-left: 1.2rem; margin-top: 7px; }
-    .p-body li { margin-bottom: 4px; }
-    .p-body em { font-style: italic; }
-    .p-body strong { color: var(--gold); }
-
-    /* ── TOAST ── */
-    #toast {
-      position: fixed; bottom: 28px; left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(16,2,8,.97); color: var(--ink);
-      font-size: 13px; font-weight: 600; padding: 10px 20px;
-      border-radius: 999px;
-      border: 1px solid rgba(196,30,58,.3);
-      box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(212,175,55,.1);
-      opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
-      z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px;
-    }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    /* ── MODULE DONE STATE ── */
-    .mod.done .mod-num {
-      background: linear-gradient(135deg, #064e3b, #059669);
-      color: white;
-      box-shadow: 0 4px 12px rgba(5,150,105,.3);
-    }
-    .mod.done { border-color: #065f46; border-left-color: var(--green); }
-    .mod.done .mod-header { background: rgba(5,150,105,.05); }
-    .mod-done-badge {
-      display: none; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; color: var(--green);
-      background: rgba(5,150,105,.12); border: 1px solid rgba(5,150,105,.25);
-      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
-    }
-    .mod.done .mod-done-badge { display: flex; }
-    .mod.done .mod-time { display: none; }
-    .mod.locked { opacity: .45; }
-    .mod.locked .mod-header { cursor: not-allowed; }
-    .mod-locked-badge {
-      display: none; align-items: center; gap: 5px;
-      font-size: 11px; font-weight: 700; color: var(--muted);
-      background: rgba(255,255,255,.04); border: 1px solid var(--border);
-      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
-    }
-    .mod.locked .mod-locked-badge { display: flex; }
-    .mod.locked .mod-time { display: none; }
-    .mod.locked .mod-arrow { display: none; }
-    .mod.unlocked-next {
-      border-left-color: var(--gold);
-      box-shadow: 0 0 0 1px rgba(212,175,55,.15), 0 4px 20px rgba(212,175,55,.10), 0 4px 16px rgba(0,0,0,.4);
-    }
-    .mod.unlocked-next .mod-header { background: rgba(212,175,55,.04); }
-    .mod.unlocked-next .mod-num {
-      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
-      color: white;
-      box-shadow: 0 4px 12px var(--gold-glow);
-    }
-    .mod.unlocked-next .mod-arrow { color: var(--gold); }
-
-    /* ── PROGRESS TRACKER — PRESTIGE ── */
-    .progress-track-wrap {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--r-lg); padding: 18px 22px;
-      margin-bottom: 28px; display: flex; align-items: center; gap: 16px;
-      box-shadow:
-        0 4px 20px rgba(0,0,0,.35),
-        0 1px 0 rgba(212,175,55,.06) inset,
-        0 -1px 0 rgba(0,0,0,.2) inset;
-    }
-    .prog-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
-    .prog-bar-outer {
-      flex: 1; height: 7px;
-      background: rgba(255,255,255,.05);
-      border-radius: 999px; overflow: hidden;
-      box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
-    }
-    .prog-bar-inner {
-      height: 100%;
-      background: linear-gradient(90deg, var(--primary-deep), var(--primary), var(--gold));
-      border-radius: 999px; width: 0%;
-      transition: width .6s ease;
-      box-shadow: 0 0 8px var(--primary-glow);
-    }
-    .prog-pct { font-size: 13px; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 36px; text-align: right; }
-
-    .prog-steps { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .prog-step {
-      width: 28px; height: 28px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700;
-      background: var(--primary-soft);
-      color: #a06070;
-      border: 2px solid var(--border);
-      pointer-events: none; user-select: none;
-      transition: all .35s ease; position: relative;
-      box-shadow: inset 0 -2px 4px rgba(0,0,0,.3);
-    }
-    .prog-step:not(:last-child)::after {
-      content: ''; position: absolute; left: 100%; top: 50%;
-      transform: translateY(-50%); width: 6px; height: 2px;
-      background: var(--border); margin-left: 0;
-    }
-    .prog-step.active {
-      background: rgba(196,30,58,.15);
-      border-color: var(--primary); color: var(--primary);
-      box-shadow: 0 0 12px var(--primary-glow);
-    }
-    .prog-step.active::before {
-      content: ''; position: absolute; inset: -5px; border-radius: 50%;
-      border: 2px solid var(--primary); opacity: 0;
-      animation: stepPulse 1.8s ease-out infinite;
-    }
-    @keyframes stepPulse {
-      0%   { transform: scale(0.85); opacity: 0.5; }
-      70%  { transform: scale(1.5);  opacity: 0; }
-      100% { transform: scale(1.5);  opacity: 0; }
-    }
-    .prog-step.done {
-      background: linear-gradient(135deg, #064e3b, #059669);
-      border-color: var(--green); color: white;
-      box-shadow: 0 0 10px rgba(5,150,105,.3);
-    }
-    .prog-step.done::after { background: var(--green); }
-
-    /* ── CTA EXAM ── */
-    .cta {
-      background: linear-gradient(145deg, #160206, #200410);
-      border: 1.5px solid rgba(196,30,58,.35);
-      border-radius: var(--r-xl); padding: 40px 32px; text-align: center;
-      box-shadow:
-        0 0 0 1px rgba(212,175,55,.1),
-        0 16px 60px rgba(196,30,58,.15),
-        0 8px 32px rgba(0,0,0,.5),
-        inset 0 1px 0 rgba(212,175,55,.1);
-      position: relative; overflow: hidden;
-    }
-    .cta::before {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196,30,58,.15) 0%, transparent 65%);
-    }
-    .cta::after {
-      content: ''; position: absolute;
-      top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(212,175,55,.5), transparent);
-    }
-    .cta-icon { font-size: 44px; margin-bottom: 12px; position: relative; z-index: 1; }
-    .cta h2 {
-      font-family: 'Lora', serif; font-size: 24px; font-weight: 600;
-      color: var(--ink); margin-bottom: 8px;
-      position: relative; z-index: 1;
-      text-shadow: 0 2px 12px rgba(0,0,0,.4);
-    }
-    .cta p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1; }
-    .btn-go {
-      display: inline-flex; align-items: center; gap: 9px;
-      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
-      color: white; font-family: 'Outfit', sans-serif;
-      font-size: 15px; font-weight: 700; padding: 15px 40px;
-      border-radius: var(--r); text-decoration: none;
-      box-shadow:
-        0 6px 24px var(--primary-glow),
-        0 2px 0 rgba(255,255,255,.1) inset,
-        0 -2px 0 rgba(0,0,0,.2) inset;
-      transition: background .15s, transform .2s, box-shadow .2s;
-      position: relative; z-index: 1;
-    }
-    .btn-go:hover {
-      background: linear-gradient(135deg, var(--primary), var(--primary-hot));
-      transform: translateY(-3px);
-      box-shadow: 0 12px 36px rgba(196,30,58,.45), 0 2px 0 rgba(255,255,255,.1) inset;
-    }
-    .btn-go:active { transform: translateY(-1px); }
-    .btn-go svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-    @media(max-width:480px){
-      nav, .journey { padding-left: 16px; padding-right: 16px; }
-      .hero { padding: 36px 16px 30px; }
-      .wrap { padding: 24px 16px 60px; }
-      .mod-header { padding: 16px 18px; gap: 12px; }
-      .mod-body { padding: 18px 18px 22px; }
-      .cta { padding: 28px 20px; }
-    }
-  </style>
-</head>
-<body>
-
-<nav>
-  <a class="nav-logo" href="learnai_final.html">
-    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
-    LearnAI
-  </a>
-  <div class="nav-tag">Sidekursus &nbsp;·&nbsp; AI for Iværksættere</div>
-</nav>
-
-<div class="journey">
-  <div class="journey-track">
-    <div class="j-item active"><div class="j-dot">1</div>Idégenerering</div>
-    <div class="j-sep">›</div>
-    <div class="j-item"><div class="j-dot">2</div>Kundeanskaffelse</div>
-    <div class="j-sep">›</div>
-    <div class="j-item"><div class="j-dot">3</div>Drift & workflows</div>
-    <div class="j-sep">›</div>
-    <div class="j-item"><div class="j-dot">🎓</div>Eksamen</div>
-  </div>
-</div>
-
-<div class="hero">
-  <div class="hero-grid"></div>
-  <div class="hero-blob"></div>
-  <div class="hero-blob2"></div>
-  <div class="hero-inner">
-    <div class="hero-chip"><span class="hero-chip-dot"></span> Sidekursus &nbsp;·&nbsp; Iværksætteri</div>
-    <h1>AI som din<br><em>digitale medstifter</em></h1>
-    <p class="hero-lead">Lær hvordan du sparer måneder på forretningsplaner, bygger en personlig markedsføringskanal og automatiserer den daglige drift med kunstig intelligens.</p>
-    <div class="hero-pills">
-      <div class="hero-pill"><span>⏱</span> Ca. 45 minutter</div>
-      <div class="hero-pill"><span>📋</span> 3 moduler</div>
-      <div class="hero-pill"><span>⚡</span> Nemt & praktisk</div>
+function TakeawayBox({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="mt-12 p-6 rounded-xl border-2 border-primary/30 bg-primary/5 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl -mr-10 -mt-10" />
+      <h4 className="text-primary font-bold text-sm uppercase tracking-widest mb-3 flex items-center gap-2">
+        <Sparkles className="w-4 h-4" />
+        Key Takeaway
+      </h4>
+      <p className="font-serif text-lg lg:text-xl text-foreground/90 leading-relaxed italic">
+        "{children}"
+      </p>
     </div>
-  </div>
-</div>
+  );
+}
 
-<div class="wrap">
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <h3 className="text-xl font-bold font-serif text-foreground mt-10 mb-4 pb-2 border-b border-border/50">
+      {title}
+    </h3>
+  );
+}
 
-  <!-- PROGRESS TRACKER -->
-  <div class="progress-track-wrap">
-    <div class="prog-steps">
-      <div class="prog-step active" id="ps1">1</div>
-      <div class="prog-step" id="ps2">2</div>
-      <div class="prog-step" id="ps3">3</div>
-    </div>
-    <div style="flex: 1; min-width: 0;">
-      <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-        <span class="prog-label" id="prog-txt">Åbn modul 1 for at starte</span>
-        <span class="prog-pct" id="prog-pct">0%</span>
-      </div>
-      <div class="prog-bar-outer">
-        <div class="prog-bar-inner" id="prog-bar"></div>
-      </div>
-    </div>
-  </div>
+function StepCard({
+  step,
+  title,
+  content,
+  isCompleted,
+  onComplete
+}: {
+  step: number,
+  title: string,
+  content: React.ReactNode,
+  isCompleted: boolean,
+  onComplete: () => void
+}) {
+  const [isOpen, setIsOpen] = useState(step === 1 || isCompleted);
 
-  <div class="notice info" style="margin-bottom:20px;">
-    <div class="notice-icon">💡</div>
-    <div>
-      <div class="notice-head">Inden du starter</div>
-      <div class="notice-body">Åbn Claude.ai eller ChatGPT i et andet vindue. Dette sidekursus har 6 konkrete prompts og øvelser, du kan kopiere med ét klik og afprøve med det samme.</div>
-    </div>
-  </div>
-
-  <!-- MODUL 1 -->
-  <div class="sect-label"><hr><span>Modul 1 af 3</span><hr></div>
-  <div class="mod open" id="m1">
-    <div class="mod-header" onclick="tog('m1')">
-      <div class="mod-num">1</div>
-      <div class="mod-text">
-        <div class="mod-title">Idégenerering og Validering</div>
-        <div class="mod-sub">Brug AI som en erfaren og kritisk sparringspartner</div>
-      </div>
-      <div class="mod-time">15 min</div>
-      <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-arrow">▾</div>
-    </div>
-    <div class="mod-body">
-      <p class="prose">AI kan fungere som din digitale medstifter. I stedet for ugers brainstorm kan du med sprogmodeller validere idéer, skrive forretningsplaner og hente kvalificeret feedback på minutter — 24/7.</p>
-
-      <div class="concept-row">
-        <div class="cc blue">
-          <div class="cc-title">🧠 AI-Medstifter</div>
-          <div class="cc-body">Sparr med en model, der kender alle forretningsteorier, strategier og iværksætterbøger i verden.</div>
-          <div class="cc-tip">→ Udfordr dine egne antagelser.</div>
+  return (
+    <div className={`mb-4 rounded-xl border transition-all duration-300 ${isCompleted ? 'border-primary/40 bg-primary/5' : 'border-border bg-card'}`}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full flex items-center justify-between p-5 text-left"
+      >
+        <div className="flex items-center gap-4">
+          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${isCompleted ? 'bg-primary text-primary-foreground' : 'bg-muted text-muted-foreground'}`}>
+            {step}
+          </div>
+          <h4 className={`font-serif text-lg font-medium ${isCompleted ? 'text-primary' : 'text-foreground'}`}>
+            {title}
+          </h4>
         </div>
-        <div class="cc yellow">
-          <div class="cc-title">⚠️ Djævlens Advokat</div>
-          <div class="cc-body">Bed din AI om at være hudløst ærlig og give dig de mest kritiske grunde til, at dit projekt kan fejle.</div>
-          <div class="cc-tip">→ Find de blinde vinkler før dine konkurrenter.</div>
-        </div>
-      </div>
-
-      <p class="prose"><strong>Sammenlign prompts:</strong> Se hvor stor forskel der er på det generiske standardsvar og det professionelle resultat, når du guider AI'en præcist.</p>
-
-      <div class="compare">
-        <div class="cmp bad">
-          <div class="cmp-label">❌ Svagt Prompt</div>
-          <div class="cmp-text">"Er min idé om at åbne en specialkaffebar i Odense god?"</div>
-        </div>
-        <div class="cmp good">
-          <div class="cmp-label">✓ Stærkt Prompt</div>
-          <div class="cmp-text">"Du er en kritisk investor. Jeg vil åbne en specialkaffebar i Odense C rettet mod studerende. Giv mig de 5 største økonomiske faldgruber og foreslå et unikt værditilbud."</div>
-        </div>
-      </div>
-
-      <div class="practice">
-        <div class="practice-bar"><div class="p-tag">Øvelse 1</div><div class="p-title">Find de svage punkter</div></div>
-        <div class="p-body">
-          <p>Kopier promptet nedenfor, indsæt det i ChatGPT/Claude, og få en hudløst ærlig vurdering af dit projekt:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">Prompt til validering</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p1')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p1">Jeg har denne idé til en virksomhed: [indsæt din idé]. Tag rollen som en kritisk investor og fortæl mig de 5 største grunde til, at dette projekt vil fejle. Vær hudløst ærlig.</div>
-      </div>
-
-      <div class="practice" style="margin-top: 24px;">
-        <div class="practice-bar"><div class="p-tag">Øvelse 2</div><div class="p-title">Skab din kundepersona</div></div>
-        <div class="p-body">
-          <p>En markedsanalyse behøver ikke tage uger. Definer din målgruppe med dette stærke prompt:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">Prompt til persona</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p2')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p2">Jeg vil sælge [dit produkt] til [din målgruppe]. Lav en detaljeret kundepersona for mig. Inkluder navn, alder, job, deres største udfordring i hverdagen, og hvordan mit produkt løser den.</div>
-      </div>
-
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m1')">
-        Modul 1 gennemført — Gå videre ✓
+        {isCompleted && <CheckCircle className="w-5 h-5 text-primary" />}
       </button>
+
+      {isOpen && (
+        <div className="px-5 pb-5 pt-2 border-t border-border/50">
+          <div className="text-muted-foreground space-y-3 mb-6">
+            {content}
+          </div>
+          {!isCompleted && (
+            <button
+              onClick={onComplete}
+              className="px-6 py-2 bg-foreground text-background font-medium rounded-lg hover:bg-primary hover:text-primary-foreground transition-all active:scale-95 flex items-center gap-2 shadow-lg hover:shadow-primary/20"
+            >
+              <CheckCircle className="w-4 h-4" />
+              Fuldfør trin
+            </button>
+          )}
+        </div>
+      )}
     </div>
-  </div>
+  );
+}
 
-  <!-- MODUL 2 -->
-  <div class="sect-label"><hr><span>Modul 2 af 3</span><hr></div>
-  <div class="mod locked" id="m2">
-    <div class="mod-header" onclick="tog('m2')">
-      <div class="mod-num">2</div>
-      <div class="mod-text">
-        <div class="mod-title">Kundeanskaffelse og Indhold</div>
-        <div class="mod-sub">Skaler din markedsføring med en skarp Tone of Voice</div>
+function QuizQuestion({
+  q,
+  num,
+  selected,
+  onSelect,
+}: {
+  q: { question: string; options: { text: string }[]; correct: number };
+  num: number;
+  selected: number | null;
+  onSelect: (idx: number) => void;
+}) {
+  const answered = selected !== null;
+
+  return (
+    <div className="mb-6 bg-card p-6 rounded-xl border border-border">
+      <h3 className="font-serif text-lg font-medium mb-4 text-foreground">
+        <span className="text-primary mr-2">Q{num}.</span> {q.question}
+      </h3>
+      <div className="space-y-3">
+        {q.options.map((opt, idx) => {
+          const isSelected = selected === idx;
+          const isCorrect = idx === q.correct;
+
+          let btnClass = "border-border hover:border-primary/50 text-foreground bg-muted/20 cursor-pointer";
+          let icon = null;
+
+          if (answered) {
+            if (isCorrect) {
+              btnClass = "border-green-500/50 bg-green-500/10 text-green-400 cursor-default";
+              icon = <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />;
+            } else if (isSelected) {
+              btnClass = "border-destructive/50 bg-destructive/10 text-destructive cursor-default";
+              icon = <AlertCircle className="w-4 h-4 text-destructive flex-shrink-0" />;
+            } else {
+              btnClass = "border-border opacity-40 cursor-default";
+            }
+          } else if (isSelected) {
+            btnClass = "border-primary bg-primary/10 text-primary shadow-[0_0_15px_rgba(var(--primary),0.15)] cursor-pointer";
+          }
+
+          return (
+            <button
+              key={idx}
+              disabled={answered}
+              onClick={() => !answered && onSelect(idx)}
+              className={`w-full flex items-center justify-between p-4 rounded-lg border text-left transition-all duration-200 ${btnClass} ${!answered ? "active:scale-[0.98]" : ""}`}
+            >
+              <span className="flex-1">{opt.text}</span>
+              {icon}
+            </button>
+          );
+        })}
       </div>
-      <div class="mod-time">15 min</div>
-      <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
-      <div class="mod-arrow">▾</div>
+      {answered && (
+        <motion.p
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`mt-3 text-sm font-medium ${selected === q.correct ? "text-green-400" : "text-destructive"}`}
+        >
+          {selected === q.correct ? "Korrekt!" : `Forkert — det rigtige svar er: "${q.options[q.correct].text}"`}
+        </motion.p>
+      )}
     </div>
-    <div class="mod-body">
-      <p class="prose">Som soloiværksætter skal du også være marketingchef. AI kan producere opslag, blogtekster og salgs-e-mails i en skala, der normalt kræver et helt bureau. Lad AI'en lave 80% af udkastet, og brug din stemme på de sidste 20%.</p>
+  );
+}
 
-      <div class="concept-row">
-        <div class="cc blue">
-          <div class="cc-title">📝 Tone of Voice</div>
-          <div class="cc-body">Undgå at lyde som en dårlig oversættelse. Lær AI'en at matche din præcise stil, humor og troværdighed.</div>
-          <div class="cc-tip">→ Giv den eksempler på dine egne tekster.</div>
+export function Modules({ activeModule, completedSteps, setCompletedSteps, onQuizComplete }: {
+  activeModule: number;
+  completedSteps: number[];
+  setCompletedSteps: (s: number[]) => void;
+  onQuizComplete: () => void;
+}) {
+
+  if (activeModule === 1) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+          AI som din <span className="text-primary italic">Co-founder</span>
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+          AI er ikke bare et værktøj — det er din mest tilgængelige samarbejdspartner og strategiske rådgiver. I dette modul lærer du, hvordan du bruger AI til at generere, validere og forfine forretningsidéer med lynets hast.
+        </p>
+
+        <SectionHeader title="Idégenerering med AI" />
+        <p className="text-muted-foreground mb-4">Brug promptteknikker til brainstorm for at udforske utallige retninger på få minutter.</p>
+        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
+          "Act as a startup advisor with 20 years of experience. Suggest 5 B2B SaaS ideas targeting the real estate market in Denmark, focusing on sustainability."
         </div>
-        <div class="cc teal">
-          <div class="cc-title">📧 Nyhedsbreve</div>
-          <div class="cc-body">Planlæg et helt års nyhedsbreve på en enkelt eftermiddag ved hjælp af strukturerede prompts.</div>
-          <div class="cc-tip">→ Hav altid værdifuldt indhold klar.</div>
-        </div>
+
+        <SectionHeader title="Markedsvalidering" />
+        <p className="text-muted-foreground mb-6">Brug Claude til at analysere markedsstørrelse, konkurrenter og kundebehov. Du kan anvende frameworks som TAM/SAM/SOM og lade AI udfylde de indledende estimater baseret på åbne data.</p>
+
+        <SectionHeader title="Koncepttest" />
+        <p className="text-muted-foreground mb-6">Byg en mini-landingsside-beskrivelse med AI på under 1 time. Bed ChatGPT om at generere en overbevisende overskrift, 3 value propositions og en kundeinterview-guide, så du kan validere dit koncept i virkeligheden.</p>
+
+        <TakeawayBox>
+          AI kan generere 10 forretningsidéer på 2 minutter. Din opgave er at vælge den rigtige — og AI kan hjælpe dig med det også.
+        </TakeawayBox>
       </div>
-
-      <div class="compare">
-        <div class="cmp bad">
-          <div class="cmp-label">❌ Svagt Prompt</div>
-          <div class="cmp-text">"Skriv et opslag til LinkedIn om min nye rådgivningsvirksomhed."</div>
-        </div>
-        <div class="cmp good">
-          <div class="cmp-label">✓ Stærkt Prompt</div>
-          <div class="cmp-text">"Du er copywriter. Skriv et kort LinkedIn-opslag om min rådgivning. Tonen skal være nede-på-jorden, professionel og uden tomme floskler. Afslut med en klar opfordring til dialog."</div>
-        </div>
-      </div>
-
-      <div class="practice">
-        <div class="practice-bar"><div class="p-tag">Øvelse 3</div><div class="p-title">LinkedIn opslag med personlighed</div></div>
-        <div class="p-body">
-          <p>Kopier dette prompt og få et udkast, der lyder som en professionel, men autentisk person:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">LinkedIn prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p3')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p3">Jeg driver en virksomhed, der sælger [indsæt dit produkt/service]. Skriv et opslag til LinkedIn om [et emne i din branche]. Tonen skal være professionel, men letforståelig og uden brug af for mange floskler. Afslut med et spørgsmål, der lægger op til debat.</div>
-      </div>
-
-      <div class="practice" style="margin-top: 24px;">
-        <div class="practice-bar"><div class="p-tag">Øvelse 4</div><div class="p-title">Generer 5 nyhedsbrevs-idéer</div></div>
-        <div class="p-body">
-          <p>Engager dine kunder uden at virke for anmassende eller sælgende. Brug dette prompt til at få kreative vinkler:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">E-mail idé-prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p4')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p4">Jeg har en målgruppe af [beskriv målgruppe]. Giv mig 5 konkrete idéer til nyhedsbreve, som vil give dem værdi og ikke bare handle om salg. For hver idé, skriv et fængende emnefelt.</div>
-      </div>
-
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m2')">
-        Modul 2 gennemført — Gå videre ✓
-      </button>
-    </div>
-  </div>
-
-  <!-- MODUL 3 -->
-  <div class="sect-label"><hr><span>Modul 3 af 3</span><hr></div>
-  <div class="mod locked" id="m3">
-    <div class="mod-header" onclick="tog('m3')">
-      <div class="mod-num">3</div>
-      <div class="mod-text">
-        <div class="mod-title">Drift, Tal og Automatisering</div>
-        <div class="mod-sub">Få overblik over dit budget og skab smarte workflows</div>
-      </div>
-      <div class="mod-time">15 min</div>
-      <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
-      <div class="mod-arrow">▾</div>
-    </div>
-    <div class="mod-body">
-      <p class="prose">Mange iværksættere taber pusten på driften. Upload eller beskriv dine budgettal for din AI (husk at fjerne personfølsom data som navne og CPR-numre først) og lad den spotte besparelser eller lave lynhurtige scenarie-analyser.</p>
-
-      <div class="concept-row">
-        <div class="cc blue">
-          <div class="cc-title">📈 Økonomi-Sparring</div>
-          <div class="cc-body">Udfør scenarieanalyser på sekunder. Hvad sker der ved en prisstigning, eller hvis du fjerner en fast omkostning?</div>
-          <div class="cc-tip">→ Få overblik over komplekse tal.</div>
-        </div>
-        <div class="cc teal">
-          <div class="cc-title">🤖 Smarte Workflows</div>
-          <div class="cc-body">Brug Zapier eller Make og lad AI'en sortere mails, oprette fakturaer og opdatere dit regnskab automatisk.</div>
-          <div class="cc-tip">→ Spar hundredvis af administrative timer.</div>
-        </div>
-      </div>
-
-      <div class="practice">
-        <div class="practice-bar"><div class="p-tag">Øvelse 5</div><div class="p-title">Budget-sparring</div></div>
-        <div class="p-body">
-          <p>Læg et budget sammen med AI. Brug denne fordeling til at få realistiske inputs til din branche:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">Budget prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p5')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p5">Jeg er en nystartet konsulentvirksomhed. Mit budget er 10.000 kr. om måneden. Hvordan bør jeg fordele pengene mellem software, markedsføring og opsparing til skat? Giv mig et realistisk forslag.</div>
-      </div>
-
-      <div class="practice" style="margin-top: 24px;">
-        <div class="practice-bar"><div class="p-tag">Øvelse 6</div><div class="p-title">Design et automatisk workflow</div></div>
-        <div class="p-body">
-          <p>Automatiser dine gentagne opgaver. Bed AI'en designe din integration helt uden at skulle programmere:</p>
-        </div>
-      </div>
-
-      <div class="copy-block">
-        <div class="copy-topbar">
-          <span class="copy-label-txt">Automatisering prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p6')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
-          </button>
-        </div>
-        <div class="copy-text" id="p6">Jeg vil gerne automatisere denne proces: [beskriv processen, f.eks. at sende kvitteringer fra mail til Excel]. Hvordan kan jeg sætte det op i Zapier ved hjælp af AI? Følg guiden trin-for-trin.</div>
-      </div>
-
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m3')">
-        Modul 3 gennemført — Afslut kurset ✓
-      </button>
-    </div>
-  </div>
-
-  <!-- EXAM CARD -->
-  <div class="sect-label" id="exam-label" style="display:none;"><hr><span>Eksamen klar</span><hr></div>
-  <div class="cta" id="exam-card" style="display:none; margin-top: 30px;">
-    <div class="cta-icon">🎓</div>
-    <h2>Tid til at teste din viden!</h2>
-    <p>Du har nu gennemført alle tre moduler i sidekurset for iværksættere. Tag eksamen for at få dit kursusbevis.</p>
-    <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-iv%C3%A6rks%C3%A6tteri.html" class="btn-go">
-      Gå til eksamen
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-    </a>
-  </div>
-
-</div>
-
-<!-- TOAST -->
-<div id="toast">
-  <span id="toast-icon">📋</span>
-  <span id="toast-msg">Prompt kopieret</span>
-</div>
-
-<script>
-  function tog(id) {
-    const el = document.getElementById(id);
-    if (el.classList.contains('locked')) {
-      showToast('🔒 Dette modul er låst. Gennemfør det forrige modul først!');
-      return;
-    }
-    const isOpen = el.classList.contains('open');
-    document.querySelectorAll('.mod').forEach(m => m.classList.remove('open'));
-    if (!isOpen) { el.classList.add('open'); }
-    updateProgressVisuals();
+    );
   }
 
-  function doCopy(btn, elId) {
-    const text = document.getElementById(elId).innerText;
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(() => { showCopiedState(btn); }).catch(() => fallbackCopy(btn, text));
-    } else { fallbackCopy(btn, text); }
+  if (activeModule === 2) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+          Forretningsplaner & <span className="text-primary italic">Pitch Decks</span>
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+          Investorer er travle. Du har 3 minutter til at overbevise dem. AI kan skrive en investor-pitch, der fanger interesse — men du skal vide, hvad der skal i den.
+        </p>
+
+        <SectionHeader title="Investor-pitch med AI" />
+        <p className="text-muted-foreground mb-4">Den gyldne struktur: Problem → Løsning → Marked → Forretningsmodel → Team → Traction → Funding Ask.</p>
+        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
+          "Write a compelling investor pitch for [din ide]. The company solves [problem] for [målgruppe]. We make money by [forretningsmodel]. Our traction so far is [traction]."
+        </div>
+
+        <SectionHeader title="Forretningsplanen" />
+        <p className="text-muted-foreground mb-6">Få AI til at skrive det første udkast af dit Executive Summary, Markedsanalyse og Konkurrentanalyse. Brug derefter Claude til at gennemse, stramme op og fjerne 'fluff', så dokumentet lyder professionelt og præcist.</p>
+
+        <SectionHeader title="Pitch Deck Slides" />
+        <p className="text-muted-foreground mb-6">Kombinér Canva og AI. Lad AI skrive den præcise tekst (max 15 ord pr. slide) til hvert slide i dit dæk, og brug AI billedgeneratorer til at skabe unikke baggrundsbilleder, der matcher dit brand.</p>
+
+        <TakeawayBox>
+          En AI-genereret pitch er 80% klar på 20 minutter. De resterende 20% er din personlige touch og markedskendskab.
+        </TakeawayBox>
+      </div>
+    );
   }
 
-  function fallbackCopy(btn, text) {
-    const ta = document.createElement('textarea');
-    ta.value = text; ta.style.cssText = 'position:fixed;top:-9999px;opacity:0;';
-    document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); showCopiedState(btn); }
-    catch(e) { showToast('Kunne ikke kopiere automatisk — marker teksten og kopier manuelt.'); }
-    document.body.removeChild(ta);
+  if (activeModule === 3) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+          Økonomi & <span className="text-primary italic">Data</span>
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+          Tal taler for sig selv — men kun hvis du forstår dem. AI + Excel er dit finansielle kontrolcenter.
+        </p>
+
+        <SectionHeader title="Budget med AI" />
+        <p className="text-muted-foreground mb-6">Lad ChatGPT generere et komplet 12-måneders startup-budget-skabelon. Du beskriver dine primære udgifter (husleje, SaaS, lønninger) og indtægtskilder, og AI'en opstiller strukturen for dig.</p>
+
+        <SectionHeader title="Excel & Regneark-prompts" />
+        <div className="bg-muted/30 p-4 rounded-lg border border-border mb-6 font-mono text-sm text-primary/80">
+          "Skriv en Excel-formel der beregner mit break-even point i måneder, givet en månedlig burn rate på 50k DKK, og en månedlig omsætningsvækst på 10k DKK."
+        </div>
+
+        <SectionHeader title="Cashflow & KPI'er" />
+        <p className="text-muted-foreground mb-6">Brug AI til at forklare komplicerede cashflow-begreber og identificere risici i din nuværende model. Få AI'en til at definere og opstille formler for dine vigtigste nøgletal: Revenue, CAC (Customer Acquisition Cost), LTV (Life Time Value) og churn rate.</p>
+
+        <TakeawayBox>
+          ChatGPT kan generere hele Excel-modeller fra en simpel beskrivelse. Du behøver ikke være økonom for at have styr på dine tal.
+        </TakeawayBox>
+      </div>
+    );
   }
 
-  function showCopiedState(btn) {
-    btn.classList.add('copied');
-    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Kopieret!`;
-    showToast('Prompt kopieret til udklipsholderen ✓');
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér`;
-    }, 2000);
+  if (activeModule === 4) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+          Go-to-Market & <span className="text-primary italic">Branding</span>
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+          Det bedste produkt vinder ikke altid. Den bedste markedsføringsstrategi gør. Lær at bruge AI til at dominere din niche.
+        </p>
+
+        <SectionHeader title="Go-to-Market Strategi" />
+        <p className="text-muted-foreground mb-6">Få AI til at udarbejde en GTM-plan opdelt i organisk, betalt og partnerskaber. Start med at definere din ICP (Ideal Customer Profile) detaljeret i samarbejde med Claude.</p>
+
+        <SectionHeader title="Social Media Content" />
+        <p className="text-muted-foreground mb-6">Skab en content-kalender for en hel måned på 5 minutter. Bed ChatGPT skrive alt fra dybdegående LinkedIn-posts til korte Instagram captions og fængende TikTok-scripts.</p>
+
+        <SectionHeader title="Brand Identitet & Email" />
+        <p className="text-muted-foreground mb-6">Brainstorm brandnavne, taglines og find din unikke tone-of-voice. Brug Midjourney til at udvikle visuelle logo-koncepter. Udarbejd derefter høj-konverterende cold email-sekvenser og nyhedsbreve, som er A/B testet af AI'en på forhånd.</p>
+
+        <TakeawayBox>
+          En komplet markedsføringsstrategi + 30 stykker indhold kan genereres med AI på én eftermiddag. Det tog tidligere uger.
+        </TakeawayBox>
+      </div>
+    );
   }
 
-  let toastTimer;
-  function showToast(msg) {
-    const toast = document.getElementById('toast');
-    document.getElementById('toast-msg').textContent = msg;
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
+  if (activeModule === 5) {
+    return (
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary border border-primary/20 rounded-full text-xs font-bold uppercase tracking-widest mb-4">
+          <Zap className="w-3.5 h-3.5" /> Interactive Case
+        </div>
+        <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+          Hands-on <span className="text-primary italic">Iværksætter-Case</span>
+        </h1>
+        <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+          Nu sætter du det hele sammen. Du skal opsætte en fiktiv virksomheds MVP på under 40 minutter ved hjælp af AI-værktøjer.
+        </p>
+
+        <div className="bg-card border border-border p-6 rounded-xl mb-10 shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-full" />
+          <h2 className="font-serif text-2xl font-bold mb-2">Casen: "GreenBite"</h2>
+          <p className="text-muted-foreground">En sund madleverings-service til travle by-beboere i København.</p>
+        </div>
+
+        <div className="space-y-2">
+          <StepCard
+            step={1}
+            title="Definer virksomheden (5 min)"
+            isCompleted={completedSteps.includes(1)}
+            onComplete={() => setCompletedSteps([...completedSteps, 1])}
+            content={
+              <>
+                <p>Brug ChatGPT til at definere kernen i forretningen.</p>
+                <div className="font-mono text-sm bg-background p-3 rounded border border-border text-primary/80">
+                  "Hjælp mig med at definere en MVP for en sund madleverings-service i København. Giv mig USP, målgruppe og 3 kerneprodukter."
+                </div>
+              </>
+            }
+          />
+          <StepCard
+            step={2}
+            title="Forretningsplan-skelet (10 min)"
+            isCompleted={completedSteps.includes(2)}
+            onComplete={() => setCompletedSteps([...completedSteps, 2])}
+            content={
+              <p>Tag outputtet fra Step 1 og indsæt det i Claude. Bed den om at skrive et formelt Executive Summary og en detaljeret problemstilling. Læs det igennem og tilpas sproget.</p>
+            }
+          />
+          <StepCard
+            step={3}
+            title="Budget-estimat (10 min)"
+            isCompleted={completedSteps.includes(3)}
+            onComplete={() => setCompletedSteps([...completedSteps, 3])}
+            content={
+              <>
+                <p>Opret de finansielle rammer.</p>
+                <div className="font-mono text-sm bg-background p-3 rounded border border-border text-primary/80">
+                  "Lav et simpelt 6-måneders budget for en madleverings-startup med 2 ansatte i Danmark. Inkluder køkkenleje og marketing."
+                </div>
+              </>
+            }
+          />
+          <StepCard
+            step={4}
+            title="Marketing-strategi (10 min)"
+            isCompleted={completedSteps.includes(4)}
+            onComplete={() => setCompletedSteps([...completedSteps, 4])}
+            content={
+              <p>Bed din foretrukne AI om at generere 3 engagerende LinkedIn-posts til launch-ugen, samt en cold email template rettet mod HR-chefer for B2B frokostordninger.</p>
+            }
+          />
+          <StepCard
+            step={5}
+            title="Pitch den til en investor (5 min)"
+            isCompleted={completedSteps.includes(5)}
+            onComplete={() => setCompletedSteps([...completedSteps, 5])}
+            content={
+              <p>Brug pitch-strukturen fra Modul 2. Sammensæt alle elementerne til et stærkt 1-sides pitch-dokument, som er klar til at blive sendt som PDF.</p>
+            }
+          />
+        </div>
+
+        {completedSteps.length === 5 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="mt-10"
+          >
+            <TakeawayBox>
+              Du har netop bygget grundlaget for en rigtig virksomhed — med AI som co-founder, CFO, og CMO på én gang.
+            </TakeawayBox>
+          </motion.div>
+        )}
+      </div>
+    );
   }
 
-  const modIds = ['m1', 'm2', 'm3'];
-  const modDone = { m1: false, m2: false, m3: false };
+  if (activeModule === 6) {
+    const QuizView = () => {
+      const tilt = useTiltEffect();
+      const [answers, setAnswers] = useState<Record<number, number>>({});
+      const [allCorrect, setAllCorrect] = useState(false);
+      const [quizDone, setQuizDone] = useState(false);
 
-  function markDone(id) {
-    modDone[id] = true;
-    const el = document.getElementById(id);
-    el.classList.add('done'); el.classList.remove('open');
-    const currentIndex = modIds.indexOf(id);
-    if (currentIndex < modIds.length - 1) {
-      const nextId = modIds[currentIndex + 1];
-      const nextEl = document.getElementById(nextId);
-      nextEl.classList.remove('locked'); nextEl.classList.add('unlocked-next'); nextEl.classList.add('open');
-      showToast(`Modul ${currentIndex + 1} gennemført! Næste modul er nu åbent 🎉`);
-    } else {
-      document.getElementById('exam-label').style.display = 'block';
-      document.getElementById('exam-card').style.display = 'block';
-      showToast('Tillykke! Alle moduler er gennemført. Tag din eksamen nu 🎓');
-      const lastJourneyItem = document.querySelector('.j-item:last-child');
-      if (lastJourneyItem) { lastJourneyItem.classList.add('active'); }
-    }
-    updateProgressVisuals();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Questions: correct answer must NEVER be the longest option
+      const questions = [
+        {
+          question: "Hvad er den primære fordel ved at bruge AI til idégenerering?",
+          options: [
+            { text: "AI kan erstatte al menneskelig kreativitet og intuition" },
+            { text: "AI genererer mange idéer hurtigt, som du kan filtrere" },
+            { text: "AI kender altid præcis det bedste marked for dig" },
+            { text: "AI garanterer succes for alle virksomheder" }
+          ],
+          correct: 1
+          // Correct: "AI genererer mange idéer hurtigt, som du kan filtrere" (shorter than option 0 and 2)
+        },
+        {
+          question: "Hvilken investor-pitch-struktur lærte vi i Modul 2?",
+          options: [
+            { text: "Vision → Mission → Produkt → Marked → Team → Budget → Exitstrategi" },
+            { text: "Problem → Løsning → Marked → Team → Traction → Funding Ask" },
+            { text: "Marked → Team → Problem → Løsning" },
+            { text: "Produkt → Pris → Promotion → Place" }
+          ],
+          correct: 1
+          // Correct: option 1 is shorter than option 0 (the decoy)
+        },
+        {
+          question: "Hvad står KPI for?",
+          options: [
+            { text: "Knowledge Performance Indicator" },
+            { text: "Key Performance Indicator" },
+            { text: "Key Product Innovation" },
+            { text: "Key Profit Index" }
+          ],
+          correct: 1
+          // Correct: "Key Performance Indicator" — same length as option 0
+        },
+        {
+          question: "Hvad er en ICP i en markedsføringsstrategi?",
+          options: [
+            { text: "Internet Content Provider" },
+            { text: "Ideal Customer Profile" },
+            { text: "Internal Communication Protocol" },
+            { text: "Income Calculation Platform" }
+          ],
+          correct: 1
+          // Correct: "Ideal Customer Profile" — shorter than options 2 and 3
+        }
+      ];
+
+      const handleSelect = (qi: number, idx: number) => {
+        if (answers[qi] !== undefined) return;
+        const newAnswers = { ...answers, [qi]: idx };
+        setAnswers(newAnswers);
+
+        if (Object.keys(newAnswers).length === questions.length) {
+          const correct = questions.every((q, i) => newAnswers[i] === q.correct);
+          setAllCorrect(correct);
+          setQuizDone(true);
+          if (correct) {
+            onQuizComplete();
+            for (let i = 0; i < 60; i++) {
+              const confetti = document.createElement('div');
+              confetti.style.cssText = `position:fixed;width:8px;height:8px;z-index:9999;pointer-events:none;border-radius:2px;background:${['#D4AF37','#FFDF00','#F9F1A5','#fff'][Math.floor(Math.random()*4)]};left:${Math.random()*100}vw;top:-10px;transform:rotate(${Math.random()*360}deg)`;
+              document.body.appendChild(confetti);
+              const anim = confetti.animate([
+                { transform: `translate3d(0,0,0) rotate(0deg)`, opacity: 1 },
+                { transform: `translate3d(${Math.random()*160-80}px,100vh,0) rotate(${Math.random()*720}deg)`, opacity: 0 }
+              ], { duration: Math.random()*1200+1400, easing: 'cubic-bezier(.37,0,.63,1)' });
+              anim.onfinish = () => confetti.remove();
+            }
+          }
+        }
+      };
+
+      const handleReset = () => {
+        setAnswers({});
+        setAllCorrect(false);
+        setQuizDone(false);
+      };
+
+      const score = questions.filter((q, i) => answers[i] === q.correct).length;
+
+      return (
+        <div className="animate-in fade-in duration-500 pb-20">
+          {!allCorrect ? (
+            <>
+              <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-6 leading-tight">
+                Den Store <span className="text-primary italic">Afsluttende Quiz</span>
+              </h1>
+              <p className="text-xl text-muted-foreground leading-relaxed mb-10">
+                Test din viden fra kurset. Svar vises med det samme — svar rigtigt på alle 4 for at låse op for dit certifikat.
+              </p>
+
+              <div className="space-y-2">
+                {questions.map((q, i) => (
+                  <QuizQuestion
+                    key={i}
+                    num={i + 1}
+                    q={q}
+                    selected={answers[i] !== undefined ? answers[i] : null}
+                    onSelect={(idx) => handleSelect(i, idx)}
+                  />
+                ))}
+              </div>
+
+              {quizDone && !allCorrect && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-8 p-6 bg-destructive/10 border border-destructive/30 rounded-xl flex items-center justify-between"
+                >
+                  <div>
+                    <p className="font-serif text-lg font-medium text-foreground">Du fik {score} af 4 rigtige.</p>
+                    <p className="text-sm text-muted-foreground mt-1">Prøv igen — du kan se de rigtige svar ovenfor.</p>
+                  </div>
+                  <button
+                    onClick={handleReset}
+                    className="px-6 py-2 bg-card border border-border text-foreground font-medium rounded-lg hover:bg-muted/50 transition-all active:scale-95 flex items-center gap-2"
+                  >
+                    <ArrowRight className="w-4 h-4" /> Prøv Igen
+                  </button>
+                </motion.div>
+              )}
+
+              <div className="mt-8 pt-8 border-t border-border">
+                <a
+                  href="/eksamen"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-3 w-full py-5 rounded-xl font-bold text-lg transition-all active:scale-[0.98] shadow-lg"
+                  style={{ background: "linear-gradient(135deg,#D4AF37,#C0A040)", color: "#0a0a14", boxShadow: "0 8px 40px rgba(212,175,55,0.35)" }}
+                >
+                  <Trophy className="w-5 h-5" />
+                  Gå til Eksamen
+                </a>
+              </div>
+            </>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="flex flex-col items-center justify-center pt-10"
+            >
+              <div
+                ref={tilt.ref}
+                style={{ boxShadow: '0 0 60px rgba(212,175,55,0.15)', ...tilt.style }}
+                className="w-full max-w-2xl aspect-[1.4] rounded-2xl relative flex items-center justify-center p-1 border border-primary/30"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-card to-background rounded-2xl opacity-90" />
+                <div className="relative z-10 text-center p-12 border-2 border-primary/20 w-full h-full rounded-xl flex flex-col items-center justify-center">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6 border border-primary/30">
+                    <Trophy className="w-10 h-10 text-primary" />
+                  </div>
+                  <h2 className="font-serif text-3xl text-foreground font-bold mb-2">Tillykke!</h2>
+                  <p className="text-xl font-serif text-primary italic mb-8">Du har gennemført AI til Iværksætteri</p>
+                  <div className="flex gap-1 mb-8">
+                    {[1, 2, 3, 4, 5].map(i => <Star key={i} className="w-5 h-5 text-primary fill-primary" />)}
+                  </div>
+                  <div className="w-full border-t border-border pt-6 flex justify-between items-end">
+                    <div className="text-left">
+                      <div className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Dato</div>
+                      <div className="font-mono text-sm">{new Date().toLocaleDateString('da-DK')}</div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-xs text-muted-foreground uppercase tracking-widest mb-1">Signatur</div>
+                      <div className="font-serif italic text-lg text-foreground/70">LearnAI Academy</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-8 text-muted-foreground flex items-center gap-2">
+                <Coins className="w-5 h-5 text-primary" /> Du har optjent 50 bonus Coins!
+              </p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.6 }}
+                className="mt-8 w-full max-w-2xl"
+              >
+                <a
+                  href="/eksamen"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-3 w-full py-5 rounded-xl font-bold text-lg transition-all active:scale-[0.98]"
+                  style={{ background: "linear-gradient(135deg,#D4AF37,#C0A040)", color: "#0a0a14", boxShadow: "0 8px 40px rgba(212,175,55,0.35)" }}
+                >
+                  <Trophy className="w-5 h-5" />
+                  Gå til Eksamen
+                </a>
+              </motion.div>
+            </motion.div>
+          )}
+        </div>
+      );
+    };
+
+    return <QuizView />;
   }
 
-  function updateProgressVisuals() {
-    const doneCount = Object.values(modDone).filter(Boolean).length;
-    const pct = Math.round((doneCount / modIds.length) * 100);
-    document.getElementById('prog-bar').style.width = pct + '%';
-    document.getElementById('prog-pct').textContent = pct + '%';
-    const labels = ['Åbn modul 1 for at starte','Godt begyndt — 2 moduler tilbage','Halvvejs — du klarer det!','Alle moduler gennemgået — klar til eksamen! 🎓'];
-    document.getElementById('prog-txt').textContent = labels[doneCount];
-    modIds.forEach((id, i) => {
-      const jItem = document.querySelectorAll('.j-item')[i];
-      if (!jItem) return;
-      jItem.classList.remove('active', 'done');
-      if (modDone[id]) { jItem.classList.add('done'); }
-      else if (document.getElementById(id).classList.contains('open')) { jItem.classList.add('active'); }
-      const step = document.getElementById('ps' + (i + 1));
-      if (step) {
-        step.classList.remove('active', 'done');
-        if (modDone[id]) { step.classList.add('done'); step.textContent = '✓'; }
-        else if (document.getElementById(id).classList.contains('open')) { step.classList.add('active'); step.textContent = i + 1; }
-        else { step.textContent = i + 1; }
-      }
-    });
-  }
-
-  updateProgressVisuals();
-</script>
-
-</body>
-</html>
+  return null;
+}
