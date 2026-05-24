@@ -7,139 +7,376 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg-warm:      #0f0905;
-      --bg-soft:      #160c06;
-      --ink:          #fef3c7;
-      --ink-soft:     #e8d5b0;
-      --muted:        #a08060;
-      --border:       #3d2010;
-      --bg:           #1a0f08;
-      --white:        #1f1208;
-      --primary:      #d97706;
-      --primary-soft: #78350f;
-      --indigo:       #d97706;
-      --indigo-deep:  #1a0a03;
-      --indigo-50:    #2a1505;
-      --indigo-100:   #3d1f0a;
-      --indigo-200:   #5c2d0a;
-      --indigo-glow:  rgba(217,119,6,0.15);
-      --accent-orange: #d97706;
-      --orange-50:     #1f1208;
-      --orange-100:    #2a1505;
-      --orange-glow:   rgba(217,119,6,0.15);
-      --amber:        #d97706;
-      --amber-100:    #2a1505;
+      --bg-deep:      #0a0105;
+      --bg-soft:      #120208;
+      --bg-card:      #160309;
+      --bg-card2:     #1c040c;
+      --ink:          #fef0ef;
+      --ink-soft:     #e8c8c5;
+      --muted:        #a06870;
+      --border:       #3d1018;
+      --border2:      #5c1820;
+
+      --primary:      #c41e3a;
+      --primary-deep: #7b1414;
+      --primary-soft: #3d0a0e;
+      --primary-glow: rgba(196,30,58,.20);
+      --primary-hot:  #e53935;
+
+      --gold:         #d4af37;
+      --gold-soft:    #b8962e;
+      --gold-glow:    rgba(212,175,55,.15);
+
       --green:        #059669;
       --green-50:     #022c22;
-      --red:          #DC2626;
+      --red:          #ef4444;
       --red-50:       #2d0a0a;
       --teal:         #0D9488;
+
       --r-sm: 8px; --r: 12px; --r-lg: 18px; --r-xl: 24px;
     }
+
     html { scroll-behavior: smooth; }
-    body { font-family: 'Outfit', sans-serif; background: var(--bg-warm); color: var(--ink); line-height: 1.6; }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg-deep);
+      color: var(--ink);
+      line-height: 1.6;
+      animation: bodyFadeIn .7s ease forwards;
+    }
+    @keyframes bodyFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 200;
-      height: 58px; background: rgba(15,9,5,0.95);
-      backdrop-filter: blur(14px); border-bottom: 1px solid var(--border);
+      height: 60px;
+      background: rgba(10,1,5,.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(196,30,58,.25);
+      box-shadow:
+        0 1px 0 rgba(212,175,55,.08),
+        0 4px 24px rgba(0,0,0,.5);
       display: flex; align-items: center; justify-content: space-between; padding: 0 28px;
     }
-    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px; }
-    .nav-mark { width: 32px; height: 32px; border-radius: 9px; background: var(--accent-orange); display: flex; align-items: center; justify-content: center; }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--ink); font-weight: 700; font-size: 15px;
+    }
+    .nav-mark {
+      width: 32px; height: 32px; border-radius: 9px;
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 14px var(--primary-glow), inset 0 1px 0 rgba(255,255,255,.15);
+    }
     .nav-mark svg { width: 15px; height: 15px; fill: white; }
-    .nav-tag { font-size: 12px; font-weight: 600; color: var(--accent-orange); background: var(--orange-50); border: 1px solid var(--border); padding: 4px 12px; border-radius: 999px; }
-    .journey { background: var(--white); border-bottom: 1px solid var(--border); overflow-x: auto; scrollbar-width: none; padding: 0 28px; }
+    .nav-tag {
+      font-size: 12px; font-weight: 600; color: var(--gold);
+      background: rgba(212,175,55,.08);
+      border: 1px solid rgba(212,175,55,.22);
+      padding: 4px 12px; border-radius: 999px;
+      letter-spacing: .04em;
+    }
+
+    /* ── JOURNEY BAR ── */
+    .journey {
+      background: rgba(16,3,9,.98);
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 12px rgba(0,0,0,.4);
+      overflow-x: auto; scrollbar-width: none; padding: 0 28px;
+    }
     .journey::-webkit-scrollbar { display: none; }
-    .journey-track { display: flex; align-items: stretch; min-width: max-content; justify-content: center; margin: 0 auto; }
-    .j-item { display: flex; align-items: center; gap: 7px; padding: 13px 14px; font-size: 12px; font-weight: 600; color: #7c6040; border-bottom: 2px solid transparent; transition: color .2s, border-color .2s; white-space: nowrap; }
-    .j-item.active { color: var(--accent-orange); border-bottom-color: var(--accent-orange); }
-    .j-item.done   { color: var(--green); border-bottom-color: var(--green); }
-    .j-dot { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; background: #2a1a0a; color: #7c6040; transition: background .2s, color .2s; }
-    .j-item.active .j-dot { background: var(--accent-orange); color: white; }
-    .j-item.done   .j-dot { background: var(--green); color: white; }
-    .j-sep { color: #5c3a1a; font-size: 14px; align-self: center; }
-    .hero { background: var(--indigo-deep); padding: 52px 28px 44px; position: relative; overflow: hidden; }
-    .hero-grid { position: absolute; inset: 0; opacity: .045; background-image: linear-gradient(rgba(255,255,255,.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.6) 1px, transparent 1px); background-size: 40px 40px; }
-    .hero-blob { position: absolute; width: 420px; height: 420px; background: radial-gradient(circle, rgba(217,119,6,.30) 0%, transparent 70%); top: -140px; right: -60px; border-radius: 50%; animation: blobFloat 8s ease-in-out infinite; }
-    @keyframes blobFloat { 0%,100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-20px) scale(1.05); } }
+    .journey-track {
+      display: flex; align-items: stretch; min-width: max-content;
+      justify-content: center; margin: 0 auto;
+    }
+    .j-item {
+      display: flex; align-items: center; gap: 7px;
+      padding: 13px 14px; font-size: 12px; font-weight: 600;
+      color: #7c4050; border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s; white-space: nowrap;
+    }
+    .j-item.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .j-item.done   { color: var(--green);   border-bottom-color: var(--green); }
+    .j-dot {
+      width: 19px; height: 19px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700;
+      background: #2a0a10; color: #7c4050;
+      transition: background .2s, color .2s;
+    }
+    .j-item.active .j-dot { background: var(--primary); color: white; box-shadow: 0 0 8px var(--primary-glow); }
+    .j-item.done   .j-dot { background: var(--green);   color: white; }
+    .j-sep { color: #5c1820; font-size: 14px; align-self: center; }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(145deg, #160108 0%, #2d0510 40%, #3d0812 100%);
+      padding: 56px 28px 48px; position: relative; overflow: hidden;
+    }
+    /* Atmospheric glow layers */
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% -10%, rgba(196,30,58,.35) 0%, transparent 65%),
+        radial-gradient(ellipse 40% 40% at 90% 80%, rgba(120,10,25,.4) 0%, transparent 60%);
+    }
+    /* Gold shimmer line at top */
+    .hero::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.6), rgba(196,30,58,.4), rgba(212,175,55,.6), transparent);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: .04;
+      background-image:
+        linear-gradient(rgba(255,255,255,.5) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.5) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .hero-blob {
+      position: absolute; width: 520px; height: 520px;
+      background: radial-gradient(circle, rgba(196,30,58,.25) 0%, transparent 70%);
+      top: -160px; right: -80px; border-radius: 50%;
+      animation: blobFloat 8s ease-in-out infinite;
+    }
+    .hero-blob2 {
+      position: absolute; width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(212,175,55,.1) 0%, transparent 70%);
+      bottom: -100px; left: -60px; border-radius: 50%;
+      animation: blobFloat 12s ease-in-out infinite reverse;
+    }
+    @keyframes blobFloat {
+      0%,100% { transform: translateY(0) scale(1); }
+      50%      { transform: translateY(-22px) scale(1.06); }
+    }
     .hero-inner { max-width: 700px; margin: 0 auto; position: relative; z-index: 1; }
-    .hero-chip { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.85); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 5px 14px; border-radius: 999px; margin-bottom: 20px; }
-    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; display: inline-block; }
-    .hero h1 { font-family: 'Lora', serif; font-size: clamp(28px, 5vw, 42px); font-weight: 600; color: white; line-height: 1.18; margin-bottom: 14px; letter-spacing: -.4px; }
-    .hero h1 em { font-style: italic; color: #fcd34d; }
-    .hero-lead { font-size: 15.5px; color: rgba(255,255,255,.72); max-width: 500px; line-height: 1.7; margin-bottom: 28px; }
+    .hero-chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(196,30,58,.12);
+      border: 1px solid rgba(196,30,58,.3);
+      color: rgba(255,220,215,.85); font-size: 11px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 5px 14px; border-radius: 999px; margin-bottom: 20px;
+    }
+    .hero-chip-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); display: inline-block; }
+    .hero h1 {
+      font-family: 'Lora', serif; font-size: clamp(28px, 5vw, 44px);
+      font-weight: 600; color: white; line-height: 1.16;
+      margin-bottom: 14px; letter-spacing: -.4px;
+      text-shadow: 0 2px 20px rgba(196,30,58,.4);
+    }
+    .hero h1 em { font-style: italic; color: var(--gold); text-shadow: 0 0 30px rgba(212,175,55,.5); }
+    .hero-lead { font-size: 15.5px; color: rgba(255,230,225,.72); max-width: 500px; line-height: 1.7; margin-bottom: 28px; }
     .hero-pills { display: flex; gap: 10px; flex-wrap: wrap; }
-    .hero-pill { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.12); color: rgba(255,255,255,.8); font-size: 13px; padding: 7px 13px; border-radius: var(--r-sm); }
+    .hero-pill {
+      display: flex; align-items: center; gap: 7px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(196,30,58,.25);
+      color: rgba(255,230,225,.8); font-size: 13px;
+      padding: 7px 13px; border-radius: var(--r-sm);
+      backdrop-filter: blur(8px);
+    }
+
+    /* ── LAYOUT ── */
     .wrap { max-width: 740px; margin: 0 auto; padding: 36px 24px 80px; }
-    .notice { display: flex; gap: 13px; align-items: flex-start; border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px; }
+
+    /* ── NOTICES ── */
+    .notice {
+      display: flex; gap: 13px; align-items: flex-start;
+      border-radius: var(--r); padding: 14px 16px; margin-bottom: 14px;
+    }
     .notice-icon { font-size: 17px; flex-shrink: 0; margin-top: 1px; }
     .notice-head { font-size: 12.5px; font-weight: 700; margin-bottom: 3px; }
     .notice-body { font-size: 13px; line-height: 1.55; }
-    .notice.warn  { background: #2a1505; border: 1px solid #5c2d0a; }
-    .notice.warn  .notice-head { color: #f59e0b; }
-    .notice.warn  .notice-body { color: #e8d5b0; }
-    .notice.info  { background: #2a1505; border: 1px solid #5c2d0a; }
-    .notice.info  .notice-head { color: #fcd34d; }
-    .notice.info  .notice-body { color: #e8d5b0; }
-    .mod { background: #1c1008; border: 1px solid #4a2010; border-left: 4px solid #78350f; border-radius: var(--r-xl); margin-bottom: 14px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,.3); transition: box-shadow .25s, border-color .25s, border-left-color .25s; }
-    .mod:hover { box-shadow: 0 4px 20px rgba(217,119,6,.13); border-left-color: var(--accent-orange); }
-    .mod.open { border-color: #5c2d0a; border-left-color: var(--accent-orange); box-shadow: 0 6px 28px var(--orange-glow); background: #1f1208; }
-    .mod-header { display: flex; align-items: center; gap: 16px; padding: 20px 24px; cursor: pointer; transition: background .15s; }
-    .mod-header:hover { background: #2a1505; }
-    .mod.open .mod-header { background: #2a1505; }
-    .mod-num { width: 40px; height: 40px; border-radius: 11px; background: #2a1a0a; color: #7c6040; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; flex-shrink: 0; transition: background .2s, color .2s; }
-    .mod.open .mod-num { background: var(--accent-orange); color: white; }
+    .notice.warn  { background: #220510; border: 1px solid #5c1018; }
+    .notice.warn  .notice-head { color: var(--gold); }
+    .notice.warn  .notice-body { color: var(--ink-soft); }
+    .notice.info  { background: #1c0408; border: 1px solid rgba(196,30,58,.35); }
+    .notice.info  .notice-head { color: var(--gold); }
+    .notice.info  .notice-body { color: var(--ink-soft); }
+
+    /* ── MODULES — 3D PRESTIGE ── */
+    .mod {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--primary-deep);
+      border-radius: var(--r-xl);
+      margin-bottom: 14px; overflow: hidden;
+      box-shadow:
+        0 4px 16px rgba(0,0,0,.4),
+        0 1px 0 rgba(212,175,55,.05) inset,
+        0 -1px 0 rgba(0,0,0,.3) inset;
+      transition: box-shadow .3s, border-left-color .3s, transform .3s;
+    }
+    .mod:hover:not(.locked):not(.done) {
+      box-shadow:
+        0 8px 32px rgba(196,30,58,.18),
+        0 2px 8px rgba(0,0,0,.5),
+        0 1px 0 rgba(212,175,55,.08) inset;
+      border-left-color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .mod.open {
+      border-color: rgba(196,30,58,.4);
+      border-left-color: var(--primary);
+      background: var(--bg-card2);
+      box-shadow:
+        0 0 0 1px rgba(196,30,58,.15),
+        0 12px 40px var(--primary-glow),
+        0 4px 16px rgba(0,0,0,.5),
+        0 1px 0 rgba(212,175,55,.10) inset;
+    }
+    .mod-header {
+      display: flex; align-items: center; gap: 16px;
+      padding: 20px 24px; cursor: pointer; transition: background .15s;
+    }
+    .mod-header:hover { background: rgba(196,30,58,.06); }
+    .mod.open .mod-header { background: rgba(196,30,58,.06); }
+    .mod-num {
+      width: 42px; height: 42px; border-radius: 12px;
+      background: var(--primary-soft);
+      color: #a06070; display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 15px; flex-shrink: 0;
+      transition: background .25s, color .25s, box-shadow .25s;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,.3), inset 0 1px 1px rgba(255,255,255,.06);
+    }
+    .mod.open .mod-num {
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
+      color: white;
+      box-shadow: 0 4px 14px var(--primary-glow), inset 0 1px 1px rgba(255,255,255,.15);
+    }
     .mod-text { flex: 1; }
     .mod-title { font-size: 15px; font-weight: 700; color: var(--ink); }
     .mod-sub   { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-    .mod-time  { font-size: 11.5px; font-weight: 600; color: var(--muted); background: #2a1a0a; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
-    .mod.open .mod-time { background: var(--orange-100); color: #fcd34d; }
-    .mod-arrow { color: #5c3a1a; font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; }
-    .mod.open .mod-arrow { transform: rotate(180deg); color: var(--accent-orange); }
-    .mod-body { display: none; padding: 24px 28px 30px; border-top: 1px solid var(--border); animation: fadeSlide .22s ease; }
+    .mod-time  {
+      font-size: 11.5px; font-weight: 600; color: var(--muted);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
+    }
+    .mod.open .mod-time { background: rgba(196,30,58,.12); border-color: rgba(196,30,58,.3); color: #f4a0a8; }
+    .mod-arrow { color: #5c1820; font-size: 18px; flex-shrink: 0; transition: transform .25s, color .2s; }
+    .mod.open .mod-arrow { transform: rotate(180deg); color: var(--primary); }
+    .mod-body {
+      display: none; padding: 24px 28px 30px;
+      border-top: 1px solid rgba(196,30,58,.15);
+      animation: fadeSlide .22s ease;
+    }
     .mod.open .mod-body { display: block; }
     @keyframes fadeSlide { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ── SECTION LABEL ── */
     .sect-label { display: flex; align-items: center; gap: 12px; margin: 30px 0 16px; }
     .sect-label hr { flex: 1; border: none; border-top: 1px solid var(--border); }
-    .sect-label span { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
+    .sect-label span {
+      font-size: 11px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--gold); white-space: nowrap;
+      text-shadow: 0 0 12px var(--gold-glow);
+    }
+
+    /* ── PROSE ── */
     p.prose { font-size: 14.5px; line-height: 1.75; color: var(--ink-soft); margin-bottom: 18px; }
     p.prose strong { color: var(--ink); font-weight: 600; }
+
+    /* ── CONCEPT CARDS — 3D ── */
     .concept-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
     @media(max-width:560px){ .concept-row { grid-template-columns: 1fr; } }
-    .cc { border-radius: var(--r); padding: 16px 18px; position: relative; overflow: hidden; }
+    .cc {
+      border-radius: var(--r); padding: 16px 18px; position: relative; overflow: hidden;
+      transition: transform .25s, box-shadow .25s;
+    }
+    .cc:hover { transform: translateY(-3px) scale(1.01); }
     .cc::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-    .cc.blue   { background: #1a1208; border: 1px solid #3d2a10; } .cc.blue::before   { background: #d97706; }
-    .cc.yellow { background: #1f1008; border: 1px solid #4a2010; } .cc.yellow::before { background: var(--accent-orange); }
-    .cc.teal   { background: #0a1a18; border: 1px solid #0d2e2a; } .cc.teal::before   { background: var(--teal); }
+    /* Gold shimmer top-right corner accent */
+    .cc::after {
+      content: ''; position: absolute; top: 0; right: 0;
+      width: 60px; height: 60px;
+      background: radial-gradient(circle at top right, rgba(212,175,55,.08) 0%, transparent 70%);
+    }
+    .cc.blue   {
+      background: linear-gradient(145deg, #1c0308, #16020a);
+      border: 1px solid rgba(196,30,58,.3);
+      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .cc.blue::before   { background: linear-gradient(90deg, var(--primary), var(--gold)); }
+    .cc.yellow {
+      background: linear-gradient(145deg, #200408, #180306);
+      border: 1px solid rgba(196,30,58,.25);
+      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .cc.yellow::before { background: linear-gradient(90deg, var(--gold-soft), var(--primary)); }
+    .cc.teal   {
+      background: linear-gradient(145deg, #051a18, #040f0e);
+      border: 1px solid #0d2e2a;
+      box-shadow: 0 4px 16px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .cc.teal::before   { background: linear-gradient(90deg, var(--teal), #0d9488); }
     .cc.wide { grid-column: 1/-1; }
     .cc-title { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
-    .cc.blue .cc-title   { color: #fcd34d; }
-    .cc.yellow .cc-title { color: #f59e0b; }
+    .cc.blue .cc-title   { color: var(--gold); }
+    .cc.yellow .cc-title { color: #f4a0a8; }
     .cc.teal .cc-title   { color: #5eead4; }
     .cc-body { font-size: 13px; line-height: 1.6; }
-    .cc.blue .cc-body   { color: #e8d5b0; }
-    .cc.yellow .cc-body { color: #e8d5b0; }
-    .cc.teal .cc-body   { color: #99f6e4; }
-    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.07); font-size: 12px; font-weight: 600; }
-    .cc.blue .cc-tip   { color: #d97706; }
-    .cc.yellow .cc-tip { color: var(--accent-orange); }
-    .cc.teal .cc-tip   { color: var(--teal); }
+    .cc.blue .cc-body    { color: var(--ink-soft); }
+    .cc.yellow .cc-body  { color: var(--ink-soft); }
+    .cc.teal .cc-body    { color: #99f6e4; }
+    .cc-tip { margin-top: 8px; padding-top: 8px; border-top: 1px solid rgba(255,255,255,.06); font-size: 12px; font-weight: 600; }
+    .cc.blue .cc-tip     { color: var(--primary); }
+    .cc.yellow .cc-tip   { color: var(--gold); }
+    .cc.teal .cc-tip     { color: var(--teal); }
+
+    /* ── TECHNIQUE ── */
     .tech { margin-bottom: 30px; }
-    .tech-pill { display: inline-flex; align-items: center; gap: 8px; background: var(--accent-orange); color: white; font-size: 10.5px; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; padding: 5px 12px; border-radius: 999px; margin-bottom: 11px; }
+    .tech-pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
+      color: white; font-size: 10.5px; font-weight: 700;
+      letter-spacing: .09em; text-transform: uppercase;
+      padding: 5px 12px; border-radius: 999px; margin-bottom: 11px;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
     .tech-pill .num { background: rgba(255,255,255,.2); border-radius: 999px; padding: 1px 7px; font-size: 10px; }
     h3.tech-h { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 8px; }
-    .copy-block { background: #0a0603; border-radius: var(--r); overflow: hidden; margin-bottom: 16px; border: 1px solid #3d2010; }
-    .copy-topbar { display: flex; align-items: center; justify-content: space-between; padding: 9px 14px; background: rgba(255,255,255,.03); border-bottom: 1px solid rgba(255,255,255,.05); }
-    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #7c6040; }
-    .copy-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.11); color: #a08060; font-family: 'Outfit', sans-serif; font-size: 11.5px; font-weight: 600; padding: 4px 10px; border-radius: 6px; cursor: pointer; transition: all .18s; }
-    .copy-btn:hover { background: rgba(255,255,255,.14); color: #fef3c7; }
+
+    /* ── COPY BLOCK ── */
+    .copy-block {
+      background: #06010a;
+      border-radius: var(--r); overflow: hidden; margin-bottom: 16px;
+      border: 1px solid rgba(196,30,58,.2);
+      box-shadow: 0 4px 20px rgba(0,0,0,.4), inset 0 1px 0 rgba(196,30,58,.08);
+    }
+    .copy-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 9px 14px;
+      background: rgba(196,30,58,.06);
+      border-bottom: 1px solid rgba(196,30,58,.12);
+    }
+    .copy-label-txt { font-size: 10.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+    .copy-btn {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(196,30,58,.10); border: 1px solid rgba(196,30,58,.25);
+      color: var(--muted); font-family: 'Outfit', sans-serif;
+      font-size: 11.5px; font-weight: 600; padding: 4px 10px;
+      border-radius: 6px; cursor: pointer; transition: all .18s;
+    }
+    .copy-btn:hover { background: rgba(196,30,58,.2); color: var(--ink); }
     .copy-btn.copied { background: rgba(16,185,129,.15); border-color: rgba(16,185,129,.3); color: #6EE7B7; }
     .copy-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
-    .copy-text { padding: 14px 16px; font-family: 'Courier New', monospace; font-size: 13px; line-height: 1.7; color: #e8d5b0; white-space: pre-wrap; word-break: break-word; }
-    .copy-text .hl  { color: #fcd34d; }
+    .copy-text {
+      padding: 14px 16px; font-family: 'Courier New', monospace;
+      font-size: 13px; line-height: 1.7; color: #e8c8c5;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .copy-text .hl  { color: var(--gold); }
     .copy-text .hlg { color: #6EE7B7; }
-    .copy-text .hly { color: #FCD34D; }
+    .copy-text .hly { color: var(--gold); }
+
+    /* ── COMPARE ── */
     .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
     @media(max-width:500px){ .compare { grid-template-columns: 1fr; } }
     .cmp { border-radius: var(--r); padding: 14px 16px; }
@@ -151,64 +388,211 @@
     .cmp-text { font-size: 13px; line-height: 1.6; font-style: italic; }
     .cmp.bad  .cmp-text { color: #fca5a5; }
     .cmp.good .cmp-text { color: #a7f3d0; }
-    .practice { background: #1f1208; border: 1px solid #5c2d0a; border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px; }
+
+    /* ── PRACTICE ── */
+    .practice {
+      background: linear-gradient(145deg, #1c0408, #160206);
+      border: 1px solid rgba(196,30,58,.3);
+      border-left: 3px solid var(--primary);
+      border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.04);
+    }
     .practice-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; }
-    .p-tag { background: var(--accent-orange); color: white; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; }
-    .p-title { font-size: 13.5px; font-weight: 700; color: #fcd34d; }
-    .p-body { font-size: 13px; line-height: 1.7; color: #e8d5b0; }
+    .p-tag {
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
+      color: white; font-size: 10px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 3px 9px; border-radius: 999px;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+    .p-title { font-size: 13.5px; font-weight: 700; color: var(--gold); text-shadow: 0 0 10px var(--gold-glow); }
+    .p-body { font-size: 13px; line-height: 1.7; color: var(--ink-soft); }
     .p-body ol, .p-body ul { padding-left: 1.2rem; margin-top: 7px; }
     .p-body li { margin-bottom: 4px; }
     .p-body em { font-style: italic; }
-    .p-body strong { color: #f59e0b; }
-    #toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a0a03; color: #fef3c7; font-size: 13px; font-weight: 600; padding: 10px 20px; border-radius: 999px; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,.4); opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none; z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+    .p-body strong { color: var(--gold); }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed; bottom: 28px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(16,2,8,.97); color: var(--ink);
+      font-size: 13px; font-weight: 600; padding: 10px 20px;
+      border-radius: 999px;
+      border: 1px solid rgba(196,30,58,.3);
+      box-shadow: 0 8px 32px rgba(0,0,0,.5), 0 0 0 1px rgba(212,175,55,.1);
+      opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+      z-index: 9999; white-space: nowrap; display: flex; align-items: center; gap: 8px;
+    }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .mod.done .mod-num { background: var(--green); color: white; }
-    .mod.done { border-color: #065f46; }
-    .mod.done .mod-header { background: #022c22; }
-    .mod-done-badge { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--green); background: #022c22; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+
+    /* ── MODULE DONE STATE ── */
+    .mod.done .mod-num {
+      background: linear-gradient(135deg, #064e3b, #059669);
+      color: white;
+      box-shadow: 0 4px 12px rgba(5,150,105,.3);
+    }
+    .mod.done { border-color: #065f46; border-left-color: var(--green); }
+    .mod.done .mod-header { background: rgba(5,150,105,.05); }
+    .mod-done-badge {
+      display: none; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; color: var(--green);
+      background: rgba(5,150,105,.12); border: 1px solid rgba(5,150,105,.25);
+      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
+    }
     .mod.done .mod-done-badge { display: flex; }
     .mod.done .mod-time { display: none; }
-    .mod.locked { opacity: .5; }
+    .mod.locked { opacity: .45; }
     .mod.locked .mod-header { cursor: not-allowed; }
-    .mod-locked-badge { display: none; align-items: center; gap: 5px; font-size: 11px; font-weight: 700; color: var(--muted); background: #2a1a0a; padding: 4px 10px; border-radius: 999px; flex-shrink: 0; }
+    .mod-locked-badge {
+      display: none; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; color: var(--muted);
+      background: rgba(255,255,255,.04); border: 1px solid var(--border);
+      padding: 4px 10px; border-radius: 999px; flex-shrink: 0;
+    }
     .mod.locked .mod-locked-badge { display: flex; }
     .mod.locked .mod-time { display: none; }
     .mod.locked .mod-arrow { display: none; }
-    .mod.unlocked-next { border-left-color: #f59e0b; box-shadow: 0 2px 12px rgba(245,158,11,.15); }
-    .mod.unlocked-next .mod-header { background: #2a1a05; }
-    .mod.unlocked-next .mod-num { background: #f59e0b; color: white; }
-    .mod.unlocked-next .mod-arrow { color: #f59e0b; }
-    .progress-track-wrap { background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 18px 22px; margin-bottom: 28px; display: flex; align-items: center; gap: 16px; }
+    .mod.unlocked-next {
+      border-left-color: var(--gold);
+      box-shadow: 0 0 0 1px rgba(212,175,55,.15), 0 4px 20px rgba(212,175,55,.10), 0 4px 16px rgba(0,0,0,.4);
+    }
+    .mod.unlocked-next .mod-header { background: rgba(212,175,55,.04); }
+    .mod.unlocked-next .mod-num {
+      background: linear-gradient(135deg, var(--gold-soft), var(--gold));
+      color: white;
+      box-shadow: 0 4px 12px var(--gold-glow);
+    }
+    .mod.unlocked-next .mod-arrow { color: var(--gold); }
+
+    /* ── PROGRESS TRACKER — PRESTIGE ── */
+    .progress-track-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--r-lg); padding: 18px 22px;
+      margin-bottom: 28px; display: flex; align-items: center; gap: 16px;
+      box-shadow:
+        0 4px 20px rgba(0,0,0,.35),
+        0 1px 0 rgba(212,175,55,.06) inset,
+        0 -1px 0 rgba(0,0,0,.2) inset;
+    }
     .prog-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); white-space: nowrap; }
-    .prog-bar-outer { flex: 1; height: 7px; background: #2a1a0a; border-radius: 999px; overflow: hidden; }
-    .prog-bar-inner { height: 100%; background: linear-gradient(90deg, var(--accent-orange), #f59e0b); border-radius: 999px; width: 0%; transition: width .6s ease; }
-    .prog-pct { font-size: 13px; font-weight: 700; color: var(--accent-orange); white-space: nowrap; min-width: 36px; text-align: right; }
+    .prog-bar-outer {
+      flex: 1; height: 7px;
+      background: rgba(255,255,255,.05);
+      border-radius: 999px; overflow: hidden;
+      box-shadow: inset 0 1px 3px rgba(0,0,0,.4);
+    }
+    .prog-bar-inner {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-deep), var(--primary), var(--gold));
+      border-radius: 999px; width: 0%;
+      transition: width .6s ease;
+      box-shadow: 0 0 8px var(--primary-glow);
+    }
+    .prog-pct { font-size: 13px; font-weight: 700; color: var(--primary); white-space: nowrap; min-width: 36px; text-align: right; }
+
     .prog-steps { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-    .prog-step { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; background: #2a1a0a; color: #7c6040; border: 2px solid #3d2010; pointer-events: none; user-select: none; transition: all .35s ease; position: relative; }
-    .prog-step:not(:last-child)::after { content: ''; position: absolute; left: 100%; top: 50%; transform: translateY(-50%); width: 6px; height: 2px; background: #3d2010; margin-left: 0; }
-    .prog-step.active { background: #2a1505; border-color: var(--accent-orange); color: var(--accent-orange); }
-    .prog-step.active::before { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 2px solid var(--accent-orange); opacity: 0; animation: stepPulse 1.8s ease-out infinite; }
-    @keyframes stepPulse { 0% { transform: scale(0.85); opacity: 0.6; } 70% { transform: scale(1.4); opacity: 0; } 100% { transform: scale(1.4); opacity: 0; } }
-    .prog-step.done { background: var(--green); border-color: var(--green); color: white; }
+    .prog-step {
+      width: 28px; height: 28px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700;
+      background: var(--primary-soft);
+      color: #a06070;
+      border: 2px solid var(--border);
+      pointer-events: none; user-select: none;
+      transition: all .35s ease; position: relative;
+      box-shadow: inset 0 -2px 4px rgba(0,0,0,.3);
+    }
+    .prog-step:not(:last-child)::after {
+      content: ''; position: absolute; left: 100%; top: 50%;
+      transform: translateY(-50%); width: 6px; height: 2px;
+      background: var(--border); margin-left: 0;
+    }
+    .prog-step.active {
+      background: rgba(196,30,58,.15);
+      border-color: var(--primary); color: var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+    .prog-step.active::before {
+      content: ''; position: absolute; inset: -5px; border-radius: 50%;
+      border: 2px solid var(--primary); opacity: 0;
+      animation: stepPulse 1.8s ease-out infinite;
+    }
+    @keyframes stepPulse {
+      0%   { transform: scale(0.85); opacity: 0.5; }
+      70%  { transform: scale(1.5);  opacity: 0; }
+      100% { transform: scale(1.5);  opacity: 0; }
+    }
+    .prog-step.done {
+      background: linear-gradient(135deg, #064e3b, #059669);
+      border-color: var(--green); color: white;
+      box-shadow: 0 0 10px rgba(5,150,105,.3);
+    }
     .prog-step.done::after { background: var(--green); }
-    .cta { background: var(--white); border: 1.5px solid #5c2d0a; border-radius: var(--r-xl); padding: 34px 28px; text-align: center; box-shadow: 0 8px 36px var(--orange-glow); }
-    .cta-icon { font-size: 40px; margin-bottom: 10px; }
-    .cta h2 { font-family: 'Lora', serif; font-size: 23px; font-weight: 600; color: var(--ink); margin-bottom: 8px; }
-    .cta p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
-    .btn-go { display: inline-flex; align-items: center; gap: 9px; background: var(--accent-orange); color: white; font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 38px; border-radius: var(--r); text-decoration: none; box-shadow: 0 4px 18px var(--orange-glow); transition: background .15s, transform .15s, box-shadow .15s; }
-    .btn-go:hover { background: #b45309; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(217,119,6,.35); }
+
+    /* ── CTA EXAM ── */
+    .cta {
+      background: linear-gradient(145deg, #160206, #200410);
+      border: 1.5px solid rgba(196,30,58,.35);
+      border-radius: var(--r-xl); padding: 40px 32px; text-align: center;
+      box-shadow:
+        0 0 0 1px rgba(212,175,55,.1),
+        0 16px 60px rgba(196,30,58,.15),
+        0 8px 32px rgba(0,0,0,.5),
+        inset 0 1px 0 rgba(212,175,55,.1);
+      position: relative; overflow: hidden;
+    }
+    .cta::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(196,30,58,.15) 0%, transparent 65%);
+    }
+    .cta::after {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212,175,55,.5), transparent);
+    }
+    .cta-icon { font-size: 44px; margin-bottom: 12px; position: relative; z-index: 1; }
+    .cta h2 {
+      font-family: 'Lora', serif; font-size: 24px; font-weight: 600;
+      color: var(--ink); margin-bottom: 8px;
+      position: relative; z-index: 1;
+      text-shadow: 0 2px 12px rgba(0,0,0,.4);
+    }
+    .cta p { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 20px; position: relative; z-index: 1; }
+    .btn-go {
+      display: inline-flex; align-items: center; gap: 9px;
+      background: linear-gradient(135deg, var(--primary-deep), var(--primary));
+      color: white; font-family: 'Outfit', sans-serif;
+      font-size: 15px; font-weight: 700; padding: 15px 40px;
+      border-radius: var(--r); text-decoration: none;
+      box-shadow:
+        0 6px 24px var(--primary-glow),
+        0 2px 0 rgba(255,255,255,.1) inset,
+        0 -2px 0 rgba(0,0,0,.2) inset;
+      transition: background .15s, transform .2s, box-shadow .2s;
+      position: relative; z-index: 1;
+    }
+    .btn-go:hover {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hot));
+      transform: translateY(-3px);
+      box-shadow: 0 12px 36px rgba(196,30,58,.45), 0 2px 0 rgba(255,255,255,.1) inset;
+    }
+    .btn-go:active { transform: translateY(-1px); }
     .btn-go svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: white; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
     @media(max-width:480px){
       nav, .journey { padding-left: 16px; padding-right: 16px; }
       .hero { padding: 36px 16px 30px; }
       .wrap { padding: 24px 16px 60px; }
       .mod-header { padding: 16px 18px; gap: 12px; }
       .mod-body { padding: 18px 18px 22px; }
-      .cta { padding: 26px 18px; }
+      .cta { padding: 28px 20px; }
     }
   </style>
 </head>
 <body>
+
 <nav>
   <a class="nav-logo" href="learnai_final.html">
     <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
@@ -216,6 +600,7 @@
   </a>
   <div class="nav-tag">Sidekursus &nbsp;·&nbsp; AI for Iværksættere</div>
 </nav>
+
 <div class="journey">
   <div class="journey-track">
     <div class="j-item active"><div class="j-dot">1</div>Idégenerering</div>
@@ -227,9 +612,11 @@
     <div class="j-item"><div class="j-dot">🎓</div>Eksamen</div>
   </div>
 </div>
+
 <div class="hero">
   <div class="hero-grid"></div>
   <div class="hero-blob"></div>
+  <div class="hero-blob2"></div>
   <div class="hero-inner">
     <div class="hero-chip"><span class="hero-chip-dot"></span> Sidekursus &nbsp;·&nbsp; Iværksætteri</div>
     <h1>AI som din<br><em>digitale medstifter</em></h1>
@@ -241,7 +628,10 @@
     </div>
   </div>
 </div>
+
 <div class="wrap">
+
+  <!-- PROGRESS TRACKER -->
   <div class="progress-track-wrap">
     <div class="prog-steps">
       <div class="prog-step active" id="ps1">1</div>
@@ -258,6 +648,7 @@
       </div>
     </div>
   </div>
+
   <div class="notice info" style="margin-bottom:20px;">
     <div class="notice-icon">💡</div>
     <div>
@@ -265,6 +656,8 @@
       <div class="notice-body">Åbn Claude.ai eller ChatGPT i et andet vindue. Dette sidekursus har 6 konkrete prompts og øvelser, du kan kopiere med ét klik og afprøve med det samme.</div>
     </div>
   </div>
+
+  <!-- MODUL 1 -->
   <div class="sect-label"><hr><span>Modul 1 af 3</span><hr></div>
   <div class="mod open" id="m1">
     <div class="mod-header" onclick="tog('m1')">
@@ -279,6 +672,7 @@
     </div>
     <div class="mod-body">
       <p class="prose">AI kan fungere som din digitale medstifter. I stedet for ugers brainstorm kan du med sprogmodeller validere idéer, skrive forretningsplaner og hente kvalificeret feedback på minutter — 24/7.</p>
+
       <div class="concept-row">
         <div class="cc blue">
           <div class="cc-title">🧠 AI-Medstifter</div>
@@ -291,7 +685,9 @@
           <div class="cc-tip">→ Find de blinde vinkler før dine konkurrenter.</div>
         </div>
       </div>
+
       <p class="prose"><strong>Sammenlign prompts:</strong> Se hvor stor forskel der er på det generiske standardsvar og det professionelle resultat, når du guider AI'en præcist.</p>
+
       <div class="compare">
         <div class="cmp bad">
           <div class="cmp-label">❌ Svagt Prompt</div>
@@ -302,31 +698,48 @@
           <div class="cmp-text">"Du er en kritisk investor. Jeg vil åbne en specialkaffebar i Odense C rettet mod studerende. Giv mig de 5 største økonomiske faldgruber og foreslå et unikt værditilbud."</div>
         </div>
       </div>
+
       <div class="practice">
         <div class="practice-bar"><div class="p-tag">Øvelse 1</div><div class="p-title">Find de svage punkter</div></div>
-        <div class="p-body"><p>Kopier promptet nedenfor, indsæt det i ChatGPT/Claude, og få en hudløst ærlig vurdering af dit projekt:</p></div>
+        <div class="p-body">
+          <p>Kopier promptet nedenfor, indsæt det i ChatGPT/Claude, og få en hudløst ærlig vurdering af dit projekt:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">Prompt til validering</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p1')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p1')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p1">Jeg har denne idé til en virksomhed: [indsæt din idé]. Tag rollen som en kritisk investor og fortæl mig de 5 største grunde til, at dette projekt vil fejle. Vær hudløst ærlig.</div>
       </div>
+
       <div class="practice" style="margin-top: 24px;">
         <div class="practice-bar"><div class="p-tag">Øvelse 2</div><div class="p-title">Skab din kundepersona</div></div>
-        <div class="p-body"><p>En markedsanalyse behøver ikke tage uger. Definer din målgruppe med dette stærke prompt:</p></div>
+        <div class="p-body">
+          <p>En markedsanalyse behøver ikke tage uger. Definer din målgruppe med dette stærke prompt:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">Prompt til persona</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p2')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p2')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p2">Jeg vil sælge [dit produkt] til [din målgruppe]. Lav en detaljeret kundepersona for mig. Inkluder navn, alder, job, deres største udfordring i hverdagen, og hvordan mit produkt løser den.</div>
       </div>
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m1')">Modul 1 gennemført — Gå videre ✓</button>
+
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m1')">
+        Modul 1 gennemført — Gå videre ✓
+      </button>
     </div>
   </div>
+
+  <!-- MODUL 2 -->
   <div class="sect-label"><hr><span>Modul 2 af 3</span><hr></div>
   <div class="mod locked" id="m2">
     <div class="mod-header" onclick="tog('m2')">
@@ -342,6 +755,7 @@
     </div>
     <div class="mod-body">
       <p class="prose">Som soloiværksætter skal du også være marketingchef. AI kan producere opslag, blogtekster og salgs-e-mails i en skala, der normalt kræver et helt bureau. Lad AI'en lave 80% af udkastet, og brug din stemme på de sidste 20%.</p>
+
       <div class="concept-row">
         <div class="cc blue">
           <div class="cc-title">📝 Tone of Voice</div>
@@ -354,6 +768,7 @@
           <div class="cc-tip">→ Hav altid værdifuldt indhold klar.</div>
         </div>
       </div>
+
       <div class="compare">
         <div class="cmp bad">
           <div class="cmp-label">❌ Svagt Prompt</div>
@@ -364,31 +779,48 @@
           <div class="cmp-text">"Du er copywriter. Skriv et kort LinkedIn-opslag om min rådgivning. Tonen skal være nede-på-jorden, professionel og uden tomme floskler. Afslut med en klar opfordring til dialog."</div>
         </div>
       </div>
+
       <div class="practice">
         <div class="practice-bar"><div class="p-tag">Øvelse 3</div><div class="p-title">LinkedIn opslag med personlighed</div></div>
-        <div class="p-body"><p>Kopier dette prompt og få et udkast, der lyder som en professionel, men autentisk person:</p></div>
+        <div class="p-body">
+          <p>Kopier dette prompt og få et udkast, der lyder som en professionel, men autentisk person:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">LinkedIn prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p3')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p3')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p3">Jeg driver en virksomhed, der sælger [indsæt dit produkt/service]. Skriv et opslag til LinkedIn om [et emne i din branche]. Tonen skal være professionel, men letforståelig og uden brug af for mange floskler. Afslut med et spørgsmål, der lægger op til debat.</div>
       </div>
+
       <div class="practice" style="margin-top: 24px;">
         <div class="practice-bar"><div class="p-tag">Øvelse 4</div><div class="p-title">Generer 5 nyhedsbrevs-idéer</div></div>
-        <div class="p-body"><p>Engager dine kunder uden at virke for anmassende eller sælgende. Brug dette prompt til at få kreative vinkler:</p></div>
+        <div class="p-body">
+          <p>Engager dine kunder uden at virke for anmassende eller sælgende. Brug dette prompt til at få kreative vinkler:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">E-mail idé-prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p4')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p4')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p4">Jeg har en målgruppe af [beskriv målgruppe]. Giv mig 5 konkrete idéer til nyhedsbreve, som vil give dem værdi og ikke bare handle om salg. For hver idé, skriv et fængende emnefelt.</div>
       </div>
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m2')">Modul 2 gennemført — Gå videre ✓</button>
+
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m2')">
+        Modul 2 gennemført — Gå videre ✓
+      </button>
     </div>
   </div>
+
+  <!-- MODUL 3 -->
   <div class="sect-label"><hr><span>Modul 3 af 3</span><hr></div>
   <div class="mod locked" id="m3">
     <div class="mod-header" onclick="tog('m3')">
@@ -404,6 +836,7 @@
     </div>
     <div class="mod-body">
       <p class="prose">Mange iværksættere taber pusten på driften. Upload eller beskriv dine budgettal for din AI (husk at fjerne personfølsom data som navne og CPR-numre først) og lad den spotte besparelser eller lave lynhurtige scenarie-analyser.</p>
+
       <div class="concept-row">
         <div class="cc blue">
           <div class="cc-title">📈 Økonomi-Sparring</div>
@@ -416,31 +849,48 @@
           <div class="cc-tip">→ Spar hundredvis af administrative timer.</div>
         </div>
       </div>
+
       <div class="practice">
         <div class="practice-bar"><div class="p-tag">Øvelse 5</div><div class="p-title">Budget-sparring</div></div>
-        <div class="p-body"><p>Læg et budget sammen med AI. Brug denne fordeling til at få realistiske inputs til din branche:</p></div>
+        <div class="p-body">
+          <p>Læg et budget sammen med AI. Brug denne fordeling til at få realistiske inputs til din branche:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">Budget prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p5')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p5')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p5">Jeg er en nystartet konsulentvirksomhed. Mit budget er 10.000 kr. om måneden. Hvordan bør jeg fordele pengene mellem software, markedsføring og opsparing til skat? Giv mig et realistisk forslag.</div>
       </div>
+
       <div class="practice" style="margin-top: 24px;">
         <div class="practice-bar"><div class="p-tag">Øvelse 6</div><div class="p-title">Design et automatisk workflow</div></div>
-        <div class="p-body"><p>Automatiser dine gentagne opgaver. Bed AI'en designe din integration helt uden at skulle programmere:</p></div>
+        <div class="p-body">
+          <p>Automatiser dine gentagne opgaver. Bed AI'en designe din integration helt uden at skulle programmere:</p>
+        </div>
       </div>
+
       <div class="copy-block">
         <div class="copy-topbar">
           <span class="copy-label-txt">Automatisering prompt</span>
-          <button class="copy-btn" onclick="doCopy(this, 'p6')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér</button>
+          <button class="copy-btn" onclick="doCopy(this, 'p6')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér
+          </button>
         </div>
         <div class="copy-text" id="p6">Jeg vil gerne automatisere denne proces: [beskriv processen, f.eks. at sende kvitteringer fra mail til Excel]. Hvordan kan jeg sætte det op i Zapier ved hjælp af AI? Følg guiden trin-for-trin.</div>
       </div>
-      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m3')">Modul 3 gennemført — Afslut kurset ✓</button>
+
+      <button class="btn-go" style="width: 100%; justify-content: center; margin-top: 20px;" onclick="markDone('m3')">
+        Modul 3 gennemført — Afslut kurset ✓
+      </button>
     </div>
   </div>
+
+  <!-- EXAM CARD -->
   <div class="sect-label" id="exam-label" style="display:none;"><hr><span>Eksamen klar</span><hr></div>
   <div class="cta" id="exam-card" style="display:none; margin-top: 30px;">
     <div class="cta-icon">🎓</div>
@@ -451,64 +901,87 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
   </div>
+
 </div>
-<div id="toast"><span id="toast-icon">📋</span><span id="toast-msg">Prompt kopieret</span></div>
+
+<!-- TOAST -->
+<div id="toast">
+  <span id="toast-icon">📋</span>
+  <span id="toast-msg">Prompt kopieret</span>
+</div>
+
 <script>
   function tog(id) {
     const el = document.getElementById(id);
-    if (el.classList.contains('locked')) { showToast('🔒 Dette modul er låst. Gennemfør det forrige modul først!'); return; }
+    if (el.classList.contains('locked')) {
+      showToast('🔒 Dette modul er låst. Gennemfør det forrige modul først!');
+      return;
+    }
     const isOpen = el.classList.contains('open');
     document.querySelectorAll('.mod').forEach(m => m.classList.remove('open'));
-    if (!isOpen) el.classList.add('open');
+    if (!isOpen) { el.classList.add('open'); }
     updateProgressVisuals();
   }
+
   function doCopy(btn, elId) {
     const text = document.getElementById(elId).innerText;
     if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(() => showCopiedState(btn)).catch(() => fallbackCopy(btn, text));
+      navigator.clipboard.writeText(text).then(() => { showCopiedState(btn); }).catch(() => fallbackCopy(btn, text));
     } else { fallbackCopy(btn, text); }
   }
+
   function fallbackCopy(btn, text) {
     const ta = document.createElement('textarea');
     ta.value = text; ta.style.cssText = 'position:fixed;top:-9999px;opacity:0;';
     document.body.appendChild(ta); ta.focus(); ta.select();
-    try { document.execCommand('copy'); showCopiedState(btn); } catch(e) { showToast('Kunne ikke kopiere automatisk — marker teksten og kopier manuelt.'); }
+    try { document.execCommand('copy'); showCopiedState(btn); }
+    catch(e) { showToast('Kunne ikke kopiere automatisk — marker teksten og kopier manuelt.'); }
     document.body.removeChild(ta);
   }
+
   function showCopiedState(btn) {
     btn.classList.add('copied');
     btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><polyline points="20 6 9 17 4 12"/></svg>Kopieret!`;
     showToast('Prompt kopieret til udklipsholderen ✓');
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér`; }, 2000);
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>Kopiér`;
+    }, 2000);
   }
+
   let toastTimer;
   function showToast(msg) {
     const toast = document.getElementById('toast');
     document.getElementById('toast-msg').textContent = msg;
-    toast.classList.add('show'); clearTimeout(toastTimer);
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
     toastTimer = setTimeout(() => toast.classList.remove('show'), 2500);
   }
+
   const modIds = ['m1', 'm2', 'm3'];
   const modDone = { m1: false, m2: false, m3: false };
+
   function markDone(id) {
     modDone[id] = true;
     const el = document.getElementById(id);
     el.classList.add('done'); el.classList.remove('open');
     const currentIndex = modIds.indexOf(id);
     if (currentIndex < modIds.length - 1) {
-      const nextEl = document.getElementById(modIds[currentIndex + 1]);
-      nextEl.classList.remove('locked'); nextEl.classList.add('unlocked-next', 'open');
+      const nextId = modIds[currentIndex + 1];
+      const nextEl = document.getElementById(nextId);
+      nextEl.classList.remove('locked'); nextEl.classList.add('unlocked-next'); nextEl.classList.add('open');
       showToast(`Modul ${currentIndex + 1} gennemført! Næste modul er nu åbent 🎉`);
     } else {
       document.getElementById('exam-label').style.display = 'block';
       document.getElementById('exam-card').style.display = 'block';
       showToast('Tillykke! Alle moduler er gennemført. Tag din eksamen nu 🎓');
       const lastJourneyItem = document.querySelector('.j-item:last-child');
-      if (lastJourneyItem) lastJourneyItem.classList.add('active');
+      if (lastJourneyItem) { lastJourneyItem.classList.add('active'); }
     }
     updateProgressVisuals();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
   function updateProgressVisuals() {
     const doneCount = Object.values(modDone).filter(Boolean).length;
     const pct = Math.round((doneCount / modIds.length) * 100);
@@ -520,8 +993,8 @@
       const jItem = document.querySelectorAll('.j-item')[i];
       if (!jItem) return;
       jItem.classList.remove('active', 'done');
-      if (modDone[id]) jItem.classList.add('done');
-      else if (document.getElementById(id).classList.contains('open')) jItem.classList.add('active');
+      if (modDone[id]) { jItem.classList.add('done'); }
+      else if (document.getElementById(id).classList.contains('open')) { jItem.classList.add('active'); }
       const step = document.getElementById('ps' + (i + 1));
       if (step) {
         step.classList.remove('active', 'done');
@@ -531,7 +1004,9 @@
       }
     });
   }
+
   updateProgressVisuals();
 </script>
+
 </body>
 </html>
