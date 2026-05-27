@@ -640,21 +640,34 @@ async function sendMessage(userText){
   try{
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
       body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
+        model:'claude-sonnet-4-6',
         max_tokens:600,
         system:SYSTEM_PROMPT,
         messages:history
       })
     });
+    if(!res.ok){
+      const errData=await res.json().catch(()=>({}));
+      const errMsg=errData?.error?.message||`API-fejl (${res.status})`;
+      typingBubble.innerHTML=`<p>Der opstod en fejl: ${errMsg}</p>`;
+      sendBtn.disabled=false;inputEl.focus();return;
+    }
     const data=await res.json();
     const raw=data.content?.[0]?.text||'Beklager, der opstod en fejl. Prøv igen.';
     history.push({role:'assistant',content:raw});
     typingBubble.innerHTML=formatResponse(raw);
     messagesEl.scrollTop=messagesEl.scrollHeight;
   }catch(err){
-    typingBubble.innerHTML='<p>Beklager, der opstod en forbindelsesfejl. Tjek din internetforbindelse og prøv igen.</p>';
+    const isLocal=location.protocol==='file:';
+    typingBubble.innerHTML=isLocal
+      ?'<p>⚠️ <strong>Chatten virker kun på den live hjemmeside</strong> — ikke når filen åbnes direkte fra din computer. Upload til GitHub Pages og test derfra.</p>'
+      :'<p>Der opstod en netværksfejl. Tjek din internetforbindelse og prøv igen.</p>';
   }
   sendBtn.disabled=false;
   inputEl.focus();
