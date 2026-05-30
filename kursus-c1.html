@@ -742,6 +742,233 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .pb-check:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(79,70,229,.4)}
 .pb-block::after{display:none}
 .pb-order-feedback.warn{background:var(--amber-bg);border:1px solid var(--amber);color:#78350F}
+
+/* ══════════════════════════════════════════
+   3-COLUMN LAYOUT + SIDEBARS
+══════════════════════════════════════════ */
+.layout-3col{display:flex;align-items:flex-start;max-width:1580px;margin:0 auto}
+.layout-main{flex:1;min-width:0;overflow:hidden}
+
+/* ── Sidebar Base ── */
+.sidebar{
+  flex-shrink:0;position:sticky;top:62px;
+  height:calc(100vh - 66px);overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:rgba(99,102,241,.18) transparent;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(99,102,241,.2);border-radius:999px}
+.sidebar-left{width:258px;padding:16px 14px 60px}
+.sidebar-right{width:230px;padding:16px 14px 60px}
+
+/* ── Inner container ── */
+.sb-inner{display:flex;flex-direction:column}
+
+/* ── Sidebar Head ── */
+.sb-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2px 12px;border-bottom:1px solid var(--border);margin-bottom:12px;
+}
+.sb-head-label{
+  font-size:10px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--indigo);
+}
+.sb-close-btn{
+  display:none;background:none;border:none;padding:5px;cursor:pointer;
+  color:var(--muted);border-radius:6px;line-height:0;transition:all .15s;
+}
+.sb-close-btn:hover{background:var(--red-bg);color:var(--red)}
+.sb-close-btn svg{display:block}
+
+/* ── Progress strip ── */
+.sb-progress-wrap{
+  padding:10px 12px;margin-bottom:12px;
+  background:linear-gradient(135deg,rgba(79,70,229,.05),rgba(96,165,250,.05));
+  border:1px solid rgba(99,102,241,.12);border-radius:var(--r-sm);
+}
+.sb-progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.sb-progress-label{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.sb-progress-pct{font-size:12px;font-weight:800;color:var(--indigo)}
+.sb-progress-bar{height:4px;background:rgba(99,102,241,.1);border-radius:999px;overflow:hidden}
+.sb-progress-fill{
+  height:100%;border-radius:999px;width:0%;
+  background:linear-gradient(90deg,var(--indigo),var(--blue-glow));
+  transition:width .6s cubic-bezier(.16,1,.3,1);
+}
+.sb-divider{height:1px;background:var(--border);margin:10px 2px}
+
+/* ── Journey Items ── */
+.sb-journey-item{
+  display:flex;align-items:center;gap:9px;
+  padding:7px 8px;border-radius:var(--r-sm);
+  cursor:default;transition:background .15s;margin-bottom:1px;
+  text-decoration:none;color:inherit;
+}
+.sb-journey-item.sb-done,
+.sb-journey-item.sb-available{cursor:pointer}
+.sb-journey-item.sb-done:hover,
+.sb-journey-item.sb-available:hover{background:rgba(99,102,241,.06)}
+
+.sb-ji-icon{
+  width:24px;height:24px;border-radius:7px;
+  display:grid;place-items:center;flex-shrink:0;
+  font-size:12px;background:rgba(226,232,240,.6);color:var(--muted-2);
+  transition:all .2s;
+}
+.sb-journey-item.sb-done   .sb-ji-icon{background:var(--green-bg);color:var(--green)}
+.sb-journey-item.sb-current .sb-ji-icon{
+  background:linear-gradient(135deg,var(--indigo),var(--blue));
+  position:relative;
+}
+.sb-journey-item.sb-current .sb-ji-icon::after{
+  content:'';width:8px;height:8px;border-radius:50%;
+  background:#fff;position:absolute;
+  animation:sbjipulse 2s ease-in-out infinite;
+}
+@keyframes sbjipulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}50%{box-shadow:0 0 0 4px rgba(255,255,255,0)}}
+.sb-journey-item.sb-available .sb-ji-icon{background:rgba(245,158,11,.1);color:var(--amber)}
+
+.sb-ji-content{flex:1;min-width:0}
+.sb-ji-label{
+  font-size:12.5px;font-weight:600;color:var(--muted-2);
+  line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  transition:color .2s;
+}
+.sb-journey-item.sb-done    .sb-ji-label{color:var(--ink-2)}
+.sb-journey-item.sb-current .sb-ji-label{color:var(--indigo);font-weight:700}
+.sb-journey-item.sb-available .sb-ji-label{color:var(--amber);font-weight:600}
+.sb-ji-sub{font-size:10.5px;color:var(--muted-2);margin-top:1px}
+.sb-ji-badge{
+  flex-shrink:0;font-size:10px;font-weight:800;
+  padding:2px 6px;border-radius:999px;
+  background:var(--green-bg);color:var(--green);
+  opacity:0;transition:opacity .3s;
+}
+.sb-journey-item.sb-done .sb-ji-badge{opacity:1}
+.sb-journey-item.sb-done .sb-ji-badge::before{content:'✓'}
+
+/* ── Module sub-navigation ── */
+.sb-modules{
+  margin:2px 0 4px 16px;
+  padding-left:12px;
+  border-left:2px solid rgba(99,102,241,.15);
+}
+.sb-connector-line{
+  width:2px;height:6px;background:rgba(99,102,241,.15);
+  margin:0 0 2px 16px;
+}
+.sb-mod{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 8px;border-radius:var(--r-sm);
+  font-size:12px;font-weight:500;color:var(--muted);
+  text-decoration:none;cursor:pointer;
+  transition:all .15s;margin-bottom:1px;
+}
+.sb-mod:hover{background:rgba(99,102,241,.07);color:var(--indigo)}
+.sb-mod.active{background:rgba(99,102,241,.1);color:var(--indigo);font-weight:700}
+.sb-mod.sb-mod-done{color:var(--ink-2)}
+.sb-mod-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(203,213,225,.8);flex-shrink:0;
+  transition:all .25s;
+}
+.sb-mod.active      .sb-mod-dot{background:var(--indigo);box-shadow:0 0 0 2px rgba(99,102,241,.2)}
+.sb-mod.sb-mod-done .sb-mod-dot{background:var(--green)}
+.sb-mod-text{line-height:1.3;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* ═══ RIGHT SIDEBAR ═══ */
+.sb-tools-intro{
+  font-size:11.5px;color:var(--muted);margin:0 0 10px;
+  line-height:1.5;padding:0 2px;
+}
+.sb-tools-list{display:flex;flex-direction:column;gap:5px}
+.sb-tool-card{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border:1px solid var(--border);
+  border-radius:var(--r-sm);background:var(--card);
+  text-decoration:none;color:inherit;transition:all .2s;
+}
+.sb-tool-card:hover{
+  border-color:rgba(99,102,241,.3);
+  box-shadow:var(--shadow-sm);transform:translateX(2px);
+}
+.sb-tool-ico{
+  width:28px;height:28px;border-radius:8px;
+  display:grid;place-items:center;font-size:13px;
+  font-weight:800;color:#fff;flex-shrink:0;
+  font-style:normal;line-height:1;
+}
+.sb-tool-info{flex:1;min-width:0}
+.sb-tool-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.2}
+.sb-tool-by{font-size:10px;color:var(--muted)}
+.sb-tool-ext{
+  font-size:13px;color:var(--muted-2);
+  flex-shrink:0;transition:all .2s;line-height:1;
+}
+.sb-tool-card:hover .sb-tool-ext{color:var(--indigo);transform:translate(2px,-2px)}
+
+/* ── Tip / technique reference ── */
+.sb-tip-box{
+  padding:12px;
+  background:linear-gradient(135deg,rgba(79,70,229,.04),rgba(96,165,250,.04));
+  border:1px solid rgba(99,102,241,.12);border-radius:var(--r-sm);
+}
+.sb-tip-tag{
+  display:block;font-size:9.5px;font-weight:800;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--indigo);margin-bottom:10px;
+}
+.sb-techniques{display:flex;flex-direction:column;gap:7px}
+.sb-tech-item{display:flex;align-items:flex-start;gap:8px}
+.sb-tech-num{
+  font-size:9px;font-weight:900;letter-spacing:.06em;
+  color:#fff;background:linear-gradient(135deg,var(--indigo),var(--blue));
+  border-radius:5px;padding:2px 5px;flex-shrink:0;
+  margin-top:2px;line-height:1.5;
+}
+.sb-tech-name{font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.3}
+.sb-tech-ex{
+  font-size:10.5px;color:var(--muted);font-style:italic;
+  margin-top:1px;line-height:1.3;
+}
+
+/* ── Mobile toggle button ── */
+.sb-mob-toggle{
+  display:none;position:fixed;bottom:22px;left:16px;z-index:1100;
+  align-items:center;gap:8px;padding:11px 20px;
+  background:linear-gradient(135deg,var(--indigo),var(--blue));
+  color:#fff;border:none;border-radius:999px;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 24px rgba(79,70,229,.45);transition:all .2s;
+}
+.sb-mob-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(79,70,229,.55)}
+.sb-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.42);z-index:1050;backdrop-filter:blur(3px);
+}
+.sb-overlay.show{display:block}
+
+/* ── Responsive ── */
+@media(max-width:1280px){.sidebar-right{display:none}}
+@media(max-width:980px){
+  .layout-3col{display:block}
+  .sidebar-left{
+    position:fixed;top:0;left:0;height:100vh;
+    width:280px;z-index:1060;
+    transform:translateX(-102%);
+    transition:transform .3s cubic-bezier(.16,1,.3,1);
+    background:var(--bg);
+    border-right:1px solid var(--border);
+    box-shadow:8px 0 40px rgba(0,0,0,.12);
+    padding:16px 14px 60px;
+  }
+  .sidebar-left.sb-open{transform:translateX(0)}
+  .sb-close-btn{display:flex}
+  .sb-mob-toggle{display:flex}
+}
+@media(max-width:480px){
+  .sidebar-left{width:100vw;border-right:none}
+}
+
 </style>
 </head>
 <body>
@@ -789,6 +1016,121 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
   </div>
 </div>
 
+<div class="layout-3col">
+
+<!-- ── LEFT SIDEBAR ── -->
+<aside class="sidebar sidebar-left" id="sidebarLeft">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">📚 Dit forløb</span>
+      <button class="sb-close-btn" id="sbCloseBtn" aria-label="Luk">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- C1 Progress -->
+    <div class="sb-progress-wrap">
+      <div class="sb-progress-head">
+        <span class="sb-progress-label">C1 fremskridt</span>
+        <span class="sb-progress-pct" id="sbProgressPct">0 %</span>
+      </div>
+      <div class="sb-progress-bar"><div class="sb-progress-fill" id="sbProgressFill"></div></div>
+    </div>
+
+    <!-- Kursus D -->
+    <div class="sb-journey-item sb-locked" id="sbKursusD" data-href="eksamen-d.html">
+      <div class="sb-ji-icon">🎓</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Forberedelse</div>
+        <div class="sb-ji-sub">Kursus D</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C1 Current -->
+    <div class="sb-journey-item sb-current">
+      <div class="sb-ji-icon"></div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C1 · Prompt-teknik</div>
+        <div class="sb-ji-sub">Du er her nu</div>
+      </div>
+    </div>
+
+    <!-- Module sub-nav — always navigable -->
+    <div class="sb-modules" id="sbModules">
+      <a class="sb-mod" data-mod="1" href="#"><span class="sb-mod-dot" id="sbDot1"></span><span class="sb-mod-text">Modul 1 · AI-begreber</span></a>
+      <a class="sb-mod" data-mod="2" href="#"><span class="sb-mod-dot" id="sbDot2"></span><span class="sb-mod-text">Modul 2 · Fire teknikker</span></a>
+      <a class="sb-mod" data-mod="3" href="#"><span class="sb-mod-dot" id="sbDot3"></span><span class="sb-mod-text">Modul 3 · AI i praksis</span></a>
+      <a class="sb-mod" data-mod="4" href="#"><span class="sb-mod-dot" id="sbDot4"></span><span class="sb-mod-text">Modul 4 · AI i hverdagen</span></a>
+    </div>
+
+    <div class="sb-connector-line"></div>
+
+    <!-- C1 Mini-quiz -->
+    <div class="sb-journey-item sb-locked" id="sbQuizC1" data-href="quiz-c1.html">
+      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C1 Mini-quiz</div>
+        <div class="sb-ji-sub">+30 coins · 7 spørgsmål</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Kursus C2 -->
+    <div class="sb-journey-item sb-locked" id="sbKursusC2" data-href="kursus-c2.html">
+      <div class="sb-ji-icon">✉️</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C2 · Emails</div>
+        <div class="sb-ji-sub">Kommunikation</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C2 Mini-quiz -->
+    <div class="sb-journey-item sb-locked" id="sbQuizC2" data-href="quiz-c2.html">
+      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C2 Mini-quiz</div>
+        <div class="sb-ji-sub">+30 coins · 7 spørgsmål</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Kursus C3 -->
+    <div class="sb-journey-item sb-locked" id="sbKursusC3" data-href="kursus-c3.html">
+      <div class="sb-ji-icon">🎙️</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C3 · Møder &amp; indhold</div>
+        <div class="sb-ji-sub">Professionel brug</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Eksamen del 1 -->
+    <div class="sb-journey-item sb-locked" id="sbEksamen1" data-href="eksamen-c.html">
+      <div class="sb-ji-icon">📋</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Eksamen · Del 1</div>
+        <div class="sb-ji-sub">15 MC-spørgsmål</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Eksamen del 2 -->
+    <div class="sb-journey-item sb-locked" id="sbEksamen2" data-href="eksamen-c-del2.html" data-no-retake="1">
+      <div class="sb-ji-icon">🏆</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Eksamen · Del 2</div>
+        <div class="sb-ji-sub">Praktisk opgave · Sølv-bevis</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+  </div>
+</aside>
+
+<div class="layout-main">
 <section class="hero" id="hero">
   <div class="hero-stars"></div>
   <span class="hero-tag"><span class="pulse"></span>Kursus C · Del 1 af 3</span>
@@ -1460,7 +1802,93 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
     </div>
   </div>
 
-</main>
+</div><!-- /layout-main -->
+
+<!-- ── RIGHT SIDEBAR ── -->
+<aside class="sidebar sidebar-right" id="sidebarRight">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">🤖 AI Redskaber</span>
+    </div>
+
+    <p class="sb-tools-intro">Åbn i ny fane og prøv promptene direkte mens du lærer</p>
+
+    <div class="sb-tools-list">
+      <a class="sb-tool-card" href="https://claude.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">C</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Claude</div><div class="sb-tool-by">Anthropic</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#059669,#34D399)">G</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">ChatGPT</div><div class="sb-tool-by">OpenAI</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://gemini.google.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1a73e8,#4285f4);font-size:10px">Gm</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Gemini</div><div class="sb-tool-by">Google</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#0078d4,#50B0F1);font-size:10px">Co</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Copilot</div><div class="sb-tool-by">Microsoft</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1C1C2E,#20B2AA);font-size:10px">Px</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Perplexity</div><div class="sb-tool-by">AI-søgning</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <!-- C1 Teknik-genvej -->
+    <div class="sb-tip-box">
+      <span class="sb-tip-tag">💡 C1 Teknik-genvej</span>
+      <div class="sb-techniques">
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">01</span>
+          <div>
+            <div class="sb-tech-name">Rolleprompt</div>
+            <div class="sb-tech-ex">"Du er [ekspert]..."</div>
+          </div>
+        </div>
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">02</span>
+          <div>
+            <div class="sb-tech-name">Kædetænkning</div>
+            <div class="sb-tech-ex">"Tænk skridt for skridt"</div>
+          </div>
+        </div>
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">03</span>
+          <div>
+            <div class="sb-tech-name">Negativ afgrænsning</div>
+            <div class="sb-tech-ex">"Undgå [X]..."</div>
+          </div>
+        </div>
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">04</span>
+          <div>
+            <div class="sb-tech-name">Iterativ forfining</div>
+            <div class="sb-tech-ex">Forfin i dialog → → →</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+</div><!-- /layout-3col -->
+
+<button class="sb-mob-toggle" id="sbMobToggle">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  Forløb
+</button>
+<div class="sb-overlay" id="sbOverlay"></div>
 
 <section class="rocket-stage" id="rocketStage">
   <div class="rocket-stars"></div>
@@ -1480,7 +1908,7 @@ const auth=getAuth();const db=getFirestore();
 let userName='';
 onAuthStateChanged(auth,async(u)=>{
   if(!u){window.location.href='platform.html';return;}
-  try{const snap=await getDoc(doc(db,'users',u.uid));if(snap.exists()){const d=snap.data();userName=(d.fornavn||'').trim()||u.displayName||'';}}catch(e){}
+  try{const snap=await getDoc(doc(db,'users',u.uid));if(snap.exists()){const d=snap.data();userName=(d.fornavn||'').trim()||u.displayName||'';initSidebarFromFirestore(d.completedCourses||[],d);}}catch(e){}
 });
 
 /* ── HELPERS ── */
@@ -1553,6 +1981,7 @@ function refreshUI(){
   }else{
     cta.classList.add('locked');btn.classList.add('locked');btn.innerHTML='🔒 Gennemfør alle moduler først';
   }
+  updateSidebarState();
 }
 
 /* ── COMPLETE BUTTONS ── */
@@ -2118,6 +2547,135 @@ $('#cheatsheetDlBtn').addEventListener('click',async function(){
 /* ── INTERSECTION OBSERVER ── */
 const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in-view');}),{threshold:0.05});
 $$('.module').forEach(m=>obs.observe(m));
+
+/* ── SIDEBAR SYSTEM ── */
+(function(){
+  const sbLeft=document.getElementById('sidebarLeft');
+  const sbOverlay=document.getElementById('sbOverlay');
+  const sbMobBtn=document.getElementById('sbMobToggle');
+  const sbCloseBtn=document.getElementById('sbCloseBtn');
+
+  function openSb(){
+    sbLeft?.classList.add('sb-open');
+    sbOverlay?.classList.add('show');
+    document.body.style.overflow='hidden';
+  }
+  function closeSb(){
+    sbLeft?.classList.remove('sb-open');
+    sbOverlay?.classList.remove('show');
+    document.body.style.overflow='';
+  }
+
+  sbMobBtn?.addEventListener('click',openSb);
+  sbCloseBtn?.addEventListener('click',closeSb);
+  sbOverlay?.addEventListener('click',closeSb);
+
+  // Module nav — always free regardless of lock state
+  document.querySelectorAll('.sb-mod[data-mod]').forEach(link=>{
+    link.addEventListener('click',e=>{
+      e.preventDefault();
+      const m=link.dataset.mod;
+      document.getElementById('card-'+m)?.scrollIntoView({behavior:'smooth',block:'start'});
+      closeSb();
+    });
+  });
+
+  // Journey item delegation — single handler reads current state
+  document.getElementById('sidebarLeft')?.addEventListener('click',e=>{
+    const item=e.target.closest('.sb-journey-item');
+    if(!item||item.classList.contains('sb-current'))return;
+    if(item.classList.contains('sb-locked')){
+      showToast('Fuldfør det forrige trin for at låse op','🔒');
+      return;
+    }
+    if(item.dataset.noRetake==='1'&&item.classList.contains('sb-done')){
+      showToast('Eksamen kan kun tages én gang — du har allerede gennemført den','🏅');
+      return;
+    }
+    const href=item.dataset.href;
+    if(href)window.location.href=href;
+  });
+
+  // Scroll spy — active module highlight
+  const spyObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const idx=e.target.dataset.modIdx;
+        if(idx){
+          document.querySelectorAll('.sb-mod').forEach(l=>l.classList.remove('active'));
+          document.querySelector('.sb-mod[data-mod="'+idx+'"]')?.classList.add('active');
+        }
+      }
+    });
+  },{threshold:0.35,rootMargin:'-80px 0px -45% 0px'});
+  document.querySelectorAll('.module[data-mod-idx]').forEach(m=>spyObs.observe(m));
+})();
+
+/* Called from onAuthStateChanged */
+function initSidebarFromFirestore(completedCourses,userData){
+  // If C1 already completed → unlock all modules for free navigation
+  if(completedCourses.includes('kursus-c1')){
+    S.m[2].u=true;S.m[3].u=true;S.m[4].u=true;
+  }
+
+  const cfg={
+    'kursus-d' :{id:'sbKursusD', prev:null},
+    'quiz-c1'  :{id:'sbQuizC1',  prev:null},   // prev handled by S state
+    'kursus-c2':{id:'sbKursusC2',prev:'quiz-c1'},
+    'quiz-c2'  :{id:'sbQuizC2',  prev:'kursus-c2'},
+    'kursus-c3':{id:'sbKursusC3',prev:'quiz-c2'},
+    'eksamen-c':{id:'sbEksamen1',prev:'kursus-c3'},
+    'kursus-c' :{id:'sbEksamen2',prev:'eksamen-c'},
+  };
+
+  Object.entries(cfg).forEach(([key,c])=>{
+    const el=document.getElementById(c.id);
+    if(!el)return;
+    if(completedCourses.includes(key)){
+      el.classList.remove('sb-locked','sb-available');
+      el.classList.add('sb-done');
+    }else if(c.prev&&completedCourses.includes(c.prev)){
+      el.classList.remove('sb-locked');
+      el.classList.add('sb-available');
+    }
+  });
+
+  // kursus-d: always done if user is on C1
+  const sbD=document.getElementById('sbKursusD');
+  if(sbD)sbD.classList.replace('sb-locked','sb-done')||sbD.classList.add('sb-done');
+
+  refreshUI(); // re-run to reflect unlocked modules
+}
+
+/* Called from refreshUI() */
+function updateSidebarState(){
+  const done=Object.values(S.m).filter(m=>m.d).length;
+  const pct=Math.round(done/4*100);
+  const fill=document.getElementById('sbProgressFill');
+  const pctEl=document.getElementById('sbProgressPct');
+  if(fill)fill.style.width=pct+'%';
+  if(pctEl)pctEl.textContent=pct+' %';
+
+  // Update module dots + classes
+  for(let i=1;i<=4;i++){
+    const mod=document.querySelector('.sb-mod[data-mod="'+i+'"]');
+    const dot=document.getElementById('sbDot'+i);
+    if(S.m[i]?.d){
+      mod?.classList.add('sb-mod-done');
+      if(dot)dot.style.background='var(--green)';
+    }else if(S.m[i]?.u){
+      if(dot)dot.style.background='rgba(99,102,241,.3)';
+    }
+  }
+
+  // When all modules done → quiz-c1 becomes available
+  const allDone=Object.values(S.m).every(m=>m.d);
+  const sbQ1=document.getElementById('sbQuizC1');
+  if(allDone&&sbQ1&&sbQ1.classList.contains('sb-locked')){
+    sbQ1.classList.remove('sb-locked');
+    sbQ1.classList.add('sb-available');
+  }
+}
 
 refreshUI();
 </script>
