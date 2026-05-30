@@ -288,20 +288,73 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .settings-guide.open .sg-chev{transform:rotate(180deg)}
 .sg-body{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.16,1,.3,1)}
 .settings-guide.open .sg-body{max-height:2000px}
-.sg-tabs{display:flex;gap:4px;padding:18px 18px 0;background:#FAFCFF}
-.sg-tab{flex:1;padding:12px 16px;background:transparent;border:none;border-radius:10px 10px 0 0;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
-.sg-tab.active{background:var(--card);color:var(--indigo);box-shadow:inset 0 3px 0 var(--indigo)}
-.sg-panel{padding:20px 22px 24px;display:none}
+.sg-notice{display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:rgba(79,70,229,.06);border:1px solid rgba(79,70,229,.15);border-radius:var(--r-sm);margin:0 18px 0;font-size:13px;color:var(--muted);line-height:1.5}
+.sg-notice strong{color:var(--ink)}
+.sg-tabs{display:flex;gap:4px;padding:14px 18px 0;background:#FAFCFF;overflow-x:auto;scrollbar-width:none}
+.sg-tabs::-webkit-scrollbar{display:none}
+.sg-tab{flex-shrink:0;padding:10px 16px;background:transparent;border:none;border-radius:10px 10px 0 0;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:7px}
+.sg-tab .sg-tab-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sg-tab.active{background:var(--card);box-shadow:inset 0 3px 0 var(--indigo)}
+.sg-tab.active{color:var(--ink)}
+.sg-panel{padding:20px 22px 26px;display:none}
 .sg-panel.active{display:block}
-.sg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-@media(max-width:600px){.sg-grid{grid-template-columns:1fr}}
-.sg-item{background:linear-gradient(135deg,#FAFCFF,#F0F4FF);border:1px solid var(--border);border-radius:var(--r);padding:16px 18px;transition:all .25s}
-.sg-item:hover{border-color:var(--blue-glow);transform:translateY(-2px)}
-.sg-item-icon{font-size:26px;margin-bottom:10px;display:block}
-.sg-item-title{font-size:13px;font-weight:800;color:var(--ink);margin:0 0 4px}
-.sg-item-where{display:inline-flex;align-items:center;gap:4px;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--indigo);background:var(--indigo-soft);padding:3px 8px;border-radius:999px;margin-bottom:8px}
-.sg-item-desc{font-size:13px;color:var(--muted);line-height:1.5;margin:0}
-.sg-item-path{margin-top:8px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--indigo-deep);background:rgba(79,70,229,.07);border:1px solid rgba(79,70,229,.15);border-radius:6px;padding:5px 10px;display:inline-block}
+.sg-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:640px){.sg-grid{grid-template-columns:1fr}}
+/* Card base */
+.sg-item{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px 16px;
+  transition:all .22s;position:relative;overflow:hidden;
+}
+.sg-item::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;border-radius:3px 0 0 3px;
+  transition:width .2s;
+}
+.sg-item:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+/* Category color coding */
+.sg-item.sg-privacy::before{background:var(--amber)}
+.sg-item.sg-model::before{background:var(--blue)}
+.sg-item.sg-personal::before{background:var(--indigo)}
+.sg-item.sg-trick::before{background:var(--green)}
+.sg-item.sg-trick{background:linear-gradient(135deg,#F0FDF4,#ECFDF5)}
+/* Step number (faint background number) */
+.sg-step{
+  position:absolute;top:10px;right:14px;
+  font-size:32px;font-weight:900;
+  color:rgba(15,23,42,.05);line-height:1;
+  font-family:'Lora',serif;pointer-events:none;
+  user-select:none;
+}
+.sg-item.sg-trick .sg-step{color:rgba(16,185,129,.08)}
+/* Category badge */
+.sg-cat{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9.5px;font-weight:800;letter-spacing:.12em;
+  text-transform:uppercase;padding:3px 9px;
+  border-radius:999px;margin-bottom:10px;
+}
+.sg-privacy .sg-cat{background:rgba(245,158,11,.1);color:#92400E}
+.sg-model   .sg-cat{background:rgba(59,130,246,.1);color:#1E40AF}
+.sg-personal .sg-cat{background:rgba(79,70,229,.1);color:var(--indigo-deep)}
+.sg-trick   .sg-cat{background:rgba(16,185,129,.12);color:#065F46}
+.sg-item-title{font-size:14px;font-weight:800;color:var(--ink);margin:0 0 7px;line-height:1.3}
+.sg-item-desc{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 10px}
+.sg-item-desc strong{color:var(--ink-2);font-weight:700}
+.sg-item-howto{margin-top:auto}
+.sg-howto-label{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);margin-bottom:4px}
+.sg-item-path{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  color:var(--ink-2);background:rgba(15,23,42,.04);
+  border:1px solid rgba(15,23,42,.08);
+  border-radius:6px;padding:6px 10px;
+  line-height:1.5;display:block;
+}
+.sg-item.sg-trick .sg-item-path{
+  background:rgba(16,185,129,.06);
+  border-color:rgba(16,185,129,.2);
+  color:#065F46;
+}
 
 /* ══ TEMPERATURE SLIDER ══ */
 .temp-demo{margin:28px 0;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:26px 28px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
@@ -971,24 +1024,18 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 
 
 /* ══ WILD INTRO EXIT ══ */
-@keyframes introRumble{
-  0%,100%{transform:translate(0,0) rotate(0deg)}
-  8%{transform:translate(-12px,-7px) rotate(-.6deg)}
-  16%{transform:translate(12px,7px) rotate(.6deg)}
-  24%{transform:translate(-14px,5px) rotate(-1.1deg)}
-  32%{transform:translate(14px,-5px) rotate(1.1deg)}
-  40%{transform:translate(-10px,10px) rotate(-.7deg)}
-  48%{transform:translate(10px,-10px) rotate(.7deg)}
-  56%{transform:translate(-16px,3px) rotate(-1.5deg)}
-  64%{transform:translate(16px,-3px) rotate(1.5deg)}
-  72%{transform:translate(-6px,8px) rotate(-1deg)}
-  80%{transform:translate(6px,-6px) rotate(1deg)}
-  90%{transform:translate(-3px,3px) rotate(-.4deg)}
+/* Flyve-animation — ingen rysten, ren fremadgående bevægelse */
+@keyframes introFlyThrough{
+  0%  {transform:scale(1);   opacity:1;filter:blur(0px)}
+  28% {transform:scale(1.22);opacity:1;filter:blur(0px)}
+  62% {transform:scale(3.8); opacity:.65;filter:blur(7px)}
+  100%{transform:scale(11);  opacity:0;filter:blur(26px)}
 }
-@keyframes introLaunch{
-  0%{transform:translateY(0) scale(1);opacity:1;filter:blur(0px)}
-  25%{transform:translateY(-50px) scale(1.06);opacity:1;filter:blur(4px)}
-  100%{transform:translateY(-180vh) scale(2.5);opacity:0;filter:blur(40px)}
+@keyframes warpStreak{
+  0%  {transform:rotate(var(--ang)) scaleX(0);opacity:0}
+  6%  {opacity:1}
+  72% {transform:rotate(var(--ang)) scaleX(1);opacity:.85}
+  100%{transform:rotate(var(--ang)) scaleX(1.3);opacity:0}
 }
 @keyframes flashBang{
   0%{opacity:0;transform:scale(.6)}
@@ -996,24 +1043,32 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
   65%{opacity:.95;transform:scale(1)}
   100%{opacity:0;transform:scale(1)}
 }
-@keyframes heroSlam{
-  0%{opacity:0;transform:scale(.78) translateY(80px);filter:blur(28px)}
-  55%{opacity:1;transform:scale(1.025) translateY(-10px);filter:blur(0px)}
-  75%{transform:scale(.995) translateY(4px)}
-  100%{opacity:1;transform:scale(1) translateY(0);filter:blur(0px)}
+@keyframes heroGlide{
+  0%  {opacity:0;transform:scale(1.1) translateY(-28px);filter:blur(14px)}
+  55% {opacity:1;transform:scale(1.004) translateY(0);  filter:blur(0px)}
+  100%{opacity:1;transform:scale(1) translateY(0)}
 }
 @keyframes ctaCharge{
   0%,100%{box-shadow:0 12px 40px rgba(0,0,0,.25)}
   50%{box-shadow:0 0 0 12px rgba(255,255,255,.25),0 0 80px rgba(255,255,255,.5),0 12px 40px rgba(0,0,0,.3)}
 }
-.cinematic-intro.rumbling{animation:introRumble .42s cubic-bezier(.3,.7,.4,1)}
-.cinematic-intro.launching{animation:introLaunch .65s cubic-bezier(.4,0,.9,.6) forwards;pointer-events:none}
+.cinematic-intro.fly-through{
+  animation:introFlyThrough .72s cubic-bezier(.22,0,.7,.9) forwards;
+  pointer-events:none;
+}
+.warp-streak{
+  position:fixed;left:50%;top:50%;
+  transform-origin:left center;
+  background:linear-gradient(to right,rgba(255,255,255,.92) 0%,rgba(180,210,255,.6) 55%,transparent 100%);
+  border-radius:999px;pointer-events:none;z-index:9997;
+  animation:warpStreak var(--dur,.5s) cubic-bezier(.15,0,1,.55) var(--delay,0ms) both;
+}
 .intro-flash-overlay{
   position:fixed;inset:0;z-index:10000;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at 50% 55%,#fff 0%,rgba(99,102,241,.92) 35%,rgba(55,48,163,.7) 60%,transparent 85%);
+  background:radial-gradient(circle at 50% 52%,#fff 0%,rgba(99,102,241,.9) 32%,rgba(55,48,163,.65) 58%,transparent 82%);
 }
-.intro-flash-overlay.bang{animation:flashBang .52s ease-out forwards}
-#hero.hero-slam{animation:heroSlam .95s cubic-bezier(.16,1,.3,1) both}
+.intro-flash-overlay.bang{animation:flashBang .48s ease-out forwards}
+#hero.hero-glide{animation:heroGlide 1s cubic-bezier(.16,1,.3,1) both}
 .intro-cta.charging{animation:ctaCharge .35s ease-in-out 2}
 
 </style>
@@ -1238,36 +1293,198 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
             <p>AI har ingen erindring på tværs af samtaler. Det er forklaringen på mange frustrerende oplevelser — og grunden til at du altid skal give AI den nødvendige kontekst i starten.</p>
           </div>
 
-          <!-- Indstillingsguide: nu brugeren kender begreberne er det naturligt at lære indstillingerne -->
+          <!-- Indstillingsguide: 5 AI-redskaber, 4 professionelle indstillinger pr. redskab -->
           <div class="settings-guide" id="settingsGuide">
             <div class="settings-guide-header" id="sgToggle">
               <div class="sg-header-left">
                 <div class="sg-header-icon">⚙️</div>
-                <div class="sg-header-text"><h4>ChatGPT &amp; Claude — indstillings-guide</h4><p>De vigtigste indstillinger du bør kende inden du fortsætter</p></div>
+                <div class="sg-header-text"><h4>AI Indstillingsguide — 5 redskaber</h4><p>Privatpolitik · Model-valg · Personalisering · Skjult pro-trick</p></div>
               </div>
               <button class="sg-toggle-btn"><span id="sgBtnLabel">Vis indstillinger</span><svg class="sg-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="6 9 12 15 18 9"></polyline></svg></button>
             </div>
             <div class="sg-body">
+              <div class="sg-notice">
+                <span>💡</span>
+                <p><strong>Du behøver kun lave indstillingerne for det AI-redskab du selv bruger.</strong> Vælg dit redskab i fanerne nedenfor — resten kan du springe over.</p>
+              </div>
               <div class="sg-tabs">
-                <button class="sg-tab active" data-sg="chatgpt"><span style="display:inline-block;width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#059669,#34D399);vertical-align:middle;margin-right:4px"></span>ChatGPT</button>
-                <button class="sg-tab" data-sg="claude"><span style="display:inline-block;width:16px;height:16px;border-radius:4px;background:linear-gradient(135deg,#7C3AED,#A78BFA);vertical-align:middle;margin-right:4px"></span>Claude</button>
+                <button class="sg-tab active" data-sg="claude"><span class="sg-tab-dot" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)"></span>Claude</button>
+                <button class="sg-tab" data-sg="chatgpt"><span class="sg-tab-dot" style="background:linear-gradient(135deg,#059669,#34D399)"></span>ChatGPT</button>
+                <button class="sg-tab" data-sg="gemini"><span class="sg-tab-dot" style="background:linear-gradient(135deg,#1a73e8,#4285f4)"></span>Gemini</button>
+                <button class="sg-tab" data-sg="copilot"><span class="sg-tab-dot" style="background:linear-gradient(135deg,#0078d4,#50B0F1)"></span>Copilot</button>
+                <button class="sg-tab" data-sg="perplexity"><span class="sg-tab-dot" style="background:linear-gradient(135deg,#1C1C2E,#20B2AA)"></span>Perplexity</button>
               </div>
-              <div class="sg-panel active" data-sgp="chatgpt">
+
+              <!-- ── CLAUDE ── -->
+              <div class="sg-panel active" data-sgp="claude">
                 <div class="sg-grid">
-                  <div class="sg-item"><span class="sg-item-icon">🛡️</span><div class="sg-item-title">Slå træning fra</div><div class="sg-item-where">Privatlivs-indstilling</div><p class="sg-item-desc">ChatGPT bruger som standard dine samtaler til at træne modellen. Slå det fra her.</p><div class="sg-item-path">Indstillinger → Databeskyttelse → Forbedr modeller</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">💬</span><div class="sg-item-title">Historik &amp; arkiv</div><div class="sg-item-where">Samtale-historik</div><p class="sg-item-desc">Find og genåbn gamle samtaler direkte fra venstre sidepanel.</p><div class="sg-item-path">Venstre panel → Søg i samtaler</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">🤖</span><div class="sg-item-title">Skift model</div><div class="sg-item-where">Model-valg</div><p class="sg-item-desc">GPT-4o er standard. GPT-4o mini er hurtigere til simple opgaver.</p><div class="sg-item-path">Øverst i chat → Modelvalg-dropdown</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">🧩</span><div class="sg-item-title">Custom Instructions</div><div class="sg-item-where">Personalisering</div><p class="sg-item-desc">Sæt din baggrund og ønskede tone én gang — gælder alle fremtidige samtaler.</p><div class="sg-item-path">Indstillinger → Tilpas ChatGPT</div></div>
+                  <div class="sg-item sg-privacy">
+                    <span class="sg-step">01</span>
+                    <div class="sg-cat">🔒 Privatpolitik</div>
+                    <div class="sg-item-title">Slå datatræning fra</div>
+                    <p class="sg-item-desc">Anthropic bruger som standard dine samtaler til at forbedre modellen. Slå det fra, så dine tekster, idéer og arbejdsdokumenter <strong>ikke</strong> indgår i træningsdata.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Profil → Settings → Privacy → "Use my data to improve Claude" → Slå fra</code></div>
+                  </div>
+                  <div class="sg-item sg-model">
+                    <span class="sg-step">02</span>
+                    <div class="sg-cat">🤖 Model-valg</div>
+                    <div class="sg-item-title">Sonnet, Haiku og Opus — hvornår bruger du hvad?</div>
+                    <p class="sg-item-desc"><strong>Sonnet</strong> er standard og god til 90% af opgaverne. <strong>Haiku</strong> er hurtigere til simple svar. <strong>Opus</strong> (kræver Pro) til de dybeste og mest komplekse analyser.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Klik på modelnavn øverst i samtalen → Vælg model fra dropdown</code></div>
+                  </div>
+                  <div class="sg-item sg-personal">
+                    <span class="sg-step">03</span>
+                    <div class="sg-cat">🎯 Personalisering</div>
+                    <div class="sg-item-title">Projects — AI der kender dig og svarer på din måde</div>
+                    <p class="sg-item-desc">Opret et Project og skriv en systeminstruktion: <strong>"Du er min rådgiver. Svar altid kort, direkte og på dansk. Undgå floskler."</strong> Claude følger den i alle samtaler i projektet.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Venstre panel → New Project → Project instructions → Skriv din rolletekst</code></div>
+                  </div>
+                  <div class="sg-item sg-trick">
+                    <span class="sg-step">04</span>
+                    <div class="sg-cat">⚡ Pro-trick</div>
+                    <div class="sg-item-title">Profile — permanent personlighedsprofil på tværs af alt</div>
+                    <p class="sg-item-desc">Under Profile kan du skrive hvad du arbejder med og hvilken tone du altid vil have. Claude bruger det som en stille briefing i <strong>alle</strong> samtaler — ikke kun inden for projekter.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Profil → Settings → Profile → "How I'd like Claude to respond" → Skriv din instruktion</code></div>
+                  </div>
                 </div>
               </div>
-              <div class="sg-panel" data-sgp="claude">
+
+              <!-- ── CHATGPT ── -->
+              <div class="sg-panel" data-sgp="chatgpt">
                 <div class="sg-grid">
-                  <div class="sg-item"><span class="sg-item-icon">🛡️</span><div class="sg-item-title">Slå træning fra</div><div class="sg-item-where">Privatlivs-indstilling</div><p class="sg-item-desc">Anthropic bruger samtaler til forbedring som standard. Slå det fra under Profil.</p><div class="sg-item-path">Profil → Privacy → Training data</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">💬</span><div class="sg-item-title">Samtalehistorik</div><div class="sg-item-where">Samtale-historik</div><p class="sg-item-desc">Alle samtaler vises i venstre panel. Klik en samtale for at genoptage den.</p><div class="sg-item-path">Venstre panel → Seneste samtaler</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">🤖</span><div class="sg-item-title">Skift model</div><div class="sg-item-where">Model-valg</div><p class="sg-item-desc">Claude Sonnet er standard. Claude Haiku er hurtigere til simple opgaver.</p><div class="sg-item-path">Øverst i chat → Klik på modelnavn</div></div>
-                  <div class="sg-item"><span class="sg-item-icon">🧩</span><div class="sg-item-title">Profil-indstillinger</div><div class="sg-item-where">Personalisering</div><p class="sg-item-desc">Fortæl Claude om din baggrund én gang — huskes på tværs af samtaler.</p><div class="sg-item-path">Profil → Preferences / Memory</div></div>
+                  <div class="sg-item sg-privacy">
+                    <span class="sg-step">01</span>
+                    <div class="sg-cat">🔒 Privatpolitik</div>
+                    <div class="sg-item-title">Slå modeltræning fra</div>
+                    <p class="sg-item-desc">OpenAI bruger som standard dine samtaler til at træne modellen. Slå det fra her. Midlertidige samtaler (uden login) gemmes aldrig — men med konto skal du aktivt slå det fra.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Settings → Data Controls → "Improve the model for everyone" → Slå fra</code></div>
+                  </div>
+                  <div class="sg-item sg-model">
+                    <span class="sg-step">02</span>
+                    <div class="sg-cat">🤖 Model-valg</div>
+                    <div class="sg-item-title">GPT-4o, 4o mini og o1 — hvornår bruger du hvad?</div>
+                    <p class="sg-item-desc"><strong>GPT-4o</strong> er standard og god til det meste. <strong>4o mini</strong> er hurtigere til simple opgaver. <strong>o1</strong> er specialiseret til logik og matematik — bruger længere tid men er markant mere præcis.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Klik modelnavn øverst i samtalen → Vælg model fra listen</code></div>
+                  </div>
+                  <div class="sg-item sg-personal">
+                    <span class="sg-step">03</span>
+                    <div class="sg-cat">🎯 Personalisering</div>
+                    <div class="sg-item-title">Custom Instructions — AI der svarer præcis som du vil</div>
+                    <p class="sg-item-desc">Skriv to ting: (1) Hvad ChatGPT skal vide om dig og din baggrund, (2) Hvordan du ønsker svar — tone, format, længde. <strong>Gælder alle fremtidige samtaler automatisk.</strong></p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Settings → Personalization → Custom Instructions → Udfyld begge felter → Gem</code></div>
+                  </div>
+                  <div class="sg-item sg-trick">
+                    <span class="sg-step">04</span>
+                    <div class="sg-cat">⚡ Pro-trick</div>
+                    <div class="sg-item-title">Memory — AI der husker hvad du siger på tværs af samtaler</div>
+                    <p class="sg-item-desc">ChatGPT kan gemme specifikke facts om dig. Fortæl den dine præferencer én gang: <strong>"Jeg er selvstændig og vil altid have korte bullet-svar."</strong> Du kan se og slette hvad den husker.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Settings → Personalization → Memory → Manage Memory → Se og styr hvad den husker</code></div>
+                  </div>
                 </div>
               </div>
+
+              <!-- ── GEMINI ── -->
+              <div class="sg-panel" data-sgp="gemini">
+                <div class="sg-grid">
+                  <div class="sg-item sg-privacy">
+                    <span class="sg-step">01</span>
+                    <div class="sg-cat">🔒 Privatpolitik</div>
+                    <div class="sg-item-title">Slå Gemini Apps Activity fra</div>
+                    <p class="sg-item-desc">Google gemmer som standard dine Gemini-samtaler i din Google-konto og bruger dem til AI-forbedring. Slå aktiviteten fra for at forhindre at dine tekster, planer og idéer gemmes.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">myaccount.google.com → Data &amp; Privacy → Gemini Apps Activity → Slå fra</code></div>
+                  </div>
+                  <div class="sg-item sg-model">
+                    <span class="sg-step">02</span>
+                    <div class="sg-cat">🤖 Model-valg</div>
+                    <div class="sg-item-title">Gemini 1.5 Pro, Flash og 2.0 — hvornår bruger du hvad?</div>
+                    <p class="sg-item-desc"><strong>1.5 Pro</strong> håndterer enormt lange dokumenter (op til 1 million tokens) — perfekt til store rapporter og bøger. <strong>1.5 Flash</strong> er hurtigere. <strong>2.0 Flash</strong> er den nyeste og hurtigste.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Klik modelnavn øverst i samtalen → Vælg fra dropdown</code></div>
+                  </div>
+                  <div class="sg-item sg-personal">
+                    <span class="sg-step">03</span>
+                    <div class="sg-cat">🎯 Personalisering</div>
+                    <div class="sg-item-title">Gems — din specialiserede AI-assistent med fast rolle</div>
+                    <p class="sg-item-desc">Opret en Gem med en fast instruktion: <strong>"Du er min marketingstrateg. Fokusér altid på ROI og konkrete handlinger. Undgå akademisk sprog."</strong> Gem'en husker instruksen på tværs af alle dens samtaler.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Venstre panel → Gem manager → New Gem → Skriv instruktion i "Instructions"-feltet</code></div>
+                  </div>
+                  <div class="sg-item sg-trick">
+                    <span class="sg-step">04</span>
+                    <div class="sg-cat">⚡ Pro-trick</div>
+                    <div class="sg-item-title">Direkte integration i Gmail og Google Docs</div>
+                    <p class="sg-item-desc">Gemini er bygget direkte ind i hele Google Workspace. I Gmail: opsummér lange email-tråde med ét klik. I Docs: marker tekst og bed Gemini omskrive, forkorte eller forbedre den — direkte i dokumentet.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Gmail → Gemini-ikon (øverst højre) · Google Docs → Marker tekst → "Help me refine"</code></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── COPILOT ── -->
+              <div class="sg-panel" data-sgp="copilot">
+                <div class="sg-grid">
+                  <div class="sg-item sg-privacy">
+                    <span class="sg-step">01</span>
+                    <div class="sg-cat">🔒 Privatpolitik</div>
+                    <div class="sg-item-title">Styr din data i Microsoft Privacy Dashboard</div>
+                    <p class="sg-item-desc">Microsoft gemmer dine Copilot-interaktioner og bruger dem til at forbedre produkterne. I Privacy Dashboard kan du se og slette al historik og styre præcis hvad Microsoft gemmer om dig.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">privacy.microsoft.com → Privacy Dashboard → AI &amp; Copilot → Administrér samtalehistorik</code></div>
+                  </div>
+                  <div class="sg-item sg-model">
+                    <span class="sg-step">02</span>
+                    <div class="sg-cat">🤖 Model-valg</div>
+                    <div class="sg-item-title">Tilstande: Web, Work og Designer</div>
+                    <p class="sg-item-desc"><strong>Web</strong> søger i realtid på internettet — godt til aktuelle nyheder og facts. <strong>Work</strong> (kræver Microsoft 365) tilgår dine egne filer og emails. <strong>Designer</strong> genererer AI-billeder med DALL·E.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Klik globus/ikon øverst i samtalen → Vælg tilstand: Web / Work / Designer</code></div>
+                  </div>
+                  <div class="sg-item sg-personal">
+                    <span class="sg-step">03</span>
+                    <div class="sg-cat">🎯 Personalisering</div>
+                    <div class="sg-item-title">Notebook — lang kontekst med fast systeminstruktion</div>
+                    <p class="sg-item-desc">Notebook er til lange opgaver. Skriv din instruktion i "System"-feltet øverst: <strong>"Du er min strategiske sparringspartner. Udfordre altid mine antagelser."</strong> Copilot husker den hele sessionen.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Venstre panel → Notebook → Klik "System" øverst → Skriv din instruktion</code></div>
+                  </div>
+                  <div class="sg-item sg-trick">
+                    <span class="sg-step">04</span>
+                    <div class="sg-cat">⚡ Pro-trick</div>
+                    <div class="sg-item-title">Edge Sidebar — Copilot ved siden af enhver hjemmeside</div>
+                    <p class="sg-item-desc">Åbn Copilot som en sidebar direkte i Microsoft Edge. Du kan bede den opsummere artiklen du læser, forklare fagtermer, eller sammenligne to sider — uden at kopiere noget manuelt.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Microsoft Edge → Ctrl+Shift+. (punktum) — eller klik Copilot-ikonet i toolbar'en</code></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- ── PERPLEXITY ── -->
+              <div class="sg-panel" data-sgp="perplexity">
+                <div class="sg-grid">
+                  <div class="sg-item sg-privacy">
+                    <span class="sg-step">01</span>
+                    <div class="sg-cat">🔒 Privatpolitik</div>
+                    <div class="sg-item-title">Opret konto og administrér din søgehistorik</div>
+                    <p class="sg-item-desc">Uden konto logges alle søgninger anonymt. Med konto kan du under Settings slå <strong>"Contribute to model training"</strong> fra og slette din søgehistorik. Pro-abonnenter har stærkere datakontrol.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Opret konto → Settings → Account → Privacy → Slå modeldata-bidrag fra</code></div>
+                  </div>
+                  <div class="sg-item sg-model">
+                    <span class="sg-step">02</span>
+                    <div class="sg-cat">🤖 Model-valg</div>
+                    <div class="sg-item-title">Standard vs Pro-modeller — gratis eller betalt?</div>
+                    <p class="sg-item-desc"><strong>Gratis:</strong> Perplexitys egen model — hurtig og god til research. <strong>Pro ($20/md):</strong> vælg selv GPT-4o, Claude Sonnet eller Gemini Pro. Relevant når du vil have dybere analyse frem for hurtige svar.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Søgefelt → Tandhjuls-ikon til venstre → Vælg AI-model fra listen</code></div>
+                  </div>
+                  <div class="sg-item sg-personal">
+                    <span class="sg-step">03</span>
+                    <div class="sg-cat">🎯 Personalisering</div>
+                    <div class="sg-item-title">Spaces — din personlige research-assistent med hukommelse</div>
+                    <p class="sg-item-desc">Opret et Space med fast instruktion: <strong>"Du er min research-assistent. Citer altid kilden. Svar på dansk med bullet points."</strong> Space'et husker instruksen og din søgehistorik inden for emnet.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Venstre panel → Spaces → New Space → Instructions → Skriv din instruktion</code></div>
+                  </div>
+                  <div class="sg-item sg-trick">
+                    <span class="sg-step">04</span>
+                    <div class="sg-cat">⚡ Pro-trick</div>
+                    <div class="sg-item-title">Focus-tilstande — søg kun i de rigtige kilder</div>
+                    <p class="sg-item-desc">Vælg <strong>Academic</strong> for kun videnskabelige artikler og peer-reviewed papers. <strong>Reddit</strong> for autentiske brugererfaringer. <strong>YouTube</strong> for videoer. Du slipper for SEO-spam og rammer direkte de præcise kilder.</p>
+                    <div class="sg-item-howto"><div class="sg-howto-label">Sådan gør du</div><code class="sg-item-path">Søgefelt → Globus-ikon til venstre → Focus: Academic / Reddit / YouTube / Social</code></div>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
 
@@ -1911,70 +2128,94 @@ function hideIntroCalm(){
 }
 
 /* Begynd kurset — VILD effekt */
+/* ── FLYVE-ANIMATION: partikel-burst → warp-striber → flyv igennem → glidende landing ── */
 function hideIntroWild(){
   if(_introFired)return;_introFired=true;
   const btn=$('#introCta');
 
-  /* Fase 1: Knap lader op (feedback) */
+  /* Fase 1 (0ms): Knapfeedback + partikel-burst */
   btn.classList.add('charging');
   btn.style.transform='scale(.91)';
-
-  /* Spawn lyspartikler fra knappen */
-  (function spawnParticles(){
-    const r=btn.getBoundingClientRect();
-    const cx=r.left+r.width/2, cy=r.top+r.height/2;
-    const cols=['#fff','#60A5FA','#A78BFA','#4F46E5','#FCD34D','#34D399'];
-    for(let i=0;i<28;i++){
-      const p=document.createElement('div');
-      const ang=(i/28)*Math.PI*2;
-      const dist=80+Math.random()*220;
-      const sz=3+Math.random()*9;
-      const col=cols[Math.floor(Math.random()*cols.length)];
-      p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;
-        border-radius:50%;background:${col};pointer-events:none;z-index:9998;
-        transform:translate(-50%,-50%);
-        transition:all .65s cubic-bezier(.2,.8,.3,1);opacity:1;
-        box-shadow:0 0 ${sz*2}px ${col};`;
-      document.body.appendChild(p);
-      setTimeout(()=>{
-        p.style.transform=`translate(calc(-50% + ${Math.cos(ang)*dist}px),calc(-50% + ${Math.sin(ang)*dist}px)) scale(0)`;
-        p.style.opacity='0';
-      },30);
-      setTimeout(()=>p.remove(),720);
-    }
-  })();
+  spawnBtnParticles(btn);
 
   setTimeout(()=>{
     btn.style.transform='';
     btn.classList.remove('charging');
 
-    /* Fase 2: Skærm ryster voldeligt */
-    intro.classList.add('rumbling');
+    /* Fase 2 (150ms): Warp-striber skyder ud fra midten */
+    spawnWarpStreaks();
 
+    /* Fase 3 (150ms): Intro accelererer fremad og forsvinder */
+    intro.classList.add('fly-through');
+
+    /* Fase 4 (650ms): Lysglimt ved gennembruddet */
     setTimeout(()=>{
-      intro.classList.remove('rumbling');
-
-      /* Fase 3: Blinding flash + intro affyres */
       const fl=document.createElement('div');
       fl.className='intro-flash-overlay';
       document.body.appendChild(fl);
       void fl.offsetWidth;
       fl.classList.add('bang');
-      intro.classList.add('launching');
 
+      /* Fase 5 (800ms): Skjul intro, snap til toppen, vis kursus */
       setTimeout(()=>{
         intro.style.display='none';
+        window.scrollTo({top:0,behavior:'instant'}); /* ← Springer til toppen af C1 */
+
+        /* Fase 6: Hero glider roligt ind ovenfra */
         const hero=$('#hero');
+        hero.classList.add('hero-glide');
 
-        /* Fase 4: Hero smadrer ind */
-        hero.style.cssText='opacity:0;transform:scale(.78) translateY(80px);filter:blur(28px)';
-        hero.classList.add('hero-slam');
-        hero.style.cssText=''; /* nulstil inline — CSS animation tager over */
+        setTimeout(()=>fl.remove(),350);
+      },160);
+    },500);
+  },150);
+}
 
-        setTimeout(()=>{fl.remove();},400);
-      },550);
-    },420);
-  },180);
+function spawnBtnParticles(btn){
+  const r=btn.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const cols=['#fff','#60A5FA','#A78BFA','#4F46E5','#FCD34D','#34D399'];
+  for(let i=0;i<28;i++){
+    const p=document.createElement('div');
+    const ang=(i/28)*Math.PI*2;
+    const dist=80+Math.random()*220;
+    const sz=3+Math.random()*9;
+    const col=cols[Math.floor(Math.random()*cols.length)];
+    p.style.cssText=`position:fixed;left:${cx}px;top:${cy}px;width:${sz}px;height:${sz}px;
+      border-radius:50%;background:${col};pointer-events:none;z-index:9998;
+      transform:translate(-50%,-50%);
+      transition:all .65s cubic-bezier(.2,.8,.3,1);opacity:1;
+      box-shadow:0 0 ${sz*2}px ${col};`;
+    document.body.appendChild(p);
+    setTimeout(()=>{
+      p.style.transform=`translate(calc(-50% + ${Math.cos(ang)*dist}px),calc(-50% + ${Math.sin(ang)*dist}px)) scale(0)`;
+      p.style.opacity='0';
+    },30);
+    setTimeout(()=>p.remove(),720);
+  }
+}
+
+function spawnWarpStreaks(){
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;inset:0;z-index:9997;pointer-events:none;overflow:hidden';
+  document.body.appendChild(wrap);
+  const count=22;
+  for(let i=0;i<count;i++){
+    const s=document.createElement('div');
+    const ang=Math.round((i/count)*360);
+    const len=160+Math.floor(Math.random()*240);
+    const h=(Math.random()<.5)?1:2;
+    const delay=i*14;
+    const dur=440+Math.floor(Math.random()*110);
+    s.className='warp-streak';
+    s.style.width=len+'px';
+    s.style.height=h+'px';
+    s.style.setProperty('--ang',ang+'deg');
+    s.style.setProperty('--delay',delay+'ms');
+    s.style.setProperty('--dur',dur+'ms');
+    wrap.appendChild(s);
+  }
+  setTimeout(()=>wrap.remove(),780);
 }
 
 $('#introCta').addEventListener('click',hideIntroWild);
