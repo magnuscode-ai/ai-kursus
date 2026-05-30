@@ -128,6 +128,8 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
 .ov-card.c2::after{background:linear-gradient(90deg,#0D9488,#34D399)}
 .ov-card.c3::after{background:linear-gradient(90deg,var(--violet),var(--violet-glow))}
 .ov-card.cplus::after{background:linear-gradient(90deg,var(--rose),#FB923C)}
+.ov-card.eksamen::after{background:linear-gradient(90deg,#D97706,#FBBF24)}
+.ov-card.eksamen .ov-card-tag{background:rgba(217,119,6,.2);color:#FCD34D;border:1px solid rgba(217,119,6,.35)}
 .ov-card-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;padding:4px 10px;border-radius:999px;margin-bottom:14px}
 .ov-card.c1 .ov-card-tag{background:rgba(79,70,229,.2);color:#A5B4FC;border:1px solid rgba(99,102,241,.3)}
 .ov-card.c2 .ov-card-tag{background:rgba(13,148,136,.2);color:#5EEAD4;border:1px solid rgba(13,148,136,.3)}
@@ -273,6 +275,13 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
 .cta-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(99,102,241,.15) 50%,transparent 70%);transform:translateX(-100%);animation:btnShimmer 2.5s ease-in-out infinite}
 @keyframes btnShimmer{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
 .cta-btn:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(0,0,0,.3)}
+@keyframes ctaBtnClick{
+  0%{transform:scale(1);box-shadow:0 14px 40px rgba(0,0,0,.25),0 0 0 0 rgba(255,255,255,.4)}
+  30%{transform:scale(.94)}
+  60%{transform:scale(1.03);box-shadow:0 20px 60px rgba(0,0,0,.3),0 0 0 22px rgba(255,255,255,0)}
+  100%{transform:scale(1)}
+}
+.cta-btn.btn-clicked{animation:ctaBtnClick .55s cubic-bezier(.16,1,.3,1) forwards}
 .cta-meta{margin-top:18px;font-size:13px;color:rgba(255,255,255,.45);position:relative}
 
 /* ══ TOAST ══ */
@@ -347,6 +356,163 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
   .pc-notice{display:none}
 }
 
+
+/* ══ SIDEBAR LAYOUT — MØRKT TEMA ══ */
+.layout-3col{display:flex;align-items:flex-start;max-width:1580px;margin:0 auto}
+.layout-main{flex:1;min-width:0;overflow:hidden}
+
+.sidebar{
+  flex-shrink:0;position:sticky;top:62px;
+  height:calc(100vh - 66px);overflow-y:auto;overflow-x:hidden;
+  scrollbar-width:thin;scrollbar-color:rgba(99,102,241,.22) transparent;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(99,102,241,.22);border-radius:999px}
+
+.sidebar-left{
+  width:258px;padding:16px 14px 60px;
+  background:rgba(11,18,48,.78);backdrop-filter:blur(20px) saturate(150%);
+  border-right:1px solid rgba(255,255,255,.07);
+}
+.sidebar-right{
+  width:230px;padding:16px 14px 60px;
+  background:rgba(11,18,48,.78);backdrop-filter:blur(20px) saturate(150%);
+  border-left:1px solid rgba(255,255,255,.07);
+}
+.sb-inner{display:flex;flex-direction:column}
+.sb-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2px 12px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:12px;
+}
+.sb-head-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-glow)}
+.sb-close-btn{
+  display:none;background:none;border:none;padding:5px;cursor:pointer;
+  color:rgba(255,255,255,.4);border-radius:6px;line-height:0;transition:all .15s;
+}
+.sb-close-btn:hover{background:rgba(239,68,68,.15);color:#FCA5A5}
+.sb-close-btn svg{display:block}
+.sb-divider{height:1px;background:rgba(255,255,255,.07);margin:10px 2px}
+
+/* Journey items */
+.sb-journey-item{
+  display:flex;align-items:center;gap:9px;padding:7px 8px;
+  border-radius:10px;cursor:default;transition:background .15s;margin-bottom:1px;
+  text-decoration:none;color:inherit;
+}
+.sb-journey-item.sb-done,
+.sb-journey-item.sb-available{cursor:pointer}
+.sb-journey-item.sb-done:hover,
+.sb-journey-item.sb-available:hover{background:rgba(255,255,255,.06)}
+.sb-ji-icon{
+  width:24px;height:24px;border-radius:7px;display:grid;place-items:center;
+  flex-shrink:0;font-size:12px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.35);
+  transition:all .2s;
+}
+.sb-journey-item.sb-done   .sb-ji-icon{background:rgba(16,185,129,.18);color:var(--green)}
+.sb-journey-item.sb-current .sb-ji-icon{
+  background:linear-gradient(135deg,var(--indigo),var(--blue));
+  position:relative;
+}
+.sb-journey-item.sb-current .sb-ji-icon::after{
+  content:'';width:8px;height:8px;border-radius:50%;background:#fff;position:absolute;
+  animation:sbjipulse 2s ease-in-out infinite;
+}
+@keyframes sbjipulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}50%{box-shadow:0 0 0 4px rgba(255,255,255,0)}}
+.sb-journey-item.sb-available .sb-ji-icon{background:rgba(245,158,11,.15);color:var(--amber)}
+.sb-ji-content{flex:1;min-width:0}
+.sb-ji-label{
+  font-size:12.5px;font-weight:600;color:rgba(255,255,255,.38);
+  line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s;
+}
+.sb-journey-item.sb-done    .sb-ji-label{color:rgba(255,255,255,.72)}
+.sb-journey-item.sb-current .sb-ji-label{color:#fff;font-weight:700}
+.sb-journey-item.sb-available .sb-ji-label{color:var(--amber);font-weight:600}
+.sb-ji-sub{font-size:10.5px;color:rgba(255,255,255,.28);margin-top:1px}
+.sb-ji-badge{
+  flex-shrink:0;font-size:10px;font-weight:800;padding:2px 6px;
+  border-radius:999px;background:rgba(16,185,129,.2);color:var(--green);
+  opacity:0;transition:opacity .3s;
+}
+.sb-journey-item.sb-done .sb-ji-badge{opacity:1}
+.sb-journey-item.sb-done .sb-ji-badge::before{content:'✓'}
+
+/* Section sub-links (scroll within page) */
+.sb-sections{
+  margin:2px 0 4px 16px;
+  padding-left:12px;
+  border-left:2px solid rgba(255,255,255,.08);
+}
+.sb-connector-line{width:2px;height:6px;background:rgba(255,255,255,.08);margin:0 0 2px 16px}
+.sb-sec-link{
+  display:flex;align-items:center;gap:8px;
+  padding:5px 8px;border-radius:10px;
+  font-size:12px;font-weight:500;color:rgba(255,255,255,.45);
+  text-decoration:none;cursor:pointer;
+  transition:all .15s;margin-bottom:1px;
+}
+.sb-sec-link:hover{background:rgba(255,255,255,.07);color:rgba(255,255,255,.85)}
+.sb-sec-link.active{background:rgba(96,165,250,.12);color:var(--blue-glow);font-weight:700}
+.sb-sec-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.18);flex-shrink:0;transition:all .25s;
+}
+.sb-sec-link.active .sb-sec-dot{background:var(--blue-glow);box-shadow:0 0 0 2px rgba(96,165,250,.2)}
+
+/* Right sidebar — dark theme */
+.sb-tools-intro{font-size:11.5px;color:rgba(255,255,255,.45);margin:0 0 10px;padding:0 2px;line-height:1.5}
+.sb-tools-list{display:flex;flex-direction:column;gap:5px}
+.sb-tool-card{
+  display:flex;align-items:center;gap:9px;
+  padding:8px 10px;border:1px solid rgba(255,255,255,.09);
+  border-radius:10px;background:rgba(255,255,255,.05);
+  text-decoration:none;color:inherit;transition:all .2s;
+}
+.sb-tool-card:hover{border-color:rgba(99,102,241,.4);background:rgba(99,102,241,.12);transform:translateX(2px)}
+.sb-tool-ico{
+  width:28px;height:28px;border-radius:8px;
+  display:grid;place-items:center;font-size:13px;
+  font-weight:800;color:#fff;flex-shrink:0;line-height:1;
+}
+.sb-tool-info{flex:1;min-width:0}
+.sb-tool-name{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.9);line-height:1.2}
+.sb-tool-by{font-size:10px;color:rgba(255,255,255,.38)}
+.sb-tool-ext{font-size:13px;color:rgba(255,255,255,.28);flex-shrink:0;transition:all .2s}
+.sb-tool-card:hover .sb-tool-ext{color:var(--blue-glow);transform:translate(2px,-2px)}
+.sb-tip-box{
+  padding:12px;background:rgba(79,70,229,.1);
+  border:1px solid rgba(79,70,229,.2);border-radius:10px;
+}
+.sb-tip-tag{display:block;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--blue-glow);margin-bottom:8px}
+.sb-tip-text{font-size:12px;color:rgba(255,255,255,.55);line-height:1.55;margin:0}
+.sb-tip-text strong{color:rgba(255,255,255,.8)}
+
+/* Mobile toggle */
+.sb-mob-toggle{
+  display:none;position:fixed;bottom:22px;left:16px;z-index:1100;
+  align-items:center;gap:8px;padding:11px 20px;
+  background:linear-gradient(135deg,var(--indigo),var(--blue));
+  color:#fff;border:none;border-radius:999px;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 6px 24px rgba(79,70,229,.45);transition:all .2s;
+}
+.sb-mob-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(79,70,229,.55)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1050;backdrop-filter:blur(4px)}
+.sb-overlay.show{display:block}
+
+@media(max-width:1280px){.sidebar-right{display:none}}
+@media(max-width:980px){
+  .layout-3col{display:block}
+  .sidebar-left{
+    position:fixed;top:0;left:0;height:100vh;width:280px;z-index:1060;
+    transform:translateX(-102%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+    background:rgba(11,18,48,.97);border-right:1px solid rgba(255,255,255,.1);
+    box-shadow:8px 0 40px rgba(0,0,0,.4);padding:16px 14px 60px;
+  }
+  .sidebar-left.sb-open{transform:translateX(0)}
+  .sb-close-btn{display:flex}
+  .sb-mob-toggle{display:flex}
+}
+
 </style>
 </head>
 <body>
@@ -376,6 +542,122 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
   </div>
 </header>
 
+<div class="layout-3col">
+
+<!-- ── VENSTRE SIDEBAR ── -->
+<aside class="sidebar sidebar-left" id="sidebarLeft">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">📚 Dit forløb</span>
+      <button class="sb-close-btn" id="sbCloseBtn" aria-label="Luk">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <!-- Kursus D -->
+    <div class="sb-journey-item sb-locked" id="sbKursusD" data-href="eksamen-d.html">
+      <div class="sb-ji-icon">🎓</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Forberedelse</div>
+        <div class="sb-ji-sub">Kursus D</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C Forberedelse — aktiv -->
+    <div class="sb-journey-item sb-current">
+      <div class="sb-ji-icon"></div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C · Forberedelse</div>
+        <div class="sb-ji-sub">Du er her nu</div>
+      </div>
+    </div>
+
+    <!-- Sektion-links inden i siden -->
+    <div class="sb-sections" id="sbSections">
+      <a class="sb-sec-link active" data-sec="sec1" href="#sec1"><span class="sb-sec-dot"></span>Kursus overblik</a>
+      <a class="sb-sec-link" data-sec="sec2" href="#sec2"><span class="sb-sec-dot"></span>Inden du starter</a>
+      <a class="sb-sec-link" data-sec="sec3" href="#sec3"><span class="sb-sec-dot"></span>Hvad du får</a>
+      <a class="sb-sec-link" data-sec="sec4" href="#sec4"><span class="sb-sec-dot"></span>AI-rådgiver</a>
+    </div>
+
+    <div class="sb-connector-line"></div>
+
+    <!-- C1 -->
+    <div class="sb-journey-item sb-locked" id="sbKursusC1" data-href="kursus-c1.html">
+      <div class="sb-ji-icon">📗</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C1 · Prompt-teknik</div>
+        <div class="sb-ji-sub">Starter her</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C1 Mini-quiz -->
+    <div class="sb-journey-item sb-locked" id="sbQuizC1" data-href="quiz-c1.html">
+      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C1 Mini-quiz</div>
+        <div class="sb-ji-sub">+30 coins</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C2 -->
+    <div class="sb-journey-item sb-locked" id="sbKursusC2" data-href="kursus-c2.html">
+      <div class="sb-ji-icon">✉️</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C2 · Emails</div>
+        <div class="sb-ji-sub">Kommunikation</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C2 Mini-quiz -->
+    <div class="sb-journey-item sb-locked" id="sbQuizC2" data-href="quiz-c2.html">
+      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C2 Mini-quiz</div>
+        <div class="sb-ji-sub">+30 coins</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- C3 -->
+    <div class="sb-journey-item sb-locked" id="sbKursusC3" data-href="kursus-c3.html">
+      <div class="sb-ji-icon">🎙️</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">C3 · Møder &amp; indhold</div>
+        <div class="sb-ji-sub">Professionel brug</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Eksamen del 1 -->
+    <div class="sb-journey-item sb-locked" id="sbEksamen1" data-href="eksamen-c.html">
+      <div class="sb-ji-icon">📋</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Eksamen · Del 1</div>
+        <div class="sb-ji-sub">15 MC-spørgsmål</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Eksamen del 2 -->
+    <div class="sb-journey-item sb-locked" id="sbEksamen2" data-href="eksamen-c-del2.html" data-no-retake="1">
+      <div class="sb-ji-icon">🥈</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Eksamen · Del 2</div>
+        <div class="sb-ji-sub">Silver badge · 200 coins</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+  </div>
+</aside>
+
+<div class="layout-main">
 <!-- HERO -->
 <section class="hero">
   <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Kursus C · Forberedelse</div>
@@ -387,21 +669,21 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
   <div class="hero-cards">
     <div class="hero-card">
       <span class="hero-card-ic">📚</span>
-      <div class="hero-card-num">3 dele</div>
-      <div class="hero-card-title">C1, C2 og C3</div>
-      <div class="hero-card-sub">Prompt-teknik, emails og møder</div>
+      <div class="hero-card-num">4 dele</div>
+      <div class="hero-card-title">C1, C2, C3 og Eksamen</div>
+      <div class="hero-card-sub">Prompt-teknik, emails, møder og bevis</div>
     </div>
     <div class="hero-card">
       <span class="hero-card-ic">⏱</span>
-      <div class="hero-card-num">Ca. 4 timer</div>
+      <div class="hero-card-num">Ca. 5 timer</div>
       <div class="hero-card-title">Samlet varighed</div>
-      <div class="hero-card-sub">Fordelt over 3 sessioner</div>
+      <div class="hero-card-sub">Fordelt over 4 sessioner</div>
     </div>
     <div class="hero-card">
       <span class="hero-card-ic">🥈</span>
       <div class="hero-card-num">Silver badge</div>
       <div class="hero-card-title">Ved beståelse</div>
-      <div class="hero-card-sub">+ 150 coins til din konto</div>
+      <div class="hero-card-sub">+ 200 coins til din konto</div>
     </div>
   </div>
 </section>
@@ -478,17 +760,17 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
         </div>
         <div class="ov-card-footer"><span class="ov-card-time">⏱ Ca. 1t 25 min</span></div>
       </div>
-      <div class="ov-card cplus">
-        <div class="ov-card-tag">C+ · Bonus efter eksamen</div>
-        <h3>Din personlige AI-plan</h3>
-        <p class="ov-card-desc">Bonusmodul der genererer en skræddersyet AI-plan til netop dit arbejde og din hverdag — baseret på dine svar.</p>
+      <div class="ov-card eksamen">
+        <div class="ov-card-tag">Eksamen · Afslutter Kursus C</div>
+        <h3>Bevis din viden — få dit Silver badge</h3>
+        <p class="ov-card-desc">Afslut Kursus C med en todelt eksamen der tester hvad du faktisk kan. Bestå og få dit Silver badge + 200 coins på din profil.</p>
         <div class="ov-card-modules">
-          <div class="ov-mod"><span class="ov-mod-dot"></span>Fase 1: Kortlægning af dine behov</div>
-          <div class="ov-mod"><span class="ov-mod-dot"></span>Fase 2: Personlig AI-plan genereres</div>
-          <div class="ov-mod"><span class="ov-mod-dot"></span>Fase 3: Øv de vigtigste use cases</div>
-          <div class="ov-mod"><span class="ov-mod-dot"></span>Fase 4: Din AI-dag fra kl. 8 til 17</div>
+          <div class="ov-mod"><span class="ov-mod-dot"></span>Del 1: 15 multiple choice-spørgsmål</div>
+          <div class="ov-mod"><span class="ov-mod-dot"></span>Del 2: Praktisk prompt-opgave</div>
+          <div class="ov-mod"><span class="ov-mod-dot"></span>Består du — får du Silver badge</div>
+          <div class="ov-mod"><span class="ov-mod-dot"></span>Beviset kan downloades som PDF</div>
         </div>
-        <div class="ov-card-footer"><span class="ov-card-time">⏱ Ca. 30 min</span></div>
+        <div class="ov-card-footer"><span class="ov-card-time">⏱ Ca. 45 min</span></div>
       </div>
     </div>
   </div>
@@ -503,8 +785,8 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
     <div class="need-grid">
       <div class="need-item">
         <span class="need-item-ic">🤖</span>
-        <h4>Et AI-værktøj åbent</h4>
-        <p>Åbn <strong>Claude.ai</strong> eller <strong>ChatGPT</strong> i et andet vindue nu. Hvert modul indeholder øvelser du skal gennemføre med det samme.</p>
+        <h4>Et AI-redskab klar — i sidebaren</h4>
+        <p>Du behøver <strong>ikke åbne et ekstra vindue</strong>. I højre sidebar finder du direkte links til Claude, ChatGPT, Gemini og fire andre redskaber — ét klik og du er i gang.</p>
       </div>
       <div class="need-item">
         <span class="need-item-ic">⏱</span>
@@ -519,7 +801,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
       <div class="need-item need-item-highlight">
         <span class="need-item-ic">💻</span>
         <h4>En computer — ikke telefon</h4>
-        <p>Kursus C bruger interaktive øvelser og drag-and-drop som kræver en rigtig skærm. Åbn kurset og dit AI-redskab i to faner side om side — det er sådan du lærer bedst.</p>
+        <p>Kursus C bruger interaktive øvelser og drag-and-drop som kræver en rigtig skærm. Dit AI-redskab er altid tilgængeligt i sidebaren til højre — du behøver ikke forlade kurset.</p>
       </div>
     </div>
   </div>
@@ -537,7 +819,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
       <div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text"><strong>AI til emails og kommunikation</strong> — skriv professionelle emails på 2 minutter i stedet for 20</div></div>
       <div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text"><strong>Møde-forberedelse og referat</strong> med AI — spar 30–45 minutter om dagen</div></div>
       <div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text"><strong>Evnen til at spotte hallucination</strong> — du bliver aldrig snydt af et overbevisende forkert AI-svar igen</div></div>
-      <div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text"><strong>Silver badge + 150 coins</strong> ved beståelse — bevis på Niveau C som kan downloades til PDF</div></div>
+      <div class="outcome"><div class="outcome-check">✓</div><div class="outcome-text"><strong>Silver badge + 200 coins</strong> ved beståelse — bevis på Niveau C som kan downloades til PDF</div></div>
     </div>
   </div>
 
@@ -596,13 +878,71 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--ink);color:#fff;
     <span class="cta-tag">Du er klar</span>
     <h2>Start Kursus C1</h2>
     <p>Du kender kurset, du har dit AI-værktøj klar — nu er det tid til at gå i gang med det første modul.</p>
-    <a href="intro-c.html" class="cta-btn" id="ctaBtn">
+    <a href="kursus-c1.html" class="cta-btn" id="ctaBtn">
       Gå til Kursus C1
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
     </a>
     <p class="cta-meta">Kræver login · Kursus D bestået · Ca. 1 time 15 minutter</p>
   </div>
 </div>
+
+</div><!-- /layout-main -->
+
+<!-- ── HØJRE SIDEBAR ── -->
+<aside class="sidebar sidebar-right" id="sidebarRight">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">🤖 AI Redskaber</span>
+    </div>
+
+    <p class="sb-tools-intro">Åbn direkte og prøv dem mens du læser forberedelsen</p>
+
+    <div class="sb-tools-list">
+      <a class="sb-tool-card" href="https://claude.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">C</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Claude</div><div class="sb-tool-by">Anthropic</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#059669,#34D399)">G</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">ChatGPT</div><div class="sb-tool-by">OpenAI</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://gemini.google.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1a73e8,#4285f4);font-size:10px">Gm</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Gemini</div><div class="sb-tool-by">Google</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#0078d4,#50B0F1);font-size:10px">Co</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Copilot</div><div class="sb-tool-by">Microsoft</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1C1C2E,#20B2AA);font-size:10px">Px</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Perplexity</div><div class="sb-tool-by">AI-søgning</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-tip-box">
+      <span class="sb-tip-tag">💡 Tip til forberedelsen</span>
+      <p class="sb-tip-text">Usikker på hvilket AI-redskab du skal bruge? Scroll til <strong>AI-rådgiveren</strong> nedenfor — den stiller de rigtige spørgsmål og giver en personlig anbefaling.</p>
+    </div>
+
+  </div>
+</aside>
+
+</div><!-- /layout-3col -->
+
+<button class="sb-mob-toggle" id="sbMobToggle">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  Forløb
+</button>
+<div class="sb-overlay" id="sbOverlay"></div>
 
 <div class="toast" id="toast"></div>
 
@@ -613,7 +953,12 @@ import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/
 const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
 initializeApp(firebaseConfig);
 const auth=getAuth();
-onAuthStateChanged(auth,u=>{if(!u)window.location.href='platform.html';});
+onAuthStateChanged(auth,u=>{
+  if(!u){
+    toast('Du skal være logget ind for at tilgå dette kursus 🔒');
+    setTimeout(()=>window.location.href='platform.html',1800);
+  }
+});
 
 /* ── PAGE LOAD ── */
 window.addEventListener('load',()=>{
@@ -634,6 +979,12 @@ const obs=new IntersectionObserver(entries=>entries.forEach(e=>{
   if(e.isIntersecting){e.target.classList.add('in');obs.unobserve(e.target);}
 }),{threshold:0.08});
 document.querySelectorAll('.section,.cta-section').forEach(el=>obs.observe(el));
+
+/* ── CTA KNAP EFFEKT ── */
+document.getElementById('ctaBtn').addEventListener('click',function(){
+  this.classList.add('btn-clicked');
+  // Navigation sker naturligt via <a> href
+});
 
 /* ── TOAST ── */
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);}
@@ -784,6 +1135,64 @@ inputEl.addEventListener('input',()=>{
   inputEl.style.height='auto';
   inputEl.style.height=Math.min(inputEl.scrollHeight,140)+'px';
 });
+/* ── SIDEBAR ── */
+(function(){
+  const sbLeft=document.getElementById('sidebarLeft');
+  const sbOverlay=document.getElementById('sbOverlay');
+  const sbMobBtn=document.getElementById('sbMobToggle');
+  const sbCloseBtn=document.getElementById('sbCloseBtn');
+
+  function openSb(){sbLeft?.classList.add('sb-open');sbOverlay?.classList.add('show');document.body.style.overflow='hidden';}
+  function closeSb(){sbLeft?.classList.remove('sb-open');sbOverlay?.classList.remove('show');document.body.style.overflow='';}
+  sbMobBtn?.addEventListener('click',openSb);
+  sbCloseBtn?.addEventListener('click',closeSb);
+  sbOverlay?.addEventListener('click',closeSb);
+
+  /* Journey item delegation */
+  document.getElementById('sidebarLeft')?.addEventListener('click',e=>{
+    const item=e.target.closest('.sb-journey-item');
+    if(!item||item.classList.contains('sb-current'))return;
+    if(item.classList.contains('sb-locked')){
+      toast('Fuldfør det forrige trin for at låse op 🔒');return;
+    }
+    if(item.dataset.noRetake==='1'&&item.classList.contains('sb-done')){
+      toast('Eksamen kan kun tages én gang 🏅');return;
+    }
+    const href=item.dataset.href;
+    if(href)window.location.href=href;
+  });
+
+  /* Section scroll links */
+  document.querySelectorAll('.sb-sec-link[data-sec]').forEach(link=>{
+    link.addEventListener('click',e=>{
+      e.preventDefault();
+      const sec=document.getElementById(link.dataset.sec);
+      if(sec)sec.scrollIntoView({behavior:'smooth',block:'start'});
+      closeSb();
+    });
+  });
+
+  /* Scroll spy — highlight active section */
+  const spyObs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        const id=e.target.id;
+        document.querySelectorAll('.sb-sec-link').forEach(l=>{
+          l.classList.toggle('active',l.dataset.sec===id);
+        });
+      }
+    });
+  },{threshold:0.35,rootMargin:'-80px 0px -45% 0px'});
+  ['sec1','sec2','sec3','sec4'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)spyObs.observe(el);
+  });
+
+  /* Auth: mark kursus-d as done (user is authenticated and on preparation page) */
+  const sbD=document.getElementById('sbKursusD');
+  if(sbD){sbD.classList.remove('sb-locked');sbD.classList.add('sb-done');}
+})();
+
 </script>
 </body>
 </html>
