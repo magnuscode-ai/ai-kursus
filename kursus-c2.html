@@ -1408,7 +1408,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
           <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
           <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
         </div>
-        <a href="bibliotek.html" target="_blank" class="lib-open-btn" onclick="unlockExam()">
+        <a href="bibliotek.html" target="_blank" class="lib-open-btn">
           Åbn biblioteket
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
         </a>
@@ -1663,15 +1663,35 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
-initializeApp(firebaseConfig);
-const auth=getAuth();
-onAuthStateChanged(auth,u=>{
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+let _c2User=null;
+onAuthStateChanged(auth,async u=>{
   if(!u){
     showToast('Du skal være logget ind for at tilgå dette kursus 🔒');
     setTimeout(()=>window.location.href='platform.html',1800);
+    return;
   }
+  _c2User=u;
+  try{
+    const snap=await getDoc(doc(db,'users',u.uid));
+    if(snap.exists()){
+      const d=snap.data();
+      const saved=d.c2Progress||[];
+      if(saved.length>0) window._applyC2Progress(saved);
+    }
+  }catch(e){console.error('C2 load:',e);}
 });
+
+/* Gem et modul-ID i Firestore */
+window._saveC2Progress=async(modId)=>{
+  if(!_c2User)return;
+  try{await updateDoc(doc(db,'users',_c2User.uid),{c2Progress:arrayUnion(modId)});}
+  catch(e){console.error('C2 save:',e);}
+};
 </script>
 
 <script>
@@ -1753,12 +1773,13 @@ function markDone(id) {
   showToast('✅ ' + names[id] + ' markeret som færdig!');
 
   unlockNext(id);
+  window._saveC2Progress?.(id);
 
-  // Auto-åbn næste modul
+  // Scroll til næste modul
   const nextIdx = modIds.indexOf(id) + 1;
   if (nextIdx < modIds.length) {
     const nextId = modIds[nextIdx];
-    setTimeout(() => scrollToMod(nextId), 320); // scroll til næste modul
+    setTimeout(() => scrollToMod(nextId), 320);
   }
 
   updateProgress();
@@ -1772,7 +1793,7 @@ function updateProgress() {
   const pp = document.getElementById('progressPct');
   if (pf) pf.style.width = pct + '%';
   if (pp) pp.textContent = pct + '%';
-  // Sidebar progress
+  // Sidebar progress + pill
   const sf = document.getElementById('sbProgressFill');
   const sp = document.getElementById('sbProgressPct');
   if (sf) sf.style.width = pct + '%';
@@ -1806,6 +1827,37 @@ function updateProgress() {
 // m1 er tilgængeligt fra start — ikke done, bare unlocked
 // Ingen pre-marking. Progress starter på 0%.
 updateProgress();
+
+/* ── PROGRESS RESTORE (Firestore) ── */
+window._applyC2Progress=function(saved){
+  if(!saved||!saved.length)return;
+  const intr=document.getElementById('cinematicIntro');
+  if(intr){intr.style.display='none';}
+  const hero=document.getElementById('hero');
+  if(hero){hero.classList.add('in');}
+  saved.forEach(id=>{
+    if(modDone[id])return;
+    modDone[id]=true;
+    const m=document.getElementById(id);
+    if(m)m.classList.add('done');
+    const btn=document.getElementById('completeBtn-'+id);
+    if(btn){btn.classList.add('done-state');btn.innerHTML='✓ Gennemført';btn.disabled=true;}
+    const ni=modIds.indexOf(id)+1;
+    if(ni<modIds.length){
+      const nx=document.getElementById(modIds[ni]);
+      if(nx)nx.classList.remove('locked');
+    } else { unlockExam(); }
+  });
+  updateProgress();
+  setTimeout(()=>{
+    const next=modIds.find(id=>!modDone[id]);
+    if(next){ scrollToMod(next); }
+    else {
+      const cta=document.querySelector('.quiz-cta-c1');
+      if(cta)cta.scrollIntoView({behavior:'smooth',block:'start'});
+    }
+  },350);
+};
 
 // ── AI Demo tabs ──────────────────────────────────────────────
 function switchTab(btn, id) {
@@ -2129,72 +2181,6 @@ if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)hideIntroCalm();
   },{threshold:0.35,rootMargin:'-80px 0px -45% 0px'});
   ['m1','m2','m3','m4','m5'].forEach(id=>{const el=document.getElementById('wrap-'+id)||document.getElementById(id);if(el)spyObs.observe(el);});
 })();
-
-/* ── SIDEBAR PROGRESS SYNC ── */
-function updateSidebarProgress(){
-  const done=Object.values(modDone).filter(Boolean).length;
-  const pct=Math.round(done/TOTAL*100);
-  const fill=document.getElementById('sbProgressFill');
-  const pctEl=document.getElementById('sbProgressPct');
-  if(fill)fill.style.width=pct+'%';
-  if(pctEl)pctEl.textContent=pct+' %';
-  // Progress pill
-  const pf=document.getElementById('progressFill');
-  const pp=document.getElementById('progressPct');
-  if(pf)pf.style.width=pct+'%';
-  if(pp)pp.textContent=pct+'%';
-  // Steps rail
-  const modOrder=['m1','m2','m3','m4','m5'];
-  modOrder.forEach((id,i)=>{
-    const dot=document.getElementById('sbDot'+(i+1));
-    if(dot)dot.style.background=modDone[id]?'var(--green)':'rgba(203,213,225,.8)';
-    const pill=document.querySelector('.steps-rail .step-pill[data-mod="'+id+'"]');
-    if(pill){
-      pill.classList.toggle('done',!!modDone[id]);
-      pill.classList.toggle('active',!modDone[id]&&(i===0||modDone[modOrder[i-1]]));
-    }
-    const bar=document.querySelector('.steps-rail .step-bar:nth-child('+(i*2+2)+')');
-    if(bar)bar.classList.toggle('filled',!!modDone[id]);
-  });
-  // Quiz CTA unlock
-  if(done===TOTAL){
-    const lockEl=document.getElementById('exam-locked');
-    const hintEl=document.getElementById('exam-locked-hint');
-    const btnEl=document.getElementById('exam-btn');
-    if(lockEl)lockEl.style.display='none';
-    if(hintEl)hintEl.style.display='none';
-    if(btnEl)btnEl.style.display='inline-flex';
-    const sbQ2=document.getElementById('sbQuizC2');
-    if(sbQ2){sbQ2.classList.remove('sb-locked');sbQ2.classList.add('sb-available');}
-  }
-}
-
-/* Patch updateProgress to also call sidebar sync */
-const _origUpdateProgress=updateProgress;
-// Override after original definition
-setTimeout(()=>{updateProgress();},0); // init: alle moduler = false → 0%
-
-/* Hook into tog() via MutationObserver */
-// Observer reagerer kun på .done — ikke .open/.unlocked-next
-const _modObserver=new MutationObserver((mutations)=>{
-  const relevant=mutations.some(m=>
-    Array.from(m.target.classList).includes('done')
-  );
-  if(relevant)updateSidebarProgress();
-});
-['m1','m2','m3','m4','m5'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el)_modObserver.observe(el,{attributes:true,attributeFilter:['class']});
-});
-
-/* Steps rail click */
-document.querySelectorAll('.steps-rail .step-pill').forEach(p=>{
-  p.addEventListener('click',()=>{
-    const id=p.dataset.mod;
-    const el=document.getElementById(id);
-    if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
-  });
-});
 
 /* ── CONFETTI ── */
 function spawnConfettiC2(){
