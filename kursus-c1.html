@@ -1933,7 +1933,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 
           <div class="complete-zone" id="completeZone-4">
             <p class="complete-zone-text">Klar med modul 4? <strong>Marker som færdig</strong> for at låse mini-quizzen op.</p>
-            <button class="complete-btn" data-complete="4" id="completeBtn-4">Jeg er færdig med modul 4 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
+            <button class="complete-btn disabled" data-complete="4" id="completeBtn-4">Jeg er færdig med modul 4 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></button>
             <div class="completed-banner"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> Modul 4 gennemført</div>
           </div>
         </div>
@@ -2091,16 +2091,34 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
 initializeApp(firebaseConfig);
 const auth=getAuth();const db=getFirestore();
 let userName='';
+let _c1User=null;
 onAuthStateChanged(auth,async(u)=>{
   if(!u){window.location.href='platform.html';return;}
-  try{const snap=await getDoc(doc(db,'users',u.uid));if(snap.exists()){const d=snap.data();userName=(d.fornavn||'').trim()||u.displayName||'';initSidebarFromFirestore(d.completedCourses||[],d);}}catch(e){}
+  _c1User=u;
+  try{
+    const snap=await getDoc(doc(db,'users',u.uid));
+    if(snap.exists()){
+      const d=snap.data();
+      userName=(d.fornavn||'').trim()||u.displayName||'';
+      initSidebarFromFirestore(d.completedCourses||[],d);
+      const saved=d.c1Progress||[];
+      if(saved.length>0) window._applyC1Progress(saved);
+    }
+  }catch(e){console.error('C1 load:',e);}
 });
+
+/* Gem et modul-ID i Firestore */
+window._saveC1Progress=async(modId)=>{
+  if(!_c1User)return;
+  try{await updateDoc(doc(db,'users',_c1User.uid),{c1Progress:arrayUnion(modId)});}
+  catch(e){console.error('C1 save:',e);}
+};
 
 /* ── HELPERS ── */
 const $=(s,r=document)=>r.querySelector(s);
@@ -2229,7 +2247,7 @@ window.addEventListener('scroll',()=>{
 });
 
 /* ── STATE ── */
-const S={m:{1:{d:false,u:true},2:{d:false,u:false},3:{d:false,u:false},4:{d:false,u:false}},chat:false};
+const S={m:{1:{d:false,u:true},2:{d:false,u:false},3:{d:false,u:false},4:{d:false,u:false}},chat:false,plab:false};
 
 function refreshUI(){
   for(let i=1;i<=4;i++){
@@ -2281,12 +2299,43 @@ $$('.complete-btn[data-complete]').forEach(btn=>{
     }
     S.m[i].d=true;if(S.m[i+1])S.m[i+1].u=true;
     refreshUI();spawnConfetti();showToast('Modul '+i+' gennemført! 🎉','✨');
+    window._saveC1Progress?.('m'+i);
     setTimeout(()=>{
       if(i<4)$('#card-'+(i+1))?.scrollIntoView({behavior:'smooth',block:'start'});
       else $('#quizCta')?.scrollIntoView({behavior:'smooth',block:'center'});
     },800);
   });
 });
+
+/* ── PROGRESS RESTORE (Firestore) ── */
+window._applyC1Progress=function(saved){
+  if(!saved||!saved.length)return;
+  // Skjul intro øjeblikkeligt — brugeren er allerede i gang
+  const intr=document.getElementById('cinematicIntro');
+  if(intr){intr.style.display='none';}
+  const hero=document.getElementById('hero');
+  if(hero){hero.classList.add('in');}
+  // Anvend gemte moduler
+  saved.forEach(id=>{
+    const n=parseInt(id.replace('m',''),10);
+    if(!S.m[n])return;
+    S.m[n].d=true;
+    S.m[n].u=true;
+    if(S.m[n+1])S.m[n+1].u=true;
+    if(n===3)S.chat=true;
+    if(n===4)S.plab=true;
+  });
+  refreshUI();
+  // Scroll til første uafsluttede modul
+  setTimeout(()=>{
+    let target=null;
+    for(let i=1;i<=4;i++){
+      if(S.m[i].u&&!S.m[i].d){target=document.getElementById('card-'+i);break;}
+    }
+    if(!target&&Object.values(S.m).every(m=>m.d))target=document.getElementById('quizCta');
+    if(target)target.scrollIntoView({behavior:'smooth',block:'start'});
+  },350);
+};
 
 /* ── STEPS RAIL ── */
 $$('#stepsRail .step-pill').forEach(p=>{
@@ -2596,7 +2645,7 @@ Aktuel statisk analyse — fundet: ${ana.found.join(', ')||'ingen'} — mangler:
     }
   }
   chatSnd.disabled=false;
-  if(!S.chat){S.chat=true;$('#completeBtn-3')?.classList.remove('disabled');showToast('AI-coach brugt — modul 3 kan nu markeres færdigt','✅');}
+  if(!S.chat){S.chat=true;$('#completeBtn-3')?.classList.remove('disabled');showToast('AI-coach brugt — modul 3 kan nu markeres færdigt ✅');}
 }
 chatSnd.addEventListener('click',sendChat);
 chatIn.addEventListener('keydown',(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendChat();}});
@@ -2626,6 +2675,8 @@ $('#quizBtn').addEventListener('click',(e)=>{
     const prompt=$('#plabInput').value.trim();
     if(!prompt){showToast('Skriv dit prompt først','✍️');return;}
     const btn=$('#plabSendBtn');
+  // Unlock completeBtn-4 ved første plab-brug
+  if(!S.plab){ S.plab=true; $('#completeBtn-4')?.classList.remove('disabled'); showToast('Prompt sendt — modul 4 kan nu markeres færdigt','✅'); }
     const loading=$('#plabLoading');
     const result=$('#plabResult');
     btn.disabled=true;loading.classList.add('show');result.classList.remove('show');
