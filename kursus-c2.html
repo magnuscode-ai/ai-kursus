@@ -884,6 +884,7 @@
 }
 .complete-zone.just-done{animation:completeZonePop .35s cubic-bezier(.16,1,.3,1)}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -1408,10 +1409,23 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
           <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
           <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
         </div>
-        <a href="bibliotek.html" target="_blank" class="lib-open-btn">
-          Åbn biblioteket
+        <button class="lib-open-btn" onclick="addC2AndOpen()" id="c2LibBtn">
+          Tilføj &amp; åbn bibliotek
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </a>
+        </button>
+      </div>
+
+      <!-- PDF DOWNLOAD -->
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(13,148,136,.05);border:1px solid rgba(13,148,136,.2);border-radius:14px;margin:12px 0 24px;">
+        <span style="font-size:26px;flex-shrink:0;">📄</span>
+        <div style="flex:1;">
+          <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;">C2 Prompt-snydelap</div>
+          <div style="font-size:12.5px;color:var(--muted);">10 C2-prompts på én A4-side — print og hav ved siden af computeren</div>
+        </div>
+        <button onclick="downloadC2PDF()" id="c2PdfBtn" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--teal),#0D9488);color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(13,148,136,.3);flex-shrink:0;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
       </div>
 
       <!-- 3-STEP GUIDE -->
@@ -2195,6 +2209,128 @@ function spawnConfettiC2(){
     wrap.appendChild(s);
   }
   document.body.appendChild(wrap);setTimeout(()=>wrap.remove(),2500);
+}
+
+
+/* ── C2 BIBLIOTEK ── */
+const DEFAULT_PROMPTS_SEED=[
+  {id:'d1',emoji:'✉️',title:'Den svære email',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Du er erfaren forretningskommunikatør. Hjælp mig med at skrive en email til [modtager] om [situation]. Tone: ærlig men ikke anklagende. Undgå passive formuleringer og floskler. Maks 120 ord — kom direkte til sagen.'},
+  {id:'d2',emoji:'⏰',title:'Opfølgning når ingen svarer',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Skriv en opfølgnings-email til [person]. Jeg sendte en email om [emne] for [X] dage siden og har ikke hørt tilbage. Tone: venlig og ikke pressende, men tydelig om at jeg har brug for svar inden [dato]. Undgå sætningen "Jeg tillader mig at følge op".'},
+  {id:'d3',emoji:'✏️',title:'Sprogvask af email-udkast',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Ret følgende email til korrekt, professionelt dansk. Forbedre formuleringer og flow — men ændr ikke indholdet eller meningen. Gør den mere direkte og fjern unødvendige fyldord: [indsæt din email].'},
+  {id:'d4',emoji:'🎯',title:'Beslutningshjælp',source:'C2 — Modul 3',category:'C2',fav:false,
+   text:'Jeg skal træffe en beslutning: [beskriv situationen].\n\nMulighed A: [fordele og ulemper]\nMulighed B: [fordele og ulemper]\n\nLav en pro/contra-analyse. Peg på 2-3 blinde vinkler jeg sandsynligvis overser. Anbefal ikke en løsning — hjælp mig med at tænke klarere. Tænk skridt for skridt.'},
+  {id:'d5',emoji:'🔄',title:'Omskriv til ny målgruppe',source:'C2 — Modul 4',category:'C2',fav:false,
+   text:'Omskriv følgende tekst så den passer til [ny målgruppe / ny tone / nyt formål]. Behold det samme indhold og de samme fakta — tilpas kun sprog, tone og detaljeniveau. Den nye version skal lyde naturlig: [indsæt tekst].'},
+  {id:'d6',emoji:'📚',title:'Lær noget på 15 minutter',source:'C1 — Modul 3',category:'C1',fav:false,
+   text:'Giv mig en 80/20-gennemgang af [emne]: de 20% der giver mig 80% af forståelsen. Jeg har 15 minutter og ingen forudgående viden. Skriv i klart, ikke-teknisk dansk. Afslut med 3 præcise spørgsmål jeg kan stille en ekspert.'},
+  {id:'d7',emoji:'🔍',title:'Kritisk feedback på dit arbejde',source:'C1 — Modul 2',category:'C1',fav:false,
+   text:'Her er hvad jeg har lavet: [indsæt tekst/plan/idé].\n\nGiv mig de 3 største svagheder. Hvad mangler? Hvad er uklart? Hvad ville en kritisk læser reagere på? Vær direkte og specifik — undgå at starte med ros.'},
+  {id:'d8',emoji:'👤',title:'Rolleprompt-skabelon',source:'C1 — Modul 2',category:'C1',fav:false,
+   text:'Du er [konkret rolle, fx "erfaren juridisk rådgiver med speciale i ansættelsesret"]. [Opgave]. Konteksten er: [baggrund]. Skriv som du ville til [målgruppe]. Undgå [det du ikke vil have].'},
+  {id:'d9',emoji:'💼',title:'Forbered et møde på 10 min',source:'C1 — Modul 3',category:'C1',fav:false,
+   text:'Jeg skal til møde om [emne] om 30 minutter og kender det ikke godt. Giv mig: 1) De 5 vigtigste ting at vide, 2) 3 intelligente spørgsmål jeg kan stille, 3) ét kontroversielt synspunkt der viser jeg har tænkt selv.'},
+  {id:'d10',emoji:'✂️',title:'Forkort uden at miste substans',source:'C2 — Modul 4',category:'C2',fav:false,
+   text:'Forkort følgende tekst til maks [X] ord. Behold alle vigtige pointer og kerneinformation — skær kun fyldord, gentagelser og unødvendige detaljer. Tonen skal forblive den samme: [indsæt tekst].'}
+];
+/* ── BIBLIOTEK HELPER ── */
+function _addPromptsToLibrary(newPrompts, categoryName) {
+  const SK  = 'learnai_prompt_library_v2';
+  const SKC = 'learnai_prompt_categories_v1';
+  try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); }
+  catch(e) { showToast('Browser blokerer localStorage — prøv Chrome/Firefox'); return 0; }
+  try {
+    // Seed med DEFAULT_PROMPTS hvis localStorage er tom
+    let lib = [];
+    const saved = localStorage.getItem(SK);
+    if (saved) {
+      try { lib = JSON.parse(saved); } catch(e) { lib = []; }
+    } else {
+      // Første gang — seed med standard-prompts
+      lib = DEFAULT_PROMPTS_SEED.map(p=>({...p}));
+    }
+    // Tilføj nye prompts (duplikat-tjek på id)
+    const ids = new Set(lib.map(p=>p.id));
+    let added = 0;
+    newPrompts.forEach(p => { if(!ids.has(p.id)){ lib.push(p); added++; } });
+    localStorage.setItem(SK, JSON.stringify(lib));
+    // Tilføj kategori
+    let cats = ['C1','C2','Egne'];
+    const sc = localStorage.getItem(SKC);
+    if(sc){ try{ cats=JSON.parse(sc); }catch(e){ cats=['C1','C2','Egne']; } }
+    if(!cats.includes(categoryName)) cats.push(categoryName);
+    if(!cats.includes('C1')) cats.unshift('C1');
+    if(!cats.includes('C2')) { const i=cats.indexOf('C1'); cats.splice(i+1,0,'C2'); }
+    localStorage.setItem(SKC, JSON.stringify(cats));
+    return added;
+  } catch(e) { showToast('Fejl: '+e.message); return -1; }
+}
+
+const C2_PROMPTS=[
+  {id:'c2p1',emoji:'✉️',title:'Den svære email — C2 version',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Du er en professionel kommunikationsrådgiver.\nSkriv en email til [modtager] om [emnet].\nTone: direkte men respektfuld. Maks 150 ord.\nUndgå: undskyldende formuleringer, passive konstruktioner.\nKonkluder med ét klart næste skridt.'},
+  {id:'c2p2',emoji:'⏰',title:'Opfølgning — ingen svar (C2)',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Skriv en opfølgnings-email til [navn] der ikke svarede fra [dato] om [emne].\nTone: venlig men tydelig. Maks 60 ord.\nUndgå desperation. Afslut med lavt-friktions spørgsmål.'},
+  {id:'c2p3',emoji:'🎭',title:'Tilpas tone til situation',source:'C2 — Modul 2',category:'C2',fav:false,
+   text:'Omskriv denne email til [tone: formel/uformel/empatisk/direkte]:\n[Indsæt original email]\nBehold alle pointer og fakta. Maks [X] ord.'},
+  {id:'c2p4',emoji:'📋',title:'Opsummér email-tråd',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Her er en email-tråd: [indsæt tråd]\nGiv: 1) 3-linje opsummering 2) Hvem har hvad ansvar\n3) Hvad mangler stadig svar. Maks 120 ord.'},
+  {id:'c2p5',emoji:'🤝',title:'Svar på svær feedback',source:'C2 — Modul 2',category:'C2',fav:false,
+   text:'Hjælp mig at svare på: [feedback]\nSvar skal anerkende, ikke undskylde unødigt, foreslå næste skridt.\nTone: rolig og professionel. Maks 100 ord.'},
+  {id:'c2p6',emoji:'💡',title:'AI som sparringspartner (C2)',source:'C2 — Modul 4',category:'C2',fav:false,
+   text:'Ærlig sparringspartner. Jeg overvejer [beslutning/situation].\nGiv: 1) Argumenter FOR 2) Argumenter IMOD\n3) Hvad overser jeg 4) Din direkte anbefaling.'},
+  {id:'c2p7',emoji:'🔄',title:'Omskriv til anden målgruppe (C2)',source:'C2 — Modul 3',category:'C2',fav:false,
+   text:'Omskriv til [målgruppe]: [tekst]\nBehold alle fakta. Tilpas kompleksitet og tone. Maks [X] ord.'},
+  {id:'c2p8',emoji:'✅',title:'Tjek og forbedring af tekst',source:'C2 — Modul 1',category:'C2',fav:false,
+   text:'Gennemgå kritisk: [tekst]\nRet grammatik, tone, klarhed og gentagelser.\nBehold min stemme. Vis originalen → din version.'},
+];
+
+function addC2AndOpen(){
+  const added=_addPromptsToLibrary(C2_PROMPTS,'C2');
+  if(added<0)return;
+  const btn=document.getElementById('c2LibBtn');
+  if(btn){btn.innerHTML='✅ Tilføjet! Åbn bibliotek <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';}
+  showToast(added>0?`✅ ${added} C2-prompts gemt i biblioteket`:'✅ Allerede i biblioteket');
+  setTimeout(()=>window.open('bibliotek.html','_blank'),400);
+}
+
+/* ── C2 PDF CHEATSHEET ── */
+function downloadC2PDF(){
+  const btn=document.getElementById('c2PdfBtn');
+  if(btn){btn.textContent='Genererer...';btn.disabled=true;}
+  try{
+    const {jsPDF}=window.jspdf;
+    if(!jsPDF)throw new Error('jsPDF ikke indlæst');
+    const pdf=new jsPDF('p','mm','a4');
+    const W=210,pad=16,ink=[13,17,23],teal=[13,148,136],muted=[107,114,128];
+    function tx(s,x,y,o={}){pdf.setFontSize(o.sz||9.5);pdf.setFont('helvetica',o.st||'normal');pdf.setTextColor(...(o.c||ink));pdf.text(String(s),x,y,{maxWidth:o.mw,align:o.al||'left'});}
+    function fb(x,y,w,h,...c){pdf.setFillColor(...c);pdf.rect(x,y,w,h,'F');}
+    fb(0,0,W,32,...teal);
+    tx('LearnAI',pad,12,{sz:10,st:'bold',c:[255,255,255]});
+    tx('Kursus C2 — Prompt-snydelap',pad,20,{sz:18,st:'bold',c:[255,255,255]});
+    tx('Emails · Tone · Sparring · Omskrivning · learnai.dk',pad,27,{sz:9,c:[94,234,212]});
+    const allP=[...C2_PROMPTS];
+    const cw=(W-pad*2-8)/2,c1=pad,c2x=pad+cw+8;
+    let cy=[38,38];
+    allP.slice(0,8).forEach((p,i)=>{
+      const col=i%2,x=col===0?c1:c2x,y=cy[col];
+      fb(x,y,cw,34,240,253,250);pdf.setDrawColor(...[167,243,208]);pdf.setLineWidth(.3);pdf.rect(x,y,cw,34,'S');
+      fb(x+3,y+3,14,8,...teal);tx(String(i+1).padStart(2,'0'),x+10,y+9,{sz:6.5,st:'bold',c:[255,255,255],al:'center'});
+      tx(p.title.replace(' (C2)',''),x+20,y+8,{sz:8.5,st:'bold',mw:cw-24});
+      tx(p.source,x+20,y+13,{sz:6.5,c:teal,mw:cw-24});
+      fb(x+3,y+17,cw-6,14,13,17,23);
+      pdf.splitTextToSize(p.text.replace(/\n/g,' '),cw-14).slice(0,3).forEach((l,li)=>tx(l,x+6,y+22+li*3.5,{sz:5.8,c:[226,232,240]}));
+      cy[col]+=38;
+    });
+    const fy=Math.max(...cy)+6;
+    pdf.setDrawColor(...[167,243,208]);pdf.setLineWidth(.25);pdf.line(pad,fy,W-pad,fy);
+    tx(`LearnAI C2 · learnai.dk · ${new Date().toLocaleDateString('da-DK')}`,W/2,fy+5,{sz:7,c:muted,al:'center'});
+    pdf.save('LearnAI-C2-Snydelap.pdf');
+    showToast('✅ PDF downloadet!');
+  }catch(e){showToast('PDF fejl: '+e.message);}
+  if(btn){btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF';btn.disabled=false;}
 }
 
 </script>
