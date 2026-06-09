@@ -2383,7 +2383,17 @@ ${text}
 """`;
 
     try {
-      const reply = await window.claude.complete(coachPrompt);
+      const res = await fetch('https://learnai-proxy.augustgadedk.workers.dev', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 400,
+          messages: [{ role: 'user', content: coachPrompt }]
+        })
+      });
+      const data = await res.json();
+      const reply = data.content?.[0]?.text || 'Beklager — jeg kunne ikke svare lige nu.';
       removeTyping();
       appendMsg('bot', reply);
     } catch (err) {
