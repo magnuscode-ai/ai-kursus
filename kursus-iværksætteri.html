@@ -589,12 +589,229 @@
       .mod-body { padding: 18px 18px 22px; }
       .cta { padding: 28px 20px; }
     }
+
+    /* ══════════════════════════════════════════
+       3-COLUMN LAYOUT + SIDEBARS (iværksætteri)
+    ══════════════════════════════════════════ */
+    .layout-3col{display:flex;align-items:flex-start;max-width:1480px;margin:0 auto;}
+    .layout-main{flex:1;min-width:0;overflow:hidden;}
+
+    .sidebar{
+      flex-shrink:0;position:sticky;top:72px;
+      height:calc(100vh - 80px);overflow-y:auto;overflow-x:hidden;
+      scrollbar-width:thin;scrollbar-color:rgba(196,30,58,.3) transparent;
+    }
+    .sidebar::-webkit-scrollbar{width:3px;}
+    .sidebar::-webkit-scrollbar-thumb{background:rgba(196,30,58,.35);border-radius:999px;}
+    .sidebar-left{width:258px;padding:18px 14px 60px;}
+    .sidebar-right{width:232px;padding:18px 14px 60px;}
+    .sb-inner{display:flex;flex-direction:column;}
+
+    .sb-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:0 2px 12px;border-bottom:1px solid var(--border);margin-bottom:14px;
+    }
+    .sb-head-label{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);}
+    .sb-close-btn{
+      display:none;background:none;border:none;padding:5px;cursor:pointer;
+      color:var(--muted);border-radius:6px;line-height:0;transition:all .15s;
+    }
+    .sb-close-btn:hover{background:var(--primary-soft);color:var(--primary-hot);}
+    .sb-close-btn svg{display:block;}
+
+    .sb-progress-wrap{
+      padding:11px 12px;margin-bottom:14px;
+      background:linear-gradient(135deg,rgba(196,30,58,.08),rgba(212,175,55,.05));
+      border:1px solid rgba(196,30,58,.18);border-radius:var(--r-sm);
+    }
+    .sb-progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;}
+    .sb-progress-label{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+    .sb-progress-pct{font-size:12px;font-weight:800;color:var(--primary-hot);}
+    .sb-progress-bar{height:5px;background:rgba(196,30,58,.14);border-radius:999px;overflow:hidden;}
+    .sb-progress-fill{
+      height:100%;border-radius:999px;width:0%;
+      background:linear-gradient(90deg,var(--primary),var(--gold));
+      transition:width .6s cubic-bezier(.16,1,.3,1);
+    }
+    .sb-divider{height:1px;background:var(--border);margin:12px 2px;}
+
+    .sb-journey-item{
+      display:flex;align-items:center;gap:9px;
+      padding:8px;border-radius:var(--r-sm);
+      cursor:default;transition:background .15s;margin-bottom:2px;
+      text-decoration:none;color:inherit;
+    }
+    .sb-journey-item.sb-available,.sb-journey-item.sb-done{cursor:pointer;}
+    .sb-journey-item.sb-available:hover,.sb-journey-item.sb-done:hover{background:rgba(196,30,58,.08);}
+    .sb-ji-icon{
+      width:25px;height:25px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;
+      font-size:12px;background:#2a0a10;color:var(--muted);transition:all .2s;
+    }
+    .sb-journey-item.sb-done .sb-ji-icon{background:var(--green-50);color:#34d399;}
+    .sb-journey-item.sb-current .sb-ji-icon{background:linear-gradient(135deg,var(--primary),var(--primary-hot));color:#fff;position:relative;}
+    .sb-journey-item.sb-current .sb-ji-icon::after{
+      content:'';width:8px;height:8px;border-radius:50%;background:#fff;position:absolute;
+      animation:sbjipulse 2s ease-in-out infinite;
+    }
+    @keyframes sbjipulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4);}50%{box-shadow:0 0 0 4px rgba(255,255,255,0);}}
+    .sb-journey-item.sb-available .sb-ji-icon{background:rgba(212,175,55,.12);color:var(--gold);}
+    .sb-ji-content{flex:1;min-width:0;}
+    .sb-ji-label{
+      font-size:12.5px;font-weight:600;color:var(--muted);line-height:1.3;
+      white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s;
+    }
+    .sb-journey-item.sb-done .sb-ji-label{color:var(--ink-soft);}
+    .sb-journey-item.sb-current .sb-ji-label{color:var(--primary-hot);font-weight:700;}
+    .sb-journey-item.sb-available .sb-ji-label{color:var(--gold);font-weight:600;}
+    .sb-ji-sub{font-size:10.5px;color:#7c4050;margin-top:1px;}
+    .sb-ji-badge{
+      flex-shrink:0;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;
+      background:var(--green-50);color:#34d399;opacity:0;transition:opacity .3s;
+    }
+    .sb-journey-item.sb-done .sb-ji-badge{opacity:1;}
+    .sb-journey-item.sb-done .sb-ji-badge::before{content:'✓';}
+
+    .sb-modules{margin:3px 0 4px 17px;padding-left:12px;border-left:2px solid rgba(196,30,58,.2);}
+    .sb-connector-line{width:2px;height:6px;background:rgba(196,30,58,.2);margin:0 0 2px 17px;}
+    .sb-mod{
+      display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:var(--r-sm);
+      font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;cursor:pointer;
+      transition:all .15s;margin-bottom:1px;
+    }
+    .sb-mod:hover{background:rgba(196,30,58,.08);color:var(--ink-soft);}
+    .sb-mod.active{background:rgba(196,30,58,.12);color:var(--primary-hot);font-weight:700;}
+    .sb-mod.sb-mod-done{color:var(--ink-soft);}
+    .sb-mod-dot{width:7px;height:7px;border-radius:50%;background:#5c1820;flex-shrink:0;transition:all .25s;}
+    .sb-mod.active .sb-mod-dot{background:var(--primary-hot);box-shadow:0 0 0 2px rgba(196,30,58,.25);}
+    .sb-mod.sb-mod-done .sb-mod-dot{background:var(--green);}
+    .sb-mod-text{line-height:1.3;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+    .sb-tools-intro{font-size:11.5px;color:var(--muted);margin:0 0 11px;line-height:1.5;padding:0 2px;}
+    .sb-tools-list{display:flex;flex-direction:column;gap:6px;}
+    .sb-tool-card{
+      display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--border);
+      border-radius:var(--r-sm);background:var(--bg-card);text-decoration:none;color:inherit;transition:all .2s;
+    }
+    .sb-tool-card:hover{border-color:var(--border2);box-shadow:0 4px 16px rgba(0,0,0,.4);transform:translateX(2px);}
+    .sb-tool-ico{
+      width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;
+      font-weight:800;color:#fff;flex-shrink:0;font-style:normal;line-height:1;
+    }
+    .sb-tool-info{flex:1;min-width:0;}
+    .sb-tool-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.2;}
+    .sb-tool-by{font-size:10px;color:var(--muted);}
+    .sb-tool-ext{font-size:13px;color:#7c4050;flex-shrink:0;transition:all .2s;line-height:1;}
+    .sb-tool-card:hover .sb-tool-ext{color:var(--gold);transform:translate(2px,-2px);}
+
+    .sb-tip-box{
+      padding:13px;background:linear-gradient(135deg,rgba(196,30,58,.06),rgba(212,175,55,.05));
+      border:1px solid rgba(196,30,58,.18);border-radius:var(--r-sm);
+    }
+    .sb-tip-tag{display:block;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:11px;}
+    .sb-techniques{display:flex;flex-direction:column;gap:9px;}
+    .sb-tech-item{display:flex;align-items:flex-start;gap:8px;}
+    .sb-tech-num{
+      font-size:9px;font-weight:900;letter-spacing:.06em;color:#fff;
+      background:linear-gradient(135deg,var(--primary),var(--primary-hot));
+      border-radius:5px;padding:2px 5px;flex-shrink:0;margin-top:2px;line-height:1.5;
+    }
+    .sb-tech-name{font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.3;}
+    .sb-tech-ex{font-size:10.5px;color:var(--muted);font-style:italic;margin-top:1px;line-height:1.3;}
+
+    .sb-mob-toggle{
+      display:none;position:fixed;bottom:22px;left:16px;z-index:1100;
+      align-items:center;gap:8px;padding:11px 20px;
+      background:linear-gradient(135deg,var(--primary),var(--primary-hot));
+      color:#fff;border:none;border-radius:999px;
+      font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;
+      box-shadow:0 6px 24px rgba(196,30,58,.5);transition:all .2s;
+    }
+    .sb-mob-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(196,30,58,.6);}
+    .sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1050;backdrop-filter:blur(3px);}
+    .sb-overlay.show{display:block;}
+
+    @media(max-width:1280px){.sidebar-right{display:none;}}
+    @media(max-width:980px){
+      .layout-3col{display:block;}
+      .sidebar-left{
+        position:fixed;top:0;left:0;height:100vh;width:284px;z-index:1060;
+        transform:translateX(-102%);transition:transform .3s cubic-bezier(.16,1,.3,1);
+        background:var(--bg-soft);border-right:1px solid var(--border);
+        box-shadow:8px 0 40px rgba(0,0,0,.5);padding:18px 14px 60px;
+      }
+      .sidebar-left.sb-open{transform:translateX(0);}
+      .sb-close-btn{display:flex;}
+      .sb-mob-toggle{display:flex;}
+    }
+    @media(max-width:480px){.sidebar-left{width:100vw;border-right:none;}}
+
+
+    /* ══════════ AUTH / COIN-GATE ══════════ */
+    .gate-overlay{position:fixed;inset:0;z-index:3000;display:flex;align-items:center;justify-content:center;background:var(--bg-deep);padding:24px;}
+    #authLoading{flex-direction:column;color:var(--muted);font-size:14px;}
+    .gate-spinner{width:42px;height:42px;border:3px solid var(--border2);border-top-color:var(--primary);border-radius:50%;animation:gspin .8s linear infinite;margin-bottom:16px;}
+    @keyframes gspin{to{transform:rotate(360deg);}}
+    .gate-card{
+      max-width:430px;width:100%;text-align:center;
+      background:linear-gradient(160deg,var(--bg-card),var(--bg-card2));
+      border:1px solid var(--border2);border-radius:var(--r-xl);padding:40px 34px;
+      box-shadow:0 30px 80px rgba(0,0,0,.6),0 0 60px var(--primary-glow);
+      animation:gateIn .5s cubic-bezier(.16,1,.3,1);
+    }
+    @keyframes gateIn{from{opacity:0;transform:translateY(20px) scale(.96);}to{opacity:1;transform:none;}}
+    .gate-icon{font-size:44px;margin-bottom:10px;line-height:1;}
+    .gate-tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);background:rgba(212,175,55,.1);border:1px solid rgba(212,175,55,.25);padding:4px 13px;border-radius:999px;margin-bottom:15px;}
+    .gate-card h2{font-size:26px;font-weight:800;color:var(--ink);margin-bottom:11px;line-height:1.2;}
+    .gate-desc{font-size:13.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:24px;}
+    .gate-price{display:flex;align-items:baseline;justify-content:center;gap:8px;margin-bottom:7px;}
+    .gate-price-coins{font-size:36px;font-weight:800;color:var(--gold);line-height:1;}
+    .gate-price-label{font-size:14px;color:var(--muted);}
+    .gate-balance{font-size:13px;color:var(--muted);margin-bottom:22px;}
+    .gate-balance strong{color:var(--ink);font-weight:700;}
+    .gate-unlock-btn{
+      width:100%;padding:15px;border:none;border-radius:var(--r);
+      background:linear-gradient(135deg,var(--primary),var(--primary-hot));
+      color:#fff;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;
+      transition:all .2s;box-shadow:0 8px 24px var(--primary-glow);
+    }
+    .gate-unlock-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px var(--primary-glow);}
+    .gate-unlock-btn:disabled{opacity:.45;cursor:not-allowed;}
+    .gate-insufficient{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-top:15px;padding:12px 14px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.22);border-radius:var(--r-sm);}
+    .gate-insufficient strong{color:#fca5a5;font-weight:700;}
+    .gate-back{display:inline-block;margin-top:20px;font-size:12.5px;color:var(--muted);text-decoration:none;transition:color .2s;}
+    .gate-back:hover{color:var(--gold);}
+
   </style>
 </head>
 <body>
 
+<!-- ════════ AUTH LOADING / COIN-GATE ════════ -->
+<div class="gate-overlay" id="authLoading">
+  <div class="gate-spinner"></div>
+  <p>Tjekker din adgang…</p>
+</div>
+
+<div class="gate-overlay" id="coinGate" style="display:none;">
+  <div class="gate-card">
+    <div class="gate-icon">🚀</div>
+    <span class="gate-tag">Sidekursus</span>
+    <h2>AI for Iværksættere</h2>
+    <p class="gate-desc">Lær AI som din digitale medstifter — idégenerering, markedsføring og automatisering. Lås op én gang, behold adgangen for altid.</p>
+    <div class="gate-price">
+      <span class="gate-price-coins">🪙 150</span>
+      <span class="gate-price-label">coins</span>
+    </div>
+    <div class="gate-balance" id="gateBalance">Du har <strong>0</strong> coins</div>
+    <button class="gate-unlock-btn" id="gateUnlockBtn">🔓 Lås op for 150 coins</button>
+    <div class="gate-insufficient" id="gateInsufficient" style="display:none;">
+      Du mangler <strong id="gateMissing">0</strong> coins. Optjen flere ved at gennemføre kurser og bestå eksamener.
+    </div>
+    <a class="gate-back" href="platform.html">← Tilbage til platform</a>
+  </div>
+</div>
+
 <nav>
-  <a class="nav-logo" href="learnai_final.html">
+  <a class="nav-logo" href="platform.html">
     <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
     LearnAI
   </a>
@@ -612,6 +829,71 @@
     <div class="j-item"><div class="j-dot">🎓</div>Eksamen</div>
   </div>
 </div>
+
+<div class="layout-3col">
+
+<!-- ════════ LEFT SIDEBAR · Dit forløb ════════ -->
+<aside class="sidebar sidebar-left" id="sidebarLeft">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">📚 Dit forløb</span>
+      <button class="sb-close-btn" id="sbCloseBtn" aria-label="Luk">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+      </button>
+    </div>
+
+    <div class="sb-progress-wrap">
+      <div class="sb-progress-head">
+        <span class="sb-progress-label">Kursus fremskridt</span>
+        <span class="sb-progress-pct" id="sbProgressPct">0 %</span>
+      </div>
+      <div class="sb-progress-bar"><div class="sb-progress-fill" id="sbProgressFill"></div></div>
+    </div>
+
+    <!-- Nuværende kursus -->
+    <div class="sb-journey-item sb-current">
+      <div class="sb-ji-icon">🚀</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">AI for Iværksættere</div>
+        <div class="sb-ji-sub">Du er her nu</div>
+      </div>
+    </div>
+
+    <!-- Modul-undernavigation -->
+    <div class="sb-modules" id="sbModules">
+      <a class="sb-mod active" data-mod="1" href="#"><span class="sb-mod-dot" id="sbDot1"></span><span class="sb-mod-text">Modul 1 · Idégenerering</span></a>
+      <a class="sb-mod" data-mod="2" href="#"><span class="sb-mod-dot" id="sbDot2"></span><span class="sb-mod-text">Modul 2 · Kundeanskaffelse</span></a>
+      <a class="sb-mod" data-mod="3" href="#"><span class="sb-mod-dot" id="sbDot3"></span><span class="sb-mod-text">Modul 3 · Drift &amp; workflows</span></a>
+    </div>
+
+    <div class="sb-connector-line"></div>
+
+    <!-- Eksamen -->
+    <div class="sb-journey-item sb-locked" id="sbEksamen" data-href="https://magnuscode-ai.github.io/ai-kursus/eksamen-iv%C3%A6rks%C3%A6tteri.html">
+      <div class="sb-ji-icon">🎓</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Eksamen</div>
+        <div class="sb-ji-sub">Test din viden</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+    <!-- Bevis -->
+    <div class="sb-journey-item sb-locked" id="sbBevis">
+      <div class="sb-ji-icon">🏆</div>
+      <div class="sb-ji-content">
+        <div class="sb-ji-label">Kursusbevis</div>
+        <div class="sb-ji-sub">+ coins &amp; badge</div>
+      </div>
+      <div class="sb-ji-badge"></div>
+    </div>
+
+  </div>
+</aside>
+
+<!-- ════════ MAIN COLUMN ════════ -->
+<div class="layout-main">
 
 <div class="hero">
   <div class="hero-grid"></div>
@@ -903,6 +1185,77 @@
   </div>
 
 </div>
+</div><!-- /layout-main -->
+
+<!-- ════════ RIGHT SIDEBAR · AI Redskaber ════════ -->
+<aside class="sidebar sidebar-right" id="sidebarRight">
+  <div class="sb-inner">
+
+    <div class="sb-head">
+      <span class="sb-head-label">🤖 AI Redskaber</span>
+    </div>
+
+    <p class="sb-tools-intro">Åbn i ny fane og afprøv promptene direkte mens du lærer</p>
+
+    <div class="sb-tools-list">
+      <a class="sb-tool-card" href="https://claude.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#c2410c,#ea580c)">C</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Claude</div><div class="sb-tool-by">Anthropic</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#059669,#34D399)">G</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">ChatGPT</div><div class="sb-tool-by">OpenAI</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://gemini.google.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1a73e8,#4285f4);font-size:10px">Gm</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Gemini</div><div class="sb-tool-by">Google</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#0078d4,#50B0F1);font-size:10px">Co</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Copilot</div><div class="sb-tool-by">Microsoft</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+      <a class="sb-tool-card" href="https://www.perplexity.ai" target="_blank" rel="noopener">
+        <span class="sb-tool-ico" style="background:linear-gradient(135deg,#1C1C2E,#20B2AA);font-size:10px">Px</span>
+        <div class="sb-tool-info"><div class="sb-tool-name">Perplexity</div><div class="sb-tool-by">AI-søgning</div></div>
+        <span class="sb-tool-ext">↗</span>
+      </a>
+    </div>
+
+    <div class="sb-divider"></div>
+
+    <div class="sb-tip-box">
+      <span class="sb-tip-tag">💡 Iværksætter-genvej</span>
+      <div class="sb-techniques">
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">01</span>
+          <div><div class="sb-tech-name">AI-Medstifter</div><div class="sb-tech-ex">"Du er en kritisk investor…"</div></div>
+        </div>
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">02</span>
+          <div><div class="sb-tech-name">Djævlens advokat</div><div class="sb-tech-ex">"Vær hudløst ærlig…"</div></div>
+        </div>
+        <div class="sb-tech-item">
+          <span class="sb-tech-num">03</span>
+          <div><div class="sb-tech-name">Tone of Voice</div><div class="sb-tech-ex">"Match min stil og humor"</div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</aside>
+
+</div><!-- /layout-3col -->
+
+<!-- Mobil-knap til forløbs-sidebar -->
+<button class="sb-mob-toggle" id="sbMobToggle">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  Dit forløb
+</button>
+<div class="sb-overlay" id="sbOverlay"></div>
 
 <!-- TOAST -->
 <div id="toast">
@@ -963,6 +1316,7 @@
 
   function markDone(id) {
     modDone[id] = true;
+    if (window._saveProgress) window._saveProgress(id);
     const el = document.getElementById(id);
     el.classList.add('done'); el.classList.remove('open');
     const currentIndex = modIds.indexOf(id);
@@ -1003,9 +1357,209 @@
         else { step.textContent = i + 1; }
       }
     });
+    if (typeof syncSidebar === 'function') syncSidebar();
   }
 
+  /* ═══════ SIDEBAR SYSTEM (iværksætteri) ═══════ */
+  (function () {
+    var sbLeft = document.getElementById('sidebarLeft');
+    var sbOverlay = document.getElementById('sbOverlay');
+    var sbMobBtn = document.getElementById('sbMobToggle');
+    var sbCloseBtn = document.getElementById('sbCloseBtn');
+
+    function openSb() { if (sbLeft) sbLeft.classList.add('sb-open'); if (sbOverlay) sbOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
+    function closeSb() { if (sbLeft) sbLeft.classList.remove('sb-open'); if (sbOverlay) sbOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+    if (sbMobBtn) sbMobBtn.addEventListener('click', openSb);
+    if (sbCloseBtn) sbCloseBtn.addEventListener('click', closeSb);
+    if (sbOverlay) sbOverlay.addEventListener('click', closeSb);
+
+    // Modul-navigation: scroll til modul (og åbn hvis ikke låst)
+    document.querySelectorAll('.sb-mod[data-mod]').forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        var el = document.getElementById('m' + link.dataset.mod);
+        if (el) {
+          if (el.classList.contains('locked')) {
+            showToast('🔒 Dette modul er låst. Gennemfør det forrige modul først!');
+          } else {
+            if (!el.classList.contains('open')) {
+              document.querySelectorAll('.mod').forEach(function (m) { m.classList.remove('open'); });
+              el.classList.add('open');
+              updateProgressVisuals();
+            }
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+        closeSb();
+      });
+    });
+
+    // Eksamen-genvej i sidebar
+    var examItem = document.getElementById('sbEksamen');
+    if (examItem) {
+      examItem.addEventListener('click', function () {
+        if (this.classList.contains('sb-locked')) {
+          showToast('🔒 Gennemfør alle tre moduler for at låse eksamen op');
+          return;
+        }
+        if (this.dataset.href) window.location.href = this.dataset.href;
+      });
+    }
+
+    // Scroll-spy: fremhæv aktivt modul i sidebar
+    if ('IntersectionObserver' in window) {
+      var spyObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            var idx = en.target.id.replace('m', '');
+            document.querySelectorAll('.sb-mod').forEach(function (l) { l.classList.remove('active'); });
+            var a = document.querySelector('.sb-mod[data-mod="' + idx + '"]');
+            if (a) a.classList.add('active');
+          }
+        });
+      }, { threshold: 0.3, rootMargin: '-90px 0px -45% 0px' });
+      ['m1', 'm2', 'm3'].forEach(function (id) { var el = document.getElementById(id); if (el) spyObs.observe(el); });
+    }
+  })();
+
+  /* Synk sidebar-fremskridt + lås op for eksamen (kaldes fra updateProgressVisuals) */
+  function syncSidebar() {
+    var doneCount = Object.values(modDone).filter(Boolean).length;
+    var pct = Math.round((doneCount / modIds.length) * 100);
+    var fill = document.getElementById('sbProgressFill');
+    var pctEl = document.getElementById('sbProgressPct');
+    if (fill) fill.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + ' %';
+
+    modIds.forEach(function (id, i) {
+      var link = document.querySelector('.sb-mod[data-mod="' + (i + 1) + '"]');
+      if (link) link.classList.toggle('sb-mod-done', !!modDone[id]);
+    });
+
+    var exam = document.getElementById('sbEksamen');
+    var bevis = document.getElementById('sbBevis');
+    if (doneCount === modIds.length) {
+      if (exam) { exam.classList.remove('sb-locked'); exam.classList.add('sb-available'); }
+      if (bevis) { bevis.classList.remove('sb-locked'); bevis.classList.add('sb-available'); }
+    }
+  }
+
+  /* ── Genskab gemt fremskridt fra Firestore (kaldes af modul-scriptet) ── */
+  window._applyProgress = function (saved) {
+    saved.forEach(function (id) {
+      if (Object.prototype.hasOwnProperty.call(modDone, id)) {
+        modDone[id] = true;
+        var el = document.getElementById(id);
+        if (el) { el.classList.add('done'); el.classList.remove('open', 'locked', 'unlocked-next'); }
+      }
+    });
+    var doneCount = Object.values(modDone).filter(Boolean).length;
+    var firstOpenId = null;
+    for (var i = 0; i < modIds.length; i++) {
+      var mid = modIds[i];
+      var mel = document.getElementById(mid);
+      if (!mel || modDone[mid]) continue;
+      mel.classList.remove('locked');
+      mel.classList.add('unlocked-next', 'open');
+      firstOpenId = mid;
+      break;
+    }
+    if (doneCount === modIds.length) {
+      var lbl = document.getElementById('exam-label'); if (lbl) lbl.style.display = 'block';
+      var card = document.getElementById('exam-card'); if (card) card.style.display = 'block';
+    }
+    updateProgressVisuals();
+    setTimeout(function () {
+      var target = firstOpenId ? document.getElementById(firstOpenId)
+        : (doneCount === modIds.length ? document.getElementById('exam-card') : null);
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 350);
+  };
+
   updateProgressVisuals();
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, increment } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = { apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA", authDomain:"learnai-dk.firebaseapp.com", projectId:"learnai-dk", storageBucket:"learnai-dk.firebasestorage.app", messagingSenderId:"3073076360", appId:"1:3073076360:web:b853d118e943395de4833d" };
+initializeApp(firebaseConfig);
+const auth = getAuth();
+const db = getFirestore();
+
+const COURSE_ID = "ivaerksaetteri";
+const PRICE = 150;
+let _user = null;
+
+onAuthStateChanged(auth, async (u) => {
+  if (!u) { window.location.href = "platform.html"; return; }
+  _user = u;
+  try {
+    const ref = doc(db, "users", u.uid);
+    const snap = await getDoc(ref);
+    const d = snap.exists() ? snap.data() : {};
+    const unlocked = (d.unlockedSideCourses || []).includes(COURSE_ID);
+    if (unlocked) { grantAccess(d); }
+    else { showGate(d.coins || 0); }
+  } catch (e) {
+    console.error("Iværksætteri load:", e);
+    window.location.href = "platform.html";
+  }
+});
+
+function grantAccess(d) {
+  const load = document.getElementById("authLoading"); if (load) load.style.display = "none";
+  const gate = document.getElementById("coinGate"); if (gate) gate.style.display = "none";
+  document.body.style.overflow = "";
+  const saved = d.ivaerksaetteriProgress || [];
+  if (saved.length && typeof window._applyProgress === "function") window._applyProgress(saved);
+}
+
+function showGate(coins) {
+  const load = document.getElementById("authLoading"); if (load) load.style.display = "none";
+  const gate = document.getElementById("coinGate");
+  gate.style.display = "flex";
+  document.body.style.overflow = "hidden";
+  document.getElementById("gateBalance").innerHTML = "Du har <strong>" + coins + "</strong> coins";
+  const btn = document.getElementById("gateUnlockBtn");
+  const insuf = document.getElementById("gateInsufficient");
+  if (coins < PRICE) {
+    btn.disabled = true;
+    insuf.style.display = "block";
+    document.getElementById("gateMissing").textContent = (PRICE - coins);
+  } else {
+    btn.disabled = false;
+    insuf.style.display = "none";
+  }
+  btn.onclick = () => unlockCourse(coins);
+}
+
+async function unlockCourse(currentCoins) {
+  if (!_user || currentCoins < PRICE) return;
+  const btn = document.getElementById("gateUnlockBtn");
+  btn.disabled = true;
+  btn.textContent = "Låser op…";
+  try {
+    const ref = doc(db, "users", _user.uid);
+    await setDoc(ref, { coins: increment(-PRICE), unlockedSideCourses: arrayUnion(COURSE_ID) }, { merge: true });
+    const snap = await getDoc(ref);
+    grantAccess(snap.exists() ? snap.data() : {});
+  } catch (e) {
+    console.error("Unlock error:", e);
+    btn.disabled = false;
+    btn.textContent = "🔓 Lås op for " + PRICE + " coins";
+    if (typeof showToast === "function") showToast("Noget gik galt — prøv igen om lidt");
+  }
+}
+
+/* Gem et gennemført modul i Firestore — kaldes fra markDone() */
+window._saveProgress = async (modId) => {
+  if (!_user) return;
+  try { await updateDoc(doc(db, "users", _user.uid), { ivaerksaetteriProgress: arrayUnion(modId) }); }
+  catch (e) { console.error("Save progress:", e); }
+};
 </script>
 
 </body>
