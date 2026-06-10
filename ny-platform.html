@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LearnAI — Lær AI at kende</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F0E7; --bg-deep:#ECE7DA; --surface:#FCFAF3; --white:#FFFFFF;
+    --ink:#232A22; --muted:#6F7363; --line:#E6E1D2;
+    --car:#B9772B; --car-deep:#925C1E; --car-soft:#E6C79A;   /* brand karamel */
+    --forest:#2F5D45; --forest-deep:#214636;                 /* anker skovgrøn */
+    --gold:#E0B33D;                                          /* belønnings-guld */
+    --d:#3E7A56; --c:#B9772B; --b:#C79433; --a:#3C5A78;      /* niveauer */
+    --r:12px; --r-lg:18px; --r-xl:24px;
+    --t:.2s ease; --tf:.15s ease;
+    --maxw:1120px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.6;font-size:15.5px;-webkit-font-smoothing:antialiased}
+  img,svg{display:block} a{text-decoration:none;color:inherit}
+  .wrap{max-width:var(--maxw);margin-inline:auto;padding-inline:24px}
+  h1,h2,h3{font-family:'Lora',serif;font-weight:600;color:var(--ink);line-height:1.18;letter-spacing:-.3px}
+  .eyebrow{font-family:'Outfit';font-weight:700;font-size:11.5px;letter-spacing:1.4px;text-transform:uppercase;color:var(--car-deep)}
+  .sec{padding-block:clamp(52px,7vw,90px)}
+  .sec-head{max-width:620px;margin:0 auto clamp(34px,5vw,52px);text-align:center}
+  .sec-head h2{font-size:clamp(24px,3.4vw,33px)}
+  .sec-head p{color:var(--muted);margin-top:10px;font-size:16px}
+
+  /* Knapper */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:'Outfit';font-weight:700;font-size:14px;border:none;border-radius:10px;padding:12px 24px;cursor:pointer;transition:transform var(--tf),background var(--tf),box-shadow var(--tf)}
+  .btn svg{width:17px;height:17px;pointer-events:none}
+  .btn--car{background:var(--car);color:#fff;box-shadow:0 4px 14px rgba(185,119,43,.22)}
+  .btn--car:hover{background:var(--car-deep);transform:translateY(-1px)}
+  .btn--ghost{background:transparent;color:var(--forest-deep);border:1.6px solid var(--car-soft)}
+  .btn--ghost:hover{background:var(--surface);border-color:var(--car)}
+  .btn--lg{padding:14px 28px;font-size:15px}
+  .btn--ongreen{background:var(--gold);color:#3a2a06}
+  .btn--ongreen:hover{background:#ecc257;transform:translateY(-1px)}
+
+  /* Nav */
+  .nav{position:sticky;top:0;z-index:50;height:60px;background:rgba(243,240,231,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .nav .wrap{height:100%;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:'Lora',serif;font-weight:600;font-size:19px;color:var(--ink)}
+  .logo svg{width:34px;height:34px}
+  .nav-r{display:flex;align-items:center;gap:10px}
+
+  /* Hero */
+  .hero{position:relative;text-align:center;padding-block:clamp(56px,8vw,104px);overflow:hidden}
+  .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:
+    radial-gradient(48% 42% at 50% -6%,rgba(185,119,43,.16),transparent 70%),
+    radial-gradient(40% 40% at 82% 22%,rgba(47,93,69,.10),transparent 70%);}
+  .hero::after{content:"";position:absolute;inset:0;z-index:-1;opacity:.4;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px;-webkit-mask-image:radial-gradient(60% 55% at 50% 30%,#000,transparent 78%);mask-image:radial-gradient(60% 55% at 50% 30%,#000,transparent 78%)}
+  .hero h1{font-size:clamp(31px,5.4vw,52px);max-width:15ch;margin:14px auto 0}
+  .hero p.sub{color:var(--muted);font-size:clamp(16px,1.9vw,18.5px);max-width:56ch;margin:18px auto 26px}
+  .hero-cta{display:flex;gap:13px;justify-content:center;flex-wrap:wrap}
+  .journey{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:34px}
+  .jp{display:inline-flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);border-radius:50px;padding:6px 13px;font-size:12.5px;font-weight:600;color:var(--ink)}
+  .jp b{width:18px;height:18px;border-radius:50%;color:#fff;display:grid;place-items:center;font-size:10px;font-weight:800}
+  .jsep{color:var(--car-soft)}
+  .trust{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-top:26px;font-size:13.5px;color:var(--muted)}
+  .trust span{display:inline-flex;align-items:center;gap:7px}
+  .trust svg{width:16px;height:16px;color:var(--forest)}
+
+  /* Trin-kort */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .step{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:28px 24px;position:relative}
+  .step__n{position:absolute;top:20px;right:22px;font-family:'Lora';font-size:30px;color:var(--car-soft);font-weight:600}
+  .step__ic{width:48px;height:48px;border-radius:13px;background:rgba(47,93,69,.10);color:var(--forest);display:grid;place-items:center;margin-bottom:16px}
+  .step__ic svg{width:24px;height:24px}
+  .step h3{font-size:18px;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:14.5px}
+
+  /* Kursuskort */
+  #kurser{background:var(--bg-deep)}
+  .courses{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .cc{position:relative;background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 20px 18px;overflow:hidden;display:flex;flex-direction:column;gap:11px;transition:transform var(--t),box-shadow var(--t)}
+  .cc:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(35,42,34,.08)}
+  .cc::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;background:var(--lvl)}
+  .cc.is-soon{opacity:.82}
+  .cc.is-next{border:2px solid var(--car);box-shadow:0 10px 30px rgba(185,119,43,.12)}
+  .cc__ribbon{position:absolute;top:14px;right:-30px;transform:rotate(45deg);background:var(--car);color:#fff;font-size:10px;font-weight:800;letter-spacing:.5px;padding:4px 34px;text-transform:uppercase}
+  .cc__top{display:flex;align-items:center;gap:10px}
+  .cc__mark{width:38px;height:38px;border-radius:50%;color:#fff;display:grid;place-items:center;font-family:'Outfit';font-weight:800;font-size:16px;flex:none}
+  .cc__tag{font-size:10px;font-weight:800;letter-spacing:.6px;padding:3px 10px;border-radius:50px;text-transform:uppercase}
+  .cc__lvl{font-size:11.5px;color:var(--muted);font-weight:600}
+  .cc__name{font-family:'Lora';font-weight:600;font-size:18px;line-height:1.1}
+  .cc__desc{font-size:13px;color:var(--muted);flex:1}
+  .cc__why{font-size:12.5px;color:var(--forest-deep);background:rgba(47,93,69,.07);border-radius:8px;padding:8px 10px;line-height:1.45}
+  .cc__price{font-family:'Outfit';font-weight:800;font-size:21px}
+  .pill-soon{font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:50px;background:#EAE6D9;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+  .mini{font-family:'Outfit';font-weight:700;font-size:12.5px;border:none;border-radius:8px;padding:8px 16px;color:#fff;cursor:pointer;transition:transform var(--tf)}
+  .mini:hover{transform:translateY(-1px)}
+  .reward{font-size:11.5px;color:var(--muted);display:inline-flex;align-items:center;gap:5px}
+  .reward b{color:var(--car-deep);font-weight:700}
+  /* Læs mere + stor iøjnefaldende start-knap */
+  .cc__actions{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding-top:6px}
+  .readmore{align-self:flex-start;background:none;border:none;cursor:pointer;font-family:'Outfit';font-weight:600;font-size:12.5px;color:var(--car-deep);display:inline-flex;align-items:center;gap:5px;padding:2px 0}
+  .readmore:hover{color:var(--car)}
+  .readmore svg{width:14px;height:14px}
+  .cc__cta{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .start-big{position:relative;overflow:hidden;width:100%;font-family:'Outfit';font-weight:800;font-size:15.5px;color:#fff;background:var(--car);border:none;border-radius:12px;padding:15px 18px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;box-shadow:0 8px 24px rgba(185,119,43,.34);transition:transform var(--tf),box-shadow var(--tf)}
+  .start-big:hover{transform:translateY(-2px);background:var(--car-deep);box-shadow:0 13px 30px rgba(185,119,43,.42)}
+  .start-big svg{width:18px;height:18px}
+  .start-big::after{content:"";position:absolute;top:0;left:-60%;width:38%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-18deg);animation:shimmer 3s ease-in-out infinite}
+  @keyframes shimmer{0%,55%{left:-60%}100%{left:135%}}
+  @media(prefers-reduced-motion:reduce){.start-big::after{display:none}}
+
+  /* Modal (Læs mere) */
+  .ov{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(35,42,34,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);opacity:0;pointer-events:none;transition:opacity var(--t)}
+  .ov.open{opacity:1;pointer-events:auto}
+  .modal{position:relative;background:var(--surface);border-radius:var(--r-xl);max-width:540px;width:100%;max-height:88vh;overflow-y:auto;box-shadow:0 24px 70px rgba(0,0,0,.32);transform:scale(.96);transition:transform var(--t)}
+  .ov.open .modal{transform:scale(1)}
+  .modal__bar{height:5px;background:var(--lvl)}
+  .modal__body{padding:26px 30px 30px}
+  .modal__x{position:absolute;top:13px;right:13px;width:34px;height:34px;border:none;background:rgba(0,0,0,.05);border-radius:9px;cursor:pointer;font-size:16px;color:var(--muted);display:grid;place-items:center;z-index:2}
+  .modal__x:hover{background:rgba(0,0,0,.1);color:var(--ink)}
+  .modal__top{display:flex;align-items:center;gap:13px;margin-bottom:4px}
+  .modal__mark{width:46px;height:46px;border-radius:50%;background:var(--lvl);color:#fff;display:grid;place-items:center;font-family:'Outfit';font-weight:800;font-size:19px;flex:none}
+  .modal__lvl{font-size:12px;color:var(--muted);font-weight:600}
+  .modal__name{font-family:'Lora';font-weight:600;font-size:23px}
+  .modal__tag{font-size:15px;color:var(--forest-deep);font-style:italic;margin:8px 0 4px}
+  .modal h4{font-family:'Outfit';font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.7px;color:var(--car-deep);margin:18px 0 9px}
+  .modal ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .modal li{display:flex;gap:9px;font-size:14.5px;color:var(--ink);line-height:1.45}
+  .modal li svg{width:18px;height:18px;color:var(--lvl);flex:none;margin-top:3px}
+  .modal__price{font-family:'Outfit';font-weight:800;font-size:25px;margin-top:22px}
+  .modal__foot{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}
+
+  /* Hvorfor */
+  .feat{display:grid;grid-template-columns:repeat(2,1fr);gap:22px;max-width:880px;margin-inline:auto}
+  .fitem{display:flex;gap:16px;align-items:flex-start}
+  .fitem__ic{width:46px;height:46px;border-radius:13px;flex:none;display:grid;place-items:center;background:rgba(185,119,43,.12);color:var(--car-deep)}
+  .fitem__ic svg{width:23px;height:23px}
+  .fitem h3{font-size:17px;margin-bottom:4px}
+  .fitem p{color:var(--muted);font-size:14.5px}
+
+  /* Beviser & badges */
+  .badges-row{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:42px}
+  .bdg{display:flex;flex-direction:column;align-items:center;gap:10px;width:140px;text-align:center}
+  .bdg__medal{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;font-family:'Outfit';font-weight:800;font-size:30px;position:relative;box-shadow:inset 0 -4px 10px rgba(0,0,0,.22),0 8px 20px rgba(0,0,0,.14);transition:transform var(--tf)}
+  .bdg:hover .bdg__medal{transform:translateY(-3px)}
+  .bdg__medal::after{content:"";position:absolute;inset:6px;border-radius:50%;border:2px solid rgba(255,255,255,.35)}
+  .bdg__metal{font-family:'Outfit';font-weight:700;font-size:14px;color:var(--ink)}
+  .bdg__lvl{font-size:12px;color:var(--muted)}
+  .m-bronze{background:radial-gradient(circle at 35% 28%,#e6a766,#CD7F32);color:#fff}
+  .m-silver{background:radial-gradient(circle at 35% 28%,#dfeaf5,#B0C8E0);color:#3a516b}
+  .m-gold{background:radial-gradient(circle at 35% 28%,#ffe9a3,#F0C040);color:#7a5a00}
+  .m-diamond{background:radial-gradient(circle at 35% 28%,#c9f2ff,#60D0F8);color:#0a4a63}
+
+  /* Certifikat-preview */
+  .cert{max-width:480px;margin:0 auto;background:var(--white);border:1px solid var(--line);border-radius:var(--r-lg);padding:32px 34px;text-align:center;position:relative;box-shadow:0 14px 40px rgba(35,42,34,.08)}
+  .cert::before{content:"";position:absolute;inset:10px;border:1.5px solid var(--car-soft);border-radius:11px;pointer-events:none}
+  .cert__k{position:relative;font-family:'Outfit';font-weight:700;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--car-deep)}
+  .cert__t{position:relative;font-family:'Lora';font-weight:600;font-size:21px;margin:4px 0 16px}
+  .cert__name{position:relative;font-family:'Lora';font-style:italic;font-size:26px;color:var(--forest-deep);border-bottom:1.5px solid var(--line);display:inline-block;padding:0 20px 6px;margin-bottom:14px}
+  .cert__meta{position:relative;font-size:13px;color:var(--muted)}
+  .cert__seal{position:relative;width:52px;height:52px;border-radius:50%;margin:18px auto 0;display:grid;place-items:center;background:radial-gradient(circle at 35% 28%,#ffe9a3,#F0C040);color:#7a5a00;font-size:22px;box-shadow:inset 0 -3px 8px rgba(0,0,0,.2)}
+
+  /* Bund-CTA (skovgrøn band) */
+  .cta-band{background:var(--forest);color:#fff;text-align:center}
+  .cta-band::selection{background:var(--gold)}
+  .cta-band h2{color:#fff;font-size:clamp(26px,3.6vw,36px)}
+  .cta-band p{color:#CFE0D6;margin:12px auto 24px;max-width:48ch;font-size:16.5px}
+  .cta-note{margin-top:16px;font-size:13px;color:#A9C4B5;display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+  .cta-note span{display:inline-flex;align-items:center;gap:6px}
+  .cta-note svg{width:15px;height:15px;color:var(--gold)}
+
+  /* Footer */
+  .footer{background:var(--bg);border-top:1px solid var(--line);padding-block:40px;font-size:14px}
+  .footer .wrap{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}
+  .footer .logo{font-size:17px}
+  .flinks{display:flex;gap:22px;flex-wrap:wrap}
+  .flinks a{color:var(--muted)} .flinks a:hover{color:var(--ink)}
+  .fbrand{color:var(--muted)}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(14px);transition:opacity var(--t),transform var(--t)}
+  .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none}*{transition:none!important;animation:none!important}}
+
+  @media(max-width:920px){.steps{grid-template-columns:1fr}.courses{grid-template-columns:1fr 1fr}.feat{grid-template-columns:1fr}}
+  @media(max-width:560px){.courses{grid-template-columns:1fr}.hero-cta .btn{width:100%}.trust{gap:10px 16px}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="#">
+      <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      LearnAI
+    </a>
+    <div class="nav-r">
+      <a class="btn btn--ghost" href="#">Log ind</a>
+      <a class="btn btn--car" href="#start">Opret konto</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow reveal">Danske AI-kurser · fra nybegynder til ekspert</div>
+    <h1 class="reveal">Lær AI at kende — og styr fremtiden i stedet for at den styrer dig.</h1>
+    <p class="sub reveal">AI-kurser på dansk for både dig der er helt ny, og dig der vil bruge AI professionelt i dit arbejde. Start gratis, lav rigtige øvelser, bestå eksamen — og få bevis, badge og coins.</p>
+    <div class="hero-cta reveal">
+      <a class="btn btn--car btn--lg" href="#start">Start gratis med Kursus D</a>
+      <a class="btn btn--ghost btn--lg" href="#kurser">Se kurserne</a>
+    </div>
+    <div class="journey reveal">
+      <span class="jp"><b style="background:var(--d)">D</b> Amatør</span>
+      <span class="jsep">→</span>
+      <span class="jp"><b style="background:var(--c)">C</b> Avanceret</span>
+      <span class="jsep">→</span>
+      <span class="jp"><b style="background:var(--b)">B</b> Professionel</span>
+      <span class="jsep">→</span>
+      <span class="jp"><b style="background:var(--a)">A</b> Ekspert</span>
+    </div>
+    <div class="trust reveal">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Gratis at starte</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Øvelser frem for læsning</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Bevis &amp; badge</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> I dit eget tempo</span>
+    </div>
+  </div>
+</header>
+
+<!-- SÅDAN VIRKER DET -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Sådan virker det</div>
+      <h2>Tre skridt fra nysgerrig til certificeret</h2>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step__n">1</div>
+        <div class="step__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.4"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><path d="M19 7v6M16 10h6"/></svg></div>
+        <h3>Opret en gratis konto</h3>
+        <p>Du får 50 velkomst-coins med det samme og fuld adgang til det gratis Kursus D.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step__n">2</div>
+        <div class="step__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-4 9 4-9 4-9-4z"/><path d="M7 11.5V16c0 1.4 2.2 2.5 5 2.5s5-1.1 5-2.5v-4.5"/><path d="M21 9.5V14"/></svg></div>
+        <h3>Tag kurser og bestå eksamen</h3>
+        <p>Lær gennem øvelser du selv prøver — ikke endeløs læsning. Hvert kursus slutter med en eksamen.</p>
+      </div>
+      <div class="step reveal">
+        <div class="step__n">3</div>
+        <div class="step__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M9 13.4L8 21l4-2 4 2-1-7.6"/></svg></div>
+        <h3>Få bevis, badge og coins</h3>
+        <p>Lås dit personlige bevis op — download det som PDF — plus et badge og coins til sidekurser.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KURSER -->
+<section class="sec" id="kurser">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Din læringssti</div>
+      <h2>Fire niveauer. Ét skridt ad gangen.</h2>
+      <p>Start gratis på niveau D og byg dig op i dit eget tempo — helt til ekspert.</p>
+    </div>
+    <div class="courses">
+
+      <!-- D -->
+      <article class="cc reveal" style="--lvl:var(--d)">
+        <div class="cc__top">
+          <div class="cc__mark" style="background:var(--d)">D</div>
+          <span class="cc__tag" style="background:rgba(62,122,86,.14);color:var(--d)">Gratis</span>
+        </div>
+        <div><div class="cc__lvl">Niveau D · Begynder</div><div class="cc__name">Amatør</div></div>
+        <p class="cc__desc">Grundlæggende AI og dine allerførste øvelser. Det perfekte sted at starte.</p>
+        <div class="cc__price" style="color:var(--d)">Gratis</div>
+        <div class="cc__actions">
+          <button class="readmore" onclick="openCourse('D')">Læs mere <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="start-big" onclick="location.href='#start'"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg> Start gratis</button>
+          <span class="reward" style="justify-content:center">🪙 <b>+100</b> coins efter eksamen</span>
+        </div>
+      </article>
+
+      <!-- C (fremhævet) -->
+      <article class="cc is-next reveal" style="--lvl:var(--c)">
+        <div class="cc__ribbon">Næste niveau</div>
+        <div class="cc__top">
+          <div class="cc__mark" style="background:var(--c)">C</div>
+          <span class="cc__tag" style="background:rgba(185,119,43,.16);color:var(--car-deep)">Earlybird</span>
+        </div>
+        <div><div class="cc__lvl">Niveau C · Øvet</div><div class="cc__name">Avanceret</div></div>
+        <p class="cc__desc">Brug AI professionelt: skarpe prompts, bedre e-mails, effektive møder og hurtig research. Tre moduler, eksamen og bevis.</p>
+        <div class="cc__why">Hvorfor pengene værd: du går fra at <em>kende</em> AI til at spare timer hver uge i dit arbejde.</div>
+        <div class="cc__price" style="color:var(--ink)">799 DKK</div>
+        <div class="cc__actions">
+          <button class="readmore" onclick="openCourse('C')">Læs mere <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <div class="cc__cta">
+            <span class="pill-soon">⏳ Kommer snart</span>
+            <span class="reward">🪙 <b>+150</b> coins</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- B -->
+      <article class="cc is-soon reveal" style="--lvl:var(--b)">
+        <div class="cc__top">
+          <div class="cc__mark" style="background:var(--b)">B</div>
+          <span class="cc__tag" style="background:rgba(199,148,51,.16);color:#8a6416">Populær</span>
+        </div>
+        <div><div class="cc__lvl">Niveau B · Avanceret</div><div class="cc__name">Professionel</div></div>
+        <p class="cc__desc">Neurale netværk og deep learning — for dig der vil længere ind i teknikken.</p>
+        <div class="cc__price" style="color:var(--ink)">1.499 DKK</div>
+        <div class="cc__actions">
+          <button class="readmore" onclick="openCourse('B')">Læs mere <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <span class="pill-soon">⏳ Kommer snart</span>
+        </div>
+      </article>
+
+      <!-- A -->
+      <article class="cc is-soon reveal" style="--lvl:var(--a)">
+        <div class="cc__top">
+          <div class="cc__mark" style="background:var(--a)">A</div>
+          <span class="cc__tag" style="background:rgba(60,90,120,.14);color:var(--a)">Ekspert</span>
+        </div>
+        <div><div class="cc__lvl">Niveau A · Ekspert</div><div class="cc__name">Ekspert</div></div>
+        <p class="cc__desc">AI-arkitektur og systemdesign. Bliv den der mestrer avancerede AI-systemer.</p>
+        <div class="cc__price" style="color:var(--ink)">4.599 DKK</div>
+        <div class="cc__actions">
+          <button class="readmore" onclick="openCourse('A')">Læs mere <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <span class="pill-soon">⏳ Kommer snart</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- BEVISER & BADGES -->
+<section class="sec" id="beviser">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Beviser &amp; badges</div>
+      <h2>Et bevis for hvert niveau du består</h2>
+      <p>Hver eksamen giver dig et personligt bevis med dit navn — som du kan downloade som PDF — plus et badge, der vises på din profil.</p>
+    </div>
+    <div class="badges-row reveal">
+      <div class="bdg"><div class="bdg__medal m-bronze">D</div><div class="bdg__metal">Bronze</div><div class="bdg__lvl">Bestå Niveau D</div></div>
+      <div class="bdg"><div class="bdg__medal m-silver">C</div><div class="bdg__metal">Sølv</div><div class="bdg__lvl">Bestå Niveau C</div></div>
+      <div class="bdg"><div class="bdg__medal m-gold">B</div><div class="bdg__metal">Guld</div><div class="bdg__lvl">Bestå Niveau B</div></div>
+      <div class="bdg"><div class="bdg__medal m-diamond">A</div><div class="bdg__metal">Diamant</div><div class="bdg__lvl">Bestå Niveau A</div></div>
+    </div>
+    <div class="cert reveal">
+      <div class="cert__k">Kursusbevis</div>
+      <div class="cert__t">LearnAI · Niveau D</div>
+      <div class="cert__name">Dit navn</div>
+      <div class="cert__meta">Har bestået Kursus D — Amatør · 2026</div>
+      <div class="cert__seal">★</div>
+    </div>
+  </div>
+</section>
+
+<!-- HVORFOR -->
+<section class="sec">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div class="eyebrow">Hvorfor LearnAI</div>
+      <h2>Lavet til at sidde fast</h2>
+    </div>
+    <div class="feat">
+      <div class="fitem reveal">
+        <div class="fitem__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18 16l.7 2 .3-2.3 2.3-.3-2-.7z"/></svg></div>
+        <div><h3>Øvelser, ikke kun læsning</h3><p>Du prøver tingene selv — træk-og-slip, mini-spil og live-feedback. Det sidder fast, fordi du gør det.</p></div>
+      </div>
+      <div class="fitem reveal">
+        <div class="fitem__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 3v5c0 4.5-3 7.6-7 9-4-1.4-7-4.5-7-9V6z"/><path d="M9 11.5l2 2 4-4.2"/></svg></div>
+        <div><h3>Beviser der tæller</h3><p>Efter hver eksamen får du et personligt bevis og et badge — og du kan downloade beviset som PDF.</p></div>
+      </div>
+      <div class="fitem reveal">
+        <div class="fitem__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></div>
+        <div><h3>I dit eget tempo</h3><p>Start gratis i dag og fortsæt når det passer dig. Dine fremskridt gemmes automatisk på din konto.</p></div>
+      </div>
+      <div class="fitem reveal">
+        <div class="fitem__ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 5h11l-2 3.5L16 12H5"/></svg></div>
+        <div><h3>Skabt på dansk</h3><p>Lavet til danske brugere — til både hverdagen og dit arbejde. Ingen klodset oversættelse.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BUND-CTA -->
+<section class="sec cta-band" id="start">
+  <div class="wrap">
+    <h2 class="reveal">Klar til at begynde?</h2>
+    <p class="reveal">Kursus D er helt gratis — og du får 50 velkomst-coins, så snart du opretter dig.</p>
+    <a class="btn btn--ongreen btn--lg reveal" href="#">Opret gratis konto</a>
+    <div class="cta-note reveal">
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Ingen betaling for at starte</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> 50 velkomst-coins</span>
+      <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Bevis efter eksamen</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="wrap">
+    <div>
+      <a class="logo" href="#">
+        <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+        LearnAI
+      </a>
+      <div class="fbrand" style="margin-top:8px">AI-kurser på dansk.</div>
+    </div>
+    <nav class="flinks">
+      <a href="#">Om</a><a href="#kurser">Kurser</a><a href="#">Kontakt</a><a href="#">Privatliv (GDPR)</a>
+    </nav>
+    <div class="fbrand">© 2026 LearnAI · learnai.dk</div>
+  </div>
+</footer>
+
+<!-- MODAL: Læs mere om kurset -->
+<div class="ov" id="ov" onclick="if(event.target===this)closeCourse()">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Om kurset">
+    <div class="modal__bar"></div>
+    <button class="modal__x" onclick="closeCourse()" aria-label="Luk">✕</button>
+    <div class="modal__body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+  const COURSES = {
+    D:{ lvl:'#3E7A56', label:'Niveau D · Begynder', name:'Amatør', price:'Gratis', free:true,
+        tagline:'Dit første møde med AI — helt uden forudsætninger.',
+        sections:[
+          {h:'Du lærer', items:[
+            'Hvad AI og sprogmodeller egentlig er — i et helt almindeligt sprog',
+            'Hvordan du taler med AI, så du får brugbare svar',
+            'Dine første prompts — og de typiske faldgruber du skal undgå',
+            'Små øvelser du prøver direkte undervejs']},
+          {h:'Du slutter med', items:[
+            'En kort eksamen → dit allerførste bevis',
+            'Et bronze-badge og 100 coins til sidekurser']}
+        ]},
+    C:{ lvl:'#B9772B', label:'Niveau C · Øvet', name:'Avanceret', price:'799 DKK', free:false,
+        tagline:'Brug AI professionelt — og spar timer hver uge.',
+        sections:[
+          {h:'Tre moduler', items:[
+            'C1 · Prompt-teknik — skriv prompts der rammer plet hver gang',
+            'C2 · Bedre skrivning — e-mails og tekster på minutter, ikke timer',
+            'C3 · Møder &amp; research — forbered møder og find svar lynhurtigt']},
+          {h:'Du slutter med', items:[
+            'Eksamen, personligt bevis og et sølv-badge',
+            '150 coins — og en skjult bonus, når du består']}
+        ],
+        why:'Du går fra at <em>kende</em> AI til at bruge det som et dagligt værktøj i dit arbejde.'},
+    B:{ lvl:'#C79433', label:'Niveau B · Avanceret', name:'Professionel', price:'1.499 DKK', free:false,
+        tagline:'Ind i teknikken bag moderne AI.',
+        sections:[
+          {h:'Du arbejder med', items:[
+            'Neurale netværk og hvordan de er bygget op',
+            'Deep learning — hvordan modeller faktisk lærer',
+            'Teknikken bag den AI du bruger til hverdag']}
+        ],
+        why:'For dig der vil længere end at <em>bruge</em> AI — og forstå det indefra.'},
+    A:{ lvl:'#3C5A78', label:'Niveau A · Ekspert', name:'Ekspert', price:'4.599 DKK', free:false,
+        tagline:'Mestre avancerede AI-systemer.',
+        sections:[
+          {h:'Du mestrer', items:[
+            'AI-arkitektur og systemdesign',
+            'At bygge og styre store AI-løsninger',
+            'Det øverste niveau på platformen']}
+        ],
+        why:'Bliv den ekspert, andre spørger til råds.'}
+  };
+
+  const CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>';
+
+  function openCourse(k){
+    const c=COURSES[k];
+    const modal=document.getElementById('modal');
+    modal.style.setProperty('--lvl', c.lvl);
+    let h=`<div class="modal__top"><div class="modal__mark">${k}</div><div><div class="modal__lvl">${c.label}</div><div class="modal__name">${c.name}</div></div></div>`;
+    h+=`<p class="modal__tag">${c.tagline}</p>`;
+    c.sections.forEach(s=>{ h+=`<h4>${s.h}</h4><ul>`+s.items.map(i=>`<li>${CHECK}<span>${i}</span></li>`).join('')+`</ul>`; });
+    if(c.why){ h+=`<div class="cc__why" style="margin-top:18px;font-size:13.5px">Hvorfor pengene værd: ${c.why}</div>`; }
+    h+=`<div class="modal__price" style="color:${c.free?c.lvl:'var(--ink)'}">${c.price}</div>`;
+    h+=`<div class="modal__foot">`+(c.free
+        ? `<button class="start-big" style="width:auto;padding:14px 28px" onclick="closeCourse();location.href='#start'">Start gratis</button>`
+        : `<span class="pill-soon">⏳ Kommer snart</span><span class="reward" style="margin-left:auto">Lås op senere på platformen</span>`)+`</div>`;
+    document.getElementById('modalBody').innerHTML=h;
+    document.getElementById('ov').classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeCourse(){
+    document.getElementById('ov').classList.remove('open');
+    document.body.style.overflow='';
+  }
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeCourse(); });
+
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  },{threshold:.12});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{ el.style.transitionDelay=(Math.min(i,6)*40)+'ms'; io.observe(el); });
+</script>
+</body>
+</html>
