@@ -622,10 +622,10 @@ const errMap = {
 };
 const msg = c => errMap[c] || ('Noget gik galt (' + c + ').');
 
-function alertBox(kind, html, resend){
+function alertBox(kind, html, actions){
   const a = $('authAlert');
   a.className = 'auth-alert show ' + (kind === 'ok' ? 'ok' : 'bad');
-  a.innerHTML = html + (resend ? '<br><button onclick="resendVerify()">Send bekræftelses-mail igen</button>' : '');
+  a.innerHTML = html + (actions ? '<br>' + actions : '');
 }
 function clearAlert(){ const a=$('authAlert'); a.className='auth-alert'; a.innerHTML=''; }
 function setErr(id,on){ $('f_'+id).classList.toggle('err',on); }
@@ -668,7 +668,16 @@ window.doSignup = async () => {
     await signOut(auth);
     switchAuth('login');
     alertBox('ok','Konto oprettet! Vi har sendt en bekræftelses-mail til <b>'+email+'</b>. Bekræft den (tjek evt. spam) og log derefter ind.');
-  }catch(e){ alertBox('bad', msg(e.code)); }
+  }catch(e){
+    if(e.code === 'auth/email-already-in-use'){
+      window._pendingEmail = email;
+      $('li_email').value = email;
+      alertBox('bad','Der findes allerede en konto med <b>'+email+'</b>. Har du glemt adgangskoden?',
+        '<button onclick="resetForPending()">Send nulstil-link</button> <button onclick="goLogin()" style="background:#6F7363">Gå til log ind</button>');
+    } else {
+      alertBox('bad', msg(e.code));
+    }
+  }
   finally{ busy('signupBtn',false,'Opret konto'); }
 };
 
@@ -684,7 +693,7 @@ window.doLogin = async () => {
     const cred = await signInWithEmailAndPassword(auth, email, pw);
     if(!cred.user.emailVerified){
       await signOut(auth);
-      alertBox('bad','Din e-mail er ikke bekræftet endnu. Tjek din indbakke (eller spam).', true);
+      alertBox('bad','Din e-mail er ikke bekræftet endnu. Tjek din indbakke (eller spam).', '<button onclick="resendVerify()">Send bekræftelses-mail igen</button>');
       return;
     }
     closeAuth();
@@ -697,6 +706,19 @@ window.doReset = async () => {
   if(!email||!email.includes('@')){ setErr('li_email',true); alertBox('bad','Skriv din e-mail i feltet, så sender vi et nulstil-link.'); return; }
   try{ await sendPasswordResetEmail(auth,email); alertBox('ok','Vi har sendt et link til at nulstille din adgangskode til '+email+'.'); }
   catch(e){ alertBox('bad', msg(e.code)); }
+};
+
+window.goLogin = () => switchAuth('login');
+
+window.resetForPending = async () => {
+  const email = window._pendingEmail || $('li_email').value.trim() || $('su_email').value.trim();
+  if(!email || !email.includes('@')){ alertBox('bad','Ingen e-mail at sende til.'); return; }
+  try{
+    await sendPasswordResetEmail(auth, email);
+    switchAuth('login');
+    $('li_email').value = email;
+    alertBox('ok','Vi har sendt et link til at nulstille adgangskoden til <b>'+email+'</b>. Følg linket, vælg en ny kode, og log derefter ind.');
+  }catch(e){ alertBox('bad', msg(e.code)); }
 };
 
 window.resendVerify = async () => {
