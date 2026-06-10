@@ -254,6 +254,39 @@
       .stepper{border-radius:var(--r);} .step-label{font-size:10px;}
       .kortl-head{padding:16px 18px;} .kortl-msgs{padding:16px 18px 10px;} .kortl-input{padding:0 18px 16px;}
     }
+    /* ── C+ PROFESSIONEL PLAN ── */
+    .cplus-sec { margin-bottom:26px; }
+    .cplus-sec-label { font-family:'Outfit',sans-serif; font-size:12px; font-weight:800; letter-spacing:.07em; text-transform:uppercase; color:var(--rose-deep); margin-bottom:13px; display:flex; align-items:center; gap:8px; }
+    .cplus-sec-intro { font-size:13px; color:var(--muted); margin:-6px 0 13px; line-height:1.55; }
+    .cplus-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:16px 18px; margin-bottom:10px; transition:box-shadow .15s; }
+    .cplus-card:hover { box-shadow:0 4px 16px rgba(0,0,0,.05); }
+    .cplus-when { display:flex; gap:13px; align-items:flex-start; }
+    .cplus-when-chip { flex-shrink:0; background:var(--rose-50); color:var(--rose-deep); font-weight:700; font-size:12.5px; padding:7px 13px; border-radius:999px; }
+    .cplus-when-txt { font-size:13.5px; color:var(--ink-soft); line-height:1.6; padding-top:4px; }
+    .cplus-imp-sted { font-weight:700; color:var(--ink); font-size:14.5px; margin-bottom:6px; }
+    .cplus-imp-how { font-size:13.5px; color:var(--ink-soft); line-height:1.65; margin-bottom:9px; }
+    .cplus-imp-gain { display:inline-flex; align-items:center; gap:5px; background:var(--green-50); color:var(--green); font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:999px; }
+    .cpe { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); padding:15px 16px; margin-bottom:12px; }
+    .cpe-head { display:flex; align-items:center; gap:9px; margin-bottom:9px; }
+    .cpe-title { font-weight:700; color:var(--ink); font-size:14px; }
+    .cpe-badge { font-size:10px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--rose-deep); background:var(--rose-50); padding:3px 9px; border-radius:999px; }
+    .cpe-ta { width:100%; min-height:96px; border:1px solid var(--border); border-radius:var(--r-sm); padding:11px 13px; font-family:'Outfit',sans-serif; font-size:13px; line-height:1.6; color:var(--ink); resize:vertical; box-sizing:border-box; background:#FCFCFD; transition:border-color .15s, box-shadow .15s; }
+    .cpe-ta:focus { outline:none; border-color:var(--rose); box-shadow:0 0 0 3px var(--rose-glow); background:var(--white); }
+    .cpe-hint { font-size:11.5px; color:var(--muted); margin:7px 0 11px; display:flex; align-items:center; gap:6px; }
+    .cpe-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .cpe-btn { display:inline-flex; align-items:center; gap:6px; font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:700; padding:9px 17px; border-radius:var(--r-sm); border:none; cursor:pointer; transition:all .15s; }
+    .cpe-btn svg { width:14px; height:14px; }
+    .cpe-btn.save { background:var(--rose); color:white; box-shadow:0 2px 8px var(--rose-glow); }
+    .cpe-btn.save:hover { filter:brightness(.94); }
+    .cpe-btn.save.done { background:var(--green); box-shadow:none; }
+    .cpe-btn.copy { background:#F3F4F6; color:var(--ink); }
+    .cpe-btn.copy:hover { background:#E5E7EB; }
+    .cplus-gate { text-align:center; background:var(--white); border:1.5px solid var(--rose-200); border-radius:var(--r-xl); padding:44px 28px; box-shadow:0 4px 24px var(--rose-glow); }
+    .cplus-gate-icon { font-size:40px; margin-bottom:14px; }
+    .cplus-gate h2 { font-family:'Lora',serif; font-size:21px; font-weight:600; color:var(--ink); margin:0 0 8px; }
+    .cplus-gate p { font-size:14px; color:var(--muted); line-height:1.6; margin:0 0 22px; }
+    .cplus-gate a { display:inline-flex; align-items:center; gap:8px; background:var(--rose); color:white; font-family:'Outfit',sans-serif; font-size:14px; font-weight:700; padding:12px 28px; border-radius:var(--r-sm); text-decoration:none; box-shadow:0 4px 14px var(--rose-glow); }
+    .cplus-banner { background:linear-gradient(135deg,var(--green-50),#F0FDF4); border:1px solid var(--green-100); border-radius:var(--r-lg); padding:13px 17px; margin-bottom:18px; display:flex; gap:11px; align-items:center; font-size:13.5px; color:var(--green); font-weight:600; }
   </style>
 </head>
 <body>
@@ -295,18 +328,28 @@
       <div class="step-num">2</div>
       <div class="step-label">Din AI-plan</div>
     </div>
-    <div class="step-item" id="st3">
-      <div class="step-num">3</div>
-      <div class="step-label">Øv de vigtigste</div>
+  </div>
+
+  <!-- ── LOADING: TJEKKER ADGANG ── -->
+  <div class="phase active" id="phase-loading">
+    <div class="plan-generating">
+      <div class="plan-spin"></div>
+      <div class="plan-spin-txt"><strong>Et øjeblik...</strong><br>Tjekker din adgang</div>
     </div>
-    <div class="step-item" id="st4">
-      <div class="step-num">4</div>
-      <div class="step-label">Din AI-dag</div>
+  </div>
+
+  <!-- ── GATE: KRÆVER LOGIN ── -->
+  <div class="phase" id="phase-gate">
+    <div class="cplus-gate">
+      <div class="cplus-gate-icon">🔒</div>
+      <h2>Log ind for at lave din AI-plan</h2>
+      <p>Din personlige AI-plan bliver gemt på din profil, så du kan vende tilbage til den når som helst. Log ind for at komme i gang.</p>
+      <a href="platform.html">Gå til login</a>
     </div>
   </div>
 
   <!-- ── FASE 1: KORTLÆGNING ── -->
-  <div class="phase active" id="phase1">
+  <div class="phase" id="phase1">
     <div class="kortl-card">
       <div class="kortl-head">
         <div class="kortl-head-icon">🗣️</div>
@@ -343,16 +386,6 @@
     <!-- Genereres dynamisk -->
   </div>
 
-  <!-- ── FASE 3: ØV DE VIGTIGSTE ── -->
-  <div class="phase" id="phase3">
-    <!-- Genereres dynamisk -->
-  </div>
-
-  <!-- ── FASE 4: DIN AI-DAG ── -->
-  <div class="phase" id="phase4">
-    <!-- Genereres dynamisk -->
-  </div>
-
 </div>
 
 <div id="toast">
@@ -361,19 +394,25 @@
 </div>
 
 <script>
-// ── STEPPER ──────────────────────────────────────────────────
-function setStep(n) {
-  for (let i = 1; i <= 4; i++) {
-    const s = document.getElementById('st' + i);
-    const p = document.getElementById('phase' + i);
-    s.classList.remove('active','done');
-    p.classList.remove('active');
-    if (i < n)      s.classList.add('done');
-    else if (i===n) { s.classList.add('active'); p.classList.add('active'); }
-    const numEl = s.querySelector('.step-num');
-    numEl.textContent = i < n ? '✓' : i;
-  }
+// ── SCENE-STYRING ────────────────────────────────────────────
+function showOnly(id) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
   window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+// ── STEPPER (2 trin) ─────────────────────────────────────────
+function setStep(n) {
+  for (let i = 1; i <= 2; i++) {
+    const s = document.getElementById('st' + i);
+    if (!s) continue;
+    s.classList.remove('active','done');
+    if (i < n)        s.classList.add('done');
+    else if (i === n) s.classList.add('active');
+    const numEl = s.querySelector('.step-num');
+    if (numEl) numEl.textContent = i < n ? '✓' : i;
+  }
 }
 
 // ── KORTLÆGNINGS-CHAT ────────────────────────────────────────
@@ -451,7 +490,6 @@ function kortlSend() {
       document.getElementById('kortl-ta').focus();
     }, 800 + Math.random() * 500);
   } else {
-    // Alle svar modtaget — tak og gå til fase 2
     kortlWaiting = true;
     document.getElementById('kortl-typing').classList.add('show');
     setTimeout(() => {
@@ -465,9 +503,9 @@ function kortlSend() {
   }
 }
 
-// ── STREAMING API ────────────────────────────────────────────
-async function streamAI(prompt, onChunk, maxTokens = 2000) {
-  const res = await fetch('https://api.anthropic.com/v1/messages', {
+// ── STREAMING API (via Cloudflare Worker) ────────────────────
+async function streamAI(prompt, onChunk, maxTokens = 2800) {
+  const res = await fetch('https://learnai-proxy.augustgadedk.workers.dev', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -510,35 +548,28 @@ async function streamAI(prompt, onChunk, maxTokens = 2000) {
   return full;
 }
 
-// Robust JSON-udtræk fra AI-svar
 function extractJSON(raw) {
-  // Fjern markdown-blokke
   let s = raw.replace(/```(?:json)?/gi, '').replace(/```/g, '').trim();
-  // Find første { og sidste }
   const start = s.indexOf('{');
   const end   = s.lastIndexOf('}');
   if (start === -1 || end === -1) throw new Error('Ingen JSON fundet i AI-svar');
   s = s.slice(start, end + 1);
-  // Prøv direkte parse
   try { return JSON.parse(s); } catch {}
-  // Prøv at reparere afskåret JSON ved at tilføje manglende lukkeparenteser
-  const opens  = (s.match(/\[/g) || []).length;
-  const closes = (s.match(/\]/g) || []).length;
+  const opens   = (s.match(/\[/g) || []).length;
+  const closes  = (s.match(/\]/g) || []).length;
   const bopens  = (s.match(/\{/g) || []).length;
   const bcloses = (s.match(/\}/g) || []).length;
-  // Fjern ufuldstændig sidst linje
   const lastComma = s.lastIndexOf('",');
-  if (lastComma > s.length - 60) {
-    s = s.slice(0, lastComma + 1);
-  }
+  if (lastComma > s.length - 60) s = s.slice(0, lastComma + 1);
   s += ']'.repeat(Math.max(0, opens - closes));
   s += '}'.repeat(Math.max(0, bopens - bcloses));
   return JSON.parse(s);
 }
 
-// ── FASE 2: GENERER PLAN ─────────────────────────────────────
+// ── GENERÉR PLAN (ÉT samlet API-kald) ────────────────────────
 async function generatePlan() {
   setStep(2);
+  showOnly('phase2');
 
   const phase2 = document.getElementById('phase2');
   phase2.innerHTML = `
@@ -557,32 +588,39 @@ async function generatePlan() {
     `Vil blive bedre til: ${kortlAnswers[3] || ''}\n` +
     `AI-erfaring: ${kortlAnswers[4] || ''}`;
 
-  // Kompakt prompt — få korte felter så JSON passer i tokens
-  const planPrompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
+  const planPrompt = `Du er en erfaren AI-konsulent der rådgiver fagfolk. Svar KUN med valid JSON uden markdown og uden forklaring.
 
 Person:
 ${userContext}
 
-Returner dette JSON-objekt præcist:
-{"navn":"[jobtitel]-plan","intro":"Max 1 sætning om fokus","job_label":"[kort jobtitel]","tid_label":"[X-Y timer/uge]","anvendelser":[{"titel":"[maks 5 ord]","tid":"[fx 2t/uge]","beskrivelse":"[max 2 korte sætninger tilpasset DENNE persons job]","prompt":"[konkret prompt med [pladsholder] — max 60 ord]"},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."},{"titel":"...","tid":"...","beskrivelse":"...","prompt":"..."}]}
+Lav en konkret, professionel AI-plan tilpasset PRÆCIST denne persons job og hverdag. Vær specifik og brugbar — undgå generiske råd der kunne passe på hvem som helst.
 
-PRÆCIS 4 anvendelser. Kort og konkret. Tilpasset til "${kortlAnswers[0] || 'personen'}".`;
+Returner præcist dette JSON-objekt:
+{"navn":"[kort plannavn, fx 'Projektleder-plan']","intro":"[1 sætning om planens hovedfokus]","job_label":"[kort jobtitel]","tid_label":"[realistisk estimat, fx '2-4 timer/uge']","hvornaar":[{"situation":"[kort konkret situation, fx 'Før et kundemøde']","forklaring":"[1 sætning: hvad AI konkret gør for dig i den situation]"}],"forbedringer":[{"sted":"[konkret opgave eller sted i DETTE job]","hvordan":"[1-2 sætninger: hvordan du konkret bruger AI her]","gevinst":"[kort gevinst, fx 'sparer ~2t/uge' eller 'færre fejl']"}],"prompts":[{"titel":"[kort titel]","prompt":"[konkret, brugbart prompt med [pladsholder i kantede parenteser] som personen selv udfylder. 30-70 ord. Skrevet så det kan bruges direkte i AI]"}]}
+
+KRAV:
+- "hvornaar": præcis 3 situationer hvor AI giver mening i dette job
+- "forbedringer": præcis 3 konkrete steder personen kan forbedre sit arbejde med AI
+- "prompts": præcis 4 færdige prompts, alle tilpasset "${kortlAnswers[0] || 'personen'}"
+- Alt på dansk. Konkret og fagligt — ikke fyld.`;
 
   try {
-    let rawJson = '';
     let dotCount = 0;
     const statusEl = document.getElementById('gen-status');
 
-    rawJson = await streamAI(planPrompt, (partial) => {
+    const rawJson = await streamAI(planPrompt, (partial) => {
       dotCount++;
       if (statusEl && dotCount % 20 === 0) {
         const dots = '.'.repeat((Math.floor(dotCount / 20) % 4));
         statusEl.innerHTML = `<strong>Bygger din plan${dots}</strong><br>${partial.length} tegn genereret`;
       }
-    }, 1800);
+    }, 2800);
 
     const json = extractJSON(rawJson);
-    renderPlan(json);
+    renderPlan(json, false);
+
+    // Gem på profilen (Firestore) — én plan pr. bruger
+    if (window.cplusSavePlan) window.cplusSavePlan(json);
 
   } catch(e) {
     phase2.innerHTML = `
@@ -597,353 +635,92 @@ PRÆCIS 4 anvendelser. Kort og konkret. Tilpasset til "${kortlAnswers[0] || 'per
   }
 }
 
-function renderPlan(plan) {
+// ── RENDER PLAN ──────────────────────────────────────────────
+function renderPlan(plan, isReturning) {
   window._plan = plan;
 
-  const itemsHtml = plan.anvendelser.map((a, i) => `
-    <div class="plan-item" id="pi${i}">
-      <div class="plan-item-header" onclick="togglePlanItem(${i})">
-        <div class="plan-item-rank">${i+1}</div>
-        <div class="plan-item-info">
-          <div class="plan-item-title">${escHtml(a.titel)}</div>
-          <div class="plan-item-save">⏱ ${escHtml(a.tid || a.tid_besparelse || '')}</div>
-        </div>
-        <div class="plan-item-arrow">▾</div>
-      </div>
-      <div class="plan-item-body">
-        <div class="plan-item-desc">${escHtml(a.beskrivelse)}</div>
-        <div class="copy-block">
-          <div class="copy-topbar">
-            <span class="copy-label-txt">Prompt — ${escHtml(a.titel)}</span>
-            <div class="copy-topbar-actions">
-              <button class="see-prompt-btn" onclick="togglePrompt(this)">
-                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                Se prompt
-              </button>
-              <button class="copy-btn" onclick="copyBlock(this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                Kopiér
-              </button>
-            </div>
-          </div>
-          <div class="copy-text">${escHtml(a.prompt)}</div>
-        </div>
+  const hvornaar = Array.isArray(plan.hvornaar) ? plan.hvornaar : [];
+  const forb     = Array.isArray(plan.forbedringer) ? plan.forbedringer : [];
+  const prompts  = Array.isArray(plan.prompts) ? plan.prompts : [];
+
+  const whenHtml = hvornaar.map(h => `
+    <div class="cplus-card">
+      <div class="cplus-when">
+        <div class="cplus-when-chip">${escHtml(h.situation)}</div>
+        <div class="cplus-when-txt">${escHtml(h.forklaring)}</div>
       </div>
     </div>`).join('');
 
+  const impHtml = forb.map(f => `
+    <div class="cplus-card">
+      <div class="cplus-imp-sted">${escHtml(f.sted)}</div>
+      <div class="cplus-imp-how">${escHtml(f.hvordan)}</div>
+      ${f.gevinst ? `<div class="cplus-imp-gain">⚡ ${escHtml(f.gevinst)}</div>` : ''}
+    </div>`).join('');
+
+  const promptHtml = prompts.map((p, i) => `
+    <div class="cpe">
+      <div class="cpe-head">
+        <span class="cpe-title">${escHtml(p.titel)}</span>
+        <span class="cpe-badge">Prompt ${i+1}</span>
+      </div>
+      <textarea class="cpe-ta" id="cpe-${i}">${escHtml(p.prompt)}</textarea>
+      <div class="cpe-hint">✏️ Ret prompten som du vil, før du gemmer den — så passer den præcis til dig.</div>
+      <div class="cpe-actions">
+        <button class="cpe-btn save" id="cpe-save-${i}" onclick="saveEditedPrompt(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Gem i bibliotek
+        </button>
+        <button class="cpe-btn copy" onclick="copyEditedPrompt(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          Kopiér
+        </button>
+      </div>
+      <div class="cpe-saved" id="cpe-saved-${i}">✅ Gemt i dit bibliotek under "C+"</div>
+    </div>`).join('');
+
+  const banner = isReturning
+    ? `<div class="cplus-banner">✅ Her er din personlige AI-plan — den er gemt på din profil.</div>`
+    : '';
+
   document.getElementById('phase2').innerHTML = `
+    ${banner}
     <div class="plan-hero">
       <div class="plan-hero-chip">Din personlige AI-plan</div>
       <div class="plan-hero-title">${escHtml(plan.navn)}</div>
       <div class="plan-hero-sub">${escHtml(plan.intro)}</div>
       <div class="plan-hero-meta">
-        <div class="plan-hero-meta-item">💼 ${escHtml(plan.job_label)}</div>
-        <div class="plan-hero-meta-item">⏱ Estimeret besparelse: <strong style="color:white;">${escHtml(plan.tid_label)}</strong></div>
-        <div class="plan-hero-meta-item">📋 ${plan.anvendelser.length} konkrete anvendelser</div>
+        <div class="plan-hero-meta-item">💼 ${escHtml(plan.job_label || '')}</div>
+        <div class="plan-hero-meta-item">⏱ Estimeret besparelse: <strong style="color:white;">${escHtml(plan.tid_label || '')}</strong></div>
       </div>
     </div>
 
-    <div class="plan-section-label">Dine ${plan.anvendelser.length} AI-anvendelser — rangeret efter tidsbesparelse</div>
-    <div class="plan-items">${itemsHtml}</div>
-
-    <!-- TILFØJ TIL BIBLIOTEK -->
-    <div class="lib-add-card" id="lib-add-section">
-      <div class="lib-add-icon">📚</div>
-      <div class="lib-add-text">
-        <div class="lib-add-title">${plan.anvendelser.length} personlige prompts klar til dit bibliotek</div>
-        <div class="lib-add-sub">Gem dem i en ny "C+"-kategori — så er de altid ét klik væk</div>
-      </div>
-      <button class="lib-add-btn" id="lib-add-btn" onclick="addCplusToLibrary()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tilføj til bibliotek
-      </button>
-    </div>
-    <div id="lib-add-confirm" style="display:none;" class="notice-green-box">
-      ✅ Gemt i dit bibliotek under kategorien "C+" — <a href="bibliotek.html" target="_blank" style="color:#065F46;font-weight:700;">Åbn biblioteket</a>
+    <div class="cplus-sec">
+      <div class="cplus-sec-label">🕐 Hvornår AI giver mening i dit arbejde</div>
+      <div class="cplus-sec-intro">De konkrete situationer hvor det betaler sig at række ud efter AI.</div>
+      ${whenHtml}
     </div>
 
-    <!-- EGEN PROMPT ØVELSE -->
-    <div class="own-prompt-box">
-      <div class="own-prompt-header">
-        <div class="own-prompt-icon">✍️</div>
-        <div>
-          <div class="own-prompt-title">Din tur — skriv dit eget prompt</div>
-          <div class="own-prompt-sub">Baseret på din plan: hvad er den opgave du vil løse allermest? Skriv et prompt til den — brug det du har lært i C1-C3.</div>
-        </div>
-      </div>
-      <div class="own-prompt-tips">
-        <span class="own-tip">💡 Giv AI en rolle</span>
-        <span class="own-tip">💡 Vær specifik om opgaven</span>
-        <span class="own-tip">💡 Angiv format og længde</span>
-      </div>
-      <textarea class="own-prompt-ta" id="own-prompt-ta" placeholder="Skriv dit eget prompt her... Tænk på en konkret opgave fra din hverdag og skriv et prompt der løser den."></textarea>
-      <div class="own-prompt-actions">
-        <button class="own-prompt-save" onclick="saveOwnPrompt()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Gem i biblioteket
-        </button>
-        <button class="own-prompt-copy" onclick="copyOwnPrompt()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          Kopiér og brug nu
-        </button>
-      </div>
-      <div id="own-prompt-saved" style="display:none;font-size:13px;color:var(--green);font-weight:600;margin-top:10px;">✅ Gemt i biblioteket under "C+"</div>
+    <div class="cplus-sec">
+      <div class="cplus-sec-label">🎯 Konkrete steder du kan forbedre dit arbejde — og hvordan</div>
+      <div class="cplus-sec-intro">Specifikt for dit job: hvor AI gør en reel forskel, og præcis hvordan du bruger det.</div>
+      ${impHtml}
     </div>
 
-    <div style="text-align:center; padding:8px 0 24px;">
-      <button onclick="goToPhase3()" style="display:inline-flex;align-items:center;gap:9px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:var(--r);border:none;cursor:pointer;box-shadow:0 4px 16px var(--rose-glow);transition:all .15s;">
-        Øv de 3 vigtigste →
-      </button>
-      <div style="font-size:12.5px;color:var(--muted);margin-top:10px;">Vi dykker ned i dine top 3 med skræddersyede øvelser</div>
-    </div>`;
-}
-
-function togglePlanItem(i) {
-  const el = document.getElementById('pi' + i);
-  el.classList.toggle('open');
-}
-
-// ── BIBLIOTEK FUNKTIONER ─────────────────────────────────────
-function addCplusToLibrary() {
-  if (!window._plan) return;
-  const STORAGE_KEY     = 'learnai_prompt_library_v2';
-  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
-
-  try {
-    let library = [];
-    try { library = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
-
-    const existingIds = new Set(library.map(p => p.id));
-    let added = 0;
-
-    window._plan.anvendelser.forEach((a, i) => {
-      const id = 'cplus_' + i + '_' + Date.now();
-      if (!existingIds.has(id)) {
-        library.push({
-          id, emoji: '🎯',
-          title: a.titel,
-          source: 'C+ — Din personlige plan',
-          category: 'C+',
-          text: a.prompt || a.beskrivelse || ''
-        });
-        added++;
-      }
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
-
-    let cats = [];
-    try { cats = JSON.parse(localStorage.getItem(STORAGE_KEY_CAT) || '[]'); } catch {}
-    if (!cats.includes('C+')) { cats.push('C+'); localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats)); }
-
-    const btn = document.getElementById('lib-add-btn');
-    if (btn) { btn.classList.add('done'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Tilføjet!'; }
-    const confirm = document.getElementById('lib-add-confirm');
-    if (confirm) confirm.style.display = 'block';
-    showToast(`✅ ${added} prompts gemt i biblioteket under "C+"`);
-  } catch(e) {
-    showToast('Fejl: ' + e.message);
-  }
-}
-
-function saveOwnPrompt() {
-  const ta  = document.getElementById('own-prompt-ta');
-  const txt = ta ? ta.value.trim() : '';
-  if (!txt) { showToast('Skriv et prompt først'); return; }
-
-  const STORAGE_KEY     = 'learnai_prompt_library_v2';
-  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
-
-  try {
-    let library = [];
-    try { library = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
-
-    library.unshift({
-      id: 'own_cplus_' + Date.now(),
-      emoji: '✨',
-      title: 'Mit eget C+-prompt',
-      source: 'C+ — Egen øvelse',
-      category: 'C+',
-      text: txt
-    });
-
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
-
-    let cats = [];
-    try { cats = JSON.parse(localStorage.getItem(STORAGE_KEY_CAT) || '[]'); } catch {}
-    if (!cats.includes('C+')) { cats.push('C+'); localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats)); }
-
-    const saved = document.getElementById('own-prompt-saved');
-    if (saved) saved.style.display = 'block';
-    showToast('✅ Eget prompt gemt i biblioteket');
-  } catch(e) {
-    showToast('Fejl: ' + e.message);
-  }
-}
-
-function copyOwnPrompt() {
-  const ta  = document.getElementById('own-prompt-ta');
-  const txt = ta ? ta.value.trim() : '';
-  if (!txt) { showToast('Skriv et prompt først'); return; }
-  copyText(txt, () => showToast('Prompt kopieret — indsæt med Ctrl+V ✓'));
-}
-
-// ── FASE 3: ØV TOP 3 ─────────────────────────────────────────
-async function goToPhase3() {
-  if (!window._plan) return;
-  setStep(3);
-
-  document.getElementById('phase3').innerHTML = `
-    <div class="plan-generating">
-      <div class="plan-spin"></div>
-      <div class="plan-spin-txt"><strong>Bygger dine øvelser...</strong></div>
-    </div>`;
-
-  const top3 = window._plan.anvendelser.slice(0, 3);
-
-  const top3Prompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
-
-Person: ${kortlAnswers[0]}. Opgaver: ${kortlAnswers[1]}
-
-Top 3 AI-anvendelser:
-${top3.map((a,i) => `${i+1}. ${a.titel}`).join("\n")}
-
-Returner præcist:
-{"oevelser":[{"titel":"[titel fra listen]","kontekst":"[max 1 sætning om hvorfor vigtigt for DENNE person]","opgave":"[konkret opgave max 2 sætninger]","tip":"[ét kort konkret tip]"},{"titel":"...","kontekst":"...","opgave":"...","tip":"..."},{"titel":"...","kontekst":"...","opgave":"...","tip":"..."}]}`;
-
-  try {
-    const raw  = await streamAI(top3Prompt, null, 700);
-    const json = extractJSON(raw);
-    renderTop3(json.oevelser || json, top3);
-  } catch(e) {
-    document.getElementById('phase3').innerHTML = `
-      <div style="text-align:center;padding:40px;">
-        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
-        <div style="font-weight:700;color:var(--ink);margin-bottom:8px;">Noget gik galt</div>
-        <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">${escHtml(e.message)}</div>
-        <button onclick="goToPhase3()" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--r);border:none;cursor:pointer;">↺ Prøv igen</button>
-      </div>`;
-  }
-}
-
-function renderTop3(oevelser, top3Prompts) {
-  const html = oevelser.map((o, i) => `
-    <div class="top3-item">
-      <div class="top3-item-head">
-        <div class="top3-item-num">${i+1}</div>
-        <div class="top3-item-title">${escHtml(o.titel)}</div>
-      </div>
-      <div class="top3-item-body">
-        <div class="top3-context">${escHtml(o.kontekst)}</div>
-        <div style="background:var(--amber-50);border:1px solid #FDE68A;border-radius:var(--r-sm);padding:12px 14px;">
-          <div style="font-size:11px;font-weight:700;color:var(--amber);letter-spacing:.07em;text-transform:uppercase;margin-bottom:6px;">🎯 Din opgave</div>
-          <div style="font-size:13.5px;color:#78350F;line-height:1.65;">${escHtml(o.opgave)}</div>
-        </div>
-        <div style="font-size:12.5px;color:var(--muted);display:flex;gap:7px;align-items:flex-start;">
-          <span style="flex-shrink:0;">💡</span>
-          <span><strong style="color:var(--ink);">Tip:</strong> ${escHtml(o.tip)}</span>
-        </div>
-        <div class="copy-block">
-          <div class="copy-topbar">
-            <span class="copy-label-txt">Prompt til øvelsen</span>
-            <div class="copy-topbar-actions">
-              <button class="see-prompt-btn" onclick="togglePrompt(this)">
-                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                Se prompt
-              </button>
-              <button class="copy-btn" onclick="copyBlock(this)">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-                Kopiér
-              </button>
-            </div>
-          </div>
-          <div class="copy-text">${escHtml(top3Prompts[i]?.prompt || '')}</div>
-        </div>
-      </div>
-    </div>`).join('');
-
-  document.getElementById('phase3').innerHTML = `
-    <div class="notice info" style="margin-bottom:20px;">
-      <div class="notice-icon">🎯</div>
-      <div>
-        <div class="notice-head">Dine 3 vigtigste AI-anvendelser — med øvelser</div>
-        <div class="notice-body">Åbn Claude eller ChatGPT ved siden af. Løs én øvelse ad gangen. Brug prompten som udgangspunkt og tilpas den til din situation.</div>
+    <div class="cplus-sec">
+      <div class="cplus-sec-label">📚 ${prompts.length} prompts klar til dit bibliotek</div>
+      <div class="cplus-sec-intro">Tilpas hver prompt til din situation og gem den — så er den altid ét klik væk i dit bibliotek.</div>
+      ${promptHtml}
+      <div style="text-align:center;margin-top:6px;">
+        <a href="bibliotek.html" target="_blank" style="font-size:13px;color:var(--rose-deep);font-weight:700;text-decoration:none;">Åbn dit prompt-bibliotek →</a>
       </div>
     </div>
-    <div class="top3-label">Dine 3 vigtigste AI-anvendelser</div>
-    <div class="top3-items">${html}</div>
-    <div style="text-align:center;padding:8px 0 24px;">
-      <button onclick="goToPhase4()" style="display:inline-flex;align-items:center;gap:9px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 32px;border-radius:var(--r);border:none;cursor:pointer;box-shadow:0 4px 16px var(--rose-glow);transition:all .15s;">
-        Se din AI-dag →
-      </button>
-    </div>`;
-}
-
-// ── FASE 4: DIN AI-DAG ───────────────────────────────────────
-async function goToPhase4() {
-  if (!window._plan) return;
-  setStep(4);
-
-  document.getElementById('phase4').innerHTML = `
-    <div class="plan-generating">
-      <div class="plan-spin"></div>
-      <div class="plan-spin-txt"><strong>Bygger din AI-dag...</strong>En konkret oversigt over hvornår og hvordan du bruger AI i en typisk arbejdsdag</div>
-    </div>`;
-
-  const tidLabel = (window._plan && window._plan.tid_label) ? window._plan.tid_label : "2-4 timer/uge";
-  const top3titler = window._plan ? window._plan.anvendelser.slice(0,3).map(a=>a.titel).join(", ") : "";
-
-  const aiDagPrompt = `Du er AI-coach. Svar KUN med valid JSON uden markdown.
-
-Job: ${kortlAnswers[0]}. Top AI-anvendelser: ${top3titler}
-
-Returner præcist:
-{"overskrift":"[Din AI-dag som job]","intro":"[1 sætning]","perioder":[{"tid":"Morgen","ikon":"☀️","titel":"[hvad de laver]","ai_brug":[{"ikon":"💬","tekst":"[konkret AI-brug]"},{"ikon":"📝","tekst":"[konkret AI-brug]"}]},{"tid":"Formiddag","ikon":"💼","titel":"[hvad de laver]","ai_brug":[{"ikon":"🔍","tekst":"[konkret AI-brug]"},{"ikon":"📊","tekst":"[konkret AI-brug]"}]},{"tid":"Eftermiddag","ikon":"🌇","titel":"[hvad de laver]","ai_brug":[{"ikon":"✉️","tekst":"[konkret AI-brug]"}]}],"ugentlig_besparelse":"${tidLabel}","afslutning":"[1 motiverende sætning]"}`;
-
-  try {
-    const raw  = await streamAI(aiDagPrompt, null, 700);
-    const json = extractJSON(raw);
-    renderAiDag(json);
-  } catch(e) {
-    document.getElementById('phase4').innerHTML = `
-      <div style="text-align:center;padding:40px;">
-        <div style="font-size:36px;margin-bottom:12px;">⚠️</div>
-        <div style="font-weight:700;color:var(--ink);margin-bottom:8px;">Noget gik galt</div>
-        <div style="font-size:13px;color:#9CA3AF;margin-bottom:18px;">${escHtml(e.message)}</div>
-        <button onclick="goToPhase4()" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:11px 24px;border-radius:var(--r);border:none;cursor:pointer;">↺ Prøv igen</button>
-      </div>`;
-  }
-}
-
-function renderAiDag(dag) {
-  window._dag = dag;
-
-  const perioderHtml = dag.perioder.map(p => `
-    <div class="aidag-day">
-      <div class="aidag-day-title">${p.ikon} ${escHtml(p.tid)} — ${escHtml(p.titel)}</div>
-      <div class="aidag-day-items">
-        ${p.ai_brug.map(a => `
-          <div class="aidag-day-item">
-            <div class="aidag-day-item-icon">${a.ikon}</div>
-            <div>${escHtml(a.tekst)}</div>
-          </div>`).join('')}
-      </div>
-    </div>`).join('');
-
-  document.getElementById('phase4').innerHTML = `
-    <div class="aidag-card">
-      <h2>${escHtml(dag.overskrift)}</h2>
-      <p>${escHtml(dag.intro)} Estimeret besparelse: <strong style="color:white;">${escHtml(dag.ugentlig_besparelse)}</strong> om ugen.</p>
-    </div>
-
-    <div class="plan-section-label">Din typiske arbejdsdag med AI</div>
-    <div class="aidag-days">${perioderHtml}</div>
 
     <div class="aidag-download">
       <div class="aidag-dl-icon">📄</div>
       <div class="aidag-dl-text">
-        <div class="aidag-dl-title">Gem din AI-plan</div>
-        <div class="aidag-dl-sub">Download din personlige plan som en tekstfil du kan åbne og bruge hver dag</div>
+        <div class="aidag-dl-title">Gem hele din plan</div>
+        <div class="aidag-dl-sub">Download din personlige AI-plan som en tekstfil du kan åbne og bruge når som helst</div>
       </div>
       <button class="aidag-dl-btn" onclick="downloadPlan()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
@@ -953,28 +730,82 @@ function renderAiDag(dag) {
 
     <div style="background:linear-gradient(135deg,var(--rose-50),#FFF1F2);border:1.5px solid var(--rose-200);border-radius:var(--r-xl);padding:24px 28px;text-align:center;">
       <div style="font-size:32px;margin-bottom:10px;">🏅</div>
-      <div style="font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:8px;">${escHtml(dag.afslutning)}</div>
-      <div style="font-size:13.5px;color:var(--muted);margin-bottom:20px;">Du har nu en personlig AI-plan, prompts til dine vigtigste opgaver og en konkret oversigt over hvornår du bruger dem.</div>
+      <div style="font-family:'Lora',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:8px;">Du har nu din egen AI-plan</div>
+      <div style="font-size:13.5px;color:var(--muted);margin-bottom:20px;">Konkrete situationer, præcise forbedringer og dine egne prompts — klar til at bruge i hverdagen.</div>
       <a href="platform.html" style="display:inline-flex;align-items:center;gap:8px;background:var(--rose);color:white;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:12px 26px;border-radius:var(--r-sm);text-decoration:none;box-shadow:0 4px 14px var(--rose-glow);">
         Tilbage til platformen
       </a>
     </div>`;
 }
 
+// ── GEM REDIGERET PROMPT I BIBLIOTEK ─────────────────────────
+function saveEditedPrompt(i) {
+  const ta = document.getElementById('cpe-' + i);
+  const txt = ta ? ta.value.trim() : '';
+  if (!txt) { showToast('Prompten er tom'); return; }
+
+  let titel = 'C+ prompt ' + (i+1);
+  try { if (window._plan && window._plan.prompts && window._plan.prompts[i]) titel = window._plan.prompts[i].titel || titel; } catch {}
+
+  const STORAGE_KEY     = 'learnai_prompt_library_v2';
+  const STORAGE_KEY_CAT = 'learnai_prompt_categories_v1';
+
+  try {
+    let library = [];
+    try { library = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch {}
+
+    library.unshift({
+      id: 'cplus_' + i + '_' + Date.now(),
+      emoji: '🎯',
+      title: titel || ('C+ prompt ' + (i+1)),
+      source: 'C+ — Din personlige plan',
+      category: 'C+',
+      text: txt
+    });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(library));
+
+    let cats = [];
+    try { cats = JSON.parse(localStorage.getItem(STORAGE_KEY_CAT) || '[]'); } catch {}
+    if (!cats.includes('C+')) { cats.push('C+'); localStorage.setItem(STORAGE_KEY_CAT, JSON.stringify(cats)); }
+
+    const saved = document.getElementById('cpe-saved-' + i);
+    if (saved) saved.style.display = 'block';
+    const btn = document.getElementById('cpe-save-' + i);
+    if (btn) {
+      btn.classList.add('done');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Gemt';
+    }
+    showToast('✅ Gemt i biblioteket under "C+"');
+  } catch(e) {
+    showToast('Fejl: ' + e.message);
+  }
+}
+
+function copyEditedPrompt(i) {
+  const ta = document.getElementById('cpe-' + i);
+  const txt = ta ? ta.value.trim() : '';
+  if (!txt) { showToast('Prompten er tom'); return; }
+  copyText(txt, () => showToast('Prompt kopieret — indsæt med Ctrl+V ✓'));
+}
+
 // ── DOWNLOAD PLAN ────────────────────────────────────────────
 function downloadPlan() {
-  if (!window._plan || !window._dag) return;
+  if (!window._plan) return;
+  const p = window._plan;
   let txt = `MIN PERSONLIGE AI-PLAN\n${'='.repeat(40)}\n\n`;
-  txt += `${window._plan.navn}\n${window._plan.intro}\n\nEstimeret tidsbesparelse: ${window._plan.tid_label}\n\n`;
-  txt += `MINE ${window._plan.anvendelser.length} AI-ANVENDELSER\n${'-'.repeat(40)}\n`;
-  window._plan.anvendelser.forEach((a,i) => {
-    txt += `\n${i+1}. ${a.titel} (${a.tid_besparelse})\n${a.beskrivelse}\n\nPrompt:\n${a.prompt}\n`;
+  txt += `${p.navn || ''}\n${p.intro || ''}\n\nEstimeret tidsbesparelse: ${p.tid_label || ''}\n\n`;
+
+  txt += `HVORNÅR AI GIVER MENING\n${'-'.repeat(40)}\n`;
+  (p.hvornaar || []).forEach(h => { txt += `\n• ${h.situation}: ${h.forklaring}\n`; });
+
+  txt += `\n\nKONKRETE FORBEDRINGER\n${'-'.repeat(40)}\n`;
+  (p.forbedringer || []).forEach((f,i) => {
+    txt += `\n${i+1}. ${f.sted}\n   ${f.hvordan}\n   Gevinst: ${f.gevinst || ''}\n`;
   });
-  txt += `\n\nMIN AI-DAG\n${'-'.repeat(40)}\n`;
-  window._dag.perioder.forEach(p => {
-    txt += `\n${p.tid} — ${p.titel}\n`;
-    p.ai_brug.forEach(a => txt += `• ${a.tekst}\n`);
-  });
+
+  txt += `\n\nMINE PROMPTS\n${'-'.repeat(40)}\n`;
+  (p.prompts || []).forEach((pr,i) => { txt += `\n${i+1}. ${pr.titel}\n${pr.prompt}\n`; });
+
   const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
@@ -984,26 +815,6 @@ function downloadPlan() {
 }
 
 // ── COPY/PROMPT HELPERS ──────────────────────────────────────
-function togglePrompt(btn) {
-  const block  = btn.closest('.copy-block');
-  const textEl = block.querySelector('.copy-text');
-  const isOpen = textEl.classList.toggle('show');
-  btn.classList.toggle('open', isOpen);
-  btn.childNodes.forEach(n => { if (n.nodeType === 3) n.textContent = isOpen ? ' Luk' : ' Se prompt'; });
-}
-
-function copyBlock(btn) {
-  const block  = btn.closest('.copy-block');
-  const textEl = block.querySelector('.copy-text');
-  if (!textEl.classList.contains('show')) togglePrompt(block.querySelector('.see-prompt-btn'));
-  copyText(textEl.textContent, () => {
-    btn.classList.add('copied');
-    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Kopieret';
-    showToast('Prompt kopieret ✓');
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg> Kopiér'; }, 2000);
-  });
-}
-
 function copyText(text, onSuccess) {
   const ta = document.createElement('textarea');
   ta.value = text; ta.setAttribute('readonly','');
@@ -1030,9 +841,84 @@ function showToast(msg) {
   _tt = setTimeout(() => t.classList.remove('show'), 2500);
 }
 
-// ── INIT ─────────────────────────────────────────────────────
-// Start med første spørgsmål
-setTimeout(() => kortlAsk(), 400);
+// ── ENTRYPOINTS (kaldes af Firebase-modulet) ─────────────────
+window.cplusStartQuestions = function() {
+  showOnly('phase1');
+  setStep(1);
+  setTimeout(() => kortlAsk(), 400);
+};
+
+window.cplusShowGate = function() {
+  showOnly('phase-gate');
+};
+
+window.cplusRenderStoredPlan = function(plan) {
+  setStep(2);
+  showOnly('phase2');
+  renderPlan(plan, true);
+};
+</script>
+
+<!-- FIREBASE — login-tjek + "kun én plan pr. bruger" -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc, updateDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+onAuthStateChanged(auth, async (user) => {
+  // Ikke logget ind → vis login-gate (ingen plan kan laves)
+  if (!user) {
+    window.cplusShowGate();
+    return;
+  }
+
+  window._user = { uid: user.uid, email: user.email };
+
+  try {
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if (snap.exists()) {
+      const data = snap.data();
+      // Har allerede lavet sin plan → vis den gemte plan i stedet for at lave en ny
+      if (data.cplusPlanCreated && data.cplusPlan) {
+        window.cplusRenderStoredPlan(data.cplusPlan);
+        return;
+      }
+    }
+  } catch(e) {
+    // Hvis tjekket fejler, lader vi brugeren fortsætte (bedre end at låse en betalende bruger ude)
+    console.error('Firestore-tjek fejlede:', e);
+  }
+
+  // Logget ind og ingen plan endnu → start spørgsmålene
+  window.cplusStartQuestions();
+});
+
+// Kaldes fra hovedscriptet når en plan er færdiggenereret
+window.cplusSavePlan = async function(plan) {
+  if (!window._user) return;
+  try {
+    await updateDoc(doc(db, 'users', window._user.uid), {
+      cplusPlanCreated: true,
+      cplusPlan: plan
+    });
+  } catch(e) {
+    console.error('Kunne ikke gemme plan på profil:', e);
+  }
+};
 </script>
 </body>
 </html>
