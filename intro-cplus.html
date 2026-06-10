@@ -507,10 +507,10 @@
     </div>
 
     <div class="k4-actions">
-      <a href="kursus-cplus.html" class="k4-cta">
+      <a href="kursus-cplus.html" class="k4-cta" id="cplus-cta">
         Start Kursus C+ →
       </a>
-      <span class="k4-lock">🔒 Kræver Kursus C-bevis</span>
+      <span class="k4-lock" id="cplus-lock">🔒 Kræver login</span>
     </div>
   </div>
 
@@ -523,18 +523,18 @@
     </div>
     <div class="k4-card reveal">
       <div class="k4-card-num">2</div>
-      <div class="k4-card-title">Din AI-plan</div>
-      <div class="k4-card-body">4 konkrete anvendelser skræddersyet til dit job — med prompts klar til brug</div>
+      <div class="k4-card-title">Hvornår AI hjælper dig</div>
+      <div class="k4-card-body">De konkrete situationer i din hverdag hvor det betaler sig at bruge AI</div>
     </div>
     <div class="k4-card reveal">
       <div class="k4-card-num">3</div>
-      <div class="k4-card-title">Øv de vigtigste</div>
-      <div class="k4-card-body">De tre vigtigste punkter bliver til konkrete øvelser tilpasset din hverdag</div>
+      <div class="k4-card-title">Konkrete forbedringer</div>
+      <div class="k4-card-body">Specifikt for dit job: hvor AI gør en forskel — og præcis hvordan du bruger det</div>
     </div>
     <div class="k4-card reveal">
       <div class="k4-card-num">4</div>
-      <div class="k4-card-title">Din AI-dag</div>
-      <div class="k4-card-body">En oversigt over hvornår du bruger AI — download og brug den hver dag</div>
+      <div class="k4-card-title">Dine egne prompts</div>
+      <div class="k4-card-body">Færdige prompts du selv kan rette til og gemme i dit bibliotek — klar til brug</div>
     </div>
   </div>
 
@@ -689,6 +689,65 @@ function initReveal() {
     }, 1800);
   }
 }
+</script>
+
+<!-- FIREBASE — adgangstjek -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+
+// Sæt til true når eksamen-c.html er live, så C+ kræver et bestået Kursus C-bevis.
+const REQUIRE_C = false;
+
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const cta  = document.getElementById('cplus-cta');
+const lock = document.getElementById('cplus-lock');
+
+onAuthStateChanged(auth, async (user) => {
+  if (!cta) return;
+
+  // Ikke logget ind → send til login
+  if (!user) {
+    cta.textContent = 'Log ind for at starte →';
+    cta.href = 'platform.html';
+    if (lock) lock.textContent = '🔒 Du skal være logget ind';
+    return;
+  }
+
+  // Skal Kursus C være bestået?
+  if (REQUIRE_C) {
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      const done = snap.exists() && (snap.data().completedCourses || []).includes('C');
+      if (!done) {
+        cta.textContent = 'Bestå Kursus C først';
+        cta.href = 'platform.html';
+        cta.style.opacity = '0.6';
+        if (lock) lock.textContent = '🔒 Kræver bestået Kursus C';
+        return;
+      }
+    } catch(e) { console.error(e); }
+  }
+
+  // Adgang OK
+  cta.textContent = 'Start Kursus C+ →';
+  cta.href = 'kursus-cplus.html';
+  if (lock) lock.textContent = '✓ Du har adgang';
+});
 </script>
 </body>
 </html>
