@@ -783,6 +783,39 @@ function badgeSVG(level) {
   </svg>`;
 }
 
+function sideBadgeSVG(icon) {
+  // Sidekursus-badge — brun/bronze tema med kursets emoji-ikon i centrum
+  return `<svg viewBox="0 0 180 180" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">
+    <defs>
+      <radialGradient id="bg_side" cx="40%" cy="35%" r="75%">
+        <stop offset="0%" stop-color="#1a0e06"/><stop offset="60%" stop-color="#0f0804"/><stop offset="100%" stop-color="#070402"/>
+      </radialGradient>
+      <linearGradient id="ring_side" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#e8b07a"/><stop offset="18%" stop-color="#8b5a2b"/><stop offset="42%" stop-color="#4a2c11"/>
+        <stop offset="58%" stop-color="#8b5a2b"/><stop offset="80%" stop-color="#e8a060"/><stop offset="100%" stop-color="#3a2008"/>
+      </linearGradient>
+      <radialGradient id="shine_side" cx="32%" cy="28%" r="50%">
+        <stop offset="0%" stop-color="white" stop-opacity=".13"/><stop offset="100%" stop-color="white" stop-opacity="0"/>
+      </radialGradient>
+    </defs>
+    <circle cx="90" cy="90" r="84" fill="url(#bg_side)" stroke="url(#ring_side)" stroke-width="5"/>
+    <circle cx="90" cy="90" r="76" fill="none" stroke="url(#ring_side)" stroke-width="1" opacity=".35" stroke-dasharray="4 3"/>
+    <circle cx="90" cy="90" r="70" fill="#0a0700"/>
+    <circle cx="90" cy="90" r="70" fill="none" stroke="url(#ring_side)" stroke-width="1.2" opacity=".5"/>
+    <text x="90" y="100" text-anchor="middle" font-size="42">${icon}</text>
+    <line x1="42" y1="110" x2="68" y2="110" stroke="url(#ring_side)" stroke-width=".8" opacity=".5"/>
+    <line x1="112" y1="110" x2="138" y2="110" stroke="url(#ring_side)" stroke-width=".8" opacity=".5"/>
+    <text x="90" y="119" text-anchor="middle" font-family="Arial,sans-serif" font-size="7.5" font-weight="800" fill="#c9a87c" letter-spacing="3.5" opacity=".9">LEARNAI</text>
+    <rect x="56" y="126" width="68" height="15" rx="7.5" fill="rgba(255,255,255,.06)" stroke="url(#ring_side)" stroke-width="1"/>
+    <text x="90" y="137" text-anchor="middle" font-family="Arial,sans-serif" font-size="7" font-weight="800" fill="#c9a87c" letter-spacing="2">SIDEKURSUS</text>
+    <path id="arc_side" d="M 24,90 A 66,66 0 0,1 156,90" fill="none"/>
+    <text font-family="Arial,sans-serif" font-size="7" fill="#c9a87c" opacity=".7" letter-spacing="2" font-weight="600">
+      <textPath href="#arc_side" startOffset="50%" text-anchor="middle">✦ BESTÅET ✦ SIDEKURSUS ✦</textPath>
+    </text>
+    <circle cx="90" cy="90" r="70" fill="url(#shine_side)"/>
+  </svg>`;
+}
+
 function lockedBadgeSVG(level) {
   const labels = { C:'SØLV', B:'GULD', A:'DIAMANT' };
   const colors = { C:'#b0c8e0', B:'#f0c040', A:'#60d0f8' };
@@ -837,6 +870,19 @@ window.loadBadges = function(badges) {
         </div>`;
     }
   }).join('');
+
+  // Sidekursus-badges — alt der IKKE er et hovedniveau (D/C/B/A)
+  const sideBadges = unique.filter(b => !allLevels.includes(b.level));
+  if (sideBadges.length) {
+    grid.innerHTML += sideBadges.map(b => `
+      <div class="badge-card" style="animation:badgeCardIn .5s ease both">
+        <div style="width:110px;height:110px;margin:0 auto 12px;filter:drop-shadow(0 0 12px rgba(139,90,43,.45));animation:badgeFloat 4s ease-in-out infinite">
+          ${sideBadgeSVG(b.icon || '⭐')}
+        </div>
+        <div class="badge-title">${b.title || 'Sidekursus bestået'}</div>
+        <div class="badge-date">${b.date || ''}</div>
+      </div>`).join('');
+  }
 };
 
 // Eksporter til window så eksamen-siden kan bruge dem
