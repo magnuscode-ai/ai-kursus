@@ -231,7 +231,7 @@
 <script>
 (function(){
   function q(id){return document.getElementById(id);}
-  window.switchAuth=function(v){var l=v==='login';q('viewLogin').style.display=l?'':'none';q('viewSignup').style.display=l?'none':'';q('tabLogin').classList.toggle('active',l);q('tabSignup').classList.toggle('active',!l);var a=q('authAlert');a.className='auth-alert';a.innerHTML='';};
+  window.switchAuth=function(v){var views={login:'viewLogin',signup:'viewSignup',reset:'viewReset'};for(var k in views){q(views[k]).style.display=(k===v)?'':'none';}q('tabLogin').classList.toggle('active',v==='login');q('tabSignup').classList.toggle('active',v==='signup');var a=q('authAlert');a.className='auth-alert';a.innerHTML='';if(v==='reset'){var em=q('li_email').value.trim();if(em)q('re_email').value=em;q('resetForm').style.display='';q('resetDone').style.display='none';q('f_re_email').classList.remove('err');}};
   window.openAuth=function(v){window.switchAuth(v||'login');q('authOv').classList.add('open');document.body.style.overflow='hidden';};
   window.closeAuth=function(){q('authOv').classList.remove('open');document.body.style.overflow='';};
   window.startFree=function(){window.openAuth('signup');};
@@ -587,7 +587,7 @@
       <div class="fld" id="f_li_email"><label>E-mail</label><input type="email" id="li_email" autocomplete="email"><div class="e">Skriv en gyldig e-mail.</div></div>
       <div class="fld" id="f_li_pw"><label>Adgangskode</label><input type="password" id="li_pw" autocomplete="current-password"><div class="e">Skriv din adgangskode.</div></div>
       <button class="auth-submit" id="loginBtn" onclick="doLogin()">Log ind</button>
-      <button class="auth-link" onclick="doReset()">Glemt adgangskode?</button>
+      <button class="auth-link" onclick="switchAuth('reset')">Glemt adgangskode?</button>
     </div>
 
     <div id="viewSignup" style="display:none">
@@ -601,6 +601,22 @@
       <div class="fld" id="f_su_pw"><label>Adgangskode (min. 6 tegn)</label><input type="password" id="su_pw" autocomplete="new-password"><div class="e">Mindst 6 tegn.</div></div>
       <button class="auth-submit" id="signupBtn" onclick="doSignup()">Opret konto</button>
       <p class="auth-note">Vi sender en bekræftelses-mail. Bekræft den og log derefter ind.</p>
+    </div>
+
+    <div id="viewReset" style="display:none">
+      <div id="resetForm">
+        <h3>Glemt din adgangskode?</h3>
+        <p class="lead-sm">Skriv din e-mail, så sender vi dig et link til at vælge en ny kode.</p>
+        <div class="fld" id="f_re_email"><label>E-mail</label><input type="email" id="re_email" autocomplete="email"><div class="e">Skriv en gyldig e-mail.</div></div>
+        <button class="auth-submit" id="resetBtn" onclick="doReset()">Send nulstillings-link</button>
+        <button class="auth-link" onclick="switchAuth('login')">← Tilbage til log ind</button>
+      </div>
+      <div id="resetDone" style="display:none;text-align:center;padding-top:6px">
+        <div style="width:54px;height:54px;border-radius:50%;background:rgba(47,93,69,.12);color:#2F5D45;display:grid;place-items:center;font-size:26px;margin:0 auto 12px">✓</div>
+        <h3 style="margin-bottom:6px">Tjek din mail</h3>
+        <p class="lead-sm" id="resetDoneMsg" style="margin-bottom:16px"></p>
+        <button class="auth-submit" onclick="switchAuth('login')">Tilbage til log ind</button>
+      </div>
     </div>
   </div>
 </div>
@@ -653,12 +669,16 @@ function busy(id,on,label){ const b=$(id); b.disabled=on; b.textContent=on?'Vent
 window.openAuth = v => { clearAlert(); switchAuth(v||'login'); $('authOv').classList.add('open'); document.body.style.overflow='hidden'; };
 window.closeAuth = () => { $('authOv').classList.remove('open'); document.body.style.overflow=''; };
 window.switchAuth = v => {
-  const login = v === 'login';
-  $('viewLogin').style.display = login ? '' : 'none';
-  $('viewSignup').style.display = login ? 'none' : '';
-  $('tabLogin').classList.toggle('active', login);
-  $('tabSignup').classList.toggle('active', !login);
+  const views = { login:'viewLogin', signup:'viewSignup', reset:'viewReset' };
+  for(const k in views){ $(views[k]).style.display = (k===v) ? '' : 'none'; }
+  $('tabLogin').classList.toggle('active', v==='login');
+  $('tabSignup').classList.toggle('active', v==='signup');
   clearAlert();
+  if(v==='reset'){
+    const em=$('li_email').value.trim(); if(em) $('re_email').value=em;
+    $('resetForm').style.display=''; $('resetDone').style.display='none';
+    setErr('re_email', false);
+  }
 };
 window.startFree = () => {
   if (auth.currentUser && auth.currentUser.emailVerified) $('kurser').scrollIntoView({behavior:'smooth'});
@@ -720,22 +740,29 @@ window.doLogin = async () => {
 };
 
 window.doReset = async () => {
-  const email=$('li_email').value.trim();
-  if(!email||!email.includes('@')){ setErr('li_email',true); alertBox('bad','Skriv din e-mail i feltet, så sender vi et nulstil-link.'); return; }
-  try{ await sendPasswordResetEmail(auth,email); alertBox('ok','Vi har sendt et link til at nulstille din adgangskode til '+email+'.'); }
-  catch(e){ alertBox('bad', msg(e.code)); }
+  const email = $('re_email').value.trim();
+  if(!email || !email.includes('@')){ setErr('re_email', true); return; }
+  busy('resetBtn', true, 'Send nulstillings-link');
+  try{
+    await sendPasswordResetEmail(auth, email);
+    $('resetForm').style.display = 'none';
+    $('resetDoneMsg').innerHTML = 'Vi har sendt en nulstillings-link til <b>'+email+'</b>. Følg linket i mailen og vælg en ny kode.';
+    $('resetDone').style.display = '';
+  }catch(e){ alertBox('bad', msg(e.code)); }
+  finally{ busy('resetBtn', false, 'Send nulstillings-link'); }
 };
 
 window.goLogin = () => switchAuth('login');
 
 window.resetForPending = async () => {
-  const email = window._pendingEmail || $('li_email').value.trim() || $('su_email').value.trim();
+  const email = window._pendingEmail || $('su_email').value.trim() || $('li_email').value.trim();
   if(!email || !email.includes('@')){ alertBox('bad','Ingen e-mail at sende til.'); return; }
   try{
     await sendPasswordResetEmail(auth, email);
-    switchAuth('login');
-    $('li_email').value = email;
-    alertBox('ok','Vi har sendt et link til at nulstille adgangskoden til <b>'+email+'</b>. Følg linket, vælg en ny kode, og log derefter ind.');
+    switchAuth('reset');
+    $('resetForm').style.display = 'none';
+    $('resetDoneMsg').innerHTML = 'Vi har sendt en nulstillings-link til <b>'+email+'</b>. Følg linket i mailen og vælg en ny kode.';
+    $('resetDone').style.display = '';
   }catch(e){ alertBox('bad', msg(e.code)); }
 };
 
