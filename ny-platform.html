@@ -166,8 +166,8 @@
   .auth-submit{width:100%;margin-top:6px;font-family:'Outfit';font-weight:800;font-size:15px;color:#fff;background:var(--car);border:none;border-radius:11px;padding:13px;cursor:pointer;transition:background var(--tf)}
   .auth-submit:hover{background:var(--car-deep)}
   .auth-submit:disabled{opacity:.6;cursor:default}
-  .auth-link{display:block;text-align:center;font-size:12.5px;color:var(--muted);margin-top:12px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit}
-  .auth-link:hover{color:var(--car-deep)}
+  .auth-link{display:block;text-align:center;font-size:14px;font-weight:600;color:var(--car-deep);margin-top:16px;padding:9px;cursor:pointer;background:none;border:none;width:100%;font-family:inherit;text-decoration:underline;text-underline-offset:3px}
+  .auth-link:hover{color:var(--car)}
   .auth-note{font-size:12px;color:var(--muted);text-align:center;margin-top:12px}
 
   /* Hvorfor */
@@ -227,6 +227,24 @@
 </style>
 </head>
 <body>
+
+<script>
+(function(){
+  function q(id){return document.getElementById(id);}
+  window.switchAuth=function(v){var l=v==='login';q('viewLogin').style.display=l?'':'none';q('viewSignup').style.display=l?'none':'';q('tabLogin').classList.toggle('active',l);q('tabSignup').classList.toggle('active',!l);var a=q('authAlert');a.className='auth-alert';a.innerHTML='';};
+  window.openAuth=function(v){window.switchAuth(v||'login');q('authOv').classList.add('open');document.body.style.overflow='hidden';};
+  window.closeAuth=function(){q('authOv').classList.remove('open');document.body.style.overflow='';};
+  window.startFree=function(){window.openAuth('signup');};
+  window.goLogin=function(){window.switchAuth('login');};
+  function notice(){
+    var t=q('__authToast');
+    if(!t){t=document.createElement('div');t.id='__authToast';t.style.cssText='position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#232A22;color:#fff;font:600 13px/1.45 system-ui,sans-serif;padding:13px 18px;border-radius:12px;max-width:88vw;text-align:center;z-index:9999;box-shadow:0 10px 30px rgba(0,0,0,.32)';document.body.appendChild(t);}
+    t.textContent='Login og e-mail virker kun i en rigtig browser eller på GitHub — forhåndsvisningen her kan ikke indlæse Firebase.';
+    clearTimeout(window.__authT);window.__authT=setTimeout(function(){if(t)t.remove();},4500);
+  }
+  ['doLogin','doSignup','doReset','doLogout','resendVerify','resetForPending'].forEach(function(fn){window[fn]=notice;});
+})();
+</script>
 
 <!-- NAV -->
 <nav class="nav">
