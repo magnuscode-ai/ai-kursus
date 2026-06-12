@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LearnAI — Konto</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Lora:ital,wght@0,500;0,600;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F3F0E7; --surface:#FCFAF3; --ink:#232A22; --muted:#6F7363; --line:#E6E1D2;
+    --car:#B9772B; --car-deep:#925C1E; --car-soft:#E6C79A; --forest:#2F5D45; --forest-deep:#214636;
+    --t:.2s ease; --tf:.15s ease;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Outfit',system-ui,sans-serif;color:var(--ink);background:var(--bg);min-height:100vh;
+    display:grid;place-items:center;padding:24px;position:relative;overflow:hidden;line-height:1.55}
+  /* dekorativ baggrund */
+  body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:
+    radial-gradient(46% 40% at 50% -8%,rgba(185,119,43,.16),transparent 70%),
+    radial-gradient(40% 42% at 85% 30%,rgba(47,93,69,.12),transparent 70%),
+    radial-gradient(38% 40% at 12% 88%,rgba(185,119,43,.10),transparent 70%);}
+  body::after{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.4;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:48px 48px;-webkit-mask-image:radial-gradient(60% 55% at 50% 40%,#000,transparent 78%);mask-image:radial-gradient(60% 55% at 50% 40%,#000,transparent 78%)}
+
+  .wrap{position:relative;z-index:1;width:100%;max-width:430px;text-align:center}
+  .logo{display:inline-flex;align-items:center;gap:10px;font-family:'Lora',serif;font-weight:600;font-size:20px;color:var(--ink);margin-bottom:18px}
+  .logo svg{width:36px;height:36px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:34px 32px 30px;
+    box-shadow:0 20px 60px rgba(35,42,34,.12);animation:rise .35s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+  h1{font-family:'Lora',serif;font-weight:600;font-size:24px;line-height:1.2}
+  .sub{color:var(--muted);font-size:14.5px;margin-top:8px}
+  .sub b{color:var(--forest-deep)}
+
+  .fld{margin-top:16px;text-align:left}
+  .fld label{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px}
+  .fld input{width:100%;font-family:inherit;font-size:15px;padding:12px 13px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+  .fld input:focus{outline:none;border-color:var(--car);box-shadow:0 0 0 3px rgba(185,119,43,.15)}
+  .showpw{display:flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;color:var(--muted);cursor:pointer;user-select:none}
+  .showpw input{width:16px;height:16px;accent-color:var(--car)}
+
+  .submit{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-top:20px;
+    font-family:'Outfit';font-weight:800;font-size:15.5px;color:#fff;background:var(--car);border:none;border-radius:12px;
+    padding:14px;cursor:pointer;text-decoration:none;transition:background var(--tf),transform var(--tf);
+    box-shadow:0 8px 22px rgba(185,119,43,.30)}
+  .submit:hover{background:var(--car-deep);transform:translateY(-1px)}
+  .submit:disabled{opacity:.6;cursor:default;transform:none}
+
+  .alert{display:none;font-size:13px;padding:11px 13px;border-radius:9px;margin-top:16px;text-align:left;
+    background:#FCEEEC;color:#A33227;border:1px solid #F1C6C0}
+  .alert.show{display:block}
+
+  .badge-ic{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;margin:0 auto 16px;font-size:30px;animation:pop .3s ease both}
+  @keyframes pop{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+  .badge-ic.ok{background:rgba(47,93,69,.12);color:var(--forest)}
+  .badge-ic.bad{background:rgba(185,119,43,.14);color:var(--car-deep)}
+
+  .spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--car);margin:8px auto 0;animation:sp .7s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+
+  .foot{margin-top:18px;font-size:12px;color:var(--muted)}
+  @media(prefers-reduced-motion:reduce){.card,.badge-ic{animation:none}.spin{animation-duration:1.4s}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo">
+      <svg viewBox="0 0 40 40"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      LearnAI
+    </div>
+    <div class="card" id="card">
+      <p class="sub">Et øjeblik…</p>
+      <div class="spin"></div>
+    </div>
+    <p class="foot">LearnAI · learnai.dk</p>
+  </div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, verifyPasswordResetCode, confirmPasswordReset, applyActionCode }
+  from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+
+/* ====== ÆNDR KUN DENNE LINJE hvis login-siden ligger et andet sted ====== */
+const LOGIN_URL = "https://magnuscode-ai.github.io/ai-kursus/platform.html";
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const card = document.getElementById('card');
+const params = new URLSearchParams(location.search);
+const mode = params.get('mode');
+const oob  = params.get('oobCode');
+const backUrl = params.get('continueUrl') || LOGIN_URL;
+
+function renderForm(email){
+  card.innerHTML = `
+    <h1>Vælg en ny adgangskode</h1>
+    <p class="sub">for <b>${email}</b></p>
+    <div class="alert" id="alert"></div>
+    <div class="fld"><label>Ny adgangskode</label><input type="password" id="pw1" autocomplete="new-password"></div>
+    <div class="fld"><label>Gentag adgangskode</label><input type="password" id="pw2" autocomplete="new-password"></div>
+    <label class="showpw"><input type="checkbox" id="show"> Vis adgangskode</label>
+    <button class="submit" id="save">Gem ny adgangskode</button>`;
+  document.getElementById('show').onchange = e => {
+    const t = e.target.checked ? 'text' : 'password';
+    document.getElementById('pw1').type = t; document.getElementById('pw2').type = t;
+  };
+  document.getElementById('save').onclick = save;
+}
+function showAlert(msg){ const a=document.getElementById('alert'); a.textContent=msg; a.classList.add('show'); }
+
+async function save(){
+  const pw1=document.getElementById('pw1').value, pw2=document.getElementById('pw2').value;
+  const btn=document.getElementById('save');
+  if(pw1.length<6){ showAlert('Adgangskoden skal være mindst 6 tegn.'); return; }
+  if(pw1!==pw2){ showAlert('De to adgangskoder er ikke ens.'); return; }
+  btn.disabled=true; btn.textContent='Gemmer…';
+  try{
+    await confirmPasswordReset(auth, oob, pw1);
+    renderDone('ok','Din adgangskode er ændret','Du kan nu logge ind med din nye kode.');
+  }catch(e){
+    btn.disabled=false; btn.textContent='Gem ny adgangskode';
+    showAlert('Noget gik galt — linket kan være udløbet. Bed om et nyt på login-siden.');
+  }
+}
+
+function renderDone(kind, title, msg){
+  card.innerHTML = `
+    <div class="badge-ic ${kind==='ok'?'ok':'bad'}">${kind==='ok'?'✓':'!'}</div>
+    <h1>${title}</h1>
+    <p class="sub">${msg}</p>
+    <a class="submit" href="${backUrl}">Gå til log ind</a>`;
+}
+
+(async function init(){
+  if(!oob || !mode){ renderDone('bad','Ugyldigt link','Linket mangler oplysninger. Prøv igen fra login-siden.'); return; }
+  try{
+    if(mode==='resetPassword'){
+      const email = await verifyPasswordResetCode(auth, oob);
+      renderForm(email);
+    } else if(mode==='verifyEmail'){
+      await applyActionCode(auth, oob);
+      renderDone('ok','Din e-mail er bekræftet','Du kan nu logge ind på din konto.');
+    } else if(mode==='recoverEmail'){
+      await applyActionCode(auth, oob);
+      renderDone('ok','Din e-mail er gendannet','Din e-mailadresse er sat tilbage.');
+    } else {
+      renderDone('bad','Ukendt handling','Vi kunne ikke genkende linket.');
+    }
+  }catch(e){
+    renderDone('bad','Linket er udløbet','Linket er ugyldigt eller for gammelt. Bed om et nyt fra login-siden.');
+  }
+})();
+</script>
+</body>
+</html>
