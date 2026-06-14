@@ -458,27 +458,29 @@
       z-index: 90;
     }
 
-    .progress-steps {
-      display: flex;
-      gap: 6px;
-      flex: 1;
-      max-width: 600px;
+    .progress-pill-bar {
+      flex: 1; max-width: 600px; height: 7px; border-radius: 999px;
+      background: rgba(37,99,235,0.12); overflow: hidden; position: relative;
     }
-
-    .progress-step {
-      height: 5px;
-      flex: 1;
-      border-radius: 3px;
-      background: var(--line);
-      transition: background 0.4s, transform 0.3s;
-    }
-
-    .progress-step.active {
+    .progress-pill-fill {
+      height: 100%; border-radius: 999px; width: 17%;
       background: linear-gradient(90deg, var(--primary), var(--accent-purple));
-      transform: scaleY(1.2);
+      transition: width 0.8s cubic-bezier(0.16,1,0.3,1); position: relative; overflow: hidden;
     }
-
-    .progress-step.done { background: var(--accent-green); }
+    .progress-pill-fill::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
+      animation: barShimmer 2.2s ease-in-out infinite;
+    }
+    @keyframes barShimmer { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
+    .progress-pill-pct {
+      font-size: 13px; font-weight: 800; color: var(--primary);
+      white-space: nowrap; min-width: 38px; text-align: right;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .progress-pill-fill { transition: none; }
+      .progress-pill-fill::after { animation: none; }
+    }
 
     .progress-label {
       font-size: 13px;
@@ -1181,28 +1183,203 @@
     .ai-chat-send:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(124,58,237,0.4); }
     .ai-chat-send:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-    .ai-chat-suggest {
-      padding: 0.85rem 1rem;
-      border-top: 1px solid var(--line-soft);
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      background: #fafbff;
+    /* === Prompt-coach: premium feedback === */
+    .coach-live {
+      width: 9px; height: 9px; border-radius: 50%;
+      background: #4ade80; margin-left: auto; flex-shrink: 0;
+      box-shadow: 0 0 0 0 rgba(74,222,128,0.7);
+      animation: coachPulse 2.2s infinite;
+    }
+    @keyframes coachPulse {
+      0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.6); }
+      70% { box-shadow: 0 0 0 8px rgba(74,222,128,0); }
+      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
     }
 
-    .ai-suggest-btn {
-      background: white;
+    .coach-feedback {
+      margin-bottom: 16px;
       border: 1px solid var(--line);
-      border-radius: 50px;
-      padding: 6px 12px;
-      font-size: 12.5px;
-      color: var(--ink-soft);
-      cursor: pointer;
-      transition: all 0.2s;
-      font-family: inherit;
+      border-radius: 18px;
+      background: white;
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      animation: coachIn 0.28s cubic-bezier(0.2,0.7,0.3,1);
+    }
+    @keyframes coachIn {
+      from { opacity: 0; transform: translateY(10px) scale(0.985); }
+      to { opacity: 1; transform: none; }
     }
 
-    .ai-suggest-btn:hover { border-color: var(--accent-purple); color: var(--accent-purple); background: #faf5ff; }
+    .coach-top {
+      display: flex; align-items: center; gap: 16px;
+      padding: 16px 18px;
+      background: linear-gradient(180deg, #faf9ff, #ffffff);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .coach-ring { position: relative; width: 78px; height: 78px; flex-shrink: 0; }
+    .coach-ring svg { transform: rotate(-90deg); transform-origin: 50% 50%; }
+    .coach-ring-track { stroke: #eef0f5; }
+    .coach-ring-fill { stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(0.2,0.7,0.3,1); }
+    .coach-ring-num {
+      position: absolute; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; line-height: 1;
+    }
+    .coach-ring-num b { font-size: 25px; font-weight: 800; }
+    .coach-ring-num span { font-size: 11px; color: var(--ink-mute); font-weight: 700; margin-top: 2px; }
+    .coach-verdict { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .coach-verdict-word { font-size: 18px; font-weight: 800; }
+    .coach-verdict-sub { font-size: 13px; color: var(--ink-soft); }
+    .coach-rise {
+      display: inline-flex; align-items: center; gap: 5px; margin-top: 7px;
+      font-size: 12.5px; font-weight: 800; color: #059669;
+      background: #dcfce7; padding: 3px 10px; border-radius: 50px; width: max-content;
+      animation: coachIn 0.35s 0.15s both;
+    }
+
+    .coach-body { padding: 4px 18px 16px; }
+    .coach-sec { margin-top: 14px; }
+    .coach-sec-head {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 12.5px; font-weight: 800; letter-spacing: 0.3px; text-transform: uppercase;
+    }
+    .coach-sec.good .coach-sec-head { color: #059669; }
+    .coach-ros { margin: 7px 0 0; font-size: 14.5px; color: var(--ink); line-height: 1.6; }
+    .coach-lift-list { list-style: none; padding: 0; margin: 9px 0 0; display: flex; flex-direction: column; gap: 8px; }
+    .coach-lift-list li {
+      position: relative; padding: 10px 12px 10px 40px;
+      background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px;
+      font-size: 14px; color: #422f06; line-height: 1.5;
+    }
+    .coach-lift-list li::before {
+      content: '?'; position: absolute; left: 11px; top: 10px;
+      width: 21px; height: 21px; border-radius: 50%;
+      background: #f59e0b; color: white; font-weight: 800; font-size: 12px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .coach-lift-head { color: #b45309; }
+    .coach-next {
+      margin-top: 14px; padding: 11px 14px;
+      background: linear-gradient(135deg, #eef2ff, #faf5ff);
+      border: 1px solid #e0e7ff; border-radius: 12px;
+      font-size: 14px; color: #3730a3; font-weight: 600;
+      display: flex; align-items: flex-start; gap: 8px; line-height: 1.5;
+    }
+    .coach-followups { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+    .coach-chip {
+      border: 1px solid var(--line); background: white; border-radius: 50px;
+      padding: 8px 14px; font-size: 13px; font-weight: 600; color: var(--ink-soft);
+      cursor: pointer; font-family: inherit; transition: all 0.18s ease;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .coach-chip:hover { border-color: #6d28d9; color: #6d28d9; background: #faf5ff; transform: translateY(-1px); }
+    .coach-chip:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .coach-feedback, .coach-rise { animation: none; }
+      .coach-ring-fill { transition: none; }
+      .coach-live { animation: none; }
+    }
+
+    /* === Mini-spil: gæt-og-få-feedback (Spot AI'en / Trygt eller hemmeligt) === */
+    .guess-game {
+      border: 1px solid var(--line); border-radius: 18px; background: white;
+      box-shadow: var(--shadow-md); overflow: hidden; margin: 1.25rem 0;
+    }
+    .guess-head {
+      padding: 14px 18px; color: white; display: flex; align-items: center; gap: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+    }
+    .guess-head-emoji { font-size: 22px; flex-shrink: 0; }
+    .guess-head-title { font-size: 15px; font-weight: 800; }
+    .guess-head-sub { font-size: 12.5px; opacity: 0.9; }
+    .guess-progress { margin-left: auto; display: flex; gap: 5px; flex-shrink: 0; }
+    .guess-dot { width: 11px; height: 11px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s, box-shadow 0.2s; }
+    .guess-dot.current { background: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
+    .guess-dot.ok { background: #4ade80; box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
+    .guess-dot.no { background: #f87171; box-shadow: 0 0 0 2px rgba(255,255,255,0.25); }
+
+    .guess-stage { padding: 22px 18px; }
+    .guess-card {
+      text-align: center; padding: 24px 16px; border-radius: 14px;
+      background: var(--bg-warm); border: 1px solid var(--line-soft);
+      margin-bottom: 16px; animation: guessIn 0.22s ease-out;
+    }
+    @keyframes guessIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    .guess-card-emoji { font-size: 44px; line-height: 1; }
+    .guess-card-label { font-size: 19px; font-weight: 700; color: var(--ink); margin-top: 10px; }
+
+    .guess-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .guess-btn {
+      padding: 14px 12px; border-radius: 12px; border: 2px solid var(--line);
+      background: white; color: var(--ink); font-size: 15px; font-weight: 700;
+      font-family: inherit; cursor: pointer; transition: all 0.15s ease;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .guess-btn:hover:not(:disabled) { border-color: var(--primary); transform: translateY(-1px); }
+    .guess-btn:disabled { cursor: default; }
+    .guess-btn.correct { border-color: #059669; background: #dcfce7; color: #065f46; }
+    .guess-btn.wrong { border-color: #dc2626; background: #fee2e2; color: #991b1b; animation: guessShake 0.3s; }
+    @keyframes guessShake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+
+    .guess-feedback {
+      margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+      font-size: 14.5px; line-height: 1.55; display: none; animation: guessIn 0.22s ease-out;
+    }
+    .guess-feedback.show { display: block; }
+    .guess-feedback.ok { background: #dcfce7; color: #065f46; border: 1px solid #86efac; }
+    .guess-feedback.no { background: #fff7ed; color: #9a3412; border: 1px solid #fed7aa; }
+    .guess-feedback b { font-weight: 800; }
+
+    .guess-next {
+      margin-top: 14px; width: 100%; padding: 12px; border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-deep));
+      color: white; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;
+      display: none; transition: all 0.15s ease;
+    }
+    .guess-next.show { display: block; }
+    .guess-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,99,235,0.3); }
+
+    .guess-done { text-align: center; padding: 14px 8px; animation: guessIn 0.25s ease-out; }
+    .guess-done-emoji { font-size: 48px; }
+    .guess-done-score { font-size: 22px; font-weight: 800; color: var(--ink); margin-top: 8px; }
+    .guess-done-msg { font-size: 15px; color: var(--ink-soft); margin-top: 6px; line-height: 1.55; }
+    .guess-retry {
+      margin-top: 16px; padding: 10px 22px; border: 1.5px solid var(--line); background: white;
+      border-radius: 50px; font-size: 14px; font-weight: 700; color: var(--ink-soft);
+      font-family: inherit; cursor: pointer; transition: all 0.15s ease;
+    }
+    .guess-retry:hover { border-color: var(--primary); color: var(--primary); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .guess-card, .guess-feedback, .guess-done { animation: none; }
+      .guess-btn.wrong { animation: none; }
+    }
+
+    /* === Punkt 4: AI-sandkasse === */
+    .sbx-presets { display: flex; flex-wrap: wrap; gap: 8px; padding: 0 1rem 0.85rem; }
+    .sbx-celebrate {
+      margin: 6px 0 2px; padding: 10px 14px; border-radius: 12px; text-align: center;
+      background: linear-gradient(135deg, #eef2ff, #faf5ff); border: 1px solid #e0e7ff;
+      color: #3730a3; font-size: 14px; font-weight: 700; line-height: 1.5;
+      animation: guessIn 0.25s ease-out;
+    }
+    @media (prefers-reduced-motion: reduce) { .sbx-celebrate { animation: none; } }
+
+    .sbx-note { font-size: 13px; color: var(--ink-mute); margin: 10px 2px 0; line-height: 1.5; }
+
+    /* === Idé 4: "Modul gennemført"-kvittering === */
+    .module-recap {
+      position: fixed; top: 80px; left: 50%;
+      transform: translateX(-50%) translateY(-12px); opacity: 0;
+      background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+      color: white; padding: 12px 22px; border-radius: 50px;
+      font-weight: 800; font-size: 15px; box-shadow: 0 10px 30px rgba(37,99,235,0.35);
+      z-index: 200; pointer-events: none; display: flex; align-items: center; gap: 8px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .module-recap.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+    .module-recap-emoji { font-size: 18px; }
+    @media (prefers-reduced-motion: reduce) { .module-recap { transition: opacity 0.2s; } }
 
     .summary-list { list-style: none; padding: 0; }
     .summary-list li {
@@ -1430,15 +1607,9 @@
   <section class="scene" id="scene-course">
 
     <div class="progress-bar-wrap">
-      <div class="progress-steps">
-        <div class="progress-step active" id="bar-1"></div>
-        <div class="progress-step" id="bar-2"></div>
-        <div class="progress-step" id="bar-3"></div>
-        <div class="progress-step" id="bar-4"></div>
-        <div class="progress-step" id="bar-5"></div>
-        <div class="progress-step" id="bar-6"></div>
-      </div>
-      <div class="progress-label" id="progressLabel">Modul 1 af 5</div>
+      <span class="progress-label" id="progressLabel">Modul 1 af 5</span>
+      <div class="progress-pill-bar"><div class="progress-pill-fill" id="progressFill" style="width:17%"></div></div>
+      <span class="progress-pill-pct" id="progressPct">17%</span>
     </div>
 
     <div class="module-nav">
@@ -1454,32 +1625,22 @@
     <div class="module-section active" id="module-1">
       <div class="content">
         <div class="module-header">
-          <div class="module-label">Modul 1 · Ca. 8 minutter</div>
+          <div class="module-label">Modul 1 · Ca. 5 minutter</div>
           <h2 class="module-title">Hvad er AI? 🧠</h2>
           <p class="module-intro">Kunstig intelligens lyder avanceret — men du møder det allerede hver dag uden at tænke over det. Lad os starte helt blødt.</p>
         </div>
 
-        <h3>AI er ikke nyt — du bruger det allerede</h3>
-        <div class="two-col">
-          <div class="col-card green">
-            <div class="col-card-title">🤖 Det er AI</div>
-            <ul>
-              <li>Netflix anbefaler film</li>
-              <li>GPS finder hurtigste rute</li>
-              <li>Telefonen genkender dit ansigt</li>
-              <li>Spam-filteret i din mail</li>
-            </ul>
-          </div>
-          <div class="col-card red">
-            <div class="col-card-title">❌ Det er IKKE AI</div>
-            <ul>
-              <li>En lommeregner</li>
-              <li>Et almindeligt skriveprogram</li>
-              <li>Din alarm der ringer kl. 7</li>
-              <li>En statisk hjemmeside</li>
-            </ul>
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-body">
+            <div class="callout-title">Du skal ikke installere eller oprette noget endnu</div>
+            <p class="callout-text">I Modul 1 og 2 lærer du det grundlæggende — og du får endda lov at prøve en rigtig AI undervejs. I <strong>Modul 3</strong> opretter du så din egen konto. Så slap af, det hele kommer i den rigtige rækkefølge.</p>
           </div>
         </div>
+
+        <h3>Er det AI — eller ej? 🔎</h3>
+        <p>AI er ikke nyt — du møder det allerede hver dag uden at tænke over det. Prøv selv: er det her AI eller ej? Tryk på dit svar, så får du det at vide med det samme.</p>
+        <div class="guess-game" id="gameSpotAI"></div>
 
         <h3>Der findes mange AI‑chatbots — her er nogle af dem</h3>
         <p>En AI‑chatbot er et program du kan skrive til ligesom en SMS — og den svarer dig. Der findes mange forskellige. Her er de fem mest brugte i 2026:</p>
@@ -1533,43 +1694,42 @@
           </div>
         </div>
 
-        <h3>Er AI sikkert at bruge?</h3>
-        <p>Ja — for langt de fleste hverdagsbrug er AI helt sikkert. Du behøver ikke være bange for det. Tænk på en AI‑chatbot som en venlig medarbejder bag en skranke: du behøver ikke fortælle dem dit CPR‑nummer for at få hjælp.</p>
+        <h3>Prøv en AI nu — lige her 🚀</h3>
+        <p>Du behøver ikke oprette noget eller logge ind. Tryk på et af spørgsmålene herunder, eller skriv dit eget — så svarer en rigtig AI dig med det samme. Helt trygt.</p>
 
-        <div class="two-col">
-          <div class="col-card green">
-            <div class="col-card-title">✅ Du kan trygt</div>
-            <ul>
-              <li>Stille generelle spørgsmål</li>
-              <li>Få hjælp til at skrive en mail</li>
-              <li>Bede om opskrifter eller ideer</li>
-              <li>Få noget forklaret enkelt</li>
-            </ul>
+        <div class="ai-chat-box">
+          <div class="ai-chat-header">
+            <div class="ai-chat-header-icon">🤖</div>
+            <div>
+              <div class="ai-chat-header-title">Din første AI-samtale</div>
+              <div class="ai-chat-header-sub">Prøv dig frem — der kan ikke gå noget galt</div>
+            </div>
+            <span class="coach-live" title="Online"></span>
           </div>
-          <div class="col-card amber">
-            <div class="col-card-title">🛡️ Vær opmærksom på</div>
-            <ul>
-              <li>At du selv vælger hvad du deler</li>
-              <li>Aldrig dele CPR eller adgangskoder</li>
-              <li>At dobbelttjekke vigtige fakta</li>
-              <li>Vi lærer mere om sikkerhed i Modul 2 og 3</li>
-            </ul>
+          <div class="ai-chat-messages" id="sbxMessages">
+            <div class="ai-msg bot">
+              <div class="ai-msg-avatar">🤖</div>
+              <div class="ai-msg-bubble">Hej! Jeg er en AI. Stil mig et spørgsmål — tryk på et forslag herunder, eller skriv dit eget. Der er ikke noget der kan gå galt 🙂</div>
+            </div>
+          </div>
+          <div class="sbx-presets">
+            <button class="coach-chip" onclick="sbxPreset('Foreslå en nem aftensmad jeg kan lave i aften')">🍝 Foreslå en nem aftensmad</button>
+            <button class="coach-chip" onclick="sbxPreset('Forklar helt enkelt hvad en browser er')">💻 Hvad er en browser?</button>
+            <button class="coach-chip" onclick="sbxPreset('Skriv en kort og varm fødselsdagshilsen til min ven')">🎂 Skriv en fødselsdagshilsen</button>
+          </div>
+          <div class="ai-chat-input-wrap">
+            <textarea id="sbxInput" class="ai-chat-input" rows="1" placeholder="Skriv dit spørgsmål her…"></textarea>
+            <button class="ai-chat-send" id="sbxSend" onclick="sbxSend()" aria-label="Send">➤</button>
           </div>
         </div>
+
+        <p class="sbx-note">🔒 Husk: skriv ikke personlige oplysninger som CPR, adgangskoder eller kortnumre — du lærer mere om sikkerhed i Modul 2.</p>
 
         <div class="callout tip">
           <div class="callout-icon">🤝</div>
           <div class="callout-body">
             <div class="callout-title">Tænk på AI som en hjælpsom assistent</div>
             <p class="callout-text">AI bliver aldrig træt, dømmer dig aldrig, og har altid tid til dig. Du kan stille det samme spørgsmål 10 gange uden at den bliver irriteret. Det er din private, tålmodige hjælper — på dansk.</p>
-          </div>
-        </div>
-
-        <div class="callout exercise">
-          <div class="callout-icon">✏️</div>
-          <div class="callout-body">
-            <div class="callout-title">Øvelse — find AI i din hverdag</div>
-            <p class="callout-text">Tænk på din dag i går. Skriv 2–3 steder du mødte AI uden at tænke over det — fx Netflix, GPS eller ansigtsgenkendelse. Du kan skrive det på papir eller i din telefon.</p>
           </div>
         </div>
 
@@ -1582,7 +1742,8 @@
               <li>Du møder allerede AI hver dag (Netflix, GPS, ansigtsgenkendelse)</li>
               <li>De 5 mest brugte AI‑chatbots: Claude, ChatGPT, Gemini, DeepSeek, Copilot</li>
               <li>Vi anbefaler at starte med Claude — den er tryg og god til nybegyndere</li>
-              <li>AI er sikkert at bruge — du bestemmer selv hvad du deler</li>
+              <li>Du prøvede din første rigtige AI-samtale — helt trygt og uden login</li>
+              <li>I Modul 2 lærer du hvad du trygt kan dele med en AI</li>
             </ul>
           </div>
         </div>
@@ -1613,31 +1774,9 @@
           </div>
         </div>
 
-        <h3>Det skal du ALDRIG dele med en AI</h3>
-        <div class="two-col">
-          <div class="col-card red">
-            <div class="col-card-title">🔴 Del ALDRIG</div>
-            <ul>
-              <li>CPR‑nummer</li>
-              <li>Adgangskoder &amp; pinkoder</li>
-              <li>Kreditkort &amp; bankoplysninger</li>
-              <li>NemID/MitID‑oplysninger</li>
-              <li>Fulde navne på familie eller kollegaer uden samtykke</li>
-              <li>Sundhedsoplysninger med navn på</li>
-            </ul>
-          </div>
-          <div class="col-card green">
-            <div class="col-card-title">🟢 Det er fint at dele</div>
-            <ul>
-              <li>Dit fornavn (hvis du vil)</li>
-              <li>Din alder (groft sagt, fx "i 70'erne")</li>
-              <li>En tekst du vil have hjælp til</li>
-              <li>En opskrift eller ide</li>
-              <li>Generelle hverdagsspørgsmål</li>
-              <li>Din interesse eller hobby</li>
-            </ul>
-          </div>
-        </div>
+        <h3>Trygt eller hemmeligt? 🔒</h3>
+        <p>Den bedste måde at lære det på er at prøve. For hver ting: kan du trygt dele den med en AI — eller skal den holdes for dig selv? Tryk på dit svar.</p>
+        <div class="guess-game" id="gameSafety"></div>
 
         <h3>Sådan vælger du selv at "slukke" for at AI bruger dine samtaler</h3>
         <p>De fleste AI‑tjenester har en knap hvor du kan vælge om dine samtaler må bruges til at træne fremtidige modeller. Du kan slå det fra — det er din ret. Vi viser præcis hvor knappen er i Modul 3.</p>
@@ -1647,25 +1786,6 @@
           <div class="callout-body">
             <div class="callout-title">God tommelfingerregel</div>
             <p class="callout-text">Når du vil have hjælp til noget personligt — fx et brev til lægen — kan du sagtens skrive: <em>"Jeg er en kvinde i 70'erne der vil bede min læge om en tid"</em>. Du behøver ikke skrive dit fulde navn eller CPR for at få et godt svar.</p>
-          </div>
-        </div>
-
-        <div class="callout exercise">
-          <div class="callout-icon">✏️</div>
-          <div class="callout-body">
-            <div class="callout-title">Øvelse — sikkerhedstjek</div>
-            <p class="callout-text">Læs disse 3 sætninger og afgør hvilken der <strong>IKKE</strong> er sikker at sende til en AI:<br><br>
-              1. "Hjælp mig med at skrive en fødselsdagshilsen til min søn."<br>
-              2. "Mit CPR er 010150‑1234, kan du tjekke om jeg får pension?"<br>
-              3. "Forklar mig hvad et abonnement er."
-            </p>
-            <button onclick="this.nextElementSibling.style.display='block'; this.style.display='none';"
-              style="margin-top:12px; padding:10px 22px; background:#2563eb; color:white; border:none; border-radius:50px; cursor:pointer; font-size:15px; font-weight:700; box-shadow:0 4px 12px rgba(37,99,235,0.3); transition:all 0.2s;">
-              👁 Se svar
-            </button>
-            <div style="display:none; margin-top:12px; padding:14px 16px; background:#dcfce7; border-left:4px solid #059669; border-radius:10px; font-size:15px; color:#065f46;">
-              <strong>✅ Svar: Nummer 2</strong> — du må aldrig dele dit CPR‑nummer med en AI.
-            </div>
           </div>
         </div>
 
@@ -1704,11 +1824,10 @@
         <div class="steps-box">
           <div class="step-item"><div class="step-num">1</div><div class="step-text">Åbn din browser (Chrome, Safari, Edge — den du normalt bruger).</div></div>
           <div class="step-item"><div class="step-num">2</div><div class="step-text">Skriv <strong>claude.ai</strong> i adresselinjen øverst og tryk Enter.</div></div>
-          <div class="step-item"><div class="step-num">3</div><div class="step-text">Klik på den blå knap der hedder <strong>"Sign up"</strong> (det betyder "opret bruger").</div></div>
-          <div class="step-item"><div class="step-num">4</div><div class="step-text">Skriv din e‑mail‑adresse. Det er den samme du bruger til andre ting.</div></div>
-          <div class="step-item"><div class="step-num">5</div><div class="step-text">Vælg en adgangskode du kan huske. <strong>Skriv den ned</strong> et sikkert sted.</div></div>
-          <div class="step-item"><div class="step-num">6</div><div class="step-text">Åbn din e‑mail. Du har fået en mail fra Claude med en bekræftelseskode — klik på linket eller indtast koden.</div></div>
-          <div class="step-item"><div class="step-num">7</div><div class="step-text">Færdig! Du er logget ind. Tag et øjeblik og pust ud — du klarede det.</div></div>
+          <div class="step-item"><div class="step-num">3</div><div class="step-text">Klik på <strong>"Sign up"</strong> (det betyder "opret bruger"). Har du en Google‑konto, kan du klikke <strong>"Continue with Google"</strong> — så er du næsten i mål med det samme.</div></div>
+          <div class="step-item"><div class="step-num">4</div><div class="step-text">Ellers: skriv din e‑mail‑adresse (den du normalt bruger) og klik videre. <strong>Du skal ikke vælge en adgangskode</strong> — Claude bruger din e‑mail til at logge dig ind.</div></div>
+          <div class="step-item"><div class="step-num">5</div><div class="step-text">Åbn din e‑mail. Du har fået en mail fra Claude med et <strong>link og en kode</strong>. Klik på linket — eller skriv koden ind på siden.</div></div>
+          <div class="step-item"><div class="step-num">6</div><div class="step-text">Færdig! Du er logget ind. Tag et øjeblik og pust ud — du klarede det.</div></div>
         </div>
 
         <h3 class="with-tag" data-tag="Del 2">Slå dataindsamling fra (valgfrit, men anbefalet)</h3>
@@ -1913,47 +2032,26 @@
           </div>
         </div>
 
-        <h3>Få AI til at give feedback på dit eget prompt</h3>
-        <p>Det her er et fantastisk trick: bed AI'en om at give dig <strong>ærlig feedback</strong> på dit prompt. Kopier dette prompt og udfyld det med dit eget:</p>
-
-        <div class="copy-box">
-          <div class="copy-box-header">
-            <span class="copy-box-label">🎓 Få feedback på dit prompt</span>
-            <button class="copy-btn" onclick="copyText(this, 'Giv ærlig feedback på dette prompt som en nybegynder har skrevet. Fortæl hvad der er godt, hvad der mangler, og giv et forslag til hvordan det kunne blive bedre. Hold det kort og venligt.\n\nPromptet:\n(skriv dit prompt her)')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-              Kopier
-            </button>
-          </div>
-          <div class="copy-box-body">Giv ærlig feedback på dette prompt som en nybegynder har skrevet. Fortæl hvad der er godt, hvad der mangler, og giv et forslag til hvordan det kunne blive bedre. Hold det kort og venligt.
-
-Promptet:
-(skriv dit prompt her)</div>
-        </div>
-
-        <h3>Eller prøv det direkte her — uden at logge ind</h3>
-        <p>Som ekstra hjælp har vi indbygget en lille AI direkte i kurset. Skriv dit prompt herunder, og få feedback med det samme:</p>
+        <h3>Prøv det live — få en score på dit prompt</h3>
+        <p>Vi har bygget din egen prompt-coach direkte ind i kurset. Skriv et prompt, og få en <strong>score fra 1 til 10</strong>, ros for det du gør godt, og konkrete hints du selv kan bruge til at gøre det skarpere. Forbedr dit prompt og send det igen — kan du få scoren op? Ingen login nødvendig.</p>
 
         <div class="ai-chat-box">
           <div class="ai-chat-header">
-            <div class="ai-chat-header-icon">✨</div>
+            <div class="ai-chat-header-icon">🎓</div>
             <div>
               <div class="ai-chat-header-title">Prompt‑coach</div>
-              <div class="ai-chat-header-sub">Få ærlig feedback på dit prompt — direkte her</div>
+              <div class="ai-chat-header-sub">Din personlige sparringspartner — scorer dit prompt 1-10</div>
             </div>
+            <span class="coach-live" title="Online"></span>
           </div>
           <div class="ai-chat-messages" id="aiChatMessages">
             <div class="ai-msg bot">
-              <div class="ai-msg-avatar">✨</div>
-              <div class="ai-msg-bubble">Hej! Jeg er din prompt‑coach. Skriv et prompt herunder, så giver jeg dig venlig og ærlig feedback. Du kan også klikke på et af forslagene under feltet 👇</div>
+              <div class="ai-msg-avatar">🎓</div>
+              <div class="ai-msg-bubble">Hej 👋 Jeg er din prompt‑coach. Skriv et prompt herunder — fx noget du gerne vil have AI'en til at hjælpe dig med. Så giver jeg dig en score fra 1-10, fortæller hvad du gør godt, og hvordan du selv kan gøre det endnu skarpere. Klar? Skriv dit første forsøg 👇</div>
             </div>
           </div>
-          <div class="ai-chat-suggest">
-            <button class="ai-suggest-btn" onclick="setAiInput('Hjælp mig med at skrive en mail')">Hjælp mig med en mail</button>
-            <button class="ai-suggest-btn" onclick="setAiInput('Forklar hvad en computer er')">Forklar en computer</button>
-            <button class="ai-suggest-btn" onclick="setAiInput('Jeg er pensionist og vil bede min boligforening om at fjerne en gammel cykel der har stået i kælderen i over et år. Skriv en venlig mail til formanden, ca. 5 sætninger.')">Et godt prompt</button>
-          </div>
           <div class="ai-chat-input-wrap">
-            <textarea id="aiChatInput" class="ai-chat-input" rows="1" placeholder="Skriv dit prompt her — jeg giver feedback…"></textarea>
+            <textarea id="aiChatInput" class="ai-chat-input" rows="1" placeholder="Skriv dit prompt her — så scorer jeg det…"></textarea>
             <button class="ai-chat-send" id="aiChatSend" onclick="sendAiMsg()" aria-label="Send">➤</button>
           </div>
         </div>
@@ -2133,11 +2231,7 @@ Promptet:
         <div class="exam-hero">
           <div class="exam-hero-cap">🎓</div>
           <h2>Tillykke — du er klar til eksamen!</h2>
-          <p>Du har gennemført alle 5 moduler. Nu er det tid til at bevise hvad du har lært — og få dit officielle bevis.</p>
-          <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-d.html" class="btn-exam-big">
-            Start eksamen
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          </a>
+          <p>Du har gennemført alle 5 moduler. Læs lige det her igennem først — så ved du præcis hvad der venter. Når du er klar, finder du <strong>"Start eksamen"</strong>‑knappen nederst på siden.</p>
         </div>
 
         <h3>Eksamen er opdelt i 2 dele</h3>
@@ -2200,8 +2294,9 @@ Promptet:
           <div class="final-cta-icon">🍀</div>
           <div class="final-cta-title">Held og lykke!</div>
           <div class="final-cta-desc">Du har gjort dig fortjent til det. Klik nedenfor og kom i gang.</div>
-          <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-d.html" class="btn-nav btn-exam" style="display: inline-flex; text-decoration: none;">
-            Åbn eksamen →
+          <a href="https://magnuscode-ai.github.io/ai-kursus/eksamen-d.html" class="btn-exam-big" style="text-decoration: none;">
+            Start eksamen
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           </a>
         </div>
 
@@ -2274,21 +2369,31 @@ Promptet:
     }, 2200);
   });
 
+  let lastModule = 1;
+  function showRecap(completedNum) {
+    const t = document.createElement('div');
+    t.className = 'module-recap';
+    t.innerHTML = `<span class="module-recap-emoji">🎉</span> Modul ${completedNum} gennemført!`;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, 2200);
+  }
+
   function showModule(num, skipTransition) {
     document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
     document.getElementById('module-' + num).classList.add('active');
     const tab = document.querySelector(`.module-tab[data-mod="${num}"]`);
     if (tab) tab.classList.add('active');
-    for (let i = 1; i <= 6; i++) {
-      const bar = document.getElementById('bar-' + i);
-      if (!bar) continue;
-      if (i < num) bar.className = 'progress-step done';
-      else if (i === num) bar.className = 'progress-step active';
-      else bar.className = 'progress-step';
-    }
     const labels = ['Modul 1 af 5', 'Modul 2 af 5', 'Modul 3 af 5', 'Modul 4 af 5', 'Modul 5 af 5', 'Eksamen'];
     document.getElementById('progressLabel').textContent = labels[num - 1];
+    const pct = Math.round((num / 6) * 100);
+    const fill = document.getElementById('progressFill');
+    const pctEl = document.getElementById('progressPct');
+    if (fill) fill.style.width = pct + '%';
+    if (pctEl) pctEl.textContent = pct + '%';
+    if (num === lastModule + 1 && num >= 2 && num <= 6) showRecap(lastModule);
+    lastModule = num;
     window.scrollTo({ top: 0, behavior: skipTransition ? 'auto' : 'smooth' });
     return false;
   }
@@ -2314,13 +2419,6 @@ Promptet:
       btn.innerHTML = '✓ Kopieret!';
       setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = '📋 Kopier'; }, 2000);
     });
-  }
-
-  function setAiInput(text) {
-    const inp = document.getElementById('aiChatInput');
-    inp.value = text;
-    inp.focus();
-    autoGrow(inp);
   }
 
   function autoGrow(el) {
@@ -2359,23 +2457,126 @@ Promptet:
     if (t) t.remove();
   }
 
+  const COACH_WORKER_URL = 'https://learnai-proxy.augustgadedk.workers.dev';
+  let coachLastPrompt = '';
+  let coachLastScore = null;
+
+  async function coachCallWorker(content, maxTokens) {
+    const res = await fetch(COACH_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: maxTokens,
+        messages: [{ role: 'user', content }]
+      })
+    });
+    const data = await res.json();
+    return data.content?.[0]?.text || '';
+  }
+
+  function coachExtractJSON(raw) {
+    if (!raw) return null;
+    let s = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+    const a = s.indexOf('{'), b = s.lastIndexOf('}');
+    if (a === -1 || b === -1) return null;
+    try { return JSON.parse(s.slice(a, b + 1)); } catch (e) { return null; }
+  }
+
+  function coachScoreMeta(score) {
+    if (score <= 3) return { color: '#dc2626', word: 'Godt forsøg', sub: 'Vi bygger videre herfra' };
+    if (score <= 5) return { color: '#d97706', word: 'På vej', sub: 'Du har fat i det' };
+    if (score <= 7) return { color: '#16a34a', word: 'Stærkt', sub: 'Flot prompt' };
+    return { color: '#059669', word: 'Fremragende', sub: 'Næsten en prof!' };
+  }
+
+  function appendCoachCard(d) {
+    const wrap = document.getElementById('aiChatMessages');
+    let score = Math.round(Number(d.score));
+    if (!Number.isFinite(score)) score = 1;
+    score = Math.max(1, Math.min(10, score));
+    const meta = coachScoreMeta(score);
+    const circ = 2 * Math.PI * 34;
+    const offset = circ * (1 - score / 10);
+
+    let lifts = Array.isArray(d.loft) ? d.loft.filter(Boolean) : (d.loft ? [d.loft] : []);
+    lifts = lifts.slice(0, 3);
+    const liftHtml = lifts.length
+      ? `<div class="coach-sec"><div class="coach-sec-head coach-lift-head">🎯 Sådan løfter du det selv</div><ul class="coach-lift-list">${lifts.map(() => '<li></li>').join('')}</ul></div>`
+      : '';
+
+    let riseHtml = '';
+    if (coachLastScore !== null && score > coachLastScore) {
+      riseHtml = `<div class="coach-rise">📈 +${score - coachLastScore} siden sidst — flot fremgang!</div>`;
+    }
+
+    const el = document.createElement('div');
+    el.className = 'coach-feedback';
+    el.innerHTML = `
+      <div class="coach-top">
+        <div class="coach-ring">
+          <svg width="78" height="78" viewBox="0 0 78 78">
+            <circle class="coach-ring-track" cx="39" cy="39" r="34" fill="none" stroke-width="8"/>
+            <circle class="coach-ring-fill" cx="39" cy="39" r="34" fill="none" stroke-width="8" stroke="${meta.color}" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${circ.toFixed(1)}"/>
+          </svg>
+          <div class="coach-ring-num"><b style="color:${meta.color}">${score}</b><span>/10</span></div>
+        </div>
+        <div class="coach-verdict">
+          <div class="coach-verdict-word" style="color:${meta.color}">${meta.word}</div>
+          <div class="coach-verdict-sub">${meta.sub}</div>
+          ${riseHtml}
+        </div>
+      </div>
+      <div class="coach-body">
+        <div class="coach-sec good"><div class="coach-sec-head">👏 Det gør du godt</div><p class="coach-ros"></p></div>
+        ${liftHtml}
+        <div class="coach-next"><span>💡</span><span class="coach-next-txt"></span></div>
+        <div class="coach-followups">
+          <button class="coach-chip" onclick="coachFollowup(this,'why')">🤔 Hvorfor den score?</button>
+          <button class="coach-chip" onclick="coachFollowup(this,'practice')">🏋️ Hvordan øver jeg mig?</button>
+        </div>
+      </div>`;
+
+    el.querySelector('.coach-ros').textContent = d.ros || 'Godt klaret at turde skrive et prompt — det er første skridt!';
+    el.querySelector('.coach-next-txt').textContent = d.naeste || 'Prøv at forbedre dit prompt herover og send det igen — kan du få scoren op?';
+    el.querySelectorAll('.coach-lift-list li').forEach((li, i) => { li.textContent = lifts[i]; });
+
+    wrap.appendChild(el);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      const f = el.querySelector('.coach-ring-fill');
+      if (f) f.style.strokeDashoffset = offset.toFixed(1);
+    }));
+    wrap.scrollTop = wrap.scrollHeight;
+    coachLastScore = score;
+  }
+
   async function sendAiMsg() {
     const inp = document.getElementById('aiChatInput');
     const sendBtn = document.getElementById('aiChatSend');
     const text = inp.value.trim();
     if (!text) return;
     appendMsg('user', text);
+    coachLastPrompt = text;
     inp.value = '';
     autoGrow(inp);
     sendBtn.disabled = true;
     appendTyping();
 
-    const coachPrompt = `Du er en venlig prompt-coach på dansk for ældre nybegyndere til AI. Brugeren har skrevet et prompt og vil have ærlig, kort, opmuntrende feedback. Svar på dansk i 4-6 sætninger. Strukturer som:
-1. Hvad fungerer godt (start positivt)
-2. Hvad mangler (vær specifik men venlig)
-3. Et konkret forslag til forbedring (omskriv kort hvis du kan)
+    const coachPrompt = `Du er "Prompt-coach" — en varm, professionel sparringspartner der lærer danske nybegyndere at skrive skarpe prompts til AI. Mange brugere er 65+ og helt nye, så vær tålmodig, opmuntrende og konkret.
 
-Brug et varmt, tålmodigt sprog. Brugeren er måske 65+ og helt ny til AI.
+Vurder brugerens prompt på BEGYNDERNIVEAU ud fra de 3 grundregler:
+1) HVEM: er der rolle/kontekst (hvem er jeg, hvem skal svaret bruges til)?
+2) HVAD: er opgaven klar og specifik?
+3) FORMAT: er der sagt noget om længde, tone, sprog eller form?
+
+Giv en score fra 1 til 10. Vær gavmild og motiverende: et tomt eller meget uklart prompt ligger 2-4; et fint begynder-prompt der rammer alle 3 regler ligger 8-10.
+
+ABSOLUT REGEL: Du må ALDRIG skrive et færdigt eller forbedret prompt til brugeren, og aldrig vise hvordan en omskrivning kunne lyde. Brugeren skal selv forbedre sit prompt ud fra dine hints. Giv kun spørgsmål og pejlemærker — fx "Har du fortalt hvem svaret er til?" — aldrig en løsning.
+
+Hvis teksten slet ikke er et prompt (fx bare "hej"), så giv en lav score og forklar venligt hvad et prompt er, og inviter til at skrive en rigtig opgave.
+
+Svar KUN med ren, gyldig JSON i præcis dette format — ingen markdown, ingen baktegn, ingen tekst udenfor:
+{"score": <heltal 1-10>, "ros": "<1-2 sætninger om hvad der konkret er godt ved netop dette prompt>", "loft": ["<hint 1 som et spørgsmål/pejlemærke, ALDRIG en omskrivning>", "<hint 2 hvis relevant>"], "naeste": "<1 kort opmuntrende linje der inviterer til at prøve igen og løfte scoren>"}
 
 Brugerens prompt:
 """
@@ -2383,24 +2584,252 @@ ${text}
 """`;
 
     try {
-      const res = await fetch('https://learnai-proxy.augustgadedk.workers.dev', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-haiku-4-5-20251001',
-          max_tokens: 400,
-          messages: [{ role: 'user', content: coachPrompt }]
-        })
-      });
-      const data = await res.json();
-      const reply = data.content?.[0]?.text || 'Beklager — jeg kunne ikke svare lige nu.';
+      const raw = await coachCallWorker(coachPrompt, 500);
+      const data = coachExtractJSON(raw);
       removeTyping();
-      appendMsg('bot', reply);
+      if (data && typeof data.score !== 'undefined') {
+        appendCoachCard(data);
+      } else {
+        appendMsg('bot', raw || 'Beklager — jeg kunne ikke score lige nu. Prøv igen om et øjeblik.');
+      }
     } catch (err) {
       removeTyping();
-      appendMsg('bot', 'Beklager — jeg kunne ikke svare lige nu. Prøv igen om et øjeblik, eller kopier dit prompt og prøv det direkte i Claude på claude.ai.');
+      appendMsg('bot', 'Beklager — forbindelsen drillede. Prøv igen om et øjeblik, eller skriv dit prompt direkte i Claude på claude.ai.');
     }
     sendBtn.disabled = false;
+  }
+
+  async function coachFollowup(btn, kind) {
+    const card = btn.closest('.coach-feedback');
+    if (card) card.querySelectorAll('.coach-chip').forEach(c => c.disabled = true);
+    appendTyping();
+
+    let prompt;
+    if (kind === 'why') {
+      prompt = `Du er "Prompt-coach". Brugeren skrev dette prompt:
+"""${coachLastPrompt}"""
+Du gav det scoren ${coachLastScore}/10. Forklar kort og varmt på dansk (3-4 sætninger) HVORFOR — hvad trak scoren op, og hvad trak den ned. Skriv ALDRIG et færdigt forbedret prompt og vis aldrig en omskrivning. Kun almindelig tekst, ingen JSON.`;
+    } else {
+      prompt = `Du er "Prompt-coach". Giv 2-3 korte, konkrete øve-tips på dansk til en nybegynder der vil blive bedre til at skrive prompts — gerne en lille huskeregel eller daglig vane. Skriv ALDRIG et færdigt prompt de bare kan kopiere. Almindelig venlig tekst, maks 4 sætninger, ingen JSON.`;
+    }
+
+    try {
+      const raw = await coachCallWorker(prompt, 350);
+      removeTyping();
+      appendMsg('bot', raw || 'Beklager — jeg kunne ikke svare lige nu. Prøv igen om et øjeblik.');
+    } catch (e) {
+      removeTyping();
+      appendMsg('bot', 'Beklager — forbindelsen drillede. Prøv igen om et øjeblik.');
+    }
+  }
+
+  // === Mini-spil-motor (genbruges til Spot AI'en og Trygt eller hemmeligt) ===
+  function initGuessGame(mountId, cfg) {
+    const mount = document.getElementById(mountId);
+    if (!mount) return;
+    const items = cfg.items;
+    let idx = 0, score = 0, answered = false, results = [];
+
+    function dots() {
+      return '<div class="guess-progress">' + items.map((_, i) => {
+        let cls = '';
+        if (results[i] === 'ok') cls = 'ok';
+        else if (results[i] === 'no') cls = 'no';
+        else if (i === idx) cls = 'current';
+        return `<span class="guess-dot ${cls}"></span>`;
+      }).join('') + '</div>';
+    }
+    function header() {
+      return `<div class="guess-head"><span class="guess-head-emoji">${cfg.emoji}</span>`
+        + `<div><div class="guess-head-title">${cfg.title}</div><div class="guess-head-sub">${cfg.sub}</div></div>${dots()}</div>`;
+    }
+    function renderQuestion() {
+      const it = items[idx];
+      mount.innerHTML = header() + `<div class="guess-stage">
+        <div class="guess-card"><div class="guess-card-emoji">${it.emoji}</div><div class="guess-card-label"></div></div>
+        <div class="guess-options">
+          <button class="guess-btn" data-k="a">${cfg.optA.icon} ${cfg.optA.label}</button>
+          <button class="guess-btn" data-k="b">${cfg.optB.icon} ${cfg.optB.label}</button>
+        </div>
+        <div class="guess-feedback"></div>
+        <button class="guess-next">Næste →</button>
+      </div>`;
+      mount.querySelector('.guess-card-label').textContent = it.label;
+      answered = false;
+      mount.querySelectorAll('.guess-btn').forEach(b => b.addEventListener('click', () => choose(b.dataset.k)));
+      mount.querySelector('.guess-next').addEventListener('click', nextQ);
+    }
+    function choose(k) {
+      if (answered) return;
+      answered = true;
+      const it = items[idx];
+      const correct = (k === it.answer);
+      if (correct) score++;
+      results[idx] = correct ? 'ok' : 'no';
+      const dotEls = mount.querySelectorAll('.guess-dot');
+      if (dotEls[idx]) { dotEls[idx].classList.remove('current'); dotEls[idx].classList.add(correct ? 'ok' : 'no'); }
+      mount.querySelectorAll('.guess-btn').forEach(b => {
+        b.disabled = true;
+        if (b.dataset.k === it.answer) b.classList.add('correct');
+        else if (b.dataset.k === k) b.classList.add('wrong');
+      });
+      const fb = mount.querySelector('.guess-feedback');
+      fb.className = 'guess-feedback show ' + (correct ? 'ok' : 'no');
+      const strong = document.createElement('b');
+      strong.textContent = correct ? '✅ Rigtigt! ' : '💡 Ikke helt — ';
+      fb.appendChild(strong);
+      fb.appendChild(document.createTextNode(it.why));
+      const nb = mount.querySelector('.guess-next');
+      nb.textContent = (idx === items.length - 1) ? 'Se resultat →' : 'Næste →';
+      nb.classList.add('show');
+    }
+    function nextQ() {
+      idx++;
+      if (idx >= items.length) renderDone();
+      else renderQuestion();
+    }
+    function renderDone() {
+      const total = items.length;
+      const emoji = score === total ? '🏆' : (score >= Math.ceil(total / 2) ? '🎉' : '💪');
+      mount.innerHTML = header() + `<div class="guess-stage"><div class="guess-done">
+        <div class="guess-done-emoji">${emoji}</div>
+        <div class="guess-done-score">${score} / ${total} rigtige</div>
+        <div class="guess-done-msg"></div>
+        <button class="guess-retry">Prøv igen</button>
+      </div></div>`;
+      mount.querySelector('.guess-done-msg').textContent = cfg.doneMsg(score, total);
+      mount.querySelector('.guess-retry').addEventListener('click', () => { idx = 0; score = 0; results = []; renderQuestion(); });
+    }
+    renderQuestion();
+  }
+
+  initGuessGame('gameSpotAI', {
+    emoji: '🔎', title: "Spot AI'en", sub: 'Er det AI — eller ej?',
+    optA: { icon: '🤖', label: 'Det er AI' },
+    optB: { icon: '⚙️', label: 'Ikke AI' },
+    items: [
+      { emoji: '🎬', label: 'Netflix anbefaler film til dig', answer: 'a', why: 'Netflix lærer hvad du kan lide og gætter hvad du vil se næste gang.' },
+      { emoji: '🧮', label: 'En lommeregner', answer: 'b', why: 'Den følger faste regneregler og lærer aldrig noget nyt.' },
+      { emoji: '🗺️', label: 'GPS finder den hurtigste rute', answer: 'a', why: 'Den vurderer trafikken og vælger den smarteste rute lige nu.' },
+      { emoji: '📱', label: 'Telefonen genkender dit ansigt', answer: 'a', why: 'Den er trænet til at genkende mønstrene i netop dit ansigt.' },
+      { emoji: '📝', label: 'Et almindeligt skriveprogram', answer: 'b', why: 'Det skriver kun det du selv taster — det forstår ikke hvad du mener.' },
+      { emoji: '⏰', label: 'Din alarm der ringer kl. 7', answer: 'b', why: 'Den gør præcis det samme hver dag uden at tænke eller lære.' },
+      { emoji: '📧', label: 'Spam-filteret i din mail', answer: 'a', why: 'Det lærer løbende at kende reklamer og svindel fra rigtige mails.' },
+      { emoji: '🌐', label: 'En statisk hjemmeside', answer: 'b', why: 'Den viser den samme faste tekst til alle — den tilpasser sig ikke.' }
+    ],
+    doneMsg: (s, t) => s === t ? 'Perfekt! Du har allerede AI-øjne — du kan spotte det i din hverdag.'
+      : (s >= Math.ceil(t / 2) ? 'Flot! Du er allerede god til at se hvornår noget er AI.'
+        : 'Godt forsøg! Det vigtigste: AI er noget der lærer og gætter — ikke bare faste regler.')
+  });
+
+  initGuessGame('gameSafety', {
+    emoji: '🔒', title: 'Trygt eller hemmeligt?', sub: 'Hvad kan du dele med en AI?',
+    optA: { icon: '🟢', label: 'Trygt at dele' },
+    optB: { icon: '🔴', label: 'Hold for dig selv' },
+    items: [
+      { emoji: '🆔', label: 'Dit CPR-nummer', answer: 'b', why: 'Det er din mest følsomme oplysning — del den aldrig med en AI.' },
+      { emoji: '😊', label: 'Dit fornavn', answer: 'a', why: 'Helt fint hvis du vil — dit fornavn er ikke følsomt.' },
+      { emoji: '🔑', label: 'Din adgangskode', answer: 'b', why: 'Ingen — heller ikke en AI — har brug for dine koder.' },
+      { emoji: '💳', label: 'Dit kreditkortnummer', answer: 'b', why: 'Bank- og kortoplysninger holder du altid for dig selv.' },
+      { emoji: '🍲', label: 'En opskrift du leder efter', answer: 'a', why: 'Et helt almindeligt hverdagsspørgsmål — bare spørg løs.' },
+      { emoji: '🎨', label: 'Din hobby eller interesse', answer: 'a', why: "Det hjælper faktisk AI'en med at give dig bedre svar." },
+      { emoji: '🔐', label: 'Dit MitID-login', answer: 'b', why: 'MitID er nøglen til alt det offentlige — den deler du aldrig.' },
+      { emoji: '🎂', label: 'Din alder, fx "i 70\'erne"', answer: 'a', why: 'Helt fint at sige groft — det hjælper AI med at ramme tonen.' }
+    ],
+    doneMsg: (s, t) => s === t ? 'Perfekt! Du ved præcis hvad du trygt kan dele — og hvad du holder for dig selv.'
+      : (s >= Math.ceil(t / 2) ? 'Godt klaret! Husk hovedreglen: følsomme tal og koder holder du for dig selv.'
+        : 'Godt forsøg! Tommelfingerregel: del aldrig CPR, koder eller bankoplysninger — resten er som regel fint.')
+  });
+
+  // === Punkt 4: tryg AI-sandkasse (rigtige svar via Worker, ingen login) ===
+  const SBX_WORKER_URL = 'https://learnai-proxy.augustgadedk.workers.dev';
+  const SBX_FALLBACK = "Ups — forbindelsen drillede lige nu, og det er slet ikke din skyld. Prøv at trykke på spørgsmålet igen om et øjeblik. (Når du opretter din egen konto i Modul 3, kan du altid skrive til AI'en på claude.ai.)";
+  let sbxBusy = false, sbxCelebrated = false, sbxCount = 0;
+  const SBX_LIMIT = 5;
+
+  function sbxAppend(role, text) {
+    const wrap = document.getElementById('sbxMessages');
+    const msg = document.createElement('div');
+    msg.className = 'ai-msg ' + role;
+    msg.innerHTML = `<div class="ai-msg-avatar">${role === 'user' ? '👤' : '🤖'}</div><div class="ai-msg-bubble"></div>`;
+    msg.querySelector('.ai-msg-bubble').textContent = text;
+    wrap.appendChild(msg);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+  function sbxTyping() {
+    const wrap = document.getElementById('sbxMessages');
+    const msg = document.createElement('div');
+    msg.className = 'ai-msg bot';
+    msg.innerHTML = '<div class="ai-msg-avatar">🤖</div><div class="ai-msg-bubble"><span class="ai-typing"><span></span><span></span><span></span></span></div>';
+    wrap.appendChild(msg);
+    wrap.scrollTop = wrap.scrollHeight;
+    return msg;
+  }
+  function sbxCelebrate() {
+    const wrap = document.getElementById('sbxMessages');
+    const note = document.createElement('div');
+    note.className = 'sbx-celebrate';
+    note.textContent = '🎉 Sådan! Du talte lige med en rigtig AI. I Modul 3 opretter du din egen konto.';
+    wrap.appendChild(note);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+  function sbxLockSandbox() {
+    const inp = document.getElementById('sbxInput');
+    const send = document.getElementById('sbxSend');
+    if (inp) { inp.disabled = true; inp.placeholder = 'Du har prøvet 5 spørgsmål — flot!'; }
+    if (send) send.disabled = true;
+    document.querySelectorAll('.sbx-presets .coach-chip').forEach(c => c.disabled = true);
+    const wrap = document.getElementById('sbxMessages');
+    const note = document.createElement('div');
+    note.className = 'sbx-celebrate';
+    note.textContent = '🎉 Det var 5 spørgsmål — godt prøvet! Vil du skrive mere, opretter du bare din egen konto i Modul 3 og bruger Claude frit.';
+    wrap.appendChild(note);
+    wrap.scrollTop = wrap.scrollHeight;
+  }
+  function sbxPreset(q) {
+    document.getElementById('sbxInput').value = q;
+    sbxSend();
+  }
+  async function sbxSend() {
+    if (sbxBusy || sbxCount >= SBX_LIMIT) return;
+    const inp = document.getElementById('sbxInput');
+    const q = inp.value.trim();
+    if (!q) return;
+    sbxBusy = true;
+    sbxCount++;
+    document.getElementById('sbxSend').disabled = true;
+    sbxAppend('user', q);
+    inp.value = '';
+    autoGrow(inp);
+    const typing = sbxTyping();
+
+    const prompt = `Du er en venlig AI-assistent. En dansk nybegynder skriver til en AI for allerførste gang. Svar varmt, enkelt og kort (3-5 sætninger) på dansk, uden svære ord, så det føles trygt og rart. Spørgsmål:\n\n${q}`;
+    try {
+      const res = await fetch(SBX_WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-haiku-4-5-20251001', max_tokens: 400, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const reply = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text : '';
+      typing.remove();
+      sbxAppend('bot', reply || SBX_FALLBACK);
+      if (reply && !sbxCelebrated) { sbxCelebrated = true; sbxCelebrate(); }
+    } catch (e) {
+      typing.remove();
+      sbxAppend('bot', SBX_FALLBACK);
+    }
+    document.getElementById('sbxSend').disabled = false;
+    sbxBusy = false;
+    if (sbxCount >= SBX_LIMIT) sbxLockSandbox();
+  }
+
+  const sbxInputEl = document.getElementById('sbxInput');
+  if (sbxInputEl) {
+    sbxInputEl.addEventListener('input', e => autoGrow(e.target));
+    sbxInputEl.addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sbxSend(); }
+    });
   }
 
   buildPuzzle();
