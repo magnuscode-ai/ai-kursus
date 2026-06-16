@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kursus D — System & byggeplan</title>
+<style>
+  :root{
+    --green:#2F5D45; --green-deep:#143a2c; --caramel:#B9772B; --ivory:#F3F0E7;
+    --gold:#E0B33D; --ink:#20312a; --muted:#6b7a70; --line:#ddd6c4;
+    --card:#fbf7ee; --done:#e3efe6; --done-border:#3f8a63; --done-text:#1f5238;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+    background:linear-gradient(160deg,#ece6d8,#e6dfce);
+    color:var(--ink); line-height:1.5; padding:28px 16px 60px; min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-family:Georgia,'Lora',serif;font-size:clamp(26px,4vw,36px);color:var(--green-deep);font-weight:700;letter-spacing:-0.01em}
+  .sub{color:var(--muted);margin-top:6px;font-size:15px}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .progress-wrap{margin:18px 0 8px}
+  .progress-track{height:12px;background:#d9d1bf;border-radius:50px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.12)}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--caramel),var(--gold));border-radius:50px;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+  .progress-label{font-size:14px;color:var(--muted);margin-top:7px;font-weight:600}
+  .progress-label b{color:var(--green-deep)}
+  .order{background:rgba(185,119,43,0.10);border:1px solid rgba(185,119,43,0.28);border-radius:12px;padding:12px 15px;font-size:13.5px;color:#5e4a2c;margin-bottom:26px}
+  .order b{color:var(--caramel)}
+  .lane{margin-bottom:14px}
+  .lane-label{display:flex;align-items:center;gap:9px;font-family:Georgia,serif;font-size:18px;color:var(--green-deep);font-weight:700;margin:22px 0 12px}
+  .lane-label .dot{width:11px;height:11px;border-radius:50%;background:var(--caramel);flex:none}
+  .arrow{text-align:center;color:#b9b09a;font-size:20px;margin:2px 0 4px;user-select:none}
+  .cards{display:grid;gap:11px}
+  .card{
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:14px 16px 14px 14px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;
+    transition:background .2s,border-color .2s,transform .12s,box-shadow .2s;
+    box-shadow:0 2px 8px rgba(20,52,40,0.05);
+  }
+  .card:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(20,52,40,0.10);border-color:#c9bfa3}
+  .card.done{background:var(--done);border-color:var(--done-border)}
+  .check{
+    flex:none;width:26px;height:26px;border-radius:50%;border:2px solid #c4bca6;background:#fff;
+    display:flex;align-items:center;justify-content:center;margin-top:2px;transition:.2s;
+  }
+  .check svg{width:15px;height:15px;stroke:#fff;stroke-width:3.2;fill:none;opacity:0;transition:.15s;stroke-linecap:round;stroke-linejoin:round}
+  .card.done .check{background:var(--done-border);border-color:var(--done-border)}
+  .card.done .check svg{opacity:1}
+  .body{flex:1;min-width:0}
+  .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .name{font-weight:700;font-size:16px;color:var(--ink)}
+  .card.done .name{color:var(--done-text)}
+  .tag{font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase}
+  .tag.ny{background:#e6ddf3;color:#5b3b8c}
+  .tag.bygget{background:#d8ecdd;color:#256b41}
+  .tag.opdater{background:#fbe7cf;color:#9a5a16}
+  .tag.eksisterer{background:#e3e0d6;color:#6b6450}
+  .tag.sidst{background:#f7dede;color:#9e3b3b}
+  .file{font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;color:var(--caramel);background:rgba(185,119,43,0.08);padding:1px 6px;border-radius:5px;display:inline-block;margin-top:4px}
+  .desc{font-size:13.5px;color:#4c5a51;margin-top:6px}
+  .note{font-size:12.5px;color:#8a6a3a;background:rgba(224,179,61,0.12);border-left:3px solid var(--gold);padding:5px 9px;border-radius:0 6px 6px 0;margin-top:7px}
+  .btn{background:none;border:1.5px solid #c4bca6;color:var(--muted);font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:50px;cursor:pointer;transition:.2s}
+  .btn:hover{border-color:var(--caramel);color:var(--caramel)}
+  .foot{text-align:center;color:#9a9382;font-size:12px;margin-top:30px}
+  @media(max-width:560px){ .card{padding:13px} .name{font-size:15px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>Kursus D — System & byggeplan</h1>
+      <p class="sub">Klik et felt for at farve det grønt når det er færdigt. Status gemmes automatisk.</p>
+    </div>
+    <button class="btn" id="resetBtn">Nulstil alt</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="fill"></div></div>
+    <div class="progress-label" id="plabel">Henter…</div>
+  </div>
+
+  <div class="order">
+    <b>Foreslået byggerækkefølge:</b> 1) Eksamen (Helt ny, del 1+2) → 2) Diplom/afslutning → 3) Niveau-vælger + omdøbning → 4) Kursus D Lidt øvet + eksamen → 5) Erfaren-siden → 6) Kursus D+ (salgsvideo allersidst).
+  </div>
+
+  <div id="board"></div>
+
+  <p class="foot">Skovkammer-overblik · status gemmes i denne tjekliste</p>
+</div>
+
+<script>
+const ITEMS = [
+  {g:"Indgang", id:"platform", name:"Platform (opdatering)", file:"platform.html", tag:"opdater", tagText:"Opdatér",
+   desc:"\u201CKursus D\u201D-knappen skal pege p\u00e5 niveau-v\u00e6lgeren herunder. Login kr\u00e6ves f\u00f8r man kan v\u00e6lge."},
+  {g:"Indgang", id:"vaelger", name:"Niveau-v\u00e6lger", file:"kursus-d.html", tag:"ny", tagText:"Ny",
+   desc:"Del 1: overskrift om hvorfor vi sp\u00f8rger om niveau (bedre oplevelse + l\u00e6r mest) + \u201CV\u00e6lg dit start niveau\u201D. Del 2\u20134: tre bokse (Helt ny / Lidt \u00f8vet / Erfaren) med tekst + knap.",
+   note:"Man skal v\u00e6re logget ind, f\u00f8r man n\u00e5r hertil."},
+
+  {g:"Spor 1 \u00b7 Helt ny (absolut begynder)", id:"begynder", name:"Kursus D \u2014 Helt ny", file:"kursus-d-begynder.html", tag:"bygget", tagText:"Bygget",
+   desc:"Kurset vi har bygget (omd\u00f8bt fra kursus-d.html). Ultra-nemt og roligt, 5 moduler. For den der aldrig har skrevet til AI og ikke har en konto."},
+  {g:"Spor 1 \u00b7 Helt ny (absolut begynder)", id:"eks1a", name:"Eksamen \u2014 Helt ny, del 1", file:"eksamen-d.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"Pr\u00f8ve del 1 (15 sp\u00f8rgsm\u00e5l). Skal have Skovkammer-designet som resten."},
+  {g:"Spor 1 \u00b7 Helt ny (absolut begynder)", id:"eks1b", name:"Eksamen \u2014 Helt ny, del 2", file:"eksamen-d-del2.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"Praktisk prompt-opgave + bevis. Skal have Skovkammer-designet."},
+  {g:"Spor 1 \u00b7 Helt ny (absolut begynder)", id:"diplom1", name:"Diplom / afslutning \u2014 Helt ny", file:"(ny side)", tag:"ny", tagText:"Ny",
+   desc:"Efter best\u00e5et pr\u00f8ve: fejring + bevis. Valg: tilbage til platform / Kursus C \u2014 ELLER k\u00f8b Kursus D+."},
+
+  {g:"Spor 2 \u00b7 Lidt \u00f8vet", id:"average", name:"Kursus D \u2014 Lidt \u00f8vet", file:"kursus-d-average.html", tag:"ny", tagText:"Ny",
+   desc:"Nyt kursus. M\u00e5lgruppe ~13\u201340, lidt mere teknisk. Samme layout/farver (evt. lysere / flere animationer). Bygges af modul 4+5 fra Helt ny + ekstra moduler."},
+  {g:"Spor 2 \u00b7 Lidt \u00f8vet", id:"eks2", name:"Eksamen \u2014 Lidt \u00f8vet", file:"eksamen-d-average.html", tag:"ny", tagText:"Ny",
+   desc:"Pr\u00f8ve for Lidt \u00f8vet-sporet (del 1 + 2)."},
+  {g:"Spor 2 \u00b7 Lidt \u00f8vet", id:"diplom2", name:"Diplom / afslutning \u2014 Lidt \u00f8vet", file:"(ny side)", tag:"ny", tagText:"Ny",
+   desc:"Fejring + bevis + n\u00e6ste skridt."},
+
+  {g:"Spor 3 \u00b7 Erfaren (\u201Cfor god til D\u201D)", id:"ekspert", name:"Kursus D \u2014 Erfaren (omdirig\u00e9r)", file:"kursus-d-ekspert.html", tag:"ny", tagText:"Ny",
+   desc:"Lille side: \u201CVi anbefaler ikke Kursus D \u2014 du er et niveau over.\u201D Knap 1: tag det alligevel \u2192 kursus-d-average.html. Knap 2: tilbage til platform / tag Kursus C (rammer dit niveau perfekt)."},
+
+  {g:"Bro mod Kursus C", id:"dplus", name:"Kursus D+", file:"kursus-dplus.html", tag:"ny", tagText:"Ny",
+   desc:"Betalt kursus (~189 kr). Bro mellem Lidt \u00f8vet-niveau og Kursus C \u2014 bedre designet, special-lavet til C-forberedelse. God vej hvis man ikke helt er klar til C endnu.",
+   note:"Forveksl ikke med C+ (kursus-cplus.html) \u2014 D+ er nyt og separat."},
+  {g:"Bro mod Kursus C", id:"eksdplus", name:"Eksamen D+", file:"eksamen-dplus.html", tag:"ny", tagText:"Ny",
+   desc:"Pr\u00f8ve for D+."},
+  {g:"Bro mod Kursus C", id:"video", name:"D+ salgsvideo", file:"(p\u00e5 D+-siden)", tag:"sidst", tagText:"Sidst",
+   desc:"Video man kan se F\u00d8R k\u00f8b. Laves allersidst."},
+
+  {g:"Endepunkt", id:"platformend", name:"Tilbage til platform / Kursus C", file:"platform.html \u00b7 kursus-c\u2026", tag:"eksisterer", tagText:"Eksisterer",
+   desc:"Endepunkt for alle spor. Erfarne og f\u00e6rdige sendes mod Kursus C."},
+];
+
+const KEY = 'kursusd-system-checklist-v1';
+const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
+let done = {};
+
+const CHECK_SVG = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+
+async function loadDone(){
+  if(hasStore){
+    try{ const r = await window.storage.get(KEY); if(r && r.value){ done = JSON.parse(r.value) || {}; } return; }catch(e){ /* ny / tom */ return; }
+  }
+  try{ const v = localStorage.getItem(KEY); if(v) done = JSON.parse(v) || {}; }catch(e){ /* ingen adgang */ }
+}
+async function saveDone(){
+  if(hasStore){
+    try{ await window.storage.set(KEY, JSON.stringify(done)); return; }catch(e){ /* stille fejl */ return; }
+  }
+  try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){ /* ingen adgang */ }
+}
+
+function render(){
+  const board = document.getElementById('board');
+  const groups = [];
+  ITEMS.forEach(it=>{ if(!groups.includes(it.g)) groups.push(it.g); });
+  let html = '';
+  groups.forEach((g, gi)=>{
+    if(gi>0) html += '<div class="arrow">\u2193</div>';
+    html += '<div class="lane"><div class="lane-label"><span class="dot"></span>'+g+'</div><div class="cards">';
+    ITEMS.filter(it=>it.g===g).forEach(it=>{
+      const d = !!done[it.id];
+      html += '<div class="card'+(d?' done':'')+'" data-id="'+it.id+'" role="button" tabindex="0" aria-pressed="'+d+'">'
+        + '<div class="check">'+CHECK_SVG+'</div>'
+        + '<div class="body">'
+        + '<div class="row1"><span class="name">'+it.name+'</span><span class="tag '+it.tag+'">'+it.tagText+'</span></div>'
+        + '<span class="file">'+it.file+'</span>'
+        + '<div class="desc">'+it.desc+'</div>'
+        + (it.note?('<div class="note">'+it.note+'</div>'):'')
+        + '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  board.innerHTML = html;
+  board.querySelectorAll('.card').forEach(c=>{
+    c.addEventListener('click', ()=>toggle(c.dataset.id));
+    c.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(c.dataset.id); } });
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = ITEMS.length;
+  const n = ITEMS.filter(it=>done[it.id]).length;
+  const pct = Math.round((n/total)*100);
+  document.getElementById('fill').style.width = pct+'%';
+  document.getElementById('plabel').innerHTML = '<b>'+n+' af '+total+'</b> sider f\u00e6rdige \u00b7 '+pct+'%';
+}
+
+function toggle(id){
+  done[id] = !done[id];
+  if(!done[id]) delete done[id];
+  const card = document.querySelector('.card[data-id="'+id+'"]');
+  if(card){ card.classList.toggle('done', !!done[id]); card.setAttribute('aria-pressed', !!done[id]); }
+  updateProgress();
+  saveDone();
+}
+
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(!confirm('Nulstil alle gr\u00f8nne markeringer?')) return;
+  done = {};
+  await saveDone();
+  render();
+});
+
+(async function init(){
+  await loadDone();
+  render();
+  if(!hasStore){
+    document.querySelector('.foot').textContent = 'Status gemmes i denne browser (pr. enhed).';
+  }
+})();
+</script>
+</body>
+</html>
