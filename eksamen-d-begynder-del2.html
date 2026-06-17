@@ -244,13 +244,13 @@
   .cert-next strong{color:var(--ink)}
 
   /* Help chat */
-  .help-chat-btn{position:fixed;bottom:1.4rem;right:1.4rem;z-index:200;display:inline-flex;align-items:center;gap:0.55rem;
+  .help-chat-btn{position:fixed;bottom:1.4rem;right:1.4rem;z-index:600;display:inline-flex;align-items:center;gap:0.55rem;
     background:linear-gradient(165deg,var(--brass-bright),var(--brass-deep));color:#2a2008;border:none;border-radius:99px;padding:0.8rem 1.2rem;
     font-family:var(--sans);font-weight:700;font-size:0.92rem;cursor:pointer;box-shadow:0 8px 22px rgba(0,0,0,0.3);transition:transform 0.2s ease}
   .help-chat-btn:hover{transform:translateY(-2px)}
   .help-chat-btn svg{width:20px;height:20px}
   @media(max-width:480px){.help-chat-btn .chat-label{display:none}.help-chat-btn{padding:0.85rem;border-radius:50%}}
-  .help-chat-box{position:fixed;bottom:1.4rem;right:1.4rem;z-index:201;width:360px;max-width:calc(100vw - 2rem);max-height:72vh;
+  .help-chat-box{position:fixed;bottom:1.4rem;right:1.4rem;z-index:601;width:360px;max-width:calc(100vw - 2rem);max-height:72vh;
     background:linear-gradient(180deg,var(--panel),var(--panel-2));border:1px solid var(--line);border-radius:var(--radius);
     box-shadow:var(--shadow-panel);display:none;flex-direction:column;overflow:hidden}
   .help-chat-box.open{display:flex}
@@ -289,6 +289,38 @@
   .toast.error{background:var(--wrong);color:#fff}
   .toast.out{opacity:0;transition:opacity 0.3s ease}
   @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ---- Fuldskærms-overlays: dommer / ikke bestået / bestået ---- */
+  .overlay{position:fixed;inset:0;z-index:500;display:none;align-items:center;justify-content:center;text-align:center;padding:2rem;
+    background:radial-gradient(120% 90% at 50% 40%, var(--bg-2), var(--bg-deep))}
+  .overlay.show{display:flex}
+  .overlay-inner{position:relative;z-index:2;max-width:520px;color:var(--on-green)}
+  .overlay-label{font-size:0.82rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--brass-bright);margin-bottom:0.8rem}
+  .overlay-title{font-family:var(--serif);font-size:2.1rem;font-weight:600;margin-bottom:0.7rem;line-height:1.2}
+  @media(max-width:560px){.overlay-title{font-size:1.6rem}}
+  .overlay-sub{font-size:1.05rem;line-height:1.6;color:var(--on-green-soft);max-width:42ch;margin:0 auto}
+  .overlay .btn-row{justify-content:center;margin-top:1.8rem}
+  .overlay-particles{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+  .overlay-particles i{position:absolute;display:block;width:6px;height:6px;border-radius:50%;background:rgba(216,183,94,0.5);bottom:-12px;animation:floatUp linear infinite}
+  @keyframes floatUp{0%{transform:translateY(0);opacity:0}12%{opacity:0.8}100%{transform:translateY(-110vh);opacity:0}}
+  .judge-orb-wrap{position:relative;width:120px;height:120px;margin:0 auto 2rem}
+  .judge-orb{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 40%, rgba(216,183,94,0.5), rgba(47,106,74,0.25) 60%, transparent 72%);animation:judgeBreath 2.6s ease-in-out infinite}
+  .judge-ring{position:absolute;inset:20px;border-radius:50%;border:2px solid rgba(216,183,94,0.3);border-top-color:var(--brass-bright);animation:spin 1.4s linear infinite}
+  @keyframes judgeBreath{0%,100%{transform:scale(0.9);opacity:0.7}50%{transform:scale(1.08);opacity:1}}
+  .fail-icon{width:74px;height:74px;border-radius:20px;margin:0 auto 1.4rem;display:flex;align-items:center;justify-content:center;background:rgba(216,183,94,0.14);border:1px solid rgba(216,183,94,0.4)}
+  .fail-icon svg{width:36px;height:36px;color:var(--brass-bright)}
+  #passOverlay{transition:background 0.6s ease}
+  #passOverlay.go{background:radial-gradient(120% 120% at 50% 45%, #2f8a57, #176b3f 55%, #0e4d2c)}
+  .pass-check{width:104px;height:104px;border-radius:50%;margin:0 auto 1.8rem;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.14);border:2px solid rgba(255,255,255,0.5);transform:scale(0)}
+  #passOverlay.go .pass-check{animation:popCheck 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards}
+  .pass-check svg{width:54px;height:54px;color:#fff;stroke-dasharray:40;stroke-dashoffset:40}
+  #passOverlay.go .pass-check svg{animation:drawCheck 0.45s 0.25s ease forwards}
+  @keyframes popCheck{to{transform:scale(1)}}
+  @keyframes drawCheck{to{stroke-dashoffset:0}}
+  .pass-text{opacity:0}
+  #passOverlay.go .pass-text{animation:fadeUp 0.5s 0.4s ease forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+  @media(prefers-reduced-motion:reduce){.judge-orb,.judge-ring,.overlay-particles i{animation:none}.pass-check,.pass-check svg,.pass-text{animation:none!important;transform:none;opacity:1;stroke-dashoffset:0}}
 
   .footnote{text-align:center;color:var(--on-green-mute);font-size:0.82rem;padding:1.6rem 1rem 0}
   .footnote a{color:var(--on-green-soft);text-decoration:underline;text-underline-offset:2px}
@@ -417,81 +449,47 @@
             Bedøm mit prompt
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
           </button>
-
-          <div class="feedback-result" id="feedbackResult"></div>
         </div>
       </div>
-    </section>
-
-    <!-- SCENE: CERTIFICATE -->
-    <section class="scene" id="scene-certificate">
-      <div class="cert-success-banner">
-        <div class="cert-success-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h2a2 2 0 0 1 0 4h-2M7 5H5a2 2 0 0 0 0 4h2"/></svg>
-        </div>
-        <div class="cert-success-title">Du har bestået Kursus D!</div>
-        <div class="cert-success-sub">Du har gennemført begge dele af prøven og vist, at du kan bruge AI trygt og klogt. Stort tillykke!</div>
-        <div class="cert-coins">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.2-1 1.8-2.5 2.5v1"/><path d="M12 16h.01"/></svg>
-          +100 coins tilføjet til din konto
-        </div>
-      </div>
-
-      <div class="certificate-card" id="certificateCard">
-        <div class="cert-corner tl"></div><div class="cert-corner tr"></div><div class="cert-corner bl"></div><div class="cert-corner br"></div>
-        <div class="cert-watermark">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/><path d="M22 10v6"/></svg>
-        </div>
-        <div class="cert-seal">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="6"/><path d="M9 14.5 7.5 22l4.5-2.5L16.5 22 15 14.5"/></svg>
-        </div>
-
-        <div class="cert-logo-row"><div class="cert-logo-icon">LA</div><div class="cert-logo-text">LearnAI DK</div></div>
-        <div class="cert-divider"></div>
-
-        <div class="cert-headline">Dette er at bekræfte at</div>
-        <div class="cert-name" id="certName">—</div>
-        <div class="cert-email" id="certEmail">—</div>
-
-        <div class="cert-body-text">har bestået den officielle prøve og hermed opnået certifikatet for</div>
-
-        <div style="text-align:center;margin-top:1rem;margin-bottom:0.5rem">
-          <div class="cert-course-name">Kursus D — Fra nybegynder til AI‑bruger</div>
-          <div class="cert-level-badge">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M9 13.5 7.5 22l4.5-2.5L16.5 22 15 13.5"/></svg>
-            Niveau D · Begynder
-          </div>
-        </div>
-
-        <div class="cert-body-text" style="font-size:0.84rem">Kursisten har demonstreret kendskab til grundlæggende AI‑koncepter, sikker brug af AI‑chatbots, beskyttelse af personlige oplysninger samt evnen til at skrive effektive prompts.</div>
-
-        <div class="cert-divider"></div>
-
-        <div class="cert-meta-row">
-          <div class="cert-meta-item"><div class="cert-meta-label">Udstedt af</div><div class="cert-meta-value">LearnAI DK</div></div>
-          <div class="cert-meta-item"><div class="cert-meta-label">Dato</div><div class="cert-meta-value" id="certDate">—</div></div>
-          <div class="cert-meta-item"><div class="cert-meta-label">Niveau</div><div class="cert-meta-value">D · Begynder</div></div>
-          <div class="cert-meta-item"><div class="cert-meta-label">Del 1 prøve</div><div class="cert-meta-value" id="certScore">—</div></div>
-        </div>
-      </div>
-
-      <div class="cert-actions">
-        <button class="btn-download-cert" onclick="downloadCertificate()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
-          Download som PDF
-        </button>
-        <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn-to-platform">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 9-8 9 8"/><path d="M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V10"/></svg>
-          Gå til platformen
-        </a>
-      </div>
-
-      <div class="cert-next"><p><strong>Næste skridt:</strong> Dit bevis er nu gemt på din profil på platformen. Klar til Kursus C?</p></div>
     </section>
 
   </main>
 
   <div class="footnote">Et samarbejde mellem dig og din AI · <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tilbage til LearnAI</a></div>
+</div>
+
+<!-- DOMMER-OVERLAY -->
+<div class="overlay" id="judgeOverlay">
+  <div class="overlay-particles" id="judgeParticles"></div>
+  <div class="overlay-inner">
+    <div class="judge-orb-wrap"><div class="judge-orb"></div><div class="judge-ring"></div></div>
+    <div class="overlay-label">Bedømmer dit svar</div>
+    <h2 class="overlay-title">Træk vejret</h2>
+    <p class="overlay-sub">Du har svaret — nu kigger vi dit prompt roligt igennem og bedømmer det. Det tager kun et øjeblik.</p>
+  </div>
+</div>
+
+<!-- IKKE BESTÅET-OVERLAY -->
+<div class="overlay" id="failOverlay">
+  <div class="overlay-inner">
+    <div class="fail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
+    <div class="overlay-label">Ikke bestået endnu</div>
+    <h2 class="overlay-title">Du var der næsten</h2>
+    <p class="overlay-sub">Prøv igen — du er tæt på. Få hjælp i chatten nederst i hjørnet, eller læs kravene igennem en ekstra gang, når du starter forfra.</p>
+    <div class="btn-row"><button class="btn btn-gold" onclick="retryFromStart()">Prøv igen</button></div>
+  </div>
+</div>
+
+<!-- BESTÅET-OVERLAY -->
+<div class="overlay" id="passOverlay">
+  <div class="overlay-inner">
+    <div class="pass-check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg></div>
+    <div class="pass-text">
+      <h2 class="overlay-title">Tillykke! Du har bestået Kursus D</h2>
+      <p class="overlay-sub">Flot arbejde — du har gennemført begge dele af prøven. Dit diplom er klar.</p>
+      <div class="btn-row"><a href="kursus-d-begynder-diplom.html" class="btn btn-gold">Hent mit diplom</a></div>
+    </div>
+  </div>
 </div>
 
 <!-- HELP CHAT -->
@@ -627,7 +625,8 @@ async function submitPrompt() {
     return;
   }
   promptAttempts++;
-  setBtnLoading('submitBtn', true);
+  showJudging();
+  const started = Date.now();
   let result;
   try {
     // Primær: rigtig AI-bedømmelse via jeres Cloudflare-worker (Haiku)
@@ -638,8 +637,50 @@ async function submitPrompt() {
     console.warn('AI-bedømmelse utilgængelig — bruger lokal backup.', e);
     result = evaluatePromptLocal(prompt);
   }
-  setBtnLoading('submitBtn', false);
-  showFeedback(result, prompt);
+  // Bestået? Gem coins + badge i Firebase, mens dommer-skærmen stadig vises.
+  if (result.passed) { try { await window.saveCertificate?.(); } catch (e) { console.error(e); } }
+  // Hold dommer-skærmen i mindst ~3 sek, så det føles roligt.
+  const MIN_MS = 3000;
+  const elapsed = Date.now() - started;
+  if (elapsed < MIN_MS) await new Promise(r => setTimeout(r, MIN_MS - elapsed));
+  if (result.passed) showPass(); else showFail();
+}
+
+// ---- Dommer- og resultat-skærme ----
+function spawnJudgeParticles() {
+  const wrap = document.getElementById('judgeParticles');
+  if (!wrap || wrap.childElementCount) return;
+  for (let i = 0; i < 18; i++) {
+    const s = document.createElement('i');
+    s.style.left = (Math.random() * 100) + '%';
+    s.style.animationDuration = (5 + Math.random() * 5) + 's';
+    s.style.animationDelay = (Math.random() * 4) + 's';
+    s.style.opacity = (0.3 + Math.random() * 0.5);
+    wrap.appendChild(s);
+  }
+}
+function showJudging() {
+  if (helpChatOpen) toggleHelpChat();
+  document.getElementById('helpChatBtn').style.display = 'none';
+  spawnJudgeParticles();
+  document.getElementById('failOverlay').classList.remove('show');
+  document.getElementById('passOverlay').classList.remove('show', 'go');
+  document.getElementById('judgeOverlay').classList.add('show');
+}
+function showFail() {
+  document.getElementById('judgeOverlay').classList.remove('show');
+  document.getElementById('failOverlay').classList.add('show');
+  document.getElementById('helpChatBtn').style.display = 'inline-flex';
+}
+function showPass() {
+  document.getElementById('judgeOverlay').classList.remove('show');
+  document.getElementById('helpChatBtn').style.display = 'none';
+  const ov = document.getElementById('passOverlay');
+  ov.classList.add('show');
+  requestAnimationFrame(() => requestAnimationFrame(() => ov.classList.add('go')));
+}
+function retryFromStart() {
+  window.location.href = 'eksamen-d-begynder-del2.html';
 }
 
 // ---- Primær bedømmelse: AI via worker ----
@@ -713,86 +754,7 @@ function evaluatePromptLocal(prompt) {
   return results;
 }
 
-const ICON_CHECK_FB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg>';
-const ICON_EDIT_FB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
-const ICON_TROPHY_FB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h2a2 2 0 0 1 0 4h-2M7 5H5a2 2 0 0 0 0 4h2"/></svg>';
-const ICON_RETRY_FB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>';
-
-function showFeedback(result, prompt) {
-  const fb = document.getElementById('feedbackResult');
-  fb.className = 'feedback-result show';
-
-  const checkLabels = {
-    length: 'Tilpas længde (min. 30 tegn)',
-    specific: 'Specifikt emne',
-    context: 'Kontekst om dig selv',
-    format: 'Ønsket format'
-  };
-
-  const chips = Object.entries(result.checks).map(([key, ok]) =>
-    `<div class="chip ${ok ? 'ok' : 'miss'}">${ok ? '✓' : '✗'} ${checkLabels[key]}</div>`
-  ).join('');
-
-  let feedbackText = '';
-  let buttons = '';
-
-  if (result.passed) {
-    feedbackText = `<strong>Godt klaret!</strong> Dit prompt opfylder kriterierne for et godt prompt. Du har vist, at du ved, hvordan man bruger de 3 regler fra Kursus D. Nu kan du hente dit officielle bevis!`;
-    buttons = `<button class="btn-to-certificate" onclick="completePart2()">${ICON_TROPHY_FB} Hent mit bevis og coins</button>`;
-  } else {
-    const missing = Object.entries(result.checks).filter(([_, ok]) => !ok).map(([key]) => checkLabels[key]);
-    let advice = '';
-    if (!result.checks.context) advice += '<br><strong>Hvem er du?</strong> Tilføj noget om dig selv — fx "Jeg er pensionist" eller "Jeg arbejder som lærer".';
-    if (!result.checks.specific) advice += '<br><strong>Hvad vil du have?</strong> Vær mere konkret — ikke bare "skriv noget", men præcis hvad og om hvad.';
-    if (!result.checks.format) advice += '<br><strong>Hvilket format?</strong> Sig fx "skriv det som et brev", "lav en liste med 5 punkter" eller "forklar det kort".';
-    if (!result.checks.length) advice += '<br><strong>For kort:</strong> Dit prompt er for kort. Uddyb gerne lidt mere.';
-
-    feedbackText = `<strong>Næsten!</strong> Dit prompt mangler ${missing.length === 1 ? 'ét element' : 'nogle elementer'} for at bestå. Ret det, du mangler, og prøv igen — du er tæt på!${advice}`;
-
-    const showCourseWarning = promptAttempts >= 3;
-    const warningHtml = showCourseWarning ? `
-      <div class="retry-warning">Du har prøvet ${promptAttempts} gange. Vil du gennemgå Kursus D igen? <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d-begynder.html#module-1">Læs modulerne igen →</a></div>
-    ` : '';
-    buttons = `<button class="btn-retry-prompt" onclick="retryPrompt()">${ICON_RETRY_FB} Ret og prøv igen</button>${warningHtml}`;
-  }
-
-  fb.innerHTML = `
-    <div class="feedback-result-header ${result.passed ? 'pass' : 'fail'}">
-      <div class="feedback-result-icon">${result.passed ? ICON_CHECK_FB : ICON_EDIT_FB}</div>
-      <div class="feedback-result-title">${result.passed ? 'Promptet er godkendt!' : `${result.score} ud af ${result.total} kriterier opfyldt`}</div>
-    </div>
-    <div class="feedback-result-body">
-      <div class="feedback-score-chips">${chips}</div>
-      <div class="feedback-text-area">${feedbackText}</div>
-      ${buttons}
-    </div>`;
-
-  setTimeout(() => fb.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
-}
-
-function retryPrompt() {
-  document.getElementById('feedbackResult').className = 'feedback-result';
-  document.getElementById('promptInput').focus();
-  window.scrollTo({ top: document.getElementById('promptInput').offsetTop - 100, behavior: 'smooth' });
-}
-
-async function completePart2() {
-  const u = window._user || {};
-  const userName = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Dit navn';
-  const userEmail = u.email || '';
-  const today = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
-
-  const saved = await window.saveCertificate?.();
-
-  document.getElementById('certName').textContent = userName || 'Dit navn';
-  document.getElementById('certEmail').textContent = userEmail;
-  document.getElementById('certDate').textContent = today;
-  const certScoreEl = document.getElementById('certScore');
-  if (certScoreEl) certScoreEl.textContent = 'Bestået';
-
-  showScene('scene-certificate');
-  showToast('success', 'Tillykke! +100 coins tilføjet til din konto.');
-}
+// Resultat vises nu via dommer-/bestået-/ikke-bestået-skærmene.
 
 // ============================================
 // HELP CHAT — uændret logik
@@ -880,24 +842,6 @@ function removeHelpTyping() {
 }
 
 // ============================================
-// CERTIFICATE DOWNLOAD (print til PDF)
-// ============================================
-function downloadCertificate() {
-  const style = `
-    @media print {
-      body * { visibility: hidden; }
-      #certificateCard, #certificateCard * { visibility: visible; }
-      #certificateCard { position: fixed; top: 0; left: 0; width: 100%; margin: 0; padding: 3rem 2.5rem; background: #fbf7ee !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      .help-chat-btn, .help-chat-box, .topbar, .toast-wrap, .backdrop { display: none !important; }
-    }`;
-  const s = document.createElement('style');
-  s.textContent = style;
-  document.head.appendChild(s);
-  window.print();
-  setTimeout(() => s.remove(), 1000);
-}
-
-// ============================================
 // UTILS — uændret
 // ============================================
 function showScene(id) {
@@ -923,9 +867,7 @@ function showToast(type, msg) {
 }
 
 window.submitPrompt = submitPrompt;
-window.retryPrompt = retryPrompt;
-window.completePart2 = completePart2;
-window.downloadCertificate = downloadCertificate;
+window.retryFromStart = retryFromStart;
 window.toggleHelpChat = toggleHelpChat;
 window.askHelp = askHelp;
 window.sendHelp = sendHelp;
