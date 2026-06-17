@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Afsluttende prøve · Del 1 — Kursus D | LearnAI</title>
+<meta name="description" content="Del 1 af den afsluttende prøve til Kursus D. 15 spørgsmål om alt det du har lært om AI. Bestå med 12 rigtige og fortsæt til den praktiske del.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+
+    /* Dyb skovgrøn prøve-palet (luksuriøs, distinkt fra kurset) */
+    --bg-deep:#0c2117;
+    --bg:#11331f;
+    --bg-2:#173f29;
+    --bg-glow:rgba(58,120,84,0.22);
+
+    /* Cremefarvet panel ovenpå det grønne */
+    --panel:#fbf7ee;
+    --panel-2:#f4edde;
+    --ink:#20312a;
+    --ink-soft:#4c5a52;
+    --ink-mute:#7c857c;
+    --line:#ded4be;
+    --line-soft:#e9e1cf;
+
+    /* Tekst på grøn baggrund */
+    --on-green:#eaf2e8;
+    --on-green-soft:rgba(234,242,232,0.74);
+    --on-green-mute:rgba(234,242,232,0.5);
+
+    /* Messing & guld — det luksuriøse */
+    --brass:#c8a44e;
+    --brass-bright:#d8b75e;
+    --brass-deep:#a9852f;
+    --brass-soft:rgba(200,164,78,0.16);
+    --gold:#e0b33d;
+
+    /* Status — rolige, dæmpede toner */
+    --correct:#2f6a4a;
+    --correct-deep:#235140;
+    --correct-soft:#e3ece0;
+    --wrong:#9e4a3a;
+    --wrong-soft:#f0e1da;
+
+    --green-accent:#2f6a4a;
+
+    --shadow-panel:0 24px 60px rgba(6,18,12,0.42), 0 6px 18px rgba(6,18,12,0.28);
+    --shadow-soft:0 8px 22px rgba(6,18,12,0.18);
+    --radius:18px;
+    --radius-lg:24px;
+    --radius-sm:12px;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--sans);
+    color:var(--on-green);
+    background:var(--bg-deep);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* Rolig grøn baggrund med blød radial-glød + svag vignet */
+  .backdrop{position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(120% 90% at 50% -10%, var(--bg-glow) 0%, rgba(58,120,84,0) 55%),
+      radial-gradient(100% 120% at 50% 120%, rgba(11,32,21,0.65) 0%, rgba(11,32,21,0) 60%),
+      linear-gradient(165deg, var(--bg-2) 0%, var(--bg) 45%, var(--bg-deep) 100%);
+  }
+  .backdrop::after{content:"";position:absolute;inset:0;
+    background:radial-gradient(120% 120% at 50% 40%, rgba(0,0,0,0) 55%, rgba(0,0,0,0.28) 100%);
+    pointer-events:none;}
+
+  .wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+  /* ---------- Topbar ---------- */
+  .topbar{position:sticky;top:0;z-index:30;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0.95rem 1.5rem;
+    background:rgba(12,33,23,0.72);
+    backdrop-filter:saturate(140%) blur(10px);
+    -webkit-backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid rgba(200,164,78,0.18);}
+  .brand{display:flex;align-items:center;gap:0.65rem;text-decoration:none;color:var(--on-green)}
+  .brand-mark{width:34px;height:34px;border-radius:10px;flex-shrink:0;
+    background:linear-gradient(150deg, #2f6a4a, #1b4636);
+    border:1px solid rgba(200,164,78,0.5);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);}
+  .brand-mark svg{width:18px;height:18px}
+  .brand-name{font-family:var(--serif);font-size:1.12rem;font-weight:600;letter-spacing:-0.01em}
+  .brand-name b{color:var(--brass-bright);font-weight:600}
+  .topbar-tag{font-size:0.8rem;color:var(--on-green-soft);font-weight:500;letter-spacing:0.01em}
+  @media(max-width:560px){.topbar-tag{display:none}}
+
+  /* ---------- Progress ---------- */
+  .progress-shell{position:sticky;top:62px;z-index:25;
+    background:rgba(12,33,23,0.55);backdrop-filter:blur(6px);
+    border-bottom:1px solid rgba(200,164,78,0.10);
+    padding:0.7rem 1.5rem;display:none}
+  .progress-shell.show{display:block}
+  .progress-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:1rem}
+  .progress-label{font-size:0.82rem;color:var(--on-green-soft);font-weight:600;white-space:nowrap;letter-spacing:0.01em}
+  .progress-track{flex:1;height:7px;border-radius:99px;background:rgba(234,242,232,0.12);overflow:hidden}
+  .progress-fill{height:100%;border-radius:99px;width:0%;
+    background:linear-gradient(90deg, var(--brass-deep), var(--brass-bright));
+    transition:width 0.45s cubic-bezier(0.4,0,0.2,1)}
+
+  /* ---------- Scene-system ---------- */
+  .stage{flex:1;display:flex;align-items:flex-start;justify-content:center;
+    padding:2.4rem 1.25rem 4rem}
+  .scene{display:none;width:100%;max-width:760px;animation:sceneIn 0.5s cubic-bezier(0.4,0,0.2,1)}
+  .scene.active{display:block}
+  @keyframes sceneIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Panel (cremefarvet kort på det grønne) */
+  .panel{background:linear-gradient(180deg, var(--panel) 0%, var(--panel-2) 100%);
+    border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-panel);
+    color:var(--ink);
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,0.5)}
+  .panel-accent{height:5px;width:100%;
+    background:linear-gradient(90deg, var(--brass-deep), var(--gold), var(--brass));}
+  .panel-body{padding:2.6rem 2.6rem 2.4rem}
+  @media(max-width:560px){.panel-body{padding:1.9rem 1.4rem 1.7rem}}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:0.5rem;
+    font-size:0.76rem;font-weight:700;letter-spacing:0.09em;text-transform:uppercase;
+    color:var(--brass-deep);background:var(--brass-soft);
+    padding:0.4rem 0.85rem;border-radius:99px;margin-bottom:1.25rem}
+  .eyebrow svg{width:14px;height:14px}
+
+  h1.scene-title{font-family:var(--serif);font-weight:600;font-size:2.05rem;line-height:1.18;
+    color:var(--ink);letter-spacing:-0.01em;margin-bottom:0.9rem}
+  @media(max-width:560px){h1.scene-title{font-size:1.7rem}}
+  .lead{font-size:1.06rem;line-height:1.65;color:var(--ink-soft);max-width:56ch}
+
+  /* ---------- Intro-scene ---------- */
+  .intro-facts{display:grid;grid-template-columns:repeat(3,1fr);gap:0.9rem;margin:1.8rem 0 0.4rem}
+  @media(max-width:560px){.intro-facts{grid-template-columns:1fr}}
+  .fact{background:#fff;border:1px solid var(--line-soft);border-radius:var(--radius-sm);
+    padding:1rem 1.05rem;display:flex;flex-direction:column;gap:0.3rem;box-shadow:var(--shadow-soft)}
+  .fact-num{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--green-accent)}
+  .fact-txt{font-size:0.88rem;color:var(--ink-soft);line-height:1.45}
+
+  .reassure{margin-top:1.6rem;display:flex;gap:0.8rem;align-items:flex-start;
+    background:var(--correct-soft);border:1px solid #cfe0cd;border-radius:var(--radius-sm);
+    padding:1rem 1.15rem}
+  .reassure svg{width:20px;height:20px;flex-shrink:0;color:var(--correct-deep);margin-top:1px}
+  .reassure-txt{font-size:0.92rem;line-height:1.55;color:var(--correct-deep)}
+  .reassure-txt b{font-weight:700}
+
+  /* ---------- Knapper ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;
+    font-family:var(--sans);font-size:1rem;font-weight:600;cursor:pointer;
+    border:none;border-radius:var(--radius-sm);padding:0.95rem 1.7rem;
+    transition:transform 0.18s ease, box-shadow 0.2s ease, background 0.2s ease;
+    text-decoration:none;line-height:1}
+  .btn svg{width:18px;height:18px}
+  .btn-primary{background:linear-gradient(165deg, #2f6a4a, #1b4636);color:#fff;
+    box-shadow:0 6px 18px rgba(27,70,54,0.35), inset 0 1px 0 rgba(255,255,255,0.12)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,0.42)}
+  .btn-gold{background:linear-gradient(165deg, var(--brass-bright), var(--brass-deep));color:#2a2008;
+    box-shadow:0 6px 18px rgba(169,133,47,0.4), inset 0 1px 0 rgba(255,255,255,0.3)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(169,133,47,0.5)}
+  .btn-ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-ghost:hover{transform:translateY(-2px);box-shadow:var(--shadow-soft)}
+  .btn-row{margin-top:2rem;display:flex;gap:0.8rem;flex-wrap:wrap}
+  @media(prefers-reduced-motion:reduce){.btn:hover{transform:none}}
+
+  /* ---------- Quiz ---------- */
+  .q-modul{display:inline-flex;align-items:center;gap:0.45rem;
+    font-size:0.74rem;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;
+    color:var(--brass-deep);margin-bottom:0.85rem}
+  .q-modul .dot{width:6px;height:6px;border-radius:50%;background:var(--brass)}
+  .q-text{font-family:var(--serif);font-weight:500;font-size:1.5rem;line-height:1.4;
+    color:var(--ink);margin-bottom:1.7rem;letter-spacing:-0.005em}
+  @media(max-width:560px){.q-text{font-size:1.28rem}}
+
+  .options{display:flex;flex-direction:column;gap:0.7rem}
+  .opt{display:flex;align-items:flex-start;gap:0.9rem;width:100%;text-align:left;
+    background:#fff;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+    padding:1.05rem 1.15rem;cursor:pointer;font-family:var(--sans);
+    transition:border-color 0.18s ease, background 0.18s ease, transform 0.12s ease;
+    color:var(--ink)}
+  .opt:hover:not(.locked){border-color:var(--brass);background:#fffdf7;transform:translateY(-1px)}
+  .opt:focus-visible{outline:2px solid var(--brass);outline-offset:2px}
+  .opt-letter{flex-shrink:0;width:30px;height:30px;border-radius:9px;
+    display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:0.92rem;background:var(--panel-2);color:var(--ink-soft);
+    border:1px solid var(--line-soft);transition:all 0.18s ease}
+  .opt-text{font-size:1rem;line-height:1.5;padding-top:0.18rem;flex:1}
+  .opt-icon{flex-shrink:0;width:22px;height:22px;opacity:0;transition:opacity 0.2s ease;margin-top:0.2rem}
+  .opt-icon svg{width:22px;height:22px}
+
+  .opt.locked{cursor:default}
+  .opt.is-correct{border-color:var(--correct);background:var(--correct-soft)}
+  .opt.is-correct .opt-letter{background:var(--correct);color:#fff;border-color:var(--correct)}
+  .opt.is-correct .opt-icon{opacity:1;color:var(--correct)}
+  .opt.is-wrong{border-color:var(--wrong);background:var(--wrong-soft)}
+  .opt.is-wrong .opt-letter{background:var(--wrong);color:#fff;border-color:var(--wrong)}
+  .opt.is-wrong .opt-icon{opacity:1;color:var(--wrong)}
+  .opt.dimmed{opacity:0.55}
+
+  /* Forklaring der folder blødt ud */
+  .explain{margin-top:0;border-radius:var(--radius-sm);overflow:hidden;
+    max-height:0;opacity:0;transition:max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease}
+  .explain.show{max-height:360px;opacity:1;margin-top:1.1rem}
+  .explain-inner{padding:1.05rem 1.2rem;background:#fff;border:1px solid var(--line-soft);
+    border-left:4px solid var(--brass);border-radius:var(--radius-sm);
+    display:flex;gap:0.75rem;align-items:flex-start}
+  .explain-inner svg{width:20px;height:20px;flex-shrink:0;color:var(--brass-deep);margin-top:1px}
+  .explain-txt{font-size:0.94rem;line-height:1.6;color:var(--ink-soft)}
+  .explain-txt b{color:var(--ink);font-weight:600}
+
+  .q-foot{margin-top:1.6rem;display:flex;justify-content:flex-end;min-height:1px}
+  .q-foot .btn{opacity:0;pointer-events:none;transition:opacity 0.3s ease}
+  .q-foot .btn.show{opacity:1;pointer-events:auto}
+
+  /* ---------- Resultat ---------- */
+  .result-top{display:flex;align-items:center;gap:1.6rem;flex-wrap:wrap;margin-bottom:1.6rem}
+  @media(max-width:520px){.result-top{flex-direction:column;text-align:center;align-items:center}}
+  .score-ring{width:128px;height:128px;border-radius:50%;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;position:relative;
+    background:conic-gradient(var(--green-accent) 0deg, #e7dfca 0deg)}
+  .score-ring::before{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff;
+    box-shadow:inset 0 1px 3px rgba(0,0,0,0.05)}
+  .score-ring-val{position:relative;z-index:1;text-align:center}
+  .score-ring-num{font-family:var(--serif);font-size:2.3rem;font-weight:600;color:var(--ink);line-height:1}
+  .score-ring-tot{font-size:0.82rem;color:var(--ink-mute);font-weight:600;margin-top:2px}
+  .result-head{flex:1;min-width:220px}
+  .result-seal{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.78rem;font-weight:700;
+    letter-spacing:0.06em;text-transform:uppercase;padding:0.35rem 0.8rem;border-radius:99px;margin-bottom:0.7rem}
+  .result-seal.pass{background:var(--correct-soft);color:var(--correct-deep)}
+  .result-seal.fail{background:var(--wrong-soft);color:var(--wrong)}
+  .result-seal svg{width:14px;height:14px}
+  .result-title{font-family:var(--serif);font-size:1.7rem;font-weight:600;color:var(--ink);line-height:1.2;margin-bottom:0.5rem}
+  .result-desc{font-size:1rem;line-height:1.6;color:var(--ink-soft)}
+
+  /* Gennemgang */
+  .review{margin-top:2rem;border-top:1px solid var(--line-soft);padding-top:1.6rem}
+  .review-title{font-family:var(--serif);font-size:1.18rem;font-weight:600;color:var(--ink);margin-bottom:1rem}
+  .review-item{display:flex;gap:0.8rem;align-items:flex-start;padding:0.95rem 0;border-bottom:1px solid var(--line-soft)}
+  .review-item:last-child{border-bottom:none}
+  .review-icon{flex-shrink:0;width:22px;height:22px;margin-top:1px}
+  .review-icon svg{width:22px;height:22px}
+  .review-icon.ok{color:var(--correct)}
+  .review-icon.no{color:var(--wrong)}
+  .review-q{font-size:0.95rem;font-weight:600;color:var(--ink);line-height:1.45;margin-bottom:0.25rem}
+  .review-ans{font-size:0.9rem;line-height:1.5;color:var(--ink-soft)}
+  .review-ans b{color:var(--correct-deep);font-weight:600}
+
+  /* ---------- Gate & allerede bestået ---------- */
+  .center-icon{width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,#2f6a4a,#1b4636);border:1px solid rgba(200,164,78,0.5);
+    margin-bottom:1.4rem;box-shadow:var(--shadow-soft)}
+  .center-icon svg{width:30px;height:30px;color:var(--brass-bright)}
+
+  /* Rolig overgangsskærm til del 2 */
+  #toPart2{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 90% at 50% 40%, var(--bg-2), var(--bg-deep));
+    opacity:0;pointer-events:none;transition:opacity 0.5s ease}
+  #toPart2.show{opacity:1;pointer-events:auto}
+  .tp2-inner{text-align:center;color:var(--on-green)}
+  .tp2-ring{width:54px;height:54px;border-radius:50%;margin:0 auto 1.3rem;
+    border:3px solid rgba(200,164,78,0.25);border-top-color:var(--brass-bright);
+    animation:tp2spin 0.9s linear infinite}
+  @keyframes tp2spin{to{transform:rotate(360deg)}}
+  .tp2-txt{font-family:var(--serif);font-size:1.3rem;font-weight:500;letter-spacing:0.01em}
+  @media(prefers-reduced-motion:reduce){.tp2-ring{animation:none}.scene{animation:none}}
+
+  .footnote{text-align:center;color:var(--on-green-mute);font-size:0.82rem;margin-top:1.6rem}
+  .footnote a{color:var(--on-green-soft);text-decoration:underline;text-underline-offset:2px}
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+
+<div class="wrap">
+  <!-- Topbar -->
+  <header class="topbar">
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="brand">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2.5 14.3 9l6.7.2-5.3 4.1 1.9 6.5L12 16.2 6.4 19.8l1.9-6.5L3 9.2 9.7 9 12 2.5Z" fill="#d8b75e"/>
+        </svg>
+      </span>
+      <span class="brand-name">Learn<b>AI</b></span>
+    </a>
+    <span class="topbar-tag">Afsluttende prøve · Del 1</span>
+  </header>
+
+  <!-- Progress -->
+  <div class="progress-shell" id="progressShell">
+    <div class="progress-inner">
+      <span class="progress-label" id="progressLabel">Spørgsmål 1 af 15</span>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </div>
+
+  <main class="stage">
+
+    <!-- SCENE: Login-gate -->
+    <section class="scene" id="scene-gate">
+      <div class="panel">
+        <div class="panel-accent"></div>
+        <div class="panel-body" style="text-align:center">
+          <div class="center-icon" style="margin-left:auto;margin-right:auto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h1 class="scene-title">Log ind for at tage prøven</h1>
+          <p class="lead" style="margin:0 auto">Din prøve er personlig — dit navn og din e‑mail kommer automatisk på dit bevis, når du består. Log ind på LearnAI, og kom så tilbage hertil.</p>
+          <div class="btn-row" style="justify-content:center">
+            <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-primary">Gå til LearnAI og log ind</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Allerede bestået -->
+    <section class="scene" id="scene-passed">
+      <div class="panel">
+        <div class="panel-accent"></div>
+        <div class="panel-body" style="text-align:center">
+          <div class="center-icon" style="margin-left:auto;margin-right:auto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8m-4-4v4M7 4h10v5a5 5 0 0 1-10 0V4Z"/><path d="M17 5h2a2 2 0 0 1 0 4h-2M7 5H5a2 2 0 0 0 0 4h2"/></svg>
+          </div>
+          <h1 class="scene-title">Du har allerede bestået Kursus D</h1>
+          <p class="lead" style="margin:0 auto">Flot klaret! Dit kursusbevis er gemt på din profil, og du kan downloade det som PDF, når du har lyst.</p>
+          <div class="btn-row" style="justify-content:center">
+            <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html#badges" class="btn btn-gold">Se mit bevis</a>
+            <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-ghost">Tilbage til oversigten</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Intro -->
+    <section class="scene" id="scene-intro">
+      <div class="panel">
+        <div class="panel-accent"></div>
+        <div class="panel-body">
+          <span class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+            Del 1 af 2 · Multiple choice
+          </span>
+          <h1 class="scene-title">Du er klar til den<br>afsluttende prøve</h1>
+          <p class="lead">15 rolige spørgsmål om alt det, du har arbejdet med i de fem moduler. Du får svar med det samme på hvert spørgsmål, og bagefter kan du se en gennemgang. Tag dig god tid — der er ingen tidsgrænse.</p>
+
+          <div class="intro-facts">
+            <div class="fact"><span class="fact-num">15</span><span class="fact-txt">spørgsmål fra modul 1 til 5</span></div>
+            <div class="fact"><span class="fact-num">12</span><span class="fact-txt">rigtige for at bestå del 1</span></div>
+            <div class="fact"><span class="fact-num">∞</span><span class="fact-txt">forsøg — prøv så tit du vil</span></div>
+          </div>
+
+          <div class="reassure">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
+            <span class="reassure-txt">Det her er <b>ingen prøve, du kan dumpe.</b> Klarer du den ikke første gang, kan du bare læse gennemgangen og prøve igen. Når du har 12 rigtige, åbnes den praktiske del 2 automatisk.</span>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn btn-primary" id="btnStart">
+              Start prøven
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Quiz -->
+    <section class="scene" id="scene-quiz">
+      <div class="panel">
+        <div class="panel-accent"></div>
+        <div class="panel-body">
+          <div class="q-modul" id="qModul"><span class="dot"></span><span id="qModulText">Modul 1 · Hvad er AI?</span></div>
+          <h2 class="q-text" id="qText">—</h2>
+          <div class="options" id="qOptions"></div>
+          <div class="explain" id="qExplain"><div class="explain-inner">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+            <span class="explain-txt" id="qExplainText"></span>
+          </div></div>
+          <div class="q-foot">
+            <button class="btn btn-primary" id="btnNext">
+              <span id="btnNextLabel">Næste spørgsmål</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCENE: Resultat -->
+    <section class="scene" id="scene-results">
+      <div class="panel">
+        <div class="panel-accent"></div>
+        <div class="panel-body">
+          <div class="result-top">
+            <div class="score-ring" id="scoreRing">
+              <div class="score-ring-val">
+                <div class="score-ring-num" id="scoreNum">0</div>
+                <div class="score-ring-tot">af 15</div>
+              </div>
+            </div>
+            <div class="result-head">
+              <span class="result-seal pass" id="resultSeal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg>
+                <span id="resultSealText">Bestået</span>
+              </span>
+              <h2 class="result-title" id="resultTitle">—</h2>
+              <p class="result-desc" id="resultDesc">—</p>
+            </div>
+          </div>
+
+          <div class="btn-row" style="margin-top:0.5rem">
+            <button class="btn btn-gold" id="btnPart2" style="display:none">
+              Fortsæt til del 2
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+            <button class="btn btn-primary" id="btnRetry" style="display:none">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg>
+              Prøv igen
+            </button>
+            <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-d-begynder.html" class="btn btn-ghost" id="btnReview">Læs modulerne igen</a>
+          </div>
+
+          <div class="review" id="reviewSection"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="footnote" id="footnote" style="display:none">
+    Et samarbejde mellem dig og din AI · <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tilbage til LearnAI</a>
+  </div>
+</div>
+
+<!-- Overgang til del 2 -->
+<div id="toPart2"><div class="tp2-inner"><div class="tp2-ring"></div><div class="tp2-txt">Åbner del 2…</div></div></div>
+
+<script type="module">
+/* Firebase indlæses dynamisk i bunden af scriptet, så siden aldrig ender
+   helt tom, hvis modulerne ikke kan hentes (fx i et preview uden netadgang). */
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+
+/* =========================================================
+   SPØRGSMÅL — 15 stk, 3 fra hvert modul.
+   For hvert spørgsmål: ét korrekt svar (correct) + tre
+   forkerte (wrong). Svarene blandes tilfældigt ved start,
+   så det rigtige svar kan lande på A, B, C eller D.
+   Alle forkerte svar er lige så lange eller længere end
+   det rigtige — man kan altså ikke gætte på længden.
+   ========================================================= */
+const QUESTIONS = [
+  // ---------- MODUL 1 — Hvad er AI? ----------
+  {
+    modul: "Modul 1 · Hvad er AI?",
+    q: "Hvad er kunstig intelligens (AI) bedst beskrevet som?",
+    correct: "Et program der forstår og svarer på helt almindeligt sprog",
+    wrong: [
+      "En fysisk robot med arme og ben der bevæger sig rundt i hjemmet",
+      "En hjemmeside hvor man kan søge efter helt nye og aktuelle nyheder",
+      "Et lukket system der kun fungerer for store virksomheder og eksperter"
+    ],
+    explain: "AI er programmer der løser opgaver intelligent — <b>ikke fysiske robotter</b>. Du skriver til den i helt almindeligt sprog, og den svarer."
+  },
+  {
+    modul: "Modul 1 · Hvad er AI?",
+    q: "Hvilken AI‑chatbot anbefaler kurset, at du starter med som ny bruger?",
+    correct: "Claude — fordi den giver rolige, trygge og forståelige svar",
+    wrong: [
+      "Gemini — fordi den er klart bedst til at finde helt aktuelle nyheder",
+      "DeepSeek — fordi den er specielt bygget til at give tekniske svar hurtigt",
+      "Copilot — fordi den er fuldt integreret i alle Office‑programmer fra start"
+    ],
+    explain: "Vi anbefaler <b>Claude</b> som den første AI, fordi den er kendt for rolige, trygge og forståelige svar — perfekt til nybegyndere. Du finder den på claude.ai."
+  },
+  {
+    modul: "Modul 1 · Hvad er AI?",
+    q: "Hvor møder du allerede AI i hverdagen — ofte uden at tænke over det?",
+    correct: "Når Netflix foreslår film, og når GPS'en finder vejen",
+    wrong: [
+      "Kun når man arbejder på et stort kontor med avanceret teknologi",
+      "Udelukkende i fabrikker hvor robotter samler biler og maskiner",
+      "Først når man selv køber et helt nyt og meget dyrt computerudstyr"
+    ],
+    explain: "AI er ikke nyt — du møder det dagligt i fx <b>Netflix‑anbefalinger, GPS og ansigtsgenkendelse</b>, uden at tænke over det."
+  },
+
+  // ---------- MODUL 2 — Beskyt dine oplysninger ----------
+  {
+    modul: "Modul 2 · Beskyt dine oplysninger",
+    q: "Hvad er den enkle huskeregel for, hvad du skriver til en AI?",
+    correct: "Skriv ikke noget du ikke ville sige højt på en café",
+    wrong: [
+      "Skriv altid dit fulde navn og din adresse, så svaret bliver præcist",
+      "Del gerne dine adgangskoder, hvis AI'en beder pænt om at få dem",
+      "Brug kun AI'en sent om aftenen, hvor færrest andre er online samtidig"
+    ],
+    explain: "Behandl AI som en café: <b>skriv ikke noget, du ikke ville sige højt</b>. AI er ikke en bank, en læge eller en advokat."
+  },
+  {
+    modul: "Modul 2 · Beskyt dine oplysninger",
+    q: "Hvilke oplysninger må du ALDRIG dele med en AI?",
+    correct: "CPR‑nummer, adgangskoder, kreditkort og MitID",
+    wrong: [
+      "En helt generel idé til en gave, du overvejer at give en god ven",
+      "Et almindeligt spørgsmål om hvordan man koger et blødkogt æg rigtigt",
+      "En kort tekst du selv har skrevet og gerne vil have rettet en smule"
+    ],
+    explain: "Del <b>aldrig CPR, adgangskoder, kreditkort eller MitID</b>. Tekst, idéer og generelle spørgsmål kan du derimod trygt dele."
+  },
+  {
+    modul: "Modul 2 · Beskyt dine oplysninger",
+    q: "Kan du selv bestemme, om AI'en må bruge dine samtaler til træning?",
+    correct: "Ja, de fleste AI'er har en knap du selv kan slå fra",
+    wrong: [
+      "Nej, det er noget AI‑firmaet helt alene bestemmer på dine vegne",
+      "Kun hvis du betaler et særligt gebyr hver eneste måned for det",
+      "Det kan man slet ikke — alle samtaler bliver altid gemt for evigt"
+    ],
+    explain: "De fleste AI‑tjenester har en knap, hvor du kan <b>slå fra, at dine samtaler bruges til træning</b>. Det er din ret."
+  },
+
+  // ---------- MODUL 3 — Log ind & din første samtale ----------
+  {
+    modul: "Modul 3 · Log sikkert ind",
+    q: "Hvordan opretter du typisk en konto hos Claude?",
+    correct: "Du skriver din e‑mail og får et link til at logge ind",
+    wrong: [
+      "Du sender et brev med posten og venter et par hverdage på svar",
+      "Du møder personligt op på et kontor og viser et gyldigt pas frem",
+      "Du betaler et engangsbeløb med kort, før du overhovedet kan starte"
+    ],
+    explain: "Hos Claude skriver du blot <b>din e‑mail</b> og får en mail med et link og en kode — du behøver ikke vælge en adgangskode."
+  },
+  {
+    modul: "Modul 3 · Din første samtale",
+    q: "Hvad er sandt om en AI's hukommelse, når du chatter med den?",
+    correct: "Den husker samtalen nu — men starter forfra næste gang",
+    wrong: [
+      "Den husker alt om dig for altid og kan se alle dine private filer",
+      "Den glemmer alt med det samme — også midt i den samme samtale",
+      "Den gemmer dine beskeder og sender dem videre til andre brugere"
+    ],
+    explain: "AI husker, hvad I taler om i <b>samme samtale</b>, men kender dig ikke fra gang til gang og har ikke adgang til dine filer."
+  },
+  {
+    modul: "Modul 3 · Log sikkert ind",
+    q: "Hvad er en \"browser\"?",
+    correct: "Programmet du bruger til at gå på nettet, fx Chrome",
+    wrong: [
+      "En særlig AI‑robot, der selv kan svare på alle dine spørgsmål",
+      "Et lille kamera i computeren, der kan genkende dit ansigt straks",
+      "En knap på tastaturet, du trykker på for at sende en besked afsted"
+    ],
+    explain: "En <b>browser</b> er det program, du bruger til at gå på nettet — fx Chrome, Safari eller Edge."
+  },
+
+  // ---------- MODUL 4 — Skriv et godt prompt ----------
+  {
+    modul: "Modul 4 · Skriv et godt prompt",
+    q: "Hvad betyder ordet \"prompt\"?",
+    correct: "Den besked eller det spørgsmål du skriver til AI'en",
+    wrong: [
+      "Det svar AI'en selv finder på og sender retur til dig bagefter",
+      "En fast pris du betaler, hver gang du stiller den et nyt spørgsmål",
+      "En fejlmeddelelse der dukker op, når noget er gået rigtig galt"
+    ],
+    explain: "Et <b>prompt</b> er den besked, du sender til AI'en — fx et spørgsmål. Jo bedre prompt, jo bedre svar."
+  },
+  {
+    modul: "Modul 4 · Skriv et godt prompt",
+    q: "Hvad er de 3 enkle regler for et godt prompt?",
+    correct: "Vær specifik, giv kontekst, og bed om et format",
+    wrong: [
+      "Skriv kort, undskyld pænt, og brug så mange svære ord som muligt",
+      "Stil ét ord ad gangen, vent længe, og gentag det samme flere gange",
+      "Hold det vagt, lad AI'en gætte, og spørg om mange ting på én gang"
+    ],
+    explain: "De tre regler er: <b>vær specifik</b> (hvad du vil have), <b>giv kontekst</b> (hvem du er) og <b>bed om et format</b> (liste, brev, to sætninger)."
+  },
+  {
+    modul: "Modul 4 · Skriv et godt prompt",
+    q: "Hvilket af disse prompts er det bedste?",
+    correct: "Skriv en kort fødselsdagshilsen til mit barnebarn på 10 år",
+    wrong: [
+      "Hjælp mig lige med sådan en eller anden tekst til en fest engang",
+      "Lav noget rigtig fint jeg kan bruge til en eller anden god anledning",
+      "Skriv et eller andet pænt jeg kan give til en jeg holder meget af"
+    ],
+    explain: "Det bedste prompt er <b>specifikt</b>: det fortæller hvad (en hilsen), til hvem (barnebarn på 10) og hvilket format (kort). De vage prompts giver vage svar."
+  },
+
+  // ---------- MODUL 5 — Vær klog med AI ----------
+  {
+    modul: "Modul 5 · Vær klog med AI",
+    q: "Hvad betyder det, at en AI kan \"hallucinere\"?",
+    correct: "Den kan finde på fakta der lyder rigtige, men er forkerte",
+    wrong: [
+      "Den lukker helt ned og holder op med at svare på dine beskeder",
+      "Den bliver langsommere at bruge, jo flere spørgsmål du stiller den",
+      "Den begynder pludselig at skrive på et helt andet og fremmed sprog"
+    ],
+    explain: "At <b>hallucinere</b> betyder, at AI kan finde på fakta, der lyder helt rigtige, men er forkerte — især tal, navne og datoer."
+  },
+  {
+    modul: "Modul 5 · Vær klog med AI",
+    q: "Hvornår bør du ALTID dobbelttjekke AI'ens svar med en fagperson?",
+    correct: "Ved helbred, økonomi og juridiske spørgsmål",
+    wrong: [
+      "Når du beder den om en helt almindelig opskrift på aftensmad",
+      "Når du vil have hjælp til at omformulere en kort og pæn besked",
+      "Når du beder den forklare et helt dagligdags og ufarligt begreb"
+    ],
+    explain: "Til <b>helbred, økonomi og jura</b> skal du altid have et menneske med — brug AI til forberedelse, men lad en fagperson afgøre."
+  },
+  {
+    modul: "Modul 5 · Vær klog med AI",
+    q: "Hvorfor skal du selv være kritisk over for AI'ens svar?",
+    correct: "AI lyder altid sikker — også når den faktisk tager fejl",
+    wrong: [
+      "AI siger altid klart fra og nægter at svare, hvis den er i tvivl",
+      "AI har altid ret, så man behøver aldrig tjekke noget efter bagefter",
+      "AI advarer dig hver gang med en høj lyd, når et svar er forkert"
+    ],
+    explain: "AI svarer <b>altid med stor selvtillid</b> — også når den tager fejl. Den siger sjældent \"jeg er i tvivl\", så du må selv tjekke det vigtige efter."
+  }
+];
+
+/* ---------- Tilstand ---------- */
+const LETTERS = ["A","B","C","D"];
+let runtime = [];      // spørgsmål med blandede svarmuligheder
+let currentQ = 0;
+let score = 0;
+let answers = [];      // {chosen, correctIdx, ok}
+
+/* Fisher‑Yates blanding */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+/* Byg en frisk runtime hvor svarmulighederne blandes (tilfældig position hver gang) */
+function buildRuntime(){
+  runtime = QUESTIONS.map(item => {
+    const opts = shuffle([item.correct, ...item.wrong]);
+    return {
+      modul: item.modul,
+      q: item.q,
+      explain: item.explain,
+      options: opts,
+      correctIdx: opts.indexOf(item.correct)
+    };
+  });
+}
+
+/* ---------- Scene-styring ---------- */
+function showScene(id){
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el) el.classList.add('active');
+  const showProgress = (id === 'scene-quiz');
+  document.getElementById('progressShell').classList.toggle('show', showProgress);
+  document.getElementById('footnote').style.display = (id === 'scene-intro' || id === 'scene-results') ? 'block' : 'none';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- Quiz ---------- */
+function startQuiz(){
+  buildRuntime();
+  currentQ = 0;
+  score = 0;
+  answers = [];
+  showScene('scene-quiz');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const item = runtime[currentQ];
+
+  // Progress
+  document.getElementById('progressLabel').textContent = `Spørgsmål ${currentQ+1} af ${runtime.length}`;
+  document.getElementById('progressFill').style.width = `${((currentQ)/runtime.length)*100}%`;
+
+  document.getElementById('qModulText').textContent = item.modul;
+  document.getElementById('qText').textContent = item.q;
+
+  // Forklaring nulstilles
+  document.getElementById('qExplain').classList.remove('show');
+
+  // Næste-knap skjules indtil der er svaret
+  const btnNext = document.getElementById('btnNext');
+  btnNext.classList.remove('show');
+  document.getElementById('btnNextLabel').textContent = (currentQ === runtime.length-1) ? 'Se mit resultat' : 'Næste spørgsmål';
+
+  // Byg svarmuligheder
+  const box = document.getElementById('qOptions');
+  box.innerHTML = '';
+  item.options.forEach((text, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    btn.type = 'button';
+    btn.setAttribute('data-idx', idx);
+    btn.innerHTML =
+      `<span class="opt-letter">${LETTERS[idx]}</span>` +
+      `<span class="opt-text">${text}</span>` +
+      `<span class="opt-icon"></span>`;
+    btn.addEventListener('click', () => chooseAnswer(idx));
+    box.appendChild(btn);
+  });
+}
+
+const ICON_CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg>';
+const ICON_CROSS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>';
+
+function chooseAnswer(chosen){
+  const item = runtime[currentQ];
+  const ok = (chosen === item.correctIdx);
+  if(ok) score++;
+  answers.push({ chosen, correctIdx: item.correctIdx, ok });
+
+  // Lås alle muligheder og marker rigtigt/forkert roligt
+  const opts = document.querySelectorAll('#qOptions .opt');
+  opts.forEach((el, idx) => {
+    el.classList.add('locked');
+    const icon = el.querySelector('.opt-icon');
+    if(idx === item.correctIdx){
+      el.classList.add('is-correct');
+      icon.innerHTML = ICON_CHECK;
+    } else if(idx === chosen){
+      el.classList.add('is-wrong');
+      icon.innerHTML = ICON_CROSS;
+    } else {
+      el.classList.add('dimmed');
+    }
+  });
+
+  // Vis forklaring blødt
+  document.getElementById('qExplainText').innerHTML = item.explain;
+  document.getElementById('qExplain').classList.add('show');
+
+  // Vis næste-knap
+  document.getElementById('btnNext').classList.add('show');
+}
+
+function nextQuestion(){
+  if(currentQ < runtime.length-1){
+    currentQ++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+/* ---------- Resultat ---------- */
+function showResults(){
+  showScene('scene-results');
+  const total = runtime.length;
+  const pct = Math.round((score/total)*100);
+  const passed = score >= 12;
+
+  document.getElementById('scoreNum').textContent = score;
+  document.getElementById('progressFill').style.width = '100%';
+
+  // Ring
+  const ringColor = passed ? 'var(--green-accent)' : (score >= 9 ? 'var(--brass-deep)' : 'var(--wrong)');
+  document.getElementById('scoreRing').style.background =
+    `conic-gradient(${ringColor} ${pct*3.6}deg, #e7dfca 0deg)`;
+
+  const seal = document.getElementById('resultSeal');
+  const sealTxt = document.getElementById('resultSealText');
+  const title = document.getElementById('resultTitle');
+  const desc = document.getElementById('resultDesc');
+  const btnPart2 = document.getElementById('btnPart2');
+  const btnRetry = document.getElementById('btnRetry');
+  const btnReview = document.getElementById('btnReview');
+
+  if(passed){
+    seal.className = 'result-seal pass';
+    sealTxt.textContent = 'Del 1 bestået';
+    seal.querySelector('svg').innerHTML = '<path d="m20 6-11 11-5-5"/>';
+    title.textContent = 'Flot — du bestod del 1!';
+    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%) — godt over grænsen på 12. Nu åbnes den praktiske del 2, hvor du selv skriver et prompt.`;
+    btnPart2.style.display = 'inline-flex';
+    btnRetry.style.display = 'none';
+    btnReview.style.display = 'none';
+  } else {
+    seal.className = 'result-seal fail';
+    sealTxt.textContent = 'Ikke bestået endnu';
+    seal.querySelector('svg').innerHTML = '<path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/>';
+    title.textContent = (score >= 9) ? 'Tæt på — prøv igen!' : 'Det kommer — prøv igen';
+    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%). Du skal bruge mindst 12 for at bestå. Læs gennemgangen herunder, og prøv så igen — det er der ingen grænse for.`;
+    btnPart2.style.display = 'none';
+    btnRetry.style.display = 'inline-flex';
+    btnReview.style.display = 'inline-flex';
+  }
+
+  // Gennemgang
+  const rev = document.getElementById('reviewSection');
+  rev.innerHTML = '<div class="review-title">Gennemgang af dine svar</div>';
+  answers.forEach((a, i) => {
+    const item = runtime[i];
+    const wrapEl = document.createElement('div');
+    wrapEl.className = 'review-item';
+    const correctText = item.options[item.correctIdx];
+    wrapEl.innerHTML =
+      `<span class="review-icon ${a.ok ? 'ok' : 'no'}">${a.ok ? ICON_CHECK : ICON_CROSS}</span>` +
+      `<div><div class="review-q">${i+1}. ${item.q}</div>` +
+      `<div class="review-ans">${a.ok ? 'Rigtigt svar' : 'Det rigtige svar var: '}<b>${a.ok ? '' : correctText}</b></div></div>`;
+    rev.appendChild(wrapEl);
+  });
+}
+
+/* ---------- Overgang til del 2 ---------- */
+function goToPart2(){
+  try { sessionStorage.setItem('learnai_part1_passed', '1'); } catch(e){}
+  const ov = document.getElementById('toPart2');
+  ov.classList.add('show');
+  setTimeout(() => { window.location.href = 'eksamen-d-del2.html'; }, 850);
+}
+
+/* ---------- Knap-bindinger ---------- */
+document.getElementById('btnStart').addEventListener('click', startQuiz);
+document.getElementById('btnNext').addEventListener('click', nextQuestion);
+document.getElementById('btnPart2').addEventListener('click', goToPart2);
+document.getElementById('btnRetry').addEventListener('click', startQuiz);
+
+/* ---------- Login-gate / allerede bestået ---------- */
+// Vis gaten med det samme, så siden aldrig står tom.
+showScene('scene-gate');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch(e){
+    // Firebase kunne ikke hentes (typisk et preview uden netadgang).
+    // Vis introen, så prøven kan ses og testes. På GitHub Pages virker login-gaten normalt.
+    console.warn('Firebase ikke tilgængelig — viser intro som forhåndsvisning.', e);
+    showScene('scene-intro');
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if(!user){
+      showScene('scene-gate');
+      return;
+    }
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if(snap.exists()){
+        const data = snap.data();
+        window._user = { uid: user.uid, email: user.email, ...data };
+        if((data.completedCourses || []).includes('D')){
+          showScene('scene-passed');
+          return;
+        }
+      } else {
+        window._user = { uid: user.uid, email: user.email, firstName:'', lastName:'', coins:0 };
+      }
+    } catch(e){
+      window._user = { uid: user.uid, email: user.email, firstName:'', lastName:'', coins:0 };
+      console.error(e);
+    }
+    showScene('scene-intro');
+  });
+})();
+</script>
+</body>
+</html>
