@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dit diplom · Kursus D | LearnAI</title>
+<meta name="description" content="Tillykke med Kursus D! Hent dit badge, dit personlige bevis og se hvordan du kommer videre.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+
+    /* Træstamme-brun palet (diplom-identitet, distinkt fra kursus + eksamen) */
+    --bg-deep:#1a120b;
+    --bg:#271a10;
+    --bg-2:#382616;
+    --bg-glow:rgba(204,150,78,0.16);
+
+    --panel:#f4e7cd;
+    --panel-2:#ead9b8;
+    --ink:#2a2118;
+    --ink-soft:#5a4d3e;
+    --ink-mute:#8a7c6a;
+    --line:#d6bf95;
+    --line-soft:#e4d4b2;
+
+    --on-wood:#f1e7d6;
+    --on-wood-soft:rgba(241,231,214,0.74);
+    --on-wood-mute:rgba(241,231,214,0.48);
+
+    --brass:#c8a44e; --brass-bright:#dcb55f; --brass-deep:#a9772b; --gold:#e0b33d;
+    --brass-soft:rgba(200,164,78,0.16);
+    --bronze:#b5712f;
+
+    --green:#2f6a4a; --green-deep:#235140; --green-soft:#e3ece0;
+
+    --shadow-panel:0 26px 64px rgba(10,6,2,0.5), 0 6px 18px rgba(10,6,2,0.32);
+    --shadow-soft:0 8px 22px rgba(10,6,2,0.22);
+    --radius:18px; --radius-lg:24px; --radius-sm:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--on-wood);background:#553820;min-height:100vh;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;position:relative;overflow-x:hidden}
+
+  /* Træ-baggrund: varm gradient + svag årering-tekstur + glød + vignet */
+  /* Lodret valnød-træpanel: varm, naturlig og blødt oplyst (ikke dim/3D) */
+  .backdrop{position:fixed;inset:0;z-index:0;background-color:#553820;
+    background-image:
+      radial-gradient(120% 70% at 50% -5%, rgba(236,194,120,0.12), rgba(236,194,120,0) 62%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 5px, rgba(0,0,0,0.028) 5px 6px, transparent 6px 11px),
+      repeating-linear-gradient(90deg, transparent 0 42px, rgba(28,16,8,0.42) 42px 47px, rgba(120,84,46,0.16) 47px 48px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.016) 0 48px, rgba(0,0,0,0.04) 48px 96px),
+      linear-gradient(180deg, #5e4023, #4c3318);}
+  .backdrop::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(140% 80% at 50% 0%, rgba(236,194,120,0.05), rgba(0,0,0,0) 55%)}
+
+  .wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:0.95rem 1.5rem;background:rgba(26,18,11,0.72);
+    backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid rgba(200,164,78,0.2)}
+  .brand{display:flex;align-items:center;gap:0.65rem;text-decoration:none;color:var(--on-wood)}
+  .brand-mark{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(150deg,#b5712f,#7a4a1c);
+    border:1px solid rgba(220,181,95,0.6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+  .brand-mark svg{width:18px;height:18px}
+  .brand-name{font-family:var(--serif);font-size:1.12rem;font-weight:600;letter-spacing:-0.01em}
+  .brand-name b{color:var(--brass-bright);font-weight:600}
+  .topbar-tag{font-size:0.8rem;color:var(--on-wood-soft);font-weight:500}
+  @media(max-width:560px){.topbar-tag{display:none}}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;font-family:var(--sans);font-size:1rem;font-weight:600;
+    cursor:pointer;border:none;border-radius:var(--radius-sm);padding:0.95rem 1.7rem;text-decoration:none;line-height:1;
+    transition:transform 0.18s ease,box-shadow 0.2s ease,background 0.2s ease,opacity 0.2s ease}
+  .btn svg{width:18px;height:18px}
+  .btn-gold{background:linear-gradient(165deg,var(--brass-bright),var(--brass-deep));color:#2a1c08;
+    box-shadow:0 6px 18px rgba(169,119,43,0.45),inset 0 1px 0 rgba(255,255,255,0.3)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(169,119,43,0.55)}
+  .btn-green{background:linear-gradient(165deg,#367954,#214d39);color:#fff;box-shadow:0 6px 18px rgba(27,70,54,0.4),inset 0 1px 0 rgba(255,255,255,0.12)}
+  .btn-green:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,0.48)}
+  .btn-wood{background:linear-gradient(165deg,#6a4a28,#48301a);color:#f4e7cf;box-shadow:0 6px 18px rgba(40,24,10,0.42),inset 0 1px 0 rgba(255,255,255,0.12)}
+  .btn-wood:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(40,24,10,0.5)}
+  .btn-ghost{background:rgba(246,239,225,0.06);color:var(--on-wood);border:1px solid rgba(220,181,95,0.4)}
+  .btn-ghost:hover{transform:translateY(-2px);background:rgba(246,239,225,0.1)}
+  .btn-cream{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-cream:hover{transform:translateY(-2px);box-shadow:var(--shadow-soft)}
+  .btn[disabled]{opacity:0.6;cursor:default;transform:none}
+  @media(prefers-reduced-motion:reduce){.btn:hover{transform:none}}
+
+  /* Sektioner + scroll-reveal */
+  main{flex:1}
+  .section{max-width:780px;margin:0 auto;padding:3.4rem 1.4rem}
+  @media(max-width:560px){.section{padding:2.6rem 1.2rem}}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.4,0,0.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:0.08s}.reveal.d2{transition-delay:0.16s}.reveal.d3{transition-delay:0.24s}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  .panel{background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-panel);color:var(--ink);overflow:hidden;border:1px solid rgba(255,255,255,0.5)}
+  .panel-accent{height:5px;width:100%;background:linear-gradient(90deg,var(--brass-deep),var(--gold),var(--bronze))}
+  .panel-body{padding:2.6rem 2.6rem 2.4rem}
+  @media(max-width:560px){.panel-body{padding:1.9rem 1.4rem 1.7rem}}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.76rem;font-weight:700;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--brass-deep);background:var(--brass-soft);padding:0.4rem 0.85rem;border-radius:99px;margin-bottom:1.2rem}
+  .eyebrow svg{width:14px;height:14px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.76rem;font-weight:700;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--brass-bright);margin-bottom:0.9rem;justify-content:center}
+  .sec-eyebrow svg{width:15px;height:15px}
+
+  /* ---------- DEL 1: Tillykke ---------- */
+  .hero{text-align:center}
+  .hero .hero-title{color:var(--on-wood);text-shadow:0 1px 3px rgba(0,0,0,0.45)}
+  .hero .hero-text{color:var(--on-wood-soft);text-shadow:0 1px 2px rgba(0,0,0,0.4)}
+  .hero .hero-text strong{color:var(--on-wood)}
+  .sec-eyebrow,.scroll-hint,.end p,.flow-cue{text-shadow:0 1px 2px rgba(0,0,0,0.4)}
+  .flow-cue{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.4rem;color:var(--on-wood-soft);font-size:0.92rem;font-weight:500;max-width:520px;margin:0 auto}
+  .flow-cue svg{width:22px;height:22px;animation:bob 1.8s ease-in-out infinite}
+  @media(prefers-reduced-motion:reduce){.flow-cue svg{animation:none}}
+  .hero-title{font-family:var(--serif);font-weight:700;font-size:2.6rem;line-height:1.12;color:var(--ink);letter-spacing:-0.015em;margin-bottom:1rem}
+  @media(max-width:560px){.hero-title{font-size:1.9rem}}
+  .hero-text{font-size:1.1rem;line-height:1.7;color:var(--ink-soft);max-width:56ch;margin:0 auto}
+  .hero-text strong{color:var(--ink);font-weight:600}
+  .coins-pill{display:inline-flex;align-items:center;gap:0.55rem;background:var(--brass-soft);border:1px solid rgba(200,164,78,0.4);
+    border-radius:99px;padding:0.6rem 1.2rem;font-size:1rem;font-weight:700;color:var(--brass-deep);margin-top:1.6rem}
+  .coins-pill svg{width:20px;height:20px}
+  .scroll-hint{display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin-top:2.4rem;color:var(--on-wood-soft);font-size:0.88rem;font-weight:500}
+  .scroll-hint svg{width:24px;height:24px;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  @media(prefers-reduced-motion:reduce){.scroll-hint svg{animation:none}}
+
+  /* ---------- Medaljon-badge ---------- */
+  .medallion-wrap{display:flex;justify-content:center}
+  .medallion-shell{width:230px;height:230px;filter:drop-shadow(0 14px 30px rgba(0,0,0,0.45))}
+  .medallion{width:100%;height:100%;display:block}
+  .med-arc{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:2.5px}
+  .med-ai{font-family:var(--serif);font-size:46px;font-weight:700;fill:#e7c277}
+  .med-brand{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:0.4px;fill:#d8c39c}
+  .med-level{font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:2px;fill:#e7c277}
+
+  .badge-card{text-align:center}
+  .badge-meta{margin-top:1.4rem}
+  .badge-name{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--ink);margin-bottom:0.25rem}
+  .badge-sub{font-size:0.92rem;color:var(--ink-mute)}
+  .badge-actions{margin-top:1.8rem;display:flex;flex-direction:column;align-items:center;gap:0.7rem}
+  .badge-status{font-size:0.9rem;color:var(--brass-deep);font-weight:600;display:none;align-items:center;gap:0.45rem}
+  .badge-status.show{display:inline-flex}
+  .badge-status svg{width:17px;height:17px}
+
+  /* ---------- DEL 3: Bevis ---------- */
+  .certificate{position:relative;background:linear-gradient(160deg,#f7ecd5 0%,#ecdab6 100%);border:2px solid var(--brass);
+    border-radius:18px;padding:2.6rem 2.4rem 2.2rem;color:var(--ink);box-shadow:var(--shadow-panel);overflow:hidden}
+  @media(max-width:560px){.certificate{padding:2rem 1.3rem}}
+  .cert-corner{position:absolute;width:22px;height:22px;border-color:var(--brass-deep);border-style:solid;border-width:0}
+  .cert-corner.tl{top:12px;left:12px;border-top-width:2px;border-left-width:2px}
+  .cert-corner.tr{top:12px;right:12px;border-top-width:2px;border-right-width:2px}
+  .cert-corner.bl{bottom:12px;left:12px;border-bottom-width:2px;border-left-width:2px}
+  .cert-corner.br{bottom:12px;right:12px;border-bottom-width:2px;border-right-width:2px}
+  .cert-top{display:flex;align-items:center;gap:0.6rem;justify-content:center;margin-bottom:0.4rem}
+  .cert-logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,#b5712f,#7a4a1c);border:1px solid rgba(220,181,95,0.6);
+    color:var(--brass-bright);font-weight:700;font-size:0.78rem;display:flex;align-items:center;justify-content:center}
+  .cert-logo-text{font-family:var(--serif);font-weight:600;font-size:1rem;color:var(--ink)}
+  .cert-kicker{text-align:center;font-size:0.78rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--ink-mute);margin:0.6rem 0 0.2rem}
+  .cert-headline{text-align:center;font-family:var(--serif);font-size:1.9rem;font-weight:700;color:#5a3d20;margin-bottom:1.3rem}
+  @media(max-width:560px){.cert-headline{font-size:1.5rem}}
+  .cert-medallion{display:flex;justify-content:center;margin:0.4rem 0 1.2rem}
+  .cert-medallion .medallion-shell{width:150px;height:150px}
+  .cert-presented{text-align:center;font-size:0.86rem;color:var(--ink-mute);letter-spacing:0.04em;margin-bottom:0.3rem}
+  .cert-name{text-align:center;font-family:var(--serif);font-size:2rem;font-weight:600;color:var(--ink);line-height:1.15}
+  @media(max-width:560px){.cert-name{font-size:1.55rem}}
+  .cert-body{text-align:center;font-size:0.9rem;line-height:1.6;color:var(--ink-soft);max-width:46ch;margin:0.8rem auto 0}
+  .cert-divider{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:1.5rem 0 1rem}
+  .cert-foot{display:flex;justify-content:space-between;align-items:flex-end;gap:1rem;flex-wrap:wrap}
+  .cert-foot-label{font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:0.2rem}
+  .cert-foot-value{font-size:0.9rem;font-weight:600;color:var(--ink)}
+  .cert-foot .right{text-align:right}
+  .cert-actions{margin-top:1.6rem;display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- Opsalg-kort (C / D+) ---------- */
+  .offer{border-radius:var(--radius-lg);padding:2.2rem 2.2rem;box-shadow:var(--shadow-panel);position:relative;overflow:hidden}
+  @media(max-width:560px){.offer{padding:1.7rem 1.4rem}}
+  .offer-c{background:linear-gradient(160deg,#4c3420,#392510);border:1px solid rgba(220,181,95,0.5);color:var(--on-wood)}
+  .offer-d{background:linear-gradient(160deg,#f4e7cd,#e7d4af);border:1px solid var(--line);color:var(--ink)}
+  .offer-tag{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.74rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.35rem 0.8rem;border-radius:99px;margin-bottom:0.9rem}
+  .offer-c .offer-tag{background:rgba(220,181,95,0.18);color:var(--brass-bright)}
+  .offer-d .offer-tag{background:var(--brass-soft);color:var(--brass-deep)}
+  .offer-title{font-family:var(--serif);font-size:1.7rem;font-weight:600;line-height:1.2;margin-bottom:0.5rem}
+  @media(max-width:560px){.offer-title{font-size:1.4rem}}
+  .offer-c .offer-title{color:#fff}.offer-d .offer-title{color:var(--ink)}
+  .offer-price{font-family:var(--serif);font-size:1.15rem;font-weight:600;margin-bottom:0.9rem}
+  .offer-c .offer-price{color:var(--brass-bright)}.offer-d .offer-price{color:var(--brass-deep)}
+  .offer-text{font-size:1rem;line-height:1.65;margin-bottom:0.5rem}
+  .offer-c .offer-text{color:var(--on-wood-soft)}.offer-d .offer-text{color:var(--ink-soft)}
+  .offer-list{list-style:none;margin:0.9rem 0 1.4rem;display:flex;flex-direction:column;gap:0.5rem}
+  .offer-list li{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.94rem;line-height:1.5}
+  .offer-c .offer-list li{color:var(--on-wood-soft)}.offer-d .offer-list li{color:var(--ink-soft)}
+  .offer-list svg{width:17px;height:17px;flex-shrink:0;margin-top:2px}
+  .offer-c .offer-list svg{color:var(--brass-bright)}.offer-d .offer-list svg{color:var(--brass-deep)}
+
+  .video-box{margin-top:1.4rem;width:100%;aspect-ratio:16/9;background:#ece0c4;border:1px solid var(--line);border-radius:var(--radius);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;color:var(--ink-mute)}
+  .video-box svg{width:46px;height:46px;opacity:0.5}
+  .video-box span{font-size:0.88rem;font-weight:500}
+
+  /* ---------- DEL 6: Footer ---------- */
+  .end{text-align:center;padding:3rem 1.4rem 4rem;max-width:560px;margin:0 auto}
+  .end p{color:var(--on-wood-soft);font-size:0.98rem;line-height:1.6;margin-bottom:1.2rem}
+
+  /* ---------- Login-gate ---------- */
+  .gate{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;
+    background:radial-gradient(120% 90% at 50% 30%, var(--bg-2), var(--bg-deep))}
+  .gate.show{display:flex}
+  .gate-inner{max-width:460px;width:100%}
+  .gate-icon{width:64px;height:64px;border-radius:16px;margin:0 auto 1.4rem;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,#b5712f,#7a4a1c);border:1px solid rgba(220,181,95,0.6);box-shadow:var(--shadow-soft)}
+  .gate-icon svg{width:30px;height:30px;color:var(--brass-bright)}
+
+  /* Toast */
+  .toast-wrap{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:0.5rem;align-items:center}
+  .toast{padding:0.8rem 1.3rem;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:600;box-shadow:var(--shadow-soft);animation:toastIn 0.3s ease;max-width:90vw;color:#fff}
+  .toast.success{background:#7a5520}.toast.error{background:#9e4a3a}.toast.info{background:#7a4a1c}
+  .toast.out{opacity:0;transition:opacity 0.3s ease}
+  @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Print: kun beviset */
+  @media print{
+    body *{visibility:hidden}
+    #certificate, #certificate *{visibility:visible}
+    #certificate{position:fixed;top:0;left:0;width:100%;margin:0;padding:3rem 2.5rem;background:#fffdf7 !important;
+      print-color-adjust:exact;-webkit-print-color-adjust:exact;border:none;box-shadow:none}
+    .topbar,.toast-wrap,.backdrop{display:none !important}
+  }
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+
+<!-- LOGIN-GATE -->
+<div class="gate" id="gate">
+  <div class="gate-inner panel"><div class="panel-accent"></div>
+    <div class="panel-body" style="text-align:center">
+      <div class="gate-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+      <h1 class="hero-title" style="font-size:1.7rem">Log ind for at se dit diplom</h1>
+      <p class="hero-text" style="font-size:1rem">Dit diplom er personligt. Log ind på LearnAI, så viser vi dit navn, dit bevis og dit badge.</p>
+      <div style="margin-top:1.6rem"><a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-gold">Gå til LearnAI og log ind</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap" id="content">
+  <header class="topbar">
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="brand">
+      <span class="brand-mark"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2.5 14.3 9l6.7.2-5.3 4.1 1.9 6.5L12 16.2 6.4 19.8l1.9-6.5L3 9.2 9.7 9 12 2.5Z" fill="#dcb55f"/></svg></span>
+      <span class="brand-name">Learn<b>AI</b></span>
+    </a>
+    <span class="topbar-tag">Kursus D · Diplom</span>
+  </header>
+
+  <main>
+
+    <!-- ===== DEL 1: TILLYKKE ===== -->
+    <section class="section hero">
+      <div class="reveal">
+        <span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Kursus D gennemført</span>
+      </div>
+      <h1 class="hero-title reveal d1">Tillykke!</h1>
+      <p class="hero-text reveal d2">Du har nu lært <strong>hvad AI er</strong>, <strong>sikkerhedsreglerne</strong> for at bruge AI, hvordan du <strong>laver en konto</strong>, og hvordan du får AI til at give dig <strong>et godt svar ved hjælp af et prompt</strong>. Det er flot gået.</p>
+      <div class="reveal d2"><div class="coins-pill">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.2-1 1.8-2.5 2.5v1"/><path d="M12 16h.01"/></svg>
+        Du har modtaget 100 coins på din profil
+      </div></div>
+      <p class="hero-text reveal d3" style="margin-top:1.4rem;font-size:1rem">Bladre ned for at modtage dit <strong>badge</strong>, som kommer på din profil på platformen.</p>
+      <div class="reveal d3"><div class="scroll-hint">
+        <span>Bladre ned</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div></div>
+    </section>
+
+    <!-- ===== DEL 2: BADGE ===== -->
+    <section class="section">
+      <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M9 13.5 7.5 22l4.5-2.5L16.5 22 15 13.5"/></svg> Dit badge</span></div>
+      <div class="panel reveal d1"><div class="panel-accent"></div>
+        <div class="panel-body badge-card">
+          <div class="medallion-wrap"><div class="medallion-shell" id="badgeMount"></div></div>
+          <div class="badge-meta">
+            <div class="badge-name">Niveau D bestået</div>
+            <div class="badge-sub" id="badgeDate">—</div>
+          </div>
+          <div class="badge-actions">
+            <button class="btn btn-gold" id="addBadgeBtn" onclick="addBadge()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+              Tilføj badge til profil
+            </button>
+            <span class="badge-status" id="badgeStatus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Badget er på din profil</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DEL 3: BEVIS ===== -->
+    <section class="section">
+      <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Dit personlige bevis</span></div>
+
+      <div class="certificate reveal d1" id="certificate">
+        <div class="cert-corner tl"></div><div class="cert-corner tr"></div><div class="cert-corner bl"></div><div class="cert-corner br"></div>
+        <div class="cert-top"><div class="cert-logo-icon">LA</div><div class="cert-logo-text">LearnAI DK</div></div>
+        <div class="cert-kicker">Officielt bevis</div>
+        <div class="cert-headline">Bestået Kursus D</div>
+
+        <div class="cert-medallion"><div class="medallion-shell" id="certBadgeMount"></div></div>
+
+        <div class="cert-presented">Dette bevis tildeles</div>
+        <div class="cert-name" id="certName">—</div>
+        <div class="cert-body">Beviset bekræfter, at Kursus D er gennemført — og at indehaveren nu kan bruge AI trygt, sikkert og effektivt i hverdagen.</div>
+
+        <div class="cert-divider"></div>
+        <div class="cert-foot">
+          <div class="left">
+            <div class="cert-foot-label">Bestået</div>
+            <div class="cert-foot-value" id="certDateTime">—</div>
+          </div>
+          <div class="right">
+            <div class="cert-foot-label">Udstedt til</div>
+            <div class="cert-foot-value" id="certEmail">—</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions reveal d2">
+        <button class="btn btn-gold" onclick="savePDF()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+          Gem som PDF
+        </button>
+        <button class="btn btn-cream" onclick="printDiploma()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+          Print
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== DEL 4: KURSUS C ===== -->
+    <section class="section">
+      <div class="offer offer-c reveal d1">
+        <span class="offer-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg> Klar til mere?</span>
+        <h2 class="offer-title">Tag Kursus C — og lær AI, før den lærer dig</h2>
+        <div class="offer-price">Kun 899 kr.</div>
+        <p class="offer-text">Kursus C er det store skridt: her går du fra at kunne bruge AI til at mestre det. Du lærer blandt andet:</p>
+        <ul class="offer-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At skrive prompts professionelt</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At opbygge dit eget prompt‑bibliotek</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Meget mere om hallucinationer — og hvordan du undgår dem</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At øve dig i en realistisk møde‑simulator</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At få din helt egen personlige AI‑plan</li>
+        </ul>
+        <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-gold">Se Kursus C på platformen</a>
+      </div>
+    </section>
+
+    <div class="section" style="padding-top:0;padding-bottom:0.5rem">
+      <div class="flow-cue reveal">
+        <span>Ikke helt klar til Kursus C? Se Kursus D+ lige nedenfor</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div>
+    </div>
+
+    <!-- ===== DEL 5: KURSUS D+ ===== -->
+    <section class="section">
+      <div class="offer offer-d reveal d1">
+        <span class="offer-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.1h6c0-.8.4-1.6 1-2.1A7 7 0 0 0 12 2Z"/><path d="M9 18h6M10 22h4"/></svg> Et roligt mellemtrin</span>
+        <h2 class="offer-title">Ikke helt klar til Kursus C? Tag Kursus D+</h2>
+        <div class="offer-price">Kun 189 kr.</div>
+        <p class="offer-text">I Kursus D+ lærer du <strong>dybere om AI på et forståeligt sprog</strong> og bliver klædt godt på til Kursus C — så du ikke føler, at du sidder fast midt i det hele. Det er broen mellem nybegynder og det professionelle niveau.</p>
+        <div class="video-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m10 8 6 4-6 4V8Z"/><rect x="2" y="3" width="20" height="18" rx="3"/></svg>
+          <span>Video om Kursus D+ kommer her</span>
+        </div>
+        <div style="margin-top:1.4rem">
+          <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-dplus.html" class="btn btn-wood">Tag Kursus D+ for 189 kr.</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== DEL 6: FOOTER ===== -->
+    <div class="end reveal">
+      <p>Tryk her for at se dit badge på din profil og komme tilbage til platformen.</p>
+      <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html#badges" class="btn btn-ghost">Tilbage til platformen</a>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- FIREBASE (dynamisk med fallback til forhåndsvisning) -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+
+function showGate(on){ document.getElementById('gate').classList.toggle('show', on); }
+
+// Vis gaten indtil auth er afklaret
+showGate(true);
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc, updateDoc, arrayUnion;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc, updateDoc, arrayUnion }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch(e){
+    // Forhåndsvisning uden net: vis diplomet med pladsholder-navn
+    console.warn('Firebase ikke tilgængelig — viser diplom som forhåndsvisning.', e);
+    showGate(false);
+    window.applyUser({ firstName:'Dit', lastName:'Navn', email:'din@email.dk' }, null);
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  window._fb = { db, doc, getDoc, updateDoc, arrayUnion };
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate(true); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch(e){ console.error(e); }
+    window._user = { uid: user.uid, email: user.email, ...data };
+    showGate(false);
+    window.applyUser({ firstName:data.firstName||'', lastName:data.lastName||'', email:user.email }, data.badges||[]);
+  });
+})();
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ---------- Anvend bruger-data på siden ----------
+function applyUser(u, badges) {
+  const name = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Dit navn';
+  document.getElementById('certName').textContent = name;
+  document.getElementById('certEmail').textContent = u.email || '—';
+  document.getElementById('badgeMount').innerHTML = medallionSVG('a', name);
+  document.getElementById('certBadgeMount').innerHTML = medallionSVG('b', name);
+
+  // Find evt. eksisterende D-badge for korrekt dato + knap-tilstand
+  let earnedAt = null, hasBadge = false;
+  if (Array.isArray(badges)) {
+    const b = badges.find(x => x && x.level === 'D' && x.type !== 'side');
+    if (b) { hasBadge = true; earnedAt = b.earnedAt || null; }
+  }
+  const when = earnedAt ? new Date(earnedAt) : new Date();
+  const dato = when.toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+  const klok = when.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('certDateTime').textContent = `${dato} kl. ${klok}`;
+  document.getElementById('badgeDate').textContent = dato;
+
+  if (hasBadge) markBadgeAdded();
+}
+window.applyUser = applyUser;
+
+// ---------- Medaljon (SVG) ----------
+function medallionSVG(uid, name) {
+  const nm = (name || '').toUpperCase().replace(/\s+/g, ' ').trim() || 'KURSIST';
+  return `<svg viewBox="0 0 240 240" class="medallion" role="img" aria-label="Badge: Niveau D bestået">
+    <defs>
+      <radialGradient id="mc-${uid}" cx="50%" cy="42%" r="68%">
+        <stop offset="0%" stop-color="#3c2b1a"/><stop offset="55%" stop-color="#20150c"/><stop offset="100%" stop-color="#110b06"/>
+      </radialGradient>
+      <linearGradient id="mr-${uid}" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#eccd86"/><stop offset="32%" stop-color="#b5712f"/><stop offset="62%" stop-color="#dcb55f"/><stop offset="100%" stop-color="#86501d"/>
+      </linearGradient>
+      <path id="top-${uid}" fill="none" d="M 39,120 A 81,81 0 0 1 201,120"/>
+      <path id="bot-${uid}" fill="none" d="M 201,120 A 81,81 0 0 1 39,120"/>
+    </defs>
+    <circle cx="120" cy="120" r="117" fill="url(#mr-${uid})"/>
+    <circle cx="120" cy="120" r="106" fill="#160e08"/>
+    <text class="med-arc" fill="#e7c277" textLength="150" lengthAdjust="spacingAndGlyphs"><textPath href="#top-${uid}" startOffset="50%" text-anchor="middle">BESTÅET · KURSUS D · BRONZE</textPath></text>
+    <text class="med-arc" fill="#e7c277" textLength="150" lengthAdjust="spacingAndGlyphs"><textPath href="#bot-${uid}" startOffset="50%" text-anchor="middle">${nm}</textPath></text>
+    <circle cx="120" cy="120" r="76" fill="url(#mc-${uid})" stroke="url(#mr-${uid})" stroke-width="3"/>
+    <text x="120" y="118" text-anchor="middle" class="med-ai">AI</text>
+    <text x="120" y="140" text-anchor="middle" class="med-brand">akademiet-ai.dk</text>
+    <rect x="89" y="151" width="62" height="19" rx="9.5" fill="none" stroke="url(#mr-${uid})" stroke-width="1.4"/>
+    <text x="120" y="164" text-anchor="middle" class="med-level">NIVEAU D</text>
+  </svg>`;
+}
+
+// ---------- Tilføj badge til profil ----------
+let badgeAdded = false;
+function markBadgeAdded() {
+  badgeAdded = true;
+  const btn = document.getElementById('addBadgeBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Badge tilføjet';
+  document.getElementById('badgeStatus').classList.add('show');
+}
+
+async function addBadge() {
+  if (badgeAdded) return;
+  if (!window._fb || !window._user) {
+    showToast('info', 'Log ind på platformen for at gemme dit badge.');
+    return;
+  }
+  const { db, doc, getDoc, updateDoc, arrayUnion } = window._fb;
+  const btn = document.getElementById('addBadgeBtn');
+  btn.disabled = true;
+  try {
+    // Tjek om badget allerede findes (undgå dublet)
+    const snap = await getDoc(doc(db, 'users', window._user.uid));
+    const existing = (snap.exists() && Array.isArray(snap.data().badges)) ? snap.data().badges : [];
+    if (existing.some(b => b && b.level === 'D' && b.type !== 'side')) {
+      markBadgeAdded();
+      showToast('success', 'Badget er allerede på din profil.');
+      return;
+    }
+    const badge = {
+      level: 'D',
+      type: 'main',
+      title: 'Niveau D bestået',
+      icon: '🥉',
+      date: new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' }),
+      earnedAt: new Date().toISOString()
+    };
+    await updateDoc(doc(db, 'users', window._user.uid), { badges: arrayUnion(badge) });
+    markBadgeAdded();
+    showToast('success', 'Badget er nu på din profil!');
+  } catch (e) {
+    console.error(e);
+    btn.disabled = false;
+    showToast('error', 'Noget gik galt. Prøv igen om lidt.');
+  }
+}
+window.addBadge = addBadge;
+
+// ---------- Print / PDF ----------
+function printDiploma() { window.print(); }
+window.printDiploma = printDiploma;
+
+async function savePDF() {
+  const el = document.getElementById('certificate');
+  if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
+    showToast('error', 'PDF-værktøjet kunne ikke indlæses. Brug "Print" og vælg "Gem som PDF".');
+    return;
+  }
+  showToast('info', 'Laver din PDF…');
+  try {
+    const canvas = await window.html2canvas(el, { scale: 2, backgroundColor: '#fffdf7', useCORS: true });
+    const img = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+    const pw = pdf.internal.pageSize.getWidth();
+    const m = 28;
+    const iw = pw - m * 2;
+    const ih = canvas.height * (iw / canvas.width);
+    pdf.addImage(img, 'PNG', m, m, iw, ih);
+    pdf.save('bevis-kursus-d.pdf');
+  } catch (e) {
+    console.error(e);
+    showToast('error', 'Kunne ikke lave PDF. Brug "Print" i stedet.');
+  }
+}
+window.savePDF = savePDF;
+
+// ---------- Toast ----------
+function showToast(type, msg) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+// ---------- Scroll-reveal ----------
+(function () {
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>
