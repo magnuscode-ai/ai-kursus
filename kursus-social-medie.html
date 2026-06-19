@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>akademiet-ai.dk — AI til Sociale Medier</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+/* ════════════════════ TOKENS ════════════════════ */
+:root{
+  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --serif:'Lora',Georgia,'Times New Roman',serif;
+
+  /* Rustik base (uændret fra Skovkammer) */
+  --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140;
+  --green-mid:#2f6a4a; --green-light:#6fa083; --green-soft:#dee8de;
+  --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc;
+  --gold:#e0b33d; --cream:#fbf7ee; --parch:#e8e2d3;
+  --ink:#23332b; --ink-soft:#43544a; --muted:#7b8a80;
+  --line:#ded6c4;
+
+  /* NYT primært accent-tema: Koral */
+  --koral:#E25A5E; --koral-deep:#C4444B; --koral-press:#A8353C;
+  --koral-tint:#FBE4E3; --koral-soft:rgba(226,90,94,.10);
+  --koral-ring:rgba(226,90,94,.22);
+
+  /* status */
+  --ok:#2f6a4a; --ok-bg:#e7f1e9; --warn:#b07d27; --warn-bg:#fbf2dc;
+  --err:#c0473e; --err-bg:#fae7e4;
+
+  --r-sm:9px; --r:13px; --r-lg:18px; --r-xl:24px;
+  --shadow-sm:0 1px 2px rgba(26,40,33,.05),0 1px 3px rgba(26,40,33,.06);
+  --shadow-md:0 6px 22px rgba(26,40,33,.08),0 2px 6px rgba(26,40,33,.05);
+  --shadow-koral:0 10px 30px rgba(226,90,94,.28);
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans); color:var(--ink); line-height:1.6;
+  background:var(--parch); -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+body::before{
+  content:''; position:fixed; inset:0; z-index:-2; pointer-events:none;
+  background:
+    radial-gradient(1100px 640px at 50% -10%, rgba(27,70,54,.11), transparent 60%),
+    radial-gradient(820px 560px at 100% 102%, rgba(226,90,94,.07), transparent 60%),
+    radial-gradient(700px 520px at 0% 60%, rgba(169,136,65,.06), transparent 60%),
+    linear-gradient(180deg,#ece6d8 0%, #e8e2d3 40%, #e3dcc9 100%);
+}
+.serif{font-family:var(--serif)}
+
+/* ════════════════════ TOPBAR ════════════════════ */
+.topbar{
+  position:sticky; top:0; z-index:60;
+  background:rgba(20,52,40,.94); backdrop-filter:blur(10px);
+  border-bottom:1px solid rgba(169,136,65,.32);
+}
+.topbar-inner{max-width:1180px; margin:0 auto; padding:13px 26px; display:flex; align-items:center; justify-content:space-between; gap:16px}
+.brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--cream); font-weight:700; font-size:15.5px; letter-spacing:-.01em}
+.brand-mark{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#b89653,#8a6a2a); display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px; box-shadow:0 4px 14px rgba(15,42,32,.45)}
+.crumb{display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(247,242,232,.74)}
+.crumb a{color:rgba(247,242,232,.74); text-decoration:none; transition:color .18s}
+.crumb a:hover{color:#fff}
+.crumb .here{color:var(--cream); font-weight:600}
+.crumb .dot{width:4px; height:4px; border-radius:50%; background:rgba(247,242,232,.4)}
+@media(max-width:620px){.crumb a:not(.here){display:none} .crumb .dot{display:none}}
+
+/* ════════════════════ JOURNEY (altid centreret) ════════════════════ */
+.journey-wrap{max-width:1180px; margin:24px auto 0; padding:0 26px; display:flex; justify-content:center}
+.journey-pill{
+  display:inline-flex; align-items:center; gap:4px; padding:9px 15px;
+  background:rgba(251,247,238,.82); backdrop-filter:blur(10px);
+  border:1px solid var(--brass-soft); border-radius:999px;
+  box-shadow:var(--shadow-md); flex-wrap:nowrap; overflow-x:auto; max-width:100%; scrollbar-width:none;
+}
+.journey-pill::-webkit-scrollbar{display:none}
+.journey-step{display:inline-flex; align-items:center; gap:5px; padding:6px 12px; font-size:12px; font-weight:700; color:var(--muted); border-radius:999px; white-space:nowrap; transition:all .2s}
+.journey-step.current{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; box-shadow:0 4px 14px rgba(226,90,94,.35)}
+.journey-step.done{color:var(--ok)}
+.journey-step.done::before{content:'✓'; font-size:11px; margin-right:-1px}
+.journey-sep{color:var(--brass); font-size:11px; user-select:none; opacity:.6}
+
+/* ════════════════════ HERO ════════════════════ */
+.hero{max-width:1180px; margin:30px auto 8px; padding:0 26px; text-align:center}
+.hero-tag{display:inline-flex; align-items:center; gap:8px; padding:6px 15px; border-radius:999px; background:var(--koral-tint); border:1px solid var(--koral-ring); color:var(--koral-deep); font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; margin-bottom:18px}
+.hero-tag .pulse{width:8px; height:8px; border-radius:50%; background:var(--koral); box-shadow:0 0 0 0 var(--koral-ring); animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 var(--koral-ring)}70%{box-shadow:0 0 0 9px rgba(226,90,94,0)}100%{box-shadow:0 0 0 0 rgba(226,90,94,0)}}
+.hero h1{font-family:var(--serif); font-weight:600; font-size:clamp(30px,5vw,46px); color:var(--green); line-height:1.12; letter-spacing:-.01em; margin-bottom:14px}
+.hero h1 em{font-style:italic; color:var(--koral-deep)}
+.hero-sub{font-size:clamp(15px,2.4vw,18px); color:var(--ink-soft); max-width:640px; margin:0 auto 22px; line-height:1.6}
+.hero-stats{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
+.hero-stat{display:inline-flex; align-items:center; gap:7px; padding:8px 15px; background:var(--cream); border:1px solid var(--brass-soft); border-radius:999px; font-size:13px; font-weight:600; color:var(--green-700); box-shadow:var(--shadow-sm)}
+
+/* ════════════════════ LAYOUT ════════════════════ */
+.layout{max-width:1180px; margin:30px auto 80px; padding:0 26px; display:grid; grid-template-columns:268px 1fr; gap:30px; align-items:start}
+@media(max-width:980px){.layout{grid-template-columns:1fr; gap:20px}}
+
+/* ── Sidebar (forløb + låste moduler) ── */
+.sidebar{position:sticky; top:84px}
+@media(max-width:980px){.sidebar{position:static; top:auto}}
+.sb-card{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-lg); box-shadow:var(--shadow-md); overflow:hidden}
+.sb-head{padding:16px 18px 12px; border-bottom:1px solid var(--line)}
+.sb-head-label{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--brass-deep)}
+.sb-progress{margin-top:12px}
+.sb-progress-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:7px}
+.sb-progress-top span:first-child{font-size:12px; color:var(--muted); font-weight:600}
+.sb-progress-pct{font-size:12px; font-weight:800; color:var(--koral-deep)}
+.sb-bar{height:7px; border-radius:999px; background:var(--parch); overflow:hidden}
+.sb-fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,var(--koral),var(--koral-deep)); transition:width .5s cubic-bezier(.16,1,.3,1)}
+.sb-list{padding:10px 10px 14px}
+.sb-item{display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:11px; text-decoration:none; color:inherit; cursor:pointer; transition:background .15s; border:1px solid transparent}
+.sb-item:hover{background:rgba(226,90,94,.06)}
+.sb-item.is-locked{cursor:not-allowed; opacity:.62}
+.sb-item.is-locked:hover{background:rgba(123,138,128,.07)}
+.sb-ic{width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-size:15px; flex-shrink:0; background:var(--green-soft); color:var(--green-700)}
+.sb-item.is-active .sb-ic{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; box-shadow:0 4px 12px rgba(226,90,94,.3)}
+.sb-item.is-done .sb-ic{background:var(--ok-bg); color:var(--ok)}
+.sb-item.is-locked .sb-ic{background:#e6e0d2; color:var(--muted)}
+.sb-txt{flex:1; min-width:0}
+.sb-txt b{display:block; font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.25}
+.sb-item.is-active .sb-txt b{color:var(--koral-deep)}
+.sb-txt small{font-size:11.5px; color:var(--muted)}
+.sb-flag{flex-shrink:0; font-size:13px; color:var(--muted)}
+.sb-item.is-done .sb-flag{color:var(--ok)}
+.sb-divider{height:1px; background:var(--line); margin:8px 12px}
+
+/* ════════════════════ MODULE CARDS ════════════════════ */
+.main{min-width:0}
+.sect-label{display:flex; align-items:center; gap:12px; margin:6px 0 16px}
+.sect-label hr{flex:1; border:none; border-top:1px solid var(--line)}
+.sect-label span{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--brass-deep); white-space:nowrap}
+
+.mod{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-xl); box-shadow:var(--shadow-sm); margin-bottom:22px; overflow:hidden; position:relative; transition:box-shadow .3s, transform .3s, opacity .4s, filter .4s}
+.mod::before{content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,var(--koral),var(--koral-deep)); z-index:1}
+.mod.is-done::before{background:linear-gradient(180deg,var(--ok),var(--green-mid))}
+.mod.is-locked{opacity:.55; filter:grayscale(.35); pointer-events:none}
+.mod.is-locked::before{background:linear-gradient(180deg,#cfc7b6,#e0d8c6)}
+.mod:not(.is-locked):hover{box-shadow:0 8px 30px rgba(226,90,94,.12); transform:translateY(-2px)}
+.mod-header{padding:20px 24px; display:flex; align-items:center; gap:15px}
+.mod-num{width:46px; height:46px; border-radius:13px; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; font-size:18px; font-weight:800; display:grid; place-items:center; flex-shrink:0; box-shadow:0 4px 12px rgba(226,90,94,.28)}
+.mod.is-locked .mod-num{background:linear-gradient(135deg,#cfc7b6,#e0d8c6); color:#fff; box-shadow:none}
+.mod.is-done .mod-num{background:linear-gradient(135deg,var(--ok),var(--green-mid))}
+.mod-text{flex:1; min-width:0}
+.mod-title{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--green); line-height:1.25}
+.mod-sub{font-size:13px; color:var(--muted); margin-top:3px}
+.mod-time{background:var(--koral-soft); color:var(--koral-deep); border-radius:999px; font-size:12px; font-weight:700; padding:5px 13px; white-space:nowrap; flex-shrink:0}
+.mod-badge{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:800; padding:5px 11px; border-radius:999px; flex-shrink:0}
+.mod-badge.locked{color:var(--muted); background:#ece6d6}
+.mod-badge.done{color:var(--ok); background:var(--ok-bg)}
+.mod-body{padding:6px 26px 28px; border-top:1px solid var(--line)}
+.mod-body.collapsed{display:none}
+
+/* prose */
+.prose{font-size:15px; color:var(--ink-soft); line-height:1.72; margin:16px 0}
+.prose strong{color:var(--green); font-weight:700}
+.prose em{font-style:italic; color:var(--koral-deep)}
+.lead{font-size:16px; color:var(--ink); font-weight:500; line-height:1.65; margin:18px 0}
+.bullets{list-style:none; margin:14px 0 18px; display:grid; gap:9px}
+.bullets li{position:relative; padding-left:26px; font-size:14.5px; color:var(--ink-soft); line-height:1.6}
+.bullets li::before{content:'›'; position:absolute; left:6px; top:-1px; color:var(--koral); font-weight:800; font-size:17px}
+.callout{display:flex; gap:13px; padding:15px 17px; border-radius:var(--r); background:var(--koral-tint); border:1px solid var(--koral-ring); margin:18px 0}
+.callout .ic{font-size:20px; flex-shrink:0; line-height:1.3}
+.callout h4{font-size:13.5px; font-weight:800; color:var(--koral-press); margin-bottom:3px}
+.callout p{font-size:13.5px; color:var(--ink-soft); line-height:1.55}
+
+/* ── øvelse-ramme ── */
+.exercise{border:1px solid var(--brass-soft); border-radius:var(--r-lg); background:#fffdf8; box-shadow:var(--shadow-sm); margin:22px 0; overflow:hidden}
+.ex-head{display:flex; align-items:center; gap:11px; padding:15px 18px; background:linear-gradient(135deg,rgba(226,90,94,.08),rgba(226,90,94,.03)); border-bottom:1px solid var(--brass-soft)}
+.ex-tag{font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#fff; background:var(--koral); padding:4px 9px; border-radius:6px; flex-shrink:0}
+.ex-title{font-size:15px; font-weight:700; color:var(--green); flex:1}
+.ex-state{font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; background:#ece6d6; color:var(--muted); flex-shrink:0; transition:all .3s}
+.ex-state.done{background:var(--ok-bg); color:var(--ok)}
+.ex-body{padding:20px 18px}
+.ex-hint{font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.55}
+
+/* — Øvelse 1: tonefald-slider — */
+.tone-stage{background:var(--cream); border:1px solid var(--line); border-radius:var(--r); padding:18px; margin-bottom:18px; min-height:118px; display:flex; flex-direction:column; justify-content:center}
+.tone-caption{font-size:15.5px; color:var(--ink); line-height:1.6; transition:opacity .2s}
+.tone-best{margin-top:12px; font-size:12.5px; font-weight:700; color:var(--koral-deep); display:inline-flex; align-items:center; gap:6px}
+.tone-best .chip{background:var(--koral-tint); border:1px solid var(--koral-ring); padding:3px 10px; border-radius:999px}
+.tone-control{padding:4px 4px 0}
+.tone-range{-webkit-appearance:none; appearance:none; width:100%; height:8px; border-radius:999px; background:linear-gradient(90deg,var(--koral),var(--koral-deep)); outline:none; cursor:pointer}
+.tone-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid var(--koral); box-shadow:0 3px 10px rgba(226,90,94,.35); cursor:pointer; transition:transform .15s}
+.tone-range::-webkit-slider-thumb:active{transform:scale(1.12)}
+.tone-range::-moz-range-thumb{width:24px; height:24px; border-radius:50%; background:#fff; border:3px solid var(--koral); box-shadow:0 3px 10px rgba(226,90,94,.35); cursor:pointer}
+.tone-ticks{display:flex; justify-content:space-between; margin-top:10px}
+.tone-tick{font-size:11.5px; font-weight:700; color:var(--muted); transition:color .2s; cursor:pointer; flex:1; text-align:center}
+.tone-tick.active{color:var(--koral-deep)}
+
+/* — Øvelse 2: prompt-lab — */
+.lab-blocks{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px}
+.lab-block{font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:999px; background:#ece6d6; color:var(--muted); border:1px solid transparent; transition:all .25s}
+.lab-block.hit{background:var(--ok-bg); color:var(--ok); border-color:rgba(47,106,74,.25)}
+.lab-block.hit::before{content:'✓ '; font-weight:800}
+.lab-input{width:100%; min-height:96px; resize:vertical; border:1.5px solid var(--line); border-radius:var(--r); padding:13px 15px; font-family:var(--sans); font-size:14.5px; color:var(--ink); background:var(--cream); line-height:1.55; transition:border-color .2s, box-shadow .2s}
+.lab-input:focus{outline:none; border-color:var(--koral); box-shadow:0 0 0 4px var(--koral-ring)}
+.lab-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; flex-wrap:wrap}
+.lab-count{font-size:12px; color:var(--muted)}
+.lab-chat{margin-top:18px; display:none; flex-direction:column; gap:12px}
+.lab-chat.show{display:flex}
+.bubble{border-radius:14px; padding:13px 16px; font-size:14px; line-height:1.6; max-width:88%; box-shadow:var(--shadow-sm)}
+.bubble-row{display:flex; gap:10px; align-items:flex-start}
+.bubble-row.user{justify-content:flex-end}
+.bubble-av{width:30px; height:30px; border-radius:9px; display:grid; place-items:center; font-size:13px; flex-shrink:0; font-weight:800}
+.bubble-av.ai{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff}
+.bubble-av.me{background:var(--green-soft); color:var(--green-700)}
+.bubble.user{background:#fff; border:1px solid var(--line); color:var(--ink)}
+.bubble.ai{background:#fff; border:1px solid var(--line); color:var(--ink)}
+.bubble .who{font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; display:block}
+#labAnswer,#labEcho{white-space:pre-wrap}
+.bubble.ai .who{color:var(--koral-deep)}
+.lab-verdict{margin-top:4px; border-radius:var(--r); padding:13px 15px; font-size:13.5px; line-height:1.6}
+.lab-verdict.weak{background:var(--warn-bg); border:1px solid #ecd9a6; color:#7a5a17}
+.lab-verdict.strong{background:var(--ok-bg); border:1px solid rgba(47,106,74,.25); color:var(--green-700)}
+.lab-verdict b{font-weight:800}
+.lab-sim-note{font-size:11px; color:var(--muted); font-style:italic; margin-top:10px}
+
+/* — Øvelse 3: match-spil — */
+.match-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
+@media(max-width:560px){.match-grid{grid-template-columns:1fr; gap:14px}}
+.match-col h5{font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--brass-deep); margin-bottom:11px}
+.match-item{display:flex; align-items:center; gap:10px; padding:13px 14px; border:1.5px solid var(--line); border-radius:var(--r); background:var(--cream); font-size:13.5px; font-weight:600; color:var(--ink); cursor:pointer; margin-bottom:10px; transition:all .18s; user-select:none}
+.match-item:hover:not(.matched){border-color:var(--koral); background:#fff}
+.match-item.selected{border-color:var(--koral); background:var(--koral-tint); box-shadow:0 0 0 3px var(--koral-ring)}
+.match-item.matched{border-color:rgba(47,106,74,.4); background:var(--ok-bg); color:var(--green-700); cursor:default; pointer-events:none}
+.match-item.matched::after{content:'✓'; margin-left:auto; color:var(--ok); font-weight:800}
+.match-item .m-ic{width:26px; height:26px; border-radius:7px; display:grid; place-items:center; font-size:13px; background:var(--green-soft); flex-shrink:0}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.match-item.wrong{animation:shake .32s; border-color:var(--err)}
+
+/* ── complete-zone + quiz-gate ── */
+.complete-zone{margin-top:22px; padding:16px 18px; background:linear-gradient(135deg,rgba(226,90,94,.06),rgba(226,90,94,.02)); border:1px solid var(--koral-ring); border-radius:var(--r); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.cz-text{display:flex; align-items:center; gap:11px; font-size:13.5px; font-weight:600; color:var(--ink-soft)}
+.cz-ic{width:34px; height:34px; border-radius:9px; background:var(--koral-soft); color:var(--koral-deep); display:grid; place-items:center; font-size:16px; flex-shrink:0}
+
+/* ── knapper ── */
+.btn{display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; border-radius:999px; transition:transform .18s, box-shadow .18s, background .18s; text-decoration:none}
+.btn-koral{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; padding:12px 26px; box-shadow:var(--shadow-koral)}
+.btn-koral:hover{transform:translateY(-2px); box-shadow:0 14px 38px rgba(226,90,94,.4)}
+.btn-koral:active{transform:translateY(0)}
+.btn-koral:disabled,.btn-koral.disabled{background:#d9d1c0; color:#fff; box-shadow:none; cursor:not-allowed; transform:none}
+.btn-koral.done-state{background:linear-gradient(135deg,var(--ok),var(--green-mid)); box-shadow:0 6px 18px rgba(47,106,74,.28); pointer-events:none}
+.btn-ghost{background:var(--cream); border:1.5px solid var(--brass-soft); color:var(--green-700); padding:10px 20px}
+.btn-ghost:hover{border-color:var(--koral); color:var(--koral-deep)}
+.btn-sm{padding:9px 18px; font-size:13px}
+
+/* ── mini-quiz ── */
+.quiz{border:1px solid var(--koral-ring); border-radius:var(--r-lg); background:#fffdf8; margin-top:22px; overflow:hidden}
+.quiz.is-locked{opacity:.5; filter:grayscale(.4); pointer-events:none}
+.quiz-head{padding:18px 20px; background:linear-gradient(135deg,rgba(226,90,94,.1),rgba(226,90,94,.03)); border-bottom:1px solid var(--koral-ring); display:flex; align-items:center; gap:12px}
+.quiz-head .q-ic{width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; display:grid; place-items:center; font-size:17px; flex-shrink:0}
+.quiz-head h3{font-family:var(--serif); font-size:18px; font-weight:600; color:var(--green)}
+.quiz-head p{font-size:12.5px; color:var(--muted); margin-top:2px}
+.quiz-body{padding:20px}
+.q-block{margin-bottom:22px}
+.q-block:last-of-type{margin-bottom:0}
+.q-num{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--koral-deep); margin-bottom:8px}
+.q-text{font-size:15px; font-weight:600; color:var(--ink); margin-bottom:13px; line-height:1.45}
+.q-opts{display:grid; gap:9px}
+.q-opt{display:flex; align-items:flex-start; gap:11px; padding:12px 15px; border:1.5px solid var(--line); border-radius:var(--r); background:var(--cream); cursor:pointer; font-size:14px; color:var(--ink); line-height:1.45; transition:all .16s}
+.q-opt:hover{border-color:var(--koral); background:#fff}
+.q-opt .q-mark{width:21px; height:21px; border-radius:50%; border:2px solid var(--brass); flex-shrink:0; margin-top:1px; display:grid; place-items:center; transition:all .16s}
+.q-opt.selected{border-color:var(--koral); background:var(--koral-tint)}
+.q-opt.selected .q-mark{border-color:var(--koral); background:var(--koral)}
+.q-opt.selected .q-mark::after{content:''; width:8px; height:8px; border-radius:50%; background:#fff}
+.q-opt.correct{border-color:rgba(47,106,74,.5); background:var(--ok-bg)}
+.q-opt.correct .q-mark{border-color:var(--ok); background:var(--ok)}
+.q-opt.correct .q-mark::after{content:'✓'; color:#fff; font-size:11px; font-weight:800}
+.q-opt.incorrect{border-color:rgba(192,71,62,.5); background:var(--err-bg)}
+.q-opt.incorrect .q-mark{border-color:var(--err); background:var(--err)}
+.q-opt.incorrect .q-mark::after{content:'✕'; color:#fff; font-size:10px; font-weight:800}
+.q-opt.locked-pick{pointer-events:none}
+.quiz-footer{margin-top:6px; padding-top:18px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
+.quiz-result{font-size:14px; font-weight:700}
+.quiz-result.pass{color:var(--ok)}
+.quiz-result.fail{color:var(--err)}
+
+/* ── eksamen (låst) ── */
+.exam-cta{position:relative; background:linear-gradient(135deg,rgba(27,70,54,.06),rgba(226,90,94,.05)); border:1px solid var(--brass-soft); border-radius:var(--r-xl); padding:34px; text-align:center; overflow:hidden; margin-top:30px}
+.exam-cta .exam-tag{display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:999px; background:var(--koral-soft); border:1px solid var(--koral-ring); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--koral-deep); margin-bottom:14px}
+.exam-cta h3{font-family:var(--serif); font-weight:600; font-size:26px; color:var(--green); margin-bottom:10px}
+.exam-cta p{font-size:14.5px; color:var(--ink-soft); max-width:520px; margin:0 auto 18px; line-height:1.6}
+.exam-parts{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:22px}
+.exam-part{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r); padding:14px 18px; min-width:200px; text-align:left}
+.exam-part b{font-size:13.5px; color:var(--green); display:block; margin-bottom:3px}
+.exam-part small{font-size:12px; color:var(--muted)}
+.exam-locked-btn{display:inline-flex; align-items:center; gap:10px; background:#d9d1c0; color:#fff; font-family:var(--sans); font-size:15px; font-weight:700; padding:14px 36px; border-radius:999px; cursor:not-allowed}
+.exam-reward{margin-top:14px; font-size:13px; color:var(--brass-deep); font-weight:600}
+
+/* ════════════════════ TOASTS ════════════════════ */
+#toast{position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(12px); z-index:9990; padding:12px 24px; background:#14201a; color:#fff; border-radius:999px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(15,42,32,.4)}
+#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+#locked-toast{position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.96); z-index:9991; padding:14px 26px; background:#14201a; color:#fff; border-radius:999px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; white-space:nowrap; box-shadow:0 14px 40px rgba(15,42,32,.5)}
+#locked-toast.show{opacity:1; transform:translate(-50%,-50%) scale(1)}
+
+/* ════════════════════ LOGIN WALL ════════════════════ */
+#login-wall{position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; padding:24px; background:radial-gradient(ellipse at 50% 30%, rgba(20,52,40,.82), rgba(15,42,32,.94)); backdrop-filter:blur(7px)}
+#login-wall.show{display:flex}
+.wall-card{width:100%; max-width:430px; background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-xl); box-shadow:0 30px 80px rgba(15,42,32,.5); padding:38px 32px; text-align:center; animation:wallIn .4s cubic-bezier(.16,1,.3,1)}
+@keyframes wallIn{from{opacity:0; transform:translateY(18px) scale(.97)}to{opacity:1; transform:none}}
+.wall-mark{width:62px; height:62px; border-radius:18px; margin:0 auto 18px; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); display:grid; place-items:center; font-size:28px; box-shadow:var(--shadow-koral)}
+.wall-card h2{font-family:var(--serif); font-weight:600; font-size:24px; color:var(--green); margin-bottom:10px}
+.wall-card p{font-size:14.5px; color:var(--ink-soft); line-height:1.6; margin-bottom:24px}
+.wall-card .btn-koral{width:100%; justify-content:center; padding:14px}
+.wall-foot{margin-top:14px; font-size:13px; color:var(--muted)}
+.wall-foot a{color:var(--koral-deep); font-weight:700; text-decoration:none}
+.wall-foot a:hover{text-decoration:underline}
+.wall-meta{margin-top:22px; padding-top:18px; border-top:1px solid var(--line); display:flex; gap:8px; justify-content:center; flex-wrap:wrap}
+.wall-chip{font-size:11.5px; font-weight:600; color:var(--green-700); background:#fff; border:1px solid var(--brass-soft); padding:5px 12px; border-radius:999px}
+
+/* små helpers */
+.center{text-align:center}
+.mt-sm{margin-top:10px}
+[hidden]{display:none !important}
+</style>
+</head>
+<body>
+
+<!-- ════════════ LOGIN WALL ════════════ -->
+<div id="login-wall" role="dialog" aria-modal="true" aria-labelledby="wallTitle">
+  <div class="wall-card">
+    <div class="wall-mark">🔒</div>
+    <h2 id="wallTitle">Log ind for at starte</h2>
+    <p>Dette kursus er en del af din profil på <strong>akademiet-ai.dk</strong>. Log ind, så gemmer vi dine fremskridt, og dit bevis bliver personligt med dit navn.</p>
+    <a href="platform.html" class="btn btn-koral">Log ind eller opret bruger →</a>
+    <div class="wall-foot">Har du allerede en bruger? <a href="platform.html">Gå til login</a></div>
+    <div class="wall-meta">
+      <span class="wall-chip">⏱ 1,5 time</span>
+      <span class="wall-chip">📋 3 moduler</span>
+      <span class="wall-chip">🏅 Badge + bevis</span>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ TOPBAR ════════════ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="platform.html"><span class="brand-mark">AA</span><span>akademiet-ai.dk</span></a>
+    <nav class="crumb"><a href="platform.html">Platform</a><span class="dot"></span><span class="here">AI til Sociale Medier</span></nav>
+  </div>
+</header>
+
+<!-- ════════════ JOURNEY ════════════ -->
+<div class="journey-wrap">
+  <div class="journey-pill">
+    <span class="journey-step current">Modul 1 · Stemme &amp; strategi</span><span class="journey-sep">›</span>
+    <span class="journey-step">Q1 · Mini-quiz</span><span class="journey-sep">›</span>
+    <span class="journey-step">Modul 2 · Indhold</span><span class="journey-sep">›</span>
+    <span class="journey-step">Q2 · Mini-quiz</span><span class="journey-sep">›</span>
+    <span class="journey-step">Modul 3 · Vækst</span><span class="journey-sep">›</span>
+    <span class="journey-step">Eksamen del 1</span><span class="journey-sep">›</span>
+    <span class="journey-step">Eksamen del 2</span><span class="journey-sep">›</span>
+    <span class="journey-step">🏅 Bevis</span>
+  </div>
+</div>
+
+<!-- ════════════ HERO ════════════ -->
+<section class="hero">
+  <span class="hero-tag"><span class="pulse"></span>Specialkursus · Sociale Medier</span>
+  <h1>AI til <em>sociale medier</em></h1>
+  <p class="hero-sub">Lær at bruge AI som din kreative makker — så du finder din stemme, skaber indhold der bliver set, og styrer dine kanaler i stedet for at jagte dem. På halvanden time.</p>
+  <div class="hero-stats">
+    <span class="hero-stat">⏱ 1,5 time</span>
+    <span class="hero-stat">📋 3 moduler</span>
+    <span class="hero-stat">🎮 Live øvelser i hvert modul</span>
+    <span class="hero-stat">🏅 Badge &amp; downloadbart bevis</span>
+  </div>
+</section>
+
+<!-- ════════════ LAYOUT ════════════ -->
+<div class="layout">
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+    <div class="sb-card">
+      <div class="sb-head">
+        <span class="sb-head-label">📚 Dit forløb</span>
+        <div class="sb-progress">
+          <div class="sb-progress-top"><span>Fremskridt</span><span class="sb-progress-pct" id="sbPct">0 %</span></div>
+          <div class="sb-bar"><div class="sb-fill" id="sbFill"></div></div>
+        </div>
+      </div>
+      <div class="sb-list">
+        <a class="sb-item is-active" data-jump="m1" id="sbM1">
+          <span class="sb-ic">1</span>
+          <span class="sb-txt"><b>Stemme &amp; strategi</b><small>Du er her nu</small></span>
+          <span class="sb-flag" id="sbFlagM1"></span>
+        </a>
+        <a class="sb-item is-locked" data-locked="1" id="sbM2">
+          <span class="sb-ic">2</span>
+          <span class="sb-txt"><b>Indhold der ses</b><small>Låst</small></span>
+          <span class="sb-flag">🔒</span>
+        </a>
+        <a class="sb-item is-locked" data-locked="1" id="sbM3">
+          <span class="sb-ic">3</span>
+          <span class="sb-txt"><b>Planlæg &amp; voks</b><small>Låst</small></span>
+          <span class="sb-flag">🔒</span>
+        </a>
+        <div class="sb-divider"></div>
+        <a class="sb-item is-locked" data-locked="exam" id="sbExam">
+          <span class="sb-ic">🎓</span>
+          <span class="sb-txt"><b>Afsluttende eksamen</b><small>Badge · bevis</small></span>
+          <span class="sb-flag">🔒</span>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <div class="sect-label"><hr><span>Modul 1 af 3</span><hr></div>
+
+    <!-- ════════ MODUL 1 (fuldt bygget) ════════ -->
+    <section class="mod" id="m1">
+      <div class="mod-header">
+        <div class="mod-num">1</div>
+        <div class="mod-text">
+          <div class="mod-title">Find din stemme &amp; strategi</div>
+          <div class="mod-sub">AI som din strategiske med-stifter</div>
+        </div>
+        <span class="mod-time">⏱ 30 min</span>
+      </div>
+      <div class="mod-body">
+
+        <p class="lead">Før du overhovedet rører et opslag, skal to ting på plads: <strong>en stemme</strong> folk kan genkende, og <strong>en strategi</strong> der passer til kanalen. AI kan hjælpe dig med begge dele — men kun hvis du styrer den.</p>
+
+        <p class="prose">De fleste oplever, at AI spytter <em>kedeligt, generisk indhold</em> ud. Problemet er sjældent AI'en — det er instruktionen. Når du fortæller AI'en <strong>hvem du taler til, hvad du vil opnå, og i hvilket tonefald</strong>, ændrer svaret sig fuldstændigt. Det øver vi i dette modul.</p>
+
+        <ul class="bullets">
+          <li>Hvad en stærk brand-stemme består af — og hvordan du holder den konsistent.</li>
+          <li>Hvorfor en præcis prompt giver brugbart indhold, og en løs prompt giver støj.</li>
+          <li>Hvilken strategi der virker hvor — for de fire store platforme.</li>
+        </ul>
+
+        <div class="callout">
+          <span class="ic">🎯</span>
+          <div><h4>Princippet for hele kurset</h4><p>Du lærer ved at <strong>gøre</strong>, ikke ved at læse lange lister. Hvert modul har små øvelser, hvor du prøver det med det samme.</p></div>
+        </div>
+
+        <!-- ─── ØVELSE 1: TONEFALD-SLIDER ─── -->
+        <div class="exercise" id="ex1">
+          <div class="ex-head">
+            <span class="ex-tag">Øvelse 1</span>
+            <span class="ex-title">Skru på tonefaldet</span>
+            <span class="ex-state" id="ex1State">Ikke prøvet</span>
+          </div>
+          <div class="ex-body">
+            <p class="prose" style="margin-top:0">Samme budskab kan lyde vidt forskelligt. Træk i skyderen og se, hvordan tonefaldet ændrer den <em>samme</em> annoncering — og hvilken platform hvert tonefald passer bedst til.</p>
+            <div class="tone-stage">
+              <div class="tone-caption" id="toneCaption">Vi annoncerer hermed lanceringen af vores nye kaffeblanding. Den er fra i dag tilgængelig i vores webshop.</div>
+              <div class="tone-best" id="toneBest">Bedst til: <span class="chip">LinkedIn · B2B</span></div>
+            </div>
+            <div class="tone-control">
+              <input type="range" class="tone-range" id="toneRange" min="0" max="3" step="1" value="0" aria-label="Tonefald">
+              <div class="tone-ticks" id="toneTicks">
+                <span class="tone-tick active" data-i="0">Formel</span>
+                <span class="tone-tick" data-i="1">Professionel</span>
+                <span class="tone-tick" data-i="2">Venlig</span>
+                <span class="tone-tick" data-i="3">Legende</span>
+              </div>
+            </div>
+            <p class="ex-hint">💡 Pointe: der findes ikke ét "rigtigt" tonefald — der findes det rigtige tonefald <strong>til kanalen og målgruppen</strong>. Prøv alle fire for at fuldføre øvelsen.</p>
+          </div>
+        </div>
+
+        <!-- ─── ØVELSE 2: PROMPT-LAB ─── -->
+        <div class="exercise" id="ex2">
+          <div class="ex-head">
+            <span class="ex-tag">Øvelse 2</span>
+            <span class="ex-title">Prompt-laboratoriet</span>
+            <span class="ex-state" id="ex2State">Ikke prøvet</span>
+          </div>
+          <div class="ex-body">
+            <p class="prose" style="margin-top:0">Skriv en prompt, der beder AI'en lave et <strong>Instagram-opslag</strong> for et lille dansk kafferisteri. Jo flere byggeklodser du får med, jo bedre bliver svaret. Klodserne lyser op, efterhånden som du rammer dem.</p>
+            <div class="lab-blocks" id="labBlocks">
+              <span class="lab-block" data-k="platform">Platform</span>
+              <span class="lab-block" data-k="maalgruppe">Målgruppe</span>
+              <span class="lab-block" data-k="maal">Mål</span>
+              <span class="lab-block" data-k="tone">Tonefald</span>
+              <span class="lab-block" data-k="format">Format / CTA</span>
+            </div>
+            <textarea class="lab-input" id="labInput" placeholder="Fx: Skriv et Instagram-opslag til unge kaffeelskere. Målet er at få dem til at besøge webshoppen. Tonefaldet skal være venligt og legende. Brug en fængende åbning, korte linjer, 3 emojis og afslut med en opfordring + relevante hashtags."></textarea>
+            <div class="lab-bar">
+              <span class="lab-count" id="labCount">0 af 5 byggeklodser fundet</span>
+              <button class="btn btn-koral btn-sm" id="labRun">Generér opslag ✨</button>
+            </div>
+
+            <div class="lab-chat" id="labChat">
+              <div class="bubble-row user">
+                <div class="bubble user"><span class="who">Din prompt</span><span id="labEcho"></span></div>
+                <div class="bubble-av me">DU</div>
+              </div>
+              <div class="bubble-row ai">
+                <div class="bubble-av ai">AI</div>
+                <div class="bubble ai"><span class="who">AI-assistent</span><span id="labAnswer"></span></div>
+              </div>
+            </div>
+            <div class="lab-verdict" id="labVerdict" hidden></div>
+            <p class="lab-sim-note">Simuleret svar — denne øvelse bruger ingen rigtig AI og koster intet. På de øvrige kurser kører live AI gennem jeres egen server.</p>
+          </div>
+        </div>
+
+        <!-- ─── ØVELSE 3: STRATEGI-MATCH ─── -->
+        <div class="exercise" id="ex3">
+          <div class="ex-head">
+            <span class="ex-tag">Øvelse 3</span>
+            <span class="ex-title">Match strategi til platform</span>
+            <span class="ex-state" id="ex3State">0 / 4 matchet</span>
+          </div>
+          <div class="ex-body">
+            <p class="prose" style="margin-top:0">Hver platform belønner sin egen slags indhold. Klik på en <strong>platform</strong> til venstre og dernæst den <strong>strategi</strong>, der passer bedst, til højre.</p>
+            <div class="match-grid">
+              <div class="match-col">
+                <h5>Platform</h5>
+                <div id="matchPlatforms"></div>
+              </div>
+              <div class="match-col">
+                <h5>Bedste strategi</h5>
+                <div id="matchStrategies"></div>
+              </div>
+            </div>
+            <p class="ex-hint">💡 Tip: tænk på, hvordan folk <em>bruger</em> hver platform — ikke kun hvad du selv vil sige.</p>
+          </div>
+        </div>
+
+        <!-- ─── COMPLETE ZONE ─── -->
+        <div class="complete-zone" id="cz-m1">
+          <div class="cz-text"><span class="cz-ic">📝</span><span id="czText">Fuldfør alle 3 øvelser for at låse mini-quizzen op.</span></div>
+          <button class="btn btn-koral disabled" id="quizUnlockBtn" disabled>Tag mini-quizzen 🔒</button>
+        </div>
+
+        <!-- ─── MINI-QUIZ 1 ─── -->
+        <div class="quiz is-locked" id="quiz1">
+          <div class="quiz-head">
+            <div class="q-ic">🧩</div>
+            <div><h3>Mini-quiz · Modul 1</h3><p>Bestå med mindst 3 ud af 4 for at låse Modul 2 op.</p></div>
+          </div>
+          <div class="quiz-body" id="quizBody"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <div class="sect-label"><hr><span>Resten af kurset</span><hr></div>
+
+    <!-- ════════ MODUL 2 (låst, visuelt) ════════ -->
+    <section class="mod is-locked" id="m2">
+      <div class="mod-header">
+        <div class="mod-num">2</div>
+        <div class="mod-text">
+          <div class="mod-title">Indhold der stopper scrollet</div>
+          <div class="mod-sub">Hooks, billedtekster, hashtags &amp; visuel idé-generering</div>
+        </div>
+        <span class="mod-badge locked">🔒 Låst</span>
+      </div>
+      <div class="mod-body collapsed"></div>
+    </section>
+
+    <!-- ════════ MODUL 3 (låst, visuelt) ════════ -->
+    <section class="mod is-locked" id="m3">
+      <div class="mod-header">
+        <div class="mod-num">3</div>
+        <div class="mod-text">
+          <div class="mod-title">Planlæg, analysér &amp; voks</div>
+          <div class="mod-sub">Indholdskalender, analyse af tal &amp; A/B-test med AI</div>
+        </div>
+        <span class="mod-badge locked">🔒 Låst</span>
+      </div>
+      <div class="mod-body collapsed"></div>
+    </section>
+
+    <!-- ════════ EKSAMEN (låst) ════════ -->
+    <div class="exam-cta">
+      <span class="exam-tag">🎓 Afsluttende eksamen</span>
+      <h3>Klar til beviset?</h3>
+      <p>Eksamenen består af to dele og afslutter kurset. Bestå begge, og du får dit badge og et personligt, downloadbart bevis.</p>
+      <div class="exam-parts">
+        <div class="exam-part"><b>Del 1 · Teori</b><small>Spørgsmål der tester kernekoncepterne fra alle 3 moduler.</small></div>
+        <div class="exam-part"><b>Del 2 · Praktisk</b><small>En håndgribelig opgave, hvor du bygger og forbedrer et rigtigt opslag.</small></div>
+      </div>
+      <div class="exam-locked-btn" id="examBtn">🔒 Eksamen åbner når Modul 3 er gennemført</div>
+      <div class="exam-reward">🏅 Belønning: badge til din profil + downloadbart bevis</div>
+    </div>
+
+  </main>
+</div>
+
+<!-- toasts -->
+<div id="toast"></div>
+<div id="locked-toast">🔒 Gennemfør det forrige trin først</div>
+
+<!-- ════════════════════════════════════════════════════════════
+     LOGIK: lås/quiz/øvelser  (almindelig, ikke-modul)
+════════════════════════════════════════════════════════════ -->
+<script>
+/* ── Konfiguration ──
+   COURSE_ID bruges som Firestore-feltnavn til at gemme fremskridt.
+   DEV_PREVIEW=true viser indholdet uden login (kun til lokal test).
+   SÆT DEV_PREVIEW=false FØR UPLOAD, så login-muren styrer adgang. */
+const COURSE_ID    = 'sociale-medier';
+const DEV_PREVIEW  = true;
+
+/* ── State ── */
+const exDone = { ex1:false, ex2:false, ex3:false };
+let quizPassed = false;
+let m1Done = false;
+
+/* ── Toasts ── */
+let _toastTimer, _lockTimer;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(_toastTimer); _toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+function lockedToast(msg){
+  const t=document.getElementById('locked-toast');
+  t.textContent='🔒 '+msg; t.classList.add('show');
+  clearTimeout(_lockTimer); _lockTimer=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ── Sidebar-navigation ── */
+document.querySelectorAll('.sb-item').forEach(function(item){
+  item.addEventListener('click', function(){
+    const lk = item.getAttribute('data-locked');
+    if(lk==='exam'){ lockedToast('Eksamenen åbner, når du har gennemført alle 3 moduler'); return; }
+    if(lk==='1'){
+      const which = item.id==='sbM2' ? 'Bestå mini-quizzen i Modul 1 for at låse Modul 2 op'
+                                     : 'Modul 3 åbner, når Modul 2 er gennemført';
+      lockedToast(which); return;
+    }
+    const jump = item.getAttribute('data-jump');
+    if(jump){
+      const el=document.getElementById(jump);
+      if(el){ const top=el.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); }
+    }
+  });
+});
+
+/* ── Progress-beregning (4 trin: 3 øvelser + quiz = Modul 1) ── */
+function refreshProgress(){
+  let steps=0;
+  if(exDone.ex1) steps++;
+  if(exDone.ex2) steps++;
+  if(exDone.ex3) steps++;
+  if(quizPassed) steps++;
+  const pct=Math.round((steps/4)*100);
+  document.getElementById('sbFill').style.width=pct+'%';
+  document.getElementById('sbPct').textContent=pct+' %';
+}
+
+/* ── Øvelse-state opdatering + quiz-oplåsning ── */
+function setExState(id, label){
+  const el=document.getElementById(id+'State');
+  if(el){ el.textContent=label; el.classList.add('done'); }
+}
+function markExercise(key){
+  if(exDone[key]) return;
+  exDone[key]=true;
+  refreshProgress();
+  checkExercisesComplete();
+}
+function checkExercisesComplete(){
+  if(exDone.ex1 && exDone.ex2 && exDone.ex3){
+    const btn=document.getElementById('quizUnlockBtn');
+    const txt=document.getElementById('czText');
+    btn.disabled=false; btn.classList.remove('disabled');
+    btn.innerHTML='Tag mini-quizzen →';
+    txt.textContent='Flot! Alle 3 øvelser er gennemført. Tag mini-quizzen for at låse Modul 2 op.';
+    if(!btn.dataset.glow){ btn.dataset.glow='1'; toast('✅ Alle øvelser fuldført — mini-quizzen er åben!'); }
+  }
+}
+
+/* ════════ ØVELSE 1: tonefald-slider ════════ */
+(function(){
+  const variants=[
+    { text:'Vi annoncerer hermed lanceringen af vores nye kaffeblanding. Den er fra i dag tilgængelig i vores webshop.', best:'LinkedIn · B2B' },
+    { text:'Ny kaffeblanding på hylderne ☕ Vi har arbejdet længe på den helt rette balance — smag den i dag.', best:'Facebook · nyhedsbrev' },
+    { text:'Så er den her! 🎉 Vores nye blanding er rund, varm og lige til morgenkaffen. Hvad bliver din første kop?', best:'Instagram-opslag' },
+    { text:'POV: din morgenkaffe får endelig en opgradering ☕✨ Ny blanding, samme dårlige morgenhår. Smag den nuuu 👀', best:'TikTok · Reels · Stories' }
+  ];
+  const range=document.getElementById('toneRange');
+  const cap=document.getElementById('toneCaption');
+  const best=document.getElementById('toneBest');
+  const ticks=document.querySelectorAll('#toneTicks .tone-tick');
+  const seen={0:true};
+  function render(i){
+    cap.style.opacity='0';
+    setTimeout(function(){ cap.textContent=variants[i].text; cap.style.opacity='1'; },120);
+    best.innerHTML='Bedst til: <span class="chip">'+variants[i].best+'</span>';
+    ticks.forEach(function(t){ t.classList.toggle('active', Number(t.getAttribute('data-i'))===i); });
+    seen[i]=true;
+    if(Object.keys(seen).length>=4){ setExState('ex1','✓ Fuldført'); markExercise('ex1'); }
+  }
+  range.addEventListener('input', function(){ render(Number(range.value)); });
+  ticks.forEach(function(t){
+    t.addEventListener('click', function(){ const i=Number(t.getAttribute('data-i')); range.value=i; render(i); });
+  });
+})();
+
+/* ════════ ØVELSE 2: prompt-lab (simuleret) ════════ */
+(function(){
+  const input=document.getElementById('labInput');
+  const count=document.getElementById('labCount');
+  const blocks=document.querySelectorAll('#labBlocks .lab-block');
+  const runBtn=document.getElementById('labRun');
+  const chat=document.getElementById('labChat');
+  const echo=document.getElementById('labEcho');
+  const answer=document.getElementById('labAnswer');
+  const verdict=document.getElementById('labVerdict');
+
+  const KEYS={
+    platform:['instagram','tiktok','linkedin','facebook','reel','reels','story','stories','opslag','post','platform'],
+    maalgruppe:['målgruppe','kunder','unge','voksne','kaffeelsker','følgere','til folk','segment','publikum','seere'],
+    maal:['mål','salg','sælg','opmærksomhed','awareness','engagement','tilmeld','klik','konvert','besøg','branding','kendskab'],
+    tone:['tone','tonefald','sjov','legende','professionel','formel','venlig','afslappet','energisk','humor','seriøs','varm'],
+    format:['hashtag','emoji','cta','opfordring','længde','antal ord','punkt','billedtekst','caption','format','kort','linje','åbning','hook']
+  };
+  function detect(txt){
+    const t=txt.toLowerCase();
+    const hits={};
+    Object.keys(KEYS).forEach(function(k){ hits[k]=KEYS[k].some(function(w){ return t.indexOf(w)>=0; }); });
+    return hits;
+  }
+  function live(){
+    const hits=detect(input.value);
+    let n=0;
+    blocks.forEach(function(b){ const k=b.getAttribute('data-k'); const on=hits[k]; b.classList.toggle('hit',on); if(on)n++; });
+    count.textContent=n+' af 5 byggeklodser fundet';
+    return n;
+  }
+  input.addEventListener('input', live);
+
+  const WEAK='🌟 Ny kaffe! Kom og køb vores lækre kaffe i webshoppen i dag. Den smager super godt. #kaffe #lækkert #nyhed #shop';
+  const STRONG='☕ Din morgen fortjener bedre.\n\nVi har lige ristet en ny blanding — rund, nøddeagtig og lavet til den allerførste kop, før verden vågner.\n\n👉 Smag den i dag. Link i bio.\n\n#danskkaffe #specialkaffe #morgenrutine #kafferisteri #nyblanding';
+
+  runBtn.addEventListener('click', function(){
+    const txt=input.value.trim();
+    if(txt.length<8){ toast('Skriv en prompt først ✍️'); input.focus(); return; }
+    const n=live();
+    echo.textContent=txt;
+    chat.classList.add('show');
+    verdict.hidden=false;
+    if(n>=3){
+      answer.textContent=STRONG;
+      verdict.className='lab-verdict strong';
+      verdict.innerHTML='<b>Stærk prompt 👏</b> Du gav AI\'en '+n+' ud af 5 byggeklodser, og det kan ses: opslaget har en fængende åbning, en klar værdi, en tydelig opfordring og relevante hashtags. Sådan styrer du AI\'en i stedet for at tage til takke med det første, den finder på.';
+      setExState('ex2','✓ Fuldført'); markExercise('ex2');
+    } else {
+      answer.textContent=WEAK;
+      verdict.className='lab-verdict weak';
+      const missing=[]; const hits=detect(txt);
+      if(!hits.platform) missing.push('platform');
+      if(!hits.maalgruppe) missing.push('målgruppe');
+      if(!hits.maal) missing.push('et mål');
+      if(!hits.tone) missing.push('tonefald');
+      if(!hits.format) missing.push('format/CTA');
+      verdict.innerHTML='<b>Lidt for løst 🤔</b> Med kun '+n+' byggeklodser bliver svaret generisk. Prøv at tilføje: <b>'+missing.join(', ')+'</b>. Jo mere du fortæller AI\'en om kontekst og mål, jo mindre kedeligt bliver resultatet. Skriv om og generér igen.';
+    }
+    chat.scrollIntoView({behavior:'smooth',block:'nearest'});
+  });
+})();
+
+/* ════════ ØVELSE 3: strategi-match ════════ */
+(function(){
+  const platforms=[
+    { id:'linkedin', ic:'💼', label:'LinkedIn' },
+    { id:'instagram', ic:'📸', label:'Instagram' },
+    { id:'tiktok', ic:'🎬', label:'TikTok' },
+    { id:'facebook', ic:'👥', label:'Facebook' }
+  ];
+  const strategies=[
+    { id:'linkedin', label:'Faglige indlæg og personlige brancheindsigter' },
+    { id:'instagram', label:'Æstetiske billeder og korte Reels' },
+    { id:'tiktok', label:'Autentiske trend-videoer i højt tempo' },
+    { id:'facebook', label:'Fællesskab, grupper og længere opslag' }
+  ];
+  function shuffle(a){ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
+
+  const pWrap=document.getElementById('matchPlatforms');
+  const sWrap=document.getElementById('matchStrategies');
+  shuffle(platforms).forEach(function(p){
+    const d=document.createElement('div'); d.className='match-item'; d.setAttribute('data-side','p'); d.setAttribute('data-id',p.id);
+    d.innerHTML='<span class="m-ic">'+p.ic+'</span>'+p.label; pWrap.appendChild(d);
+  });
+  shuffle(strategies).forEach(function(s){
+    const d=document.createElement('div'); d.className='match-item'; d.setAttribute('data-side','s'); d.setAttribute('data-id',s.id);
+    d.textContent=s.label; sWrap.appendChild(d);
+  });
+
+  let selected=null; let matched=0;
+  function clearSel(){ document.querySelectorAll('.match-item.selected').forEach(function(e){ e.classList.remove('selected'); }); }
+  function onPick(el){
+    if(el.classList.contains('matched')) return;
+    if(!selected){ clearSel(); el.classList.add('selected'); selected=el; return; }
+    if(selected===el){ el.classList.remove('selected'); selected=null; return; }
+    if(selected.getAttribute('data-side')===el.getAttribute('data-side')){
+      clearSel(); el.classList.add('selected'); selected=el; return;
+    }
+    // ét fra hver side valgt — tjek match
+    const a=selected, b=el;
+    if(a.getAttribute('data-id')===b.getAttribute('data-id')){
+      a.classList.remove('selected'); a.classList.add('matched'); b.classList.add('matched');
+      selected=null; matched++;
+      document.getElementById('ex3State').textContent=matched+' / 4 matchet';
+      if(matched>=4){ setExState('ex3','✓ Fuldført'); markExercise('ex3'); }
+    } else {
+      a.classList.add('wrong'); b.classList.add('wrong');
+      lockedToast('Ikke helt — prøv en anden kombination');
+      setTimeout(function(){ a.classList.remove('wrong','selected'); b.classList.remove('wrong'); selected=null; },340);
+    }
+  }
+  document.querySelectorAll('.match-item').forEach(function(el){ el.addEventListener('click', function(){ onPick(el); }); });
+})();
+
+/* ════════ MINI-QUIZ 1 ════════ */
+(function(){
+  // korrekt-index spredt over A/B/C/D (1,3,0,2)
+  const QUESTIONS=[
+    { q:'Et opslag fra AI’en føles fladt og generisk. Hvad løser oftest problemet bedst?', correct:1, opts:[
+      'Du beder den skrive teksten forfra og gør den markant længere end første udkast',
+      'Du giver den kontekst om målgruppe, mål og det tonefald den skal ramme',
+      'Du skifter til en anden AI-model og prøver lykken med præcis samme prompt igen',
+      'Du fylder opslaget med endnu flere emojis og hashtags, så det ser mere levende ud'
+    ]},
+    { q:'Hvorfor kan det samme velskrevne opslag ramme plet på TikTok og falde helt fladt på LinkedIn?', correct:2, opts:[
+      'Fordi LinkedIn rent teknisk ikke understøtter emojis og uformelt sprog i opslag',
+      'Fordi længere tekster altid præsterer dårligere end kortere tekster, uanset kanalen',
+      'Fordi hver platform har sin egen kultur, og publikum forventer et bestemt tonefald',
+      'Fordi AI-genereret indhold kun rigtig fungerer på visuelle platforme som TikTok'
+    ]},
+    { q:'En B2B-konsulent vil opbygge faglig troværdighed online. Hvilken tilgang passer bedst?', correct:0, opts:[
+      'Faglige indlæg og personlige brancheindsigter delt løbende på LinkedIn',
+      'Daglige trend-baserede danse-videoer postet på TikTok i højt tempo',
+      'Æstetiske produktbilleder helt uden tekst lagt op i et stort Instagram-galleri',
+      'Korte, sjove memes uden kontekst spredt bredt rundt i Facebook-grupper'
+    ]},
+    { q:'Hvorfor er en præcis målgruppe vigtigere for resultatet end at skrive til “alle”?', correct:3, opts:[
+      'Fordi svaret automatisk bliver længere, når AI’en får mere stof at skrive ud fra',
+      'Fordi AI’en så frit kan vælge en tilfældig vinkel og et tonefald helt selv',
+      'Fordi du derefter helt slipper for selv at angive et tonefald i din prompt',
+      'Fordi sproget, vinklen og eksemplerne rammer den rigtige målgruppes behov'
+    ]}
+  ];
+  const PASS=3;
+  const picks={};
+  const body=document.getElementById('quizBody');
+  const letters=['A','B','C','D'];
+
+  QUESTIONS.forEach(function(item, qi){
+    const block=document.createElement('div'); block.className='q-block';
+    const num=document.createElement('span'); num.className='q-num'; num.textContent='Spørgsmål '+(qi+1)+' af 4'; block.appendChild(num);
+    const qt=document.createElement('div'); qt.className='q-text'; qt.textContent=item.q; block.appendChild(qt);
+    const opts=document.createElement('div'); opts.className='q-opts';
+    item.opts.forEach(function(text, oi){
+      const o=document.createElement('div'); o.className='q-opt';
+      o.innerHTML='<span class="q-mark"></span><span>'+text+'</span>';
+      o.addEventListener('click', function(){
+        if(quizPassed) return;
+        opts.querySelectorAll('.q-opt').forEach(function(e){ e.classList.remove('selected'); });
+        o.classList.add('selected'); picks[qi]=oi;
+      });
+      opts.appendChild(o);
+    });
+    block.appendChild(opts);
+    body.appendChild(block);
+  });
+
+  const footer=document.createElement('div'); footer.className='quiz-footer';
+  footer.innerHTML='<span class="quiz-result" id="quizResult"></span>'+
+    '<button class="btn btn-koral btn-sm" id="quizSubmit">Aflevér svar</button>';
+  body.appendChild(footer);
+
+  document.getElementById('quizSubmit').addEventListener('click', function(){
+    if(Object.keys(picks).length<QUESTIONS.length){ toast('Besvar alle 4 spørgsmål først 🙂'); return; }
+    let score=0;
+    const blocks=body.querySelectorAll('.q-block');
+    QUESTIONS.forEach(function(item, qi){
+      const optEls=blocks[qi].querySelectorAll('.q-opt');
+      optEls.forEach(function(e){ e.classList.add('locked-pick'); });
+      const chosen=picks[qi];
+      if(chosen===item.correct){ score++; optEls[chosen].classList.add('correct'); }
+      else { optEls[chosen].classList.add('incorrect'); optEls[item.correct].classList.add('correct'); }
+    });
+    const res=document.getElementById('quizResult');
+    const submit=document.getElementById('quizSubmit');
+    if(score>=PASS){
+      quizPassed=true;
+      res.className='quiz-result pass'; res.textContent='✓ Bestået — '+score+'/4 rigtige!';
+      submit.style.display='none';
+      onQuizPassed();
+    } else {
+      res.className='quiz-result fail'; res.textContent='✗ '+score+'/4 — du mangler mindst '+PASS+'. Prøv igen.';
+      submit.textContent='Prøv igen';
+      submit.onclick=function(){ resetQuiz(); };
+    }
+  });
+
+  function resetQuiz(){
+    Object.keys(picks).forEach(function(k){ delete picks[k]; });
+    body.querySelectorAll('.q-opt').forEach(function(e){ e.classList.remove('selected','correct','incorrect','locked-pick'); });
+    const res=document.getElementById('quizResult'); res.textContent=''; res.className='quiz-result';
+    const submit=document.getElementById('quizSubmit'); submit.textContent='Aflevér svar';
+    submit.onclick=null;
+  }
+
+  window._unlockQuiz=function(){
+    const q=document.getElementById('quiz1');
+    q.classList.remove('is-locked');
+    const top=q.getBoundingClientRect().top+window.scrollY-90;
+    window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  };
+})();
+
+/* ── Quiz-unlock knap ── */
+document.getElementById('quizUnlockBtn').addEventListener('click', function(){
+  if(this.disabled) return;
+  window._unlockQuiz();
+});
+
+/* ── Når quizzen er bestået: marker Modul 1 done + lås Modul 2 op ── */
+function onQuizPassed(){
+  if(m1Done) return;
+  m1Done=true;
+  refreshProgress();
+
+  // Modul 1 -> done
+  const m1=document.getElementById('m1'); m1.classList.add('is-done');
+  m1.querySelector('.mod-time').outerHTML='<span class="mod-badge done">✓ Gennemført</span>';
+
+  // sidebar M1 -> done, M2 -> active/unlock
+  const sbM1=document.getElementById('sbM1');
+  sbM1.classList.remove('is-active'); sbM1.classList.add('is-done');
+  sbM1.querySelector('.sb-txt small').textContent='Gennemført';
+  document.getElementById('sbFlagM1').textContent='✓';
+
+  const sbM2=document.getElementById('sbM2');
+  sbM2.classList.remove('is-locked'); sbM2.classList.add('is-active');
+  sbM2.removeAttribute('data-locked');
+  sbM2.querySelector('.sb-txt small').textContent='Næste op';
+  sbM2.querySelector('.sb-flag').textContent='';
+
+  // Modul 2 kort -> låst op (visuelt klar til at blive bygget)
+  const m2=document.getElementById('m2');
+  m2.classList.remove('is-locked');
+  m2.querySelector('.mod-badge').outerHTML='<span class="mod-time">⏱ 30 min</span>';
+
+  // journey
+  const steps=document.querySelectorAll('.journey-step');
+  if(steps[0]){ steps[0].classList.remove('current'); steps[0].classList.add('done'); }
+  if(steps[1]){ steps[1].classList.add('done'); }
+  if(steps[2]){ steps[2].classList.add('current'); }
+
+  toast('🎉 Modul 1 gennemført — Modul 2 er låst op!');
+  if(window._saveProgress) window._saveProgress('m1');
+}
+
+/* ── Skift placeholder-tekst på de låste modul-kort, så de ikke er tomme ── */
+document.getElementById('m2').querySelector('.mod-body').innerHTML=
+  '<p class="prose" style="margin-top:14px">Dette modul åbnes, når du har bestået mini-quizzen i Modul 1. Her lærer du at skrive hooks der stopper scrollet, finde de rigtige hashtags og bruge AI til visuelle idéer.</p>';
+document.getElementById('m3').querySelector('.mod-body').innerHTML=
+  '<p class="prose" style="margin-top:14px">Det sidste modul åbnes efter Modul 2. Her bygger du en indholdskalender, lærer at læse dine tal og bruger AI til at A/B-teste dine opslag.</p>';
+</script>
+
+<!-- ════════════════════════════════════════════════════════════
+     FIREBASE: login-mur + gem fremskridt på brugerens profil
+════════════════════════════════════════════════════════════ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+
+const wall=document.getElementById('login-wall');
+let _user=null;
+
+if(window.DEV_PREVIEW===true){
+  // DEV: vis indholdet uden login (kun til lokal forhåndsvisning)
+  wall.classList.remove('show');
+} else {
+  onAuthStateChanged(auth, async function(u){
+    if(!u){ wall.classList.add('show'); return; }
+    _user=u; wall.classList.remove('show');
+    try{
+      const snap=await getDoc(doc(db,'users',u.uid));
+      if(snap.exists()){
+        const d=snap.data();
+        const saved=(d.smProgress)||[];
+        // (gendannelse af tidligere fremskridt kan kobles på her, når flere moduler er bygget)
+        if(saved.indexOf('m1')>=0){ /* modul 1 allerede taget */ }
+      }
+    }catch(e){ console.error('Indlæsning fejlede:',e); }
+  });
+}
+
+// Gem fremskridt — kaldes fra onQuizPassed()
+window._saveProgress=async function(modId){
+  if(!_user) return;
+  try{ await updateDoc(doc(db,'users',_user.uid), { smProgress: arrayUnion(modId) }); }
+  catch(e){ console.error('Gem fejlede:',e); }
+};
+</script>
+
+<script>
+// Sørg for at DEV_PREVIEW også er synlig for module-scriptet ovenfor
+window.DEV_PREVIEW = DEV_PREVIEW;
+if(DEV_PREVIEW){ document.getElementById('login-wall').classList.remove('show'); }
+</script>
+
+</body>
+</html>
