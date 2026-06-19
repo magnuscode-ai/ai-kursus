@@ -207,6 +207,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 /* ── MODULE SHELL ── */
 .module{margin-bottom:30px;position:relative;scroll-margin-top:140px;opacity:0;transform:translateY(36px);transition:opacity .85s cubic-bezier(.16,1,.3,1),transform .85s cubic-bezier(.16,1,.3,1)}
 .module.in-view{opacity:1;transform:translateY(0)}
+.hidden-locked{display:none!important}
 .module-meta{display:flex;align-items:center;gap:10px;margin-bottom:12px;padding:0 4px}
 .module-meta-label{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--muted)}
 .module-meta-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border-strong) 0%,transparent 100%)}
@@ -498,6 +499,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
           <div class="module-body">
 
             <p class="lead">Hver virksomhed starter med ét: <em>et problem nogen vil betale for at få løst</em>. I dette modul lærer du at finde, skærpe og teste en forretningsidé — med AI som en medstifter, der aldrig sover og kan researche et helt marked på sekunder.</p>
+            <p class="lead">Du behøver hverken en teknisk baggrund, en stor opsparing eller det perfekte navn for at komme i gang. Det vigtigste, du tager med fra dette modul, er en <em>tankegang</em>: stil de svære spørgsmål tidligt, vær ærlig om svarene, og lad rigtige mennesker — ikke din egen begejstring — afgøre, om idéen er værd at bygge. AI gør den proces hurtigere, billigere og langt mere ærlig, hvis du bruger den rigtigt.</p>
 
             <div class="concept-grid">
               <div class="concept"><span class="concept-ic">🎯</span><h4>Problem først</h4><p>Forelsk dig i <em>problemet</em>, ikke løsningen. De stærkeste virksomheder starter med en frustration så stor, at folk allerede betaler for dårlige alternativer.</p></div>
@@ -531,6 +533,19 @@ Giv mig:
 
 Vær konkret og kritisk. Antag at jeg er for forelsket i min egen idé.</div>
               </div>
+            </div>
+
+            <div class="tech">
+              <span class="tech-tag"><span class="tech-tag-num">C</span>Test før du bygger</span>
+              <h3>Validér din vigtigste antagelse på én uge</h3>
+              <p class="tech-desc">De fleste idéer dør ikke af dårlig kode — de dør, fordi <strong>ingen i virkeligheden ville have dem</strong>. Derfor er din første opgave ikke at bygge, men at <strong>teste den farligste antagelse</strong>: troen på, at en bestemt gruppe mennesker har problemet så stærkt, at de vil ændre adfærd for at få det løst.</p>
+              <p class="tech-desc">Et godt valideringseksperiment er <strong>lille, hurtigt og billigt</strong>. Du behøver hverken et produkt eller et CVR-nummer — kun et signal fra rigtige mennesker. Tre klassikere, AI kan hjælpe dig med at sætte op på minutter:</p>
+              <div class="concept-grid">
+                <div class="concept"><span class="concept-ic">🗣️</span><h4>5 kundesamtaler</h4><p>Tal med fem personer i din målgruppe. Spørg om <em>fortiden</em>, ikke fremtiden: "Hvornår oplevede du sidst problemet?" Lad AI lave din interviewguide.</p></div>
+                <div class="concept"><span class="concept-ic">📄</span><h4>Landingsside-test</h4><p>Lav én side, der beskriver løsningen, og mål om folk klikker "tilmeld". Brug AI til at skrive overskrift, tekst og tre varianter.</p></div>
+                <div class="concept"><span class="concept-ic">🤝</span><h4>Forhåndssalg</h4><p>Det stærkeste signal: vil nogen <em>betale</em> eller forudbestille, før produktet findes? Et "ja" her er guld værd.</p></div>
+              </div>
+              <p class="tech-desc">Reglen er enkel: definér <strong>på forhånd</strong>, hvad et "ja" og et "nej" betyder. Ellers fortolker du alt som succes — den klassiske fælde, hvor du er forelsket i din egen idé. AI kan være den kølige stemme, der minder dig om dit eget succeskriterium.</p>
             </div>
 
             <!-- ØVELSE 1 -->
@@ -573,6 +588,8 @@ Vær konkret og kritisk. Antag at jeg er for forelsket i min egen idé.</div>
                 <li>Problem-først-tankegang: forelsk dig i frustrationen, ikke i din egen løsning</li>
                 <li>Værditilbud i én sætning: hvem, hvilket problem, din løsning og resultatet</li>
                 <li>Lean validering &amp; MVP: test din vigtigste antagelse hurtigt og billigt</li>
+                <li>Tre billige valideringseksperimenter: kundesamtaler, landingsside og forhåndssalg</li>
+                <li>Definér på forhånd hvad et "ja" og et "nej" betyder — undgå at bekræfte dig selv</li>
                 <li>AI som medstifter: analytiker, djævelens advokat og sparringspartner</li>
                 <li>Research-prompt: markeds- og konkurrent-scan på sekunder i stedet for dage</li>
                 <li>Øvelse: dit eget research-prompt bygget og kopieret</li>
@@ -828,6 +845,9 @@ function refreshUI(){
   ORDER.forEach(sec=>{
     const card=$('#card-'+sec),shell=$('#shell-'+sec);if(!card)return;
     const s=S[sec];
+    // Skjul kommende afsnit helt — kun det aktuelle/afsluttede modul vises
+    const secEl=document.getElementById('sec-'+sec);
+    if(secEl){const vis=s.unlocked||s.done;secEl.classList.toggle('hidden-locked',!vis);if(vis)secEl.classList.add('in-view');}
     card.classList.toggle('locked',!s.unlocked);if(shell)shell.classList.toggle('locked',!s.unlocked);
     const sb=card.querySelector('.module-state');
     if(sb){if(s.done){sb.className='module-state done';sb.textContent='✓ Færdig';}else if(!s.unlocked){sb.className='module-state locked';sb.textContent='🔒 Låst';}else{sb.className='module-state active';sb.textContent='⏵ I gang';}}
@@ -863,6 +883,7 @@ function refreshUI(){
   // Finish CTA
   const all=ORDER.every(s=>S[s].done),fc=$('#finishCta'),fb=$('#finishBtn');
   fc.classList.toggle('locked',!all);
+  fc.classList.toggle('hidden-locked',!all);  // bevis-teaser skjules indtil alt er gennemført
   if(all){$('#finishTitle').textContent='🏆 Tillykke — kurset er gennemført!';$('#finishText').textContent='Du har gennemført alle moduler, quizzer og eksamen. Dit bevis og dine coins er låst op.';fb.textContent='Hent dit bevis →';fb.removeAttribute('aria-disabled');fb.setAttribute('href','platform.html');}
 }
 function preventQuiz(e){e.preventDefault();showToast('Gennemfør det forrige modul først');}
