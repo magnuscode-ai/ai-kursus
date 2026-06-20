@@ -238,6 +238,13 @@ body::before{
 .cz-text{display:flex; align-items:center; gap:11px; font-size:13.5px; font-weight:600; color:var(--ink-soft)}
 .cz-ic{width:34px; height:34px; border-radius:9px; background:var(--koral-soft); color:var(--koral-deep); display:grid; place-items:center; font-size:16px; flex-shrink:0}
 
+/* ── CTA: Gå til Modul 2 (vises efter bestået Q1) ── */
+.next-cta{display:flex; justify-content:center; margin:6px 0 26px; animation:ctaIn .5s cubic-bezier(.16,1,.3,1)}
+@keyframes ctaIn{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
+.btn-next{display:inline-flex; align-items:center; gap:10px; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); padding:16px 40px; border-radius:999px; box-shadow:var(--shadow-koral); transition:transform .18s, box-shadow .18s}
+.btn-next:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(226,90,94,.42)}
+.btn-next:active{transform:translateY(0)}
+
 /* ── knapper ── */
 .btn{display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; border-radius:999px; transition:transform .18s, box-shadow .18s, background .18s; text-decoration:none}
 .btn-koral{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; padding:12px 26px; box-shadow:var(--shadow-koral)}
@@ -569,6 +576,11 @@ body::before{
       </div>
     </section>
 
+    <!-- ─── CTA: vises når Q1 (mini-quiz) er bestået ─── -->
+    <div class="next-cta" id="goNext" hidden>
+      <button class="btn-next" id="goNextBtn">Gå til Modul 2 →</button>
+    </div>
+
     <div class="sect-label"><hr><span>Resten af kurset</span><hr></div>
 
     <!-- ════════ MODUL 2 (låst, visuelt) ════════ -->
@@ -626,7 +638,7 @@ body::before{
    DEV_PREVIEW=true viser indholdet uden login (kun til lokal test).
    SÆT DEV_PREVIEW=false FØR UPLOAD, så login-muren styrer adgang. */
 const COURSE_ID    = 'sociale-medier';
-const DEV_PREVIEW  = false;
+const DEV_PREVIEW  = true;
 
 /* ── State ── */
 const exDone = { ex1:false, ex2:false, ex3:false };
@@ -954,6 +966,12 @@ document.getElementById('quizUnlockBtn').addEventListener('click', function(){
   window._unlockQuiz();
 });
 
+/* ── CTA "Gå til Modul 2": scroll til Modul 2 ── */
+document.getElementById('goNextBtn').addEventListener('click', function(){
+  const el=document.getElementById('m2');
+  if(el){ const top=el.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); }
+});
+
 /* ── Når quizzen er bestået: marker Modul 1 done + lås Modul 2 op ── */
 function onQuizPassed(){
   if(m1Done) return;
@@ -980,6 +998,9 @@ function onQuizPassed(){
   const m2=document.getElementById('m2');
   m2.classList.remove('is-locked');
   m2.querySelector('.mod-badge').outerHTML='<span class="mod-time">⏱ 30 min</span>';
+
+  // CTA "Gå til Modul 2" -> vis nu
+  document.getElementById('goNext').hidden=false;
 
   // journey
   const steps=document.querySelectorAll('.journey-step');
