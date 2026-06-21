@@ -137,12 +137,11 @@
 
   /* ---------- Medaljon-badge ---------- */
   .medallion-wrap{display:flex;justify-content:center}
-  .medallion-shell{width:230px;height:230px;filter:drop-shadow(0 14px 30px rgba(0,0,0,0.45))}
+  .medallion-shell{width:228px;height:228px;filter:drop-shadow(0 9px 16px rgba(20,12,6,0.40))}
   .medallion{width:100%;height:100%;display:block}
-  .med-arc{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:2.5px}
-  .med-ai{font-family:var(--serif);font-size:46px;font-weight:700;fill:#e7c277}
-  .med-brand{font-family:var(--sans);font-size:9px;font-weight:600;letter-spacing:0.4px;fill:#d8c39c}
-  .med-level{font-family:var(--sans);font-size:8.5px;font-weight:700;letter-spacing:2px;fill:#e7c277}
+  .bdg-ai{font-family:var(--serif);font-size:44px;font-weight:700}
+  .bdg-lvl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:2px}
+  .bdg-name{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:0.8px}
 
   .badge-card{text-align:center}
   .badge-meta{margin-top:1.4rem}
@@ -154,14 +153,13 @@
   .badge-status svg{width:17px;height:17px}
 
   /* ---------- DEL 3: Bevis ---------- */
-  .certificate{position:relative;background:linear-gradient(160deg,#f7ecd5 0%,#ecdab6 100%);border:2px solid var(--brass);
-    border-radius:18px;padding:2.6rem 2.4rem 2.2rem;color:var(--ink);box-shadow:var(--shadow-panel);overflow:hidden}
+  .certificate{position:relative;background:linear-gradient(160deg,#f7ecd5 0%,#ecdab6 100%);
+    border-radius:26px;padding:2.8rem 2.6rem 2.4rem;color:var(--ink);overflow:hidden;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.55), inset 0 0 40px rgba(120,84,46,0.10);
+    filter:drop-shadow(0 15px 26px rgba(20,12,6,0.28));
+    -webkit-mask-image:radial-gradient(125% 125% at 50% 50%, #000 82%, transparent 100%);
+    mask-image:radial-gradient(125% 125% at 50% 50%, #000 82%, transparent 100%)}
   @media(max-width:560px){.certificate{padding:2rem 1.3rem}}
-  .cert-corner{position:absolute;width:22px;height:22px;border-color:var(--brass-deep);border-style:solid;border-width:0}
-  .cert-corner.tl{top:12px;left:12px;border-top-width:2px;border-left-width:2px}
-  .cert-corner.tr{top:12px;right:12px;border-top-width:2px;border-right-width:2px}
-  .cert-corner.bl{bottom:12px;left:12px;border-bottom-width:2px;border-left-width:2px}
-  .cert-corner.br{bottom:12px;right:12px;border-bottom-width:2px;border-right-width:2px}
   .cert-top{display:flex;align-items:center;gap:0.6rem;justify-content:center;margin-bottom:0.4rem}
   .cert-logo-icon{width:30px;height:30px;border-radius:8px;background:linear-gradient(150deg,#b5712f,#7a4a1c);border:1px solid rgba(220,181,95,0.6);
     color:var(--brass-bright);font-weight:700;font-size:0.78rem;display:flex;align-items:center;justify-content:center}
@@ -234,7 +232,7 @@
     body *{visibility:hidden}
     #certificate, #certificate *{visibility:visible}
     #certificate{position:fixed;top:0;left:0;width:100%;margin:0;padding:3rem 2.5rem;background:#fffdf7 !important;
-      print-color-adjust:exact;-webkit-print-color-adjust:exact;border:none;box-shadow:none}
+      print-color-adjust:exact;-webkit-print-color-adjust:exact;border:none;box-shadow:none;filter:none;-webkit-mask-image:none;mask-image:none;border-radius:0}
     .topbar,.toast-wrap,.backdrop{display:none !important}
   }
 </style>
@@ -309,7 +307,6 @@
       <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Dit personlige bevis</span></div>
 
       <div class="certificate reveal d1" id="certificate">
-        <div class="cert-corner tl"></div><div class="cert-corner tr"></div><div class="cert-corner bl"></div><div class="cert-corner br"></div>
         <div class="cert-top"><div class="cert-logo-icon">LA</div><div class="cert-logo-text">LearnAI DK</div></div>
         <div class="cert-kicker">Officielt bevis</div>
         <div class="cert-headline">Bestået Kursus D</div>
@@ -458,8 +455,8 @@ function applyUser(u, badges) {
   const name = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Dit navn';
   document.getElementById('certName').textContent = name;
   document.getElementById('certEmail').textContent = u.email || '—';
-  document.getElementById('badgeMount').innerHTML = medallionSVG('a', name);
-  document.getElementById('certBadgeMount').innerHTML = medallionSVG('b', name);
+  document.getElementById('badgeMount').innerHTML = badgeSVG('a', 'D', name);
+  document.getElementById('certBadgeMount').innerHTML = badgeSVG('b', 'D', name);
 
   // Find evt. eksisterende D-badge for korrekt dato + knap-tilstand
   let earnedAt = null, hasBadge = false;
@@ -478,28 +475,36 @@ function applyUser(u, badges) {
 window.applyUser = applyUser;
 
 // ---------- Medaljon (SVG) ----------
-function medallionSVG(uid, name) {
+function badgeSVG(uid, level, name) {
   const nm = (name || '').toUpperCase().replace(/\s+/g, ' ').trim() || 'KURSIST';
-  return `<svg viewBox="0 0 240 240" class="medallion" role="img" aria-label="Badge: Niveau D bestået">
+  const M = {
+    D:{k:'D',bodyHi:'#a86530',bodyMid:'#6f3d18',bodyLo:'#3d2110',border:['#ffe9c6','#d59250','#7d4318'],innerLine:'#ffe4bf',niveau:'#f3d8ad',bannerFill:'#bd7333',bannerTail:'#7d4a1e',bannerInk:'#34210f'},
+    C:{k:'C',bodyHi:'#a3aab0',bodyMid:'#646b70',bodyLo:'#3a4044',border:['#ffffff','#cfd3d6','#6f767c'],innerLine:'#ffffff',niveau:'#f1f4f6',bannerFill:'#b4babe',bannerTail:'#767c80',bannerInk:'#2a2e31'},
+    B:{k:'B',bodyHi:'#edcc52',bodyMid:'#a8851f',bodyLo:'#6f5810',border:['#fff6cf','#ecc857','#a8820f'],innerLine:'#fff6cf',niveau:'#fff6cf',bannerFill:'#ecc23a',bannerTail:'#a8820f',bannerInk:'#473709'},
+    A:{k:'A',bodyHi:'#74c0da',bodyMid:'#2f7d9e',bodyLo:'#194a5e',border:['#f0ffff','#a6e3f4','#2f86ab'],innerLine:'#f0ffff',niveau:'#e7f9fd',bannerFill:'#86c8e0',bannerTail:'#3f93b5',bannerInk:'#0c3646'}
+  };
+  const p = M[level] || M.D;
+  const sh = "M58,34 H182 a14,14 0 0 1 14,14 V118 C196,166 168,196 120,214 C72,196 44,166 44,118 V48 a14,14 0 0 1 14,-14 Z";
+  const inner = "M64,40 H176 a9,9 0 0 1 9,9 V116 C185,158 160,185 120,202 C80,185 55,158 55,116 V49 a9,9 0 0 1 9,-9 Z";
+  const longAttr = nm.length > 18 ? ' textLength="132" lengthAdjust="spacingAndGlyphs"' : '';
+  return `<svg viewBox="0 0 240 240" class="medallion" role="img" aria-label="Badge: Niveau ${p.k} bestået">
     <defs>
-      <radialGradient id="mc-${uid}" cx="50%" cy="42%" r="68%">
-        <stop offset="0%" stop-color="#3c2b1a"/><stop offset="55%" stop-color="#20150c"/><stop offset="100%" stop-color="#110b06"/>
-      </radialGradient>
-      <linearGradient id="mr-${uid}" x1="0" y1="0" x2="1" y2="1">
-        <stop offset="0%" stop-color="#eccd86"/><stop offset="32%" stop-color="#b5712f"/><stop offset="62%" stop-color="#dcb55f"/><stop offset="100%" stop-color="#86501d"/>
-      </linearGradient>
-      <path id="top-${uid}" fill="none" d="M 39,120 A 81,81 0 0 1 201,120"/>
-      <path id="bot-${uid}" fill="none" d="M 201,120 A 81,81 0 0 1 39,120"/>
+      <linearGradient id="bd-${uid}" x1="0" y1="0" x2="0.25" y2="1"><stop offset="0%" stop-color="${p.bodyHi}"/><stop offset="45%" stop-color="${p.bodyMid}"/><stop offset="100%" stop-color="${p.bodyLo}"/></linearGradient>
+      <linearGradient id="br-${uid}" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0%" stop-color="${p.border[0]}"/><stop offset="45%" stop-color="${p.border[1]}"/><stop offset="100%" stop-color="${p.border[2]}"/></linearGradient>
+      <radialGradient id="gl-${uid}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"/><stop offset="70%" stop-color="#ffffff" stop-opacity="0.08"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+      <clipPath id="cl-${uid}"><path d="${sh}"/></clipPath>
     </defs>
-    <circle cx="120" cy="120" r="117" fill="url(#mr-${uid})"/>
-    <circle cx="120" cy="120" r="106" fill="#160e08"/>
-    <text class="med-arc" fill="#e7c277" textLength="150" lengthAdjust="spacingAndGlyphs"><textPath href="#top-${uid}" startOffset="50%" text-anchor="middle">BESTÅET · KURSUS D · BRONZE</textPath></text>
-    <text class="med-arc" fill="#e7c277" textLength="150" lengthAdjust="spacingAndGlyphs"><textPath href="#bot-${uid}" startOffset="50%" text-anchor="middle">${nm}</textPath></text>
-    <circle cx="120" cy="120" r="76" fill="url(#mc-${uid})" stroke="url(#mr-${uid})" stroke-width="3"/>
-    <text x="120" y="118" text-anchor="middle" class="med-ai">AI</text>
-    <text x="120" y="140" text-anchor="middle" class="med-brand">akademiet-ai.dk</text>
-    <rect x="89" y="151" width="62" height="19" rx="9.5" fill="none" stroke="url(#mr-${uid})" stroke-width="1.4"/>
-    <text x="120" y="164" text-anchor="middle" class="med-level">NIVEAU D</text>
+    <path d="${sh}" fill="url(#bd-${uid})" stroke="url(#br-${uid})" stroke-width="5"/>
+    <g clip-path="url(#cl-${uid})"><ellipse cx="116" cy="60" rx="82" ry="50" fill="url(#gl-${uid})"/></g>
+    <path d="${inner}" fill="none" stroke="${p.innerLine}" stroke-width="1.1" stroke-opacity="0.6"/>
+    <text x="120" y="99.6" text-anchor="middle" class="bdg-ai" fill="#000000" fill-opacity="0.3">AI</text>
+    <text x="120" y="98" text-anchor="middle" class="bdg-ai" fill="url(#br-${uid})">AI</text>
+    <text x="120" y="124" text-anchor="middle" class="bdg-lvl" fill="${p.niveau}">NIVEAU ${p.k}</text>
+    <rect x="48" y="150" width="144" height="30" rx="2" fill="${p.bannerFill}" stroke="${p.bannerTail}" stroke-width="0.8"/>
+    <rect x="48" y="150" width="144" height="13" rx="2" fill="#ffffff" fill-opacity="0.17"/>
+    <path d="M48,154 L34,154 L42,168 L34,182 L48,182 Z" fill="${p.bannerTail}"/>
+    <path d="M192,154 L206,154 L198,168 L206,182 L192,182 Z" fill="${p.bannerTail}"/>
+    <text x="120" y="172" text-anchor="middle" class="bdg-name" fill="${p.bannerInk}"${longAttr}>${nm}</text>
   </svg>`;
 }
 
