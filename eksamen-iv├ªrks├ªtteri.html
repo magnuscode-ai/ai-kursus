@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eksamen: AI for Iværksættere | Akademiet AI</title>
+  <style>
+    /* Premium Design System - Matcher "Bronze-eksamen" billedet */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-warm: #fcf9f5;
+      --brown-deep: #4a2c11;
+      --brown-dark: #2c1a0a;
+      --ink: #1a1f2e;
+      --ink-soft: #4a5568;
+      --ink-mute: #718096;
+      --line: #e8eaf0;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --shadow-sm: 0 1px 3px rgba(15,23,42,0.04);
+      --shadow-md: 0 4px 12px rgba(15,23,42,0.06);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-warm);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    .topbar {
+      background: var(--brown-dark);
+      color: white;
+      padding: 0 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .home-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: white;
+      padding: 8px 16px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+    }
+
+    .home-btn:hover { background: rgba(255,255,255,0.2); }
+
+    .hero {
+      background: linear-gradient(to bottom, var(--brown-deep), #8b5a2b);
+      color: white;
+      text-align: center;
+      padding: 4rem 1.5rem 3rem;
+      position: relative;
+    }
+
+    .hero-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      opacity: 0.8;
+      background: rgba(255,255,255,0.1);
+      padding: 4px 12px;
+      border-radius: 50px;
+      display: inline-block;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      font-family: 'Georgia', serif;
+    }
+
+    .hero-sub {
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto 2rem;
+    }
+
+    .stats-grid {
+      display: flex;
+      justify-content: center;
+      gap: 3rem;
+      margin-top: 2rem;
+    }
+
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 32px; font-weight: 800; }
+    .stat-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; }
+
+    .content {
+      max-width: 800px;
+      margin: -2rem auto 4rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .progress-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      color: var(--ink-soft);
+    }
+
+    .progress-bar-bg {
+      height: 8px;
+      background: #f1f5f9;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #8b5a2b;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--ink-mute);
+    }
+
+    .question-card {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 1.5rem;
+    }
+
+    .question-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+
+    .question-num {
+      width: 28px;
+      height: 28px;
+      background: var(--brown-deep);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .question-tag {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-mute);
+      border: 1px solid var(--line);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .question-text {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #1e293b;
+    }
+
+    .options-list { display: flex; flex-direction: column; gap: 12px; }
+
+    .option-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .option-item:hover { background: #f1f5f9; }
+
+    .option-letter {
+      width: 24px;
+      height: 24px;
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+
+    .option-text { font-size: 15px; font-weight: 500; color: #334155; }
+
+    .option-item.correct { background: #dcfce7 !important; border-color: #22c55e !important; }
+    .option-item.correct .option-letter { background: #22c55e; color: white; border-color: #22c55e; }
+
+    .option-item.incorrect { background: #fee2e2 !important; border-color: #ef4444 !important; }
+    .option-item.incorrect .option-letter { background: #ef4444; color: white; border-color: #ef4444; }
+
+    .nav-box { display: flex; justify-content: space-between; margin-top: 1.5rem; }
+
+    .btn-nav { padding: 12px 24px; border-radius: 50px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-prev { background: white; border: 1px solid var(--line); color: var(--ink); }
+    .btn-next { background: var(--brown-deep); color: white; }
+
+    .practical-box { background: white; border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow-md); border: 2px solid #8b5a2b; }
+    textarea { width: 100%; height: 150px; padding: 12px; border-radius: var(--radius-sm); border: 1px solid #cbd5e1; margin: 1rem 0; font-family: inherit; }
+    .btn-submit { background: #059669; color: white; }
+
+    @media (max-width: 600px) { .stats-grid { gap: 1rem; flex-direction: column; } }
+
+    /* ===== BEVIS ===== */
+    .cert-wrap { display: none; margin-top: 2rem; }
+    .cert-banner {
+      background: #fff7ed; color: var(--brown-deep); border: 1px solid #fdba74;
+      padding: 1rem 1.25rem; border-radius: 10px; font-weight: 600; font-size: 14px;
+      text-align: center; margin-bottom: 1.5rem; display: none;
+    }
+    .cert-toast {
+      background: #dcfce7; color: #065f46; border: 1px solid #bbf7d0;
+      padding: 1rem 1.25rem; border-radius: 10px; font-weight: 700; font-size: 15px;
+      text-align: center; margin-bottom: 1.5rem; display: none;
+    }
+    .cert-card {
+      background: linear-gradient(to bottom, #fffdf9, #fcf6ee);
+      border: 3px solid var(--brown-deep); border-radius: 6px;
+      padding: 3rem 2rem; text-align: center; position: relative;
+      box-shadow: var(--shadow-md);
+    }
+    .cert-card::before {
+      content: ''; position: absolute; inset: 8px;
+      border: 1px solid #c9a87c; border-radius: 3px; pointer-events: none;
+    }
+    .cert-brand { font-size: 12px; font-weight: 800; letter-spacing: 0.3em; color: #8b5a2b; text-transform: uppercase; }
+    .cert-heading { font-family: 'Georgia', serif; font-size: 30px; font-weight: 800; color: var(--brown-deep); margin: 0.75rem 0 0.25rem; }
+    .cert-icon-ring {
+      width: 84px; height: 84px; margin: 1.25rem auto; border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #8b5a2b, var(--brown-dark));
+      border: 3px solid #c9a87c; display: flex; align-items: center; justify-content: center;
+      font-size: 38px; box-shadow: 0 4px 14px rgba(74,44,17,0.3);
+    }
+    .cert-intro { font-size: 14px; color: var(--ink-soft); }
+    .cert-name { font-family: 'Georgia', serif; font-size: 34px; font-weight: 800; font-style: italic; color: var(--ink); margin: 0.5rem 0 0.15rem; }
+    .cert-email { font-size: 13px; color: var(--ink-mute); margin-bottom: 1.25rem; }
+    .cert-divider { width: 180px; height: 1px; background: #c9a87c; margin: 0 auto 1.25rem; }
+    .cert-course { font-family: 'Georgia', serif; font-size: 20px; font-weight: 800; color: var(--brown-deep); margin: 0.25rem 0 1.5rem; }
+    .cert-meta { display: flex; justify-content: center; gap: 3rem; font-size: 13px; color: var(--ink-soft); }
+    .cert-meta strong { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-mute); margin-bottom: 2px; }
+    .cert-actions { display: flex; gap: 12px; justify-content: center; margin-top: 1.5rem; flex-wrap: wrap; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="topbar">
+    <a href="kursus-iværksætteri.html" class="home-btn">← Tilbage til kurset</a>
+    <div style="font-weight: 700;">Akademiet AI</div>
+    <div></div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-label">Kursus Eksamen</div>
+    <h1 class="hero-title">Iværksætter-Eksamen</h1>
+    <p class="hero-sub">15 avancerede spørgsmål baseret direkte på kursets indhold. Svarene er gjort ensartede i længden for at øge sværhedsgraden.</p>
+    
+    <div class="stats-grid">
+      <div class="stat-item">
+        <div class="stat-num">15</div>
+        <div class="stat-label">Spørgsmål</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">12</div>
+        <div class="stat-label">Skal bestå</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">80%</div>
+        <div class="stat-label">Beståelseskrav</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Auth Loading -->
+    <div id="auth-loading" style="background: white; border-radius: var(--radius); padding: 2.5rem 2rem; box-shadow: var(--shadow-md); text-align: center; margin-bottom: 2rem; border: 1px solid var(--line);">
+      <div style="font-size: 40px; margin-bottom: 1rem;">⏳</div>
+      <h2 style="font-size: 22px; font-weight: 800; margin-bottom: 0.5rem; font-family: 'Georgia', serif;">Tjekker dit login...</h2>
+      <p style="color: var(--ink-soft); font-size: 15px;">Du skal være logget ind på Akademiet AI for at tage eksamen. Er du ikke logget ind, sendes du automatisk til platformen.</p>
+    </div>
+
+    <!-- Progress Card -->
+    <div class="progress-card" id="prog-card">
+      <div class="progress-header">
+        <span>FREMGANG</span>
+        <span id="progress-text">0/15</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="progress-fill"></div>
+      </div>
+      <div class="progress-footer">
+        <span id="score-correct">Rigtige: 0</span>
+        <span id="score-incorrect">Forkerte: 0</span>
+        <span>Kravet: 12/15</span>
+      </div>
+    </div>
+
+    <!-- Question Card -->
+    <div class="question-card" id="question-area"></div>
+
+    <!-- Navigation -->
+    <div class="nav-box" id="quiz-nav-box">
+      <button class="btn-nav btn-prev" id="quiz-prev-btn" onclick="prevQuestion()" style="display:none;">← Forrige</button>
+      <button class="btn-nav btn-next" id="quiz-next-btn" onclick="nextQuestion()">Næste →</button>
+    </div>
+
+    <div id="exam-results" style="display: none; margin-top: 2rem; text-align: center; background: white; padding: 2rem; border-radius: var(--radius); box-shadow: var(--shadow-md);"></div>
+
+    <!-- Praktisk Opgave -->
+    <div id="practical-section" style="display: none; margin-top: 3rem;">
+      <div class="practical-box">
+        <div class="hero-label" style="background: #8b5a2b; color: white;">Del 2</div>
+        <h3 style="margin: 0.5rem 0; font-size: 24px; font-weight: 800;">Praktisk Opgave 🛠</h3>
+        <p>Du har besvaret de 15 spørgsmål. Nu skal du løse den praktiske opgave. En AI vil bagefter vurdere dit svar!</p>
+        <p><strong>Opgave:</strong> Skriv et professionelt prompt, der får en AI to agere som en <strong>kritisk forretningskonsulent</strong> for en ny webshop, der sælger bæredygtigt tøj til børn. Promptet skal tvinge AI'en til at finde mindst 3 svagheder i idéen.</p>
+        
+        <textarea id="practical-prompt" placeholder="Skriv dit prompt her..." oninput="savePractical()"></textarea>
+        
+        <button class="btn-nav btn-submit" style="width:100%;" onclick="submitExam()">Aflever Eksamen</button>
+      </div>
+    </div>
+
+    <!-- Personligt Bevis -->
+    <div class="cert-wrap" id="cert-section">
+      <div class="cert-banner" id="already-banner">✅ Du har allerede bestået denne eksamen — her er dit personlige bevis.</div>
+      <div class="cert-toast" id="cert-coins-toast">🎉 Tillykke! Du har bestået eksamen — dit bevis og badge er gemt på din profil.</div>
+
+      <div class="cert-card" id="cert-card">
+        <div class="cert-brand">Akademiet AI</div>
+        <div class="cert-heading">Bevis for Gennemførelse</div>
+        <div class="cert-icon-ring">🚀</div>
+        <div class="cert-intro">Det bekræftes hermed, at</div>
+        <div class="cert-name" id="cert-name">—</div>
+        <div class="cert-email" id="cert-email">—</div>
+        <div class="cert-divider"></div>
+        <div class="cert-intro">har bestået den afsluttende eksamen i sidekurset</div>
+        <div class="cert-course">AI for Iværksættere</div>
+        <div class="cert-meta">
+          <div><strong>Dato</strong><span id="cert-date">—</span></div>
+          <div><strong>Certifikat</strong><span>AI-ENT-BRONZE-2026</span></div>
+          <div><strong>Udstedt af</strong><span>Akademiet AI</span></div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button class="btn-nav btn-next" style="background: var(--brown-deep); display: inline-flex; align-items: center; gap: 8px;" onclick="downloadCertificatePDF()">📄 Download som PDF</button>
+        <a href="platform.html#badges" class="btn-nav btn-prev" style="text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">🏅 Se dit badge på platformen</a>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Svære og ensartede spørgsmål - NU MED BLANDEDE SVAR (Ikke altid B)
+    const questions = [
+      { q: "Hvilken AI-model anbefales specifikt i Modul 1 til forretningsudvikling pga. dens evne til dybe svar?", options: ["ChatGPT 4.0 fordi den har den største mængde træningsdata.", "Claude pga. dens evne til velstrukturerede og forståelige svar.", "Gemini Advanced da den er fuldt integreret med Googles økosystem.", "Midjourney fordi den kan visualisere komplekse forretningsidéer."], correct: 1 },
+      { q: "Hvad er formålet med at give AI'en rollen som 'Djævlens Advokat' i Modul 1?", options: ["At få den til at skrive en komplet og fejlfri forretningsplan.", "At lade den overtage den fulde beslutningsproces i din opstart.", "At tvinge den til at finde de svage punkter i din forretningsidé.", "At få den til at foreslå alternative brancher med højere profit."], correct: 2 },
+      { q: "Hvad kaldes den populære en-sides forretningsplan, som nævnes i Modul 1?", options: ["Lean Canvas der fokuserer på problem, løsning og målgruppe.", "Business Model Canvas som dækker 9 forskellige forretningsområder.", "Agile Framework der bruges til hurtig softwareudvikling i teams.", "Startup Blueprint der viser den juridiske struktur i virksomheden."], correct: 0 },
+      { q: "Hvad er den største risiko ved at uploade ubehandlede data til en offentlig AI-model?", options: ["At modellen regner forkert og giver dig misvisende nøgletal.", "At AI-modellen ikke kan genkende formatet på dit regneark.", "At dine konkurrenter får direkte adgang til dine data med det samme.", "At du uforvarende deler personfølsomme data eller hemmeligheder."], correct: 3 },
+      { q: "Hvad dækker begrebet 'Tone of Voice' over i forbindelse med AI-genereret tekst?", options: ["At indtale dine prompts med stemmen i stedet for at skrive.", "At definere den specifikke skrivestil, så den matcher dit brand.", "At bruge et bestemt toneleje når du prompter via mikrofonen.", "At lade AI'en oversætte dine tekster til flydende britisk engelsk."], correct: 1 },
+      { q: "Hvor mange procent af arbejdet anbefales det i Modul 2 at lade AI'en udføre?", options: ["Omkring 50% så du selv bevarer den fulde kontrol over stilen.", "Præcis 100% så du kan automatisere hele din markedsføring.", "Cirka 80% så du kun skal bruge tid på den sidste tilretning.", "Under 20% da AI-tekster ofte lyder alt for kunstige og stive."], correct: 2 },
+      { q: "Hvorfor bør man ifølge Modul 2 ikke bare udgive AI-tekster direkte uden redigering?", options: ["Fordi teksterne ofte mangler personlighed og kan lyde kunstige.", "Fordi Google straffer sider der bruger AI-genereret indhold.", "Fordi det er ulovligt at udgive tekster som man ikke selv har skrevet.", "Fordi AI-modellerne altid laver faktuelle fejl i marketingtekster."], correct: 0 },
+      { q: "Hvad er ifølge Modul 2 den største fordel ved at bruge AI til e-mail marketing?", options: ["At du kan sende mails ud til millioner af modtagere helt gratis.", "At AI'en selv kan finde e-mailadresser på dine potentielle kunder.", "At dine mails automatisk undgår at ende i modtagerens spamfilter.", "At du kan planlægge et helt års nyhedsbreve på en eftermiddag."], correct: 3 },
+      { q: "Hvad skal du altid gøre før du uploader økonomiske tal til en AI ifølge Modul 3?", options: ["Sikre dig at tallene er godkendt af en autoriseret revisor.", "Anonymisere data og fjerne personfølsomme oplysninger først.", "Oversætte alle dine danske regnskabsbegreber til engelsk.", "Konvertere alle dine data til PDF-format før du uploader dem."], correct: 1 },
+      { q: "Hvilke værktøjer nævnes i Modul 3 til at bygge automatiserede workflows?", options: ["Trello og Asana som bruges til projektstyring i mindre teams.", "Slack og Teams der bruges til intern kommunikation i firmaet.", "Zapier og Make der forbinder dine forskellige apps og systemer.", "Excel og Word som er standarden inden for kontorarbejde."], correct: 2 },
+      { q: "Hvad kaldes det i Modul 3, når systemer kører og svarer kunder automatisk?", options: ["Smarte Workflows der sparer dig for manuelt tastearbejte.", "Robot Processing der overtager det fysiske lagerarbejde.", "Auto-Responding som kun bruges til simple fraværsmeddelelser.", "AI-Fulfillment der pakker og sender dine varer automatisk."], correct: 0 },
+      { q: "Hvilken øvelse foreslås i Modul 3 i forbindelse med AI og økonomi?", options: ["At lade AI'en udfylde din udvidede selvangivelse til SKAT.", "At lade AI'en investere dit overskud i kryptovaluta automatisk.", "At få AI'en til at prissætte dine produkter helt uden din hjælp.", "At bruge AI til budget-sparring med et fiktivt månedligt beløb."], correct: 3 },
+      { q: "Hvad er 'Knowledge Cutoff' i en AI-model?", options: ["Det tidspunkt hvor AI'en holder op med at svare på dine prompts.", "Den dato hvor modellens træningsdata stopper og den ikke ved mere.", "Den maksimale mængde tekst som du må uploade i ét enkelt prompt.", "Den hastighedsbegrænsning som gratis brugere oplever på serveren."], correct: 1 },
+      { q: "Hvad er Few-shot prompting?", options: ["At give AI'en korte kommandoer på under fem ord i alt.", "At skifte mellem forskellige AI-modeller i den samme samtale.", "At inkludere eksempler på det ønskede svar direkte i dit prompt.", "At lade AI'en gætte sig frem til hvad du mener uden instruktion."], correct: 2 },
+      { q: "Hvad er en 'Persona' i markedsføring?", options: ["En fiktiv beskrivelse af din absolutte ideelle kunde.", "En liste over alle de konkurrenter du har i dit lokalområde.", "Et særligt login som du bruger til at tilgå dine AI-værktøjer.", "Det budget som du afsætter til dine betalte reklamer om måneden."], correct: 0 }
+    ];
+
+    let currentQuestion = 0;
+
+    // Auth håndteres af Firebase (module-script nederst på siden).
+    let savedAnswers = localStorage.getItem('userAnswers_v4');
+    let userAnswers = savedAnswers ? JSON.parse(savedAnswers) : new Array(15).fill(null);
+    let savedPrompt = localStorage.getItem('practicalPrompt_v4');
+
+    function initPage() {
+      // Skjul alt undtagen auth-loading, indtil Firebase har svaret
+      document.getElementById('prog-card').style.display = 'none';
+      document.getElementById('question-area').style.display = 'none';
+      document.getElementById('quiz-prev-btn').style.display = 'none';
+      document.getElementById('quiz-next-btn').style.display = 'none';
+    }
+
+    // Kaldes af Firebase-scriptet når login-status er afklaret
+    window.onAuthResolved = function(state) {
+      document.getElementById('auth-loading').style.display = 'none';
+
+      if (state === 'passed') {
+        showCertificate(true);
+        return;
+      }
+
+      document.getElementById('prog-card').style.display = 'block';
+      document.getElementById('question-area').style.display = 'block';
+
+      if (!userAnswers.includes(null)) {
+        checkPart1(true); // silent check uden at rulle skærmen med det samme
+      } else {
+        renderQuestion();
+      }
+    };
+
+    function renderQuestion() {
+      const container = document.getElementById('question-area');
+      const qData = questions[currentQuestion];
+      const answered = userAnswers[currentQuestion] !== null;
+      const letters = ['A', 'B', 'C', 'D'];
+      
+      container.innerHTML = `
+        <div class="question-header">
+          <div class="question-num">${currentQuestion + 1}</div>
+          <div class="question-tag">EKSAMEN · SVÆR</div>
+        </div>
+        <div class="question-text">${qData.q}</div>
+        <div class="options-list">
+          ${qData.options.map((opt, i) => {
+            let className = 'option-item';
+            if (answered) {
+              if (i === qData.correct) className += ' correct';
+              else if (i === userAnswers[currentQuestion]) className += ' incorrect';
+            }
+            return `
+              <div class="${className}" onclick="selectOption(${i})">
+                <div class="option-letter">${letters[i]}</div>
+                <div class="option-text">${opt}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+      
+      updateProgress();
+      
+      document.getElementById('quiz-prev-btn').style.display = currentQuestion === 0 ? 'none' : 'block';
+      
+      const nextBtn = document.getElementById('quiz-next-btn');
+      nextBtn.style.display = 'block';
+      if (currentQuestion === questions.length - 1) {
+        nextBtn.textContent = "Afslut Del 1 & Tjek Score →";
+        nextBtn.style.background = "#8b5a2b";
+        nextBtn.onclick = () => { 
+          if (userAnswers.includes(null)) {
+            alert("Du skal besvare alle 15 spørgsmål, før du kan tjekke dit resultat!");
+            return;
+          }
+          checkPart1(false);
+        };
+      } else {
+        nextBtn.textContent = "Næste →";
+        nextBtn.style.background = "var(--brown-deep)";
+        nextBtn.onclick = nextQuestion;
+      }
+    }
+
+    function selectOption(index) {
+      if (userAnswers[currentQuestion] !== null) return;
+      userAnswers[currentQuestion] = index;
+      localStorage.setItem('userAnswers_v4', JSON.stringify(userAnswers));
+      renderQuestion();
+    }
+
+    function updateProgress() {
+      const answeredCount = userAnswers.filter(ans => ans !== null).length;
+      document.getElementById('progress-text').textContent = `${answeredCount}/15`;
+      document.getElementById('progress-fill').style.width = `${(answeredCount / 15) * 100}%`;
+      
+      let correct = 0;
+      let incorrect = 0;
+      userAnswers.forEach((ans, i) => {
+        if (ans !== null) {
+          if (ans === questions[i].correct) correct++;
+          else incorrect++;
+        }
+      });
+      
+      document.getElementById('score-correct').textContent = `Rigtige: ${correct}`;
+      document.getElementById('score-incorrect').textContent = `Forkerte: ${incorrect}`;
+    }
+
+    function savePractical() {
+      const text = document.getElementById('practical-prompt').value;
+      localStorage.setItem('practicalPrompt_v4', text);
+    }
+
+    function nextQuestion() {
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        renderQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        renderQuestion();
+      }
+    }
+
+    function checkPart1(silent) {
+      const score = userAnswers.reduce((acc, ans, i) => acc + (ans === questions[i].correct ? 1 : 0), 0);
+      const resultsDiv = document.getElementById('exam-results');
+      resultsDiv.style.display = 'block';
+      
+      if (score >= 12) {
+        resultsDiv.innerHTML = `
+          <div style="background: #dcfce7; color: #065f46; padding: 1.5rem; border-radius: 10px; border: 1px solid #bbf7d0; text-align: left; margin-bottom: 1.5rem;">
+            <div style="font-weight:700; font-size:18px;">Del 1 Bestået! 🎉</div>
+            <p style="margin-top:0.5rem;">Du svarede rigtigt på <strong>${score} ud af 15</strong> spørgsmål. Du kan nu udfylde den praktiske opgave i Del 2 nedenfor for at færdiggøre din eksamen.</p>
+          </div>
+        `;
+        document.getElementById('practical-section').style.display = 'block';
+        document.getElementById('quiz-prev-btn').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        
+        if (!silent) {
+          setTimeout(() => {
+            window.scrollTo({ top: document.getElementById('practical-section').offsetTop - 100, behavior: 'smooth' });
+          }, 150);
+        }
+      } else {
+        resultsDiv.innerHTML = `
+          <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; border: 1px solid #fca5a5; text-align: left; margin-bottom: 1.5rem;">
+            <div style="font-weight:700; font-size:18px;">Eksamen ikke bestået ❌</div>
+            <p style="margin-top:0.5rem;">Du fik <strong>${score} ud af 15</strong> rigtige. Du skal have mindst <strong>12 rigtige</strong> for at låse op for den praktiske opgave.</p>
+            <button onclick="resetExam()" class="btn-nav btn-next" style="margin-top: 1rem; background: #991b1b; display: inline-flex; align-items: center; gap: 8px; border: none; cursor: pointer; color: white;">Prøv igen 🔁</button>
+          </div>
+        `;
+        document.getElementById('practical-section').style.display = 'none';
+        document.getElementById('quiz-prev-btn').style.display = 'none';
+        document.getElementById('quiz-next-btn').style.display = 'none';
+        
+        if (!silent) {
+          setTimeout(() => {
+            window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
+          }, 150);
+        }
+      }
+    }
+
+    function resetExam() {
+      currentQuestion = 0;
+      userAnswers = new Array(15).fill(null);
+      localStorage.removeItem('userAnswers_v4');
+      localStorage.removeItem('practicalPrompt_v4');
+      
+      document.getElementById('practical-section').style.display = 'none';
+      document.getElementById('exam-results').style.display = 'none';
+      document.getElementById('exam-results').innerHTML = '';
+      document.getElementById('practical-prompt').value = '';
+      
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function submitExam() {
+      const practicalText = document.getElementById('practical-prompt').value.trim();
+      const resultsDiv = document.getElementById('exam-results');
+      resultsDiv.style.display = 'block';
+      resultsDiv.innerHTML = `<p style="font-weight:700; color:var(--brown-deep);">AI analyserer dit prompt... ⏳</p>`;
+      window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
+      
+      setTimeout(() => {
+        const score = userAnswers.reduce((acc, ans, i) => acc + (ans === questions[i].correct ? 1 : 0), 0);
+        
+        // AI Vurdering Heuristik
+        let passedAI = false;
+        let aiFeedback = "";
+        
+        const lowerText = practicalText.toLowerCase();
+        
+        if (practicalText.length < 80) {
+          aiFeedback = "Dit prompt er for kort. En professionel AI-instruktion kræver mere kontekst, rolledefinition og rammer for at virke efter hensigten.";
+        } else if (!lowerText.includes('kritisk') && !lowerText.includes('svagheder') && !lowerText.includes('modspil')) {
+          aiFeedback = "Du har glemt at bede AI'en om at være kritisk eller finde svagheder/risici, som opgaven specifikt krævede. Den vil bare rose din idé.";
+        } else if (!lowerText.includes('webshop') && !lowerText.includes('børnetøj')) {
+          aiFeedback = "Du har glemt at nævne casen (webshoppen med bæredygtigt børnetøj) i dit prompt. AI'en skal kende konteksten for at hjælpe dig.";
+        } else {
+          passedAI = true;
+          aiFeedback = "Fremragende! Du har givet AI'en en klar rolle (kritisk forretningskonsulent), nævnt den specifikke case og bedt om konkret modspil vedrørende svagheder. Dette vil give dig et yderst værdifuldt output!";
+        }
+        
+        let resultHTML = `<h3 style="font-size:24px; font-weight:800; margin-bottom:1rem; text-align: center;">Resultat af Eksamen</h3>`;
+        resultHTML += `<p style="font-size: 18px; font-weight: 700; text-align: center;">Score på spørgsmål: ${score} ud af 15</p>`;
+        resultHTML += `<div style="background: #f8fafc; padding: 1.25rem; border-radius: 8px; margin: 1.5rem 0; border: 1px solid #cbd5e1; text-align:left;"><strong>AI Vurdering:</strong> <br>${aiFeedback}</div>`;
+        
+        if (score >= 12 && passedAI) {
+          resultHTML += `<p style="font-weight:700; color:var(--brown-deep); margin-top:1rem;">Gemmer dit bevis og badge... ⏳</p>`;
+          resultsDiv.innerHTML = resultHTML;
+          completeExam();
+          return;
+        } else {
+          resultHTML += `
+            <div style="background: #fee2e2; color: #991b1b; padding: 1.5rem; border-radius: 10px; margin-top: 1rem; border: 1px solid #fca5a5; text-align: left;">
+              <div style="font-weight:700; font-size:18px;">Ikke bestået endnu ❌</div>
+              <p style="margin-top:0.5rem;">Du skal have mindst 12 rigtige og bestå AI-vurderingen af din opgave for at få dit certifikat.</p>
+              <p>Du kan rette i dit prompt ovenfor og trykke "Aflever" igen, eller tage hele testen om.</p>
+              <button onclick="resetExam()" class="btn-nav btn-next" style="margin-top: 1.5rem; background: #991b1b; border: none; cursor: pointer; color: white;">Tag testen om 🔁</button>
+            </div>
+          `;
+        }
+        
+        resultsDiv.innerHTML = resultHTML;
+        window.scrollTo({ top: resultsDiv.offsetTop - 100, behavior: 'smooth' });
+      }, 2000);
+    }
+
+    // ============================================
+    // BESTÅET → GEM I FIREBASE + VIS BEVIS
+    // ============================================
+    async function completeExam() {
+      const saved = await window.saveCertificate?.();
+      localStorage.removeItem('userAnswers_v4');
+      localStorage.removeItem('practicalPrompt_v4');
+      if (saved === false) {
+        const resultsDiv = document.getElementById('exam-results');
+        resultsDiv.innerHTML += `<p style="color:#991b1b; font-weight:600; margin-top:0.5rem;">⚠️ Dit bevis kunne ikke gemmes online lige nu — tjek din internetforbindelse og genindlæs siden.</p>`;
+        return;
+      }
+      showCertificate(false);
+    }
+
+    function showCertificate(alreadyPassed) {
+      const u = window._user || {};
+      const name = `${u.firstName || ''} ${u.lastName || ''}`.trim() || 'Dit navn';
+      const email = u.email || '';
+      const date = u.certDate || new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      document.getElementById('cert-name').textContent = name;
+      document.getElementById('cert-email').textContent = email;
+      document.getElementById('cert-date').textContent = date;
+
+      ['prog-card', 'question-area', 'quiz-nav-box', 'practical-section', 'exam-results'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = 'none';
+      });
+
+      document.getElementById('already-banner').style.display = alreadyPassed ? 'block' : 'none';
+      document.getElementById('cert-coins-toast').style.display = alreadyPassed ? 'none' : 'block';
+      document.getElementById('cert-section').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ============================================
+    // PDF DOWNLOAD (jsPDF 2.5.1)
+    // ============================================
+    function downloadCertificatePDF() {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const W = 297, cx = W / 2;
+      const name = document.getElementById('cert-name').textContent;
+      const email = document.getElementById('cert-email').textContent;
+      const date = document.getElementById('cert-date').textContent;
+
+      // Baggrund + dobbelt ramme
+      pdf.setFillColor(252, 249, 245);
+      pdf.rect(0, 0, 297, 210, 'F');
+      pdf.setDrawColor(74, 44, 17);
+      pdf.setLineWidth(1.4);
+      pdf.rect(10, 10, 277, 190);
+      pdf.setDrawColor(201, 168, 124);
+      pdf.setLineWidth(0.4);
+      pdf.rect(14, 14, 269, 182);
+
+      // Brand + titel
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(11);
+      pdf.setTextColor(139, 90, 43);
+      pdf.text('L E A R N A I   D K', cx, 32, { align: 'center' });
+
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(30);
+      pdf.setTextColor(74, 44, 17);
+      pdf.text('Bevis for Gennemførelse', cx, 48, { align: 'center' });
+
+      // Badge-cirkel med raket-symbol (tegnet, da emojis ikke kan i jsPDF)
+      pdf.setFillColor(74, 44, 17);
+      pdf.circle(cx, 66, 9, 'F');
+      pdf.setDrawColor(201, 168, 124);
+      pdf.setLineWidth(0.8);
+      pdf.circle(cx, 66, 9);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(12);
+      pdf.setTextColor(232, 176, 122);
+      pdf.text('AI', cx, 68, { align: 'center' });
+
+      // Navn + email
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(12);
+      pdf.setTextColor(74, 85, 104);
+      pdf.text('Det bekræftes hermed, at', cx, 88, { align: 'center' });
+
+      pdf.setFont('times', 'bolditalic');
+      pdf.setFontSize(32);
+      pdf.setTextColor(26, 31, 46);
+      pdf.text(name, cx, 102, { align: 'center' });
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(10);
+      pdf.setTextColor(113, 128, 150);
+      pdf.text(email, cx, 110, { align: 'center' });
+
+      pdf.setDrawColor(201, 168, 124);
+      pdf.setLineWidth(0.4);
+      pdf.line(cx - 35, 116, cx + 35, 116);
+
+      // Kursus
+      pdf.setFontSize(12);
+      pdf.setTextColor(74, 85, 104);
+      pdf.text('har bestået den afsluttende eksamen i sidekurset', cx, 126, { align: 'center' });
+
+      pdf.setFont('times', 'bold');
+      pdf.setFontSize(22);
+      pdf.setTextColor(74, 44, 17);
+      pdf.text('AI for Iværksættere', cx, 138, { align: 'center' });
+
+      // Meta-række
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(8);
+      pdf.setTextColor(113, 128, 150);
+      pdf.text('DATO', cx - 70, 162, { align: 'center' });
+      pdf.text('CERTIFIKAT', cx, 162, { align: 'center' });
+      pdf.text('UDSTEDT AF', cx + 70, 162, { align: 'center' });
+
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.setTextColor(26, 31, 46);
+      pdf.text(date, cx - 70, 169, { align: 'center' });
+      pdf.text('AI-ENT-BRONZE-2026', cx, 169, { align: 'center' });
+      pdf.text('Akademiet AI', cx + 70, 169, { align: 'center' });
+
+      pdf.save('Akademiet-AI-Bevis-AI-for-Ivaerksaettere.pdf');
+    }
+
+    if (savedPrompt) {
+      setTimeout(() => {
+        document.getElementById('practical-prompt').value = savedPrompt;
+      }, 100);
+    }
+    initPage();
+  </script>
+
+  <!-- FIREBASE -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, getDoc, updateDoc, arrayUnion, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+      authDomain: "learnai-dk.firebaseapp.com",
+      projectId: "learnai-dk",
+      storageBucket: "learnai-dk.firebasestorage.app",
+      messagingSenderId: "3073076360",
+      appId: "1:3073076360:web:b853d118e943395de4833d",
+      measurementId: "G-58EB4Z5KK3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        // Ikke logget ind → tilbage til platformen
+        window.location.href = 'platform.html';
+        return;
+      }
+
+      let state = 'open';
+      try {
+        const snap = await getDoc(doc(db, 'users', user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          window._user = { uid: user.uid, email: user.email, ...data };
+          if ((data.completedSideCourses || []).includes('ivaerksaetteri')) {
+            state = 'passed';
+            const b = (data.badges || []).find(b => b.level === 'ivaerksaetteri');
+            if (b && b.date) window._user.certDate = b.date;
+          }
+        } else {
+          window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
+        }
+      } catch (e) {
+        console.error(e);
+        window._user = { uid: user.uid, email: user.email, firstName: '', lastName: '', coins: 0 };
+      }
+
+      window.onAuthResolved?.(state);
+    });
+
+    // Gem bestået + coins + badge i Firebase (med dublet-tjek)
+    window.saveCertificate = async function() {
+      if (!window._user) return false;
+
+      try {
+        const snap = await getDoc(doc(db, 'users', window._user.uid));
+        if (snap.exists()) {
+          const data = snap.data();
+          if ((data.completedSideCourses || []).includes('ivaerksaetteri')) {
+            console.log('Iværksætter-kursus allerede bestået — springer gem over');
+            return true;
+          }
+          window._user.coins = data.coins || 0;
+        }
+      } catch (e) { console.error(e); }
+
+      const today = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+      try {
+        await updateDoc(doc(db, 'users', window._user.uid), {
+          completedSideCourses: arrayUnion('ivaerksaetteri'),
+          badges: arrayUnion({
+            level: 'ivaerksaetteri',
+            type: 'side',
+            title: 'AI for Iværksættere',
+            icon: '🚀',
+            date: today,
+            earnedAt: new Date().toISOString()
+          })
+        });
+        return true;
+      } catch (e) {
+        console.error(e);
+        return false;
+      }
+    };
+
+    window._fb = { db, doc, getDoc, updateDoc, arrayUnion, serverTimestamp };
+  </script>
+</body>
+</html>

@@ -1,10 +1,10 @@
-# LearnAI — Komplet Projektstatus
+# Akademiet AI — Komplet Projektstatus
 *Opdateret efter lang byggesession — alt hvad næste chat skal vide*
 
 ---
 
 ## 🎯 Hvem er brugeren
-Alexander og August bygger **LearnAI** (learnai.dk / magnuscode-ai.github.io/ai-kursus) — en dansk AI-kursusplatform. Gratis kursus D → betalt C → B → A. Bygget i ren HTML/CSS/JS med Firebase og Anthropic API.
+Alexander og August bygger **Akademiet AI** (akademiet-ai.dk / magnuscode-ai.github.io/ai-kursus) — en dansk AI-kursusplatform. Gratis kursus D → betalt C → B → A. Bygget i ren HTML/CSS/JS med Firebase og Anthropic API.
 
 **Vigtige arbejdspræferencer:**
 - Vil have ærlighed, ikke smigeri — sig det hvis noget er dårligt

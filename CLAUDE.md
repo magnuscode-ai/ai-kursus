@@ -502,7 +502,7 @@
     <span class="line1">Claude Code</span>
     <span class="line2">Fra 0 til Pro</span>
   </h1>
-  <p class="hero-sub">Specielt lavet til LearnAI.dk — lær at bygge dine kurser hurtigere, bedre og uden at copy-paste kode.</p>
+  <p class="hero-sub">Specielt lavet til akademiet-ai.dk — lær at bygge dine kurser hurtigere, bedre og uden at copy-paste kode.</p>
   <div class="hero-toc">
     <a href="#del1" class="toc-chip">01 — Hvad er Claude Code?</a>
     <a href="#del2" class="toc-chip">02 — Installation</a>
@@ -645,7 +645,7 @@
   <!-- DEL 3 -->
   <section class="section reveal" id="del3">
     <div class="section-label">03 — Første gang</div>
-    <h2 class="section-title">Åbn dit LearnAI-projekt</h2>
+    <h2 class="section-title">Åbn dit Akademiet-AI-projekt</h2>
     <p class="section-intro">Sådan kommer du i gang med dit eksisterende projekt på GitHub.</p>
 
     <div class="steps">
@@ -716,14 +716,14 @@
         <div class="file-dot" style="background:#f43f5e"></div>
         <div class="file-dot" style="background:#f59e0b"></div>
         <div class="file-dot" style="background:#22d3a6"></div>
-        &nbsp; CLAUDE.md — LearnAI.dk
+        &nbsp; CLAUDE.md — akademiet-ai.dk
       </div>
-      <div class="file-body"><span class="md-h1"># LearnAI.dk — AI-kursus Platform</span>
+      <div class="file-body"><span class="md-h1"># akademiet-ai.dk — AI-kursus Platform</span>
 
 <span class="md-h2">## Projekt-oversigt</span>
 Dette er en dansk AI-uddannelsesplatform (Duolingo for AI).
 Hosted på GitHub Pages: magnuscode-ai.github.io/ai-kursus
-Domæne: learnai.dk
+Domæne: akademiet-ai.dk
 
 <span class="md-h2">## Teknisk stack</span>
 - Ren HTML/CSS/JavaScript (ingen frameworks)
@@ -772,7 +772,7 @@ Domæne: learnai.dk
   <section class="section reveal" id="del5">
     <div class="section-label">05 — Kunsten at prompte</div>
     <h2 class="section-title">Prompts der faktisk virker</h2>
-    <p class="section-intro">Claude Code er som chatten — jo bedre du prompter, jo bedre output. Her er dine templates til LearnAI.dk.</p>
+    <p class="section-intro">Claude Code er som chatten — jo bedre du prompter, jo bedre output. Her er dine templates til akademiet-ai.dk.</p>
 
     <div class="cards" style="grid-template-columns: 1fr; gap: 20px;">
 
@@ -782,7 +782,7 @@ Domæne: learnai.dk
         <p style="margin-bottom: 12px;">Brug når du vil bygge en helt ny side.</p>
         <div class="prompt-card">
           <div class="label">📋 Prompt-skabelon</div>
-          Byg en ny fil kaldet [filnavn].html til LearnAI.dk. Siden skal:
+          Byg en ny fil kaldet [filnavn].html til akademiet-ai.dk. Siden skal:
           <br>— [Beskriv hvad siden gør]
           <br>— Bruge vores standard dark theme med [farve] som accentfarve
           <br>— Inkludere Firebase Auth-check i toppen (redirect til platform.html hvis ikke logget ind)
@@ -999,7 +999,7 @@ Domæne: learnai.dk
 
 <!-- FOOTER -->
 <footer class="footer">
-  <p style="font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px;">LearnAI.dk</p>
+  <p style="font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; margin-bottom: 8px;">akademiet-ai.dk</p>
   <p>Claude Code Guide — Opdateret 2025 · Bygget til magnuscode-ai/ai-kursus projektet</p>
 </footer>
 

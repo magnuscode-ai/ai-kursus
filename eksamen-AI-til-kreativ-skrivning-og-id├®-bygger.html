@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akademiet AI — Eksamen: AI til kreativ skrivning</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280; --border:#E5E7EB;
+      --bg:#F9FAFB; --white:#FFFFFF;
+      --rose:#BE185D; --rose-deep:#9D174D; --rose-50:#FFF1F2; --rose-100:#FFE4E6; --rose-200:#FECDD3; --rose-glow:rgba(190,24,93,.14);
+      --green:#059669; --green-50:#ECFDF5; --green-100:#D1FAE5; --green-200:#A7F3D0;
+      --red:#DC2626; --red-50:#FEF2F2; --red-100:#FEE2E2; --red-200:#FECACA;
+      --r:12px; --r-lg:18px; --r-xl:24px;
+    }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Outfit',sans-serif; background:var(--bg); color:var(--ink); line-height:1.6; min-height:100vh; }
+
+    /* NAV */
+    nav { position:sticky; top:0; z-index:200; height:58px; background:rgba(255,255,255,.96); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 28px; }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink); font-weight:700; font-size:15px; }
+    .nav-mark { width:32px; height:32px; border-radius:9px; background:var(--rose); display:flex; align-items:center; justify-content:center; }
+    .nav-mark svg { width:15px; height:15px; fill:white; }
+    .nav-tag { font-size:12px; font-weight:600; color:var(--rose); background:var(--rose-50); padding:4px 12px; border-radius:999px; }
+
+    /* HERO */
+    .hero { background:var(--rose-deep); padding:40px 28px 32px; position:relative; overflow:hidden; }
+    .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px); background-size:40px 40px; }
+    .hero-blob { position:absolute; width:320px; height:320px; background:radial-gradient(circle,rgba(251,113,133,.3) 0%,transparent 70%); top:-90px; right:-10px; border-radius:50%; animation:blobFloat 8s ease-in-out infinite; pointer-events:none; }
+    @keyframes blobFloat { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-14px) scale(1.05)} }
+    .hero-inner { max-width:640px; margin:0 auto; position:relative; z-index:1; }
+    .hero-chip { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:12px; }
+    .hero-chip-dot { width:6px; height:6px; border-radius:50%; background:#FDA4AF; display:inline-block; }
+    .hero h1 { font-family:'Lora',serif; font-size:clamp(22px,4vw,32px); font-weight:600; color:white; line-height:1.22; margin-bottom:8px; }
+    .hero h1 em { font-style:italic; color:#FDA4AF; }
+    .hero-lead { font-size:14px; color:rgba(255,255,255,.7); max-width:480px; margin-bottom:20px; }
+    .hero-pills { display:flex; gap:8px; flex-wrap:wrap; }
+    .hero-pill { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.14); color:rgba(255,255,255,.8); font-size:12px; padding:5px 12px; border-radius:8px; }
+
+    /* PROGRESS STRIP */
+    .prog-strip { background:var(--white); border-bottom:1px solid var(--border); padding:12px 28px; }
+    .prog-inner { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:14px; }
+    .prog-nums { font-size:13px; font-weight:700; color:var(--ink); white-space:nowrap; min-width:90px; }
+    .prog-nums span { color:var(--rose); }
+    .prog-bar { flex:1; height:7px; background:#F3F4F6; border-radius:999px; overflow:hidden; }
+    .prog-fill { height:100%; background:var(--rose); border-radius:999px; transition:width .5s cubic-bezier(.4,0,.2,1); width:0%; }
+    .score-live { font-size:12.5px; font-weight:700; color:var(--green); white-space:nowrap; min-width:60px; text-align:right; }
+
+    /* WRAP */
+    .wrap { max-width:640px; margin:0 auto; padding:32px 24px 64px; }
+
+    /* PHASE */
+    .phase { display:none; }
+    .phase.active { display:block; animation:fadeUp .3s ease; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    /* QUESTION CARD */
+    .q-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r-xl); padding:28px 28px 24px; box-shadow:0 2px 12px rgba(0,0,0,.05); }
+    .q-meta { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+    .q-num-tag { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--rose); }
+    .q-score-tag { font-size:12px; font-weight:600; color:var(--muted); }
+    .q-text { font-size:16px; font-weight:700; color:var(--ink); margin-bottom:20px; line-height:1.45; }
+    .opts { display:flex; flex-direction:column; gap:9px; }
+
+    /* OPTION */
+    .opt { display:flex; align-items:flex-start; gap:13px; padding:13px 16px; border:1.5px solid var(--border); border-radius:var(--r); cursor:pointer; transition:border-color .15s, background .15s, transform .12s; user-select:none; }
+    .opt:hover:not(.locked) { border-color:var(--rose-200); background:var(--rose-50); transform:translateX(2px); }
+    .opt.locked { cursor:default; }
+    .opt-marker { width:24px; height:24px; border-radius:50%; border:2px solid var(--border); flex-shrink:0; margin-top:1px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:var(--muted); transition:all .18s; }
+    .opt-letter { font-size:11px; font-weight:800; color:var(--muted); width:14px; flex-shrink:0; margin-top:3px; transition:color .15s; }
+    .opt-text { font-size:14px; color:var(--ink-soft); line-height:1.5; flex:1; transition:color .15s; }
+
+    /* SELECTED (before reveal) */
+    .opt.selected { border-color:var(--rose); background:var(--rose-50); }
+    .opt.selected .opt-marker { border-color:var(--rose); background:var(--rose); color:white; }
+    .opt.selected .opt-letter { color:var(--rose-deep); }
+    .opt.selected .opt-text { color:var(--rose-deep); font-weight:500; }
+
+    /* REVEALED STATES */
+    .opt.is-correct { border-color:var(--green)!important; background:var(--green-50)!important; transform:none!important; }
+    .opt.is-correct .opt-marker { border-color:var(--green)!important; background:var(--green)!important; color:white!important; }
+    .opt.is-correct .opt-letter { color:#065F46!important; }
+    .opt.is-correct .opt-text { color:#065F46!important; font-weight:600!important; }
+    .opt.is-wrong { border-color:var(--red)!important; background:var(--red-50)!important; transform:none!important; }
+    .opt.is-wrong .opt-marker { border-color:var(--red)!important; background:var(--red)!important; color:white!important; }
+    .opt.is-wrong .opt-letter { color:#7F1D1D!important; }
+    .opt.is-wrong .opt-text { color:#7F1D1D!important; font-weight:500!important; }
+    .opt.is-missed { border-color:var(--green)!important; background:#F0FDF4!important; transform:none!important; }
+    .opt.is-missed .opt-text { color:#065F46!important; font-weight:600!important; }
+    .opt.is-missed .opt-letter { color:#065F46!important; }
+
+    /* FEEDBACK BOX */
+    .feedback-box { margin-top:16px; border-radius:var(--r); padding:13px 16px; display:flex; gap:12px; align-items:flex-start; animation:fadeUp .2s ease; }
+    .feedback-box.fb-pass { background:var(--green-50); border:1px solid var(--green-200); }
+    .feedback-box.fb-fail { background:var(--red-50); border:1px solid var(--red-200); }
+    .fb-icon { font-size:18px; flex-shrink:0; margin-top:1px; }
+    .fb-title { font-size:13px; font-weight:700; margin-bottom:2px; }
+    .feedback-box.fb-pass .fb-title { color:var(--green); }
+    .feedback-box.fb-fail .fb-title { color:var(--red); }
+    .fb-body { font-size:13px; line-height:1.55; }
+    .feedback-box.fb-pass .fb-body { color:#064E3B; }
+    .feedback-box.fb-fail .fb-body { color:#7F1D1D; }
+
+    /* NEXT BUTTON ROW */
+    .next-row { display:flex; justify-content:flex-end; margin-top:18px; }
+    .btn { display:inline-flex; align-items:center; gap:9px; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:12px 26px; border-radius:var(--r); border:none; cursor:pointer; transition:background .15s, transform .15s, box-shadow .15s; text-decoration:none; }
+    .btn svg { width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; flex-shrink:0; }
+    .btn-rose { background:var(--rose); color:white; box-shadow:0 4px 18px var(--rose-glow); }
+    .btn-rose:hover { background:var(--rose-deep); transform:translateY(-2px); box-shadow:0 8px 24px rgba(190,24,93,.28); }
+    .btn-outline { background:white; color:var(--rose); border:2px solid var(--rose-200); box-shadow:none; }
+    .btn-outline:hover { background:var(--rose-50); }
+    .btn-green { background:var(--green); color:white; box-shadow:0 4px 18px rgba(5,150,105,.18); }
+    .btn-green:hover { background:#047857; transform:translateY(-2px); }
+
+    /* SCORE PANEL */
+    .score-panel { border-radius:var(--r-xl); padding:32px; text-align:center; margin-bottom:22px; }
+    .score-panel.pass { background:linear-gradient(135deg,#ECFDF5,#D1FAE5); border:2px solid var(--green-200); }
+    .score-panel.fail { background:linear-gradient(135deg,#FEF2F2,#FEE2E2); border:2px solid var(--red-200); }
+    .score-big { font-size:64px; font-weight:800; line-height:1; margin-bottom:4px; }
+    .score-panel.pass .score-big { color:var(--green); }
+    .score-panel.fail .score-big { color:var(--red); }
+    .score-of { font-size:28px; opacity:.55; }
+    .score-label { font-size:16px; font-weight:700; margin-bottom:5px; }
+    .score-panel.pass .score-label { color:#065F46; }
+    .score-panel.fail .score-label { color:#7F1D1D; }
+    .score-note { font-size:13.5px; }
+    .score-panel.pass .score-note { color:#064E3B; }
+    .score-panel.fail .score-note { color:#991B1B; }
+    .action-row { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+
+    /* PRACTICAL */
+    .sect-label { display:flex; align-items:center; gap:12px; margin:26px 0 16px; }
+    .sect-label hr { flex:1; border:none; border-top:1px solid var(--border); }
+    .sect-label span { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); white-space:nowrap; }
+    .task-card { background:var(--white); border:1px solid var(--border); border-radius:var(--r-xl); padding:26px 28px; box-shadow:0 2px 8px rgba(0,0,0,.04); }
+    .task-lbl { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--rose); margin-bottom:6px; }
+    .task-title { font-family:'Lora',serif; font-size:19px; font-weight:600; color:var(--ink); margin-bottom:8px; }
+    .task-desc { font-size:14px; color:var(--ink-soft); line-height:1.7; margin-bottom:14px; }
+    .reqs { display:flex; flex-direction:column; gap:7px; margin-bottom:16px; }
+    .req { display:flex; gap:10px; align-items:flex-start; font-size:13px; color:var(--ink-soft); line-height:1.55; }
+    .req-dot { width:20px; height:20px; border-radius:50%; background:var(--rose-50); color:var(--rose); font-size:10px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    textarea { width:100%; min-height:175px; padding:13px 15px; font-family:'Outfit',sans-serif; font-size:14px; line-height:1.65; color:var(--ink); border:1.5px solid var(--border); border-radius:var(--r); resize:vertical; transition:border-color .15s; background:var(--white); margin-top:4px; }
+    textarea:focus { outline:none; border-color:var(--rose); }
+    .char-count { font-size:11.5px; color:var(--muted); text-align:right; margin-top:4px; }
+    .notice { display:flex; gap:12px; align-items:flex-start; border-radius:var(--r); padding:13px 15px; margin-bottom:14px; background:var(--rose-50); border:1px solid var(--rose-100); }
+    .notice-icon { font-size:16px; flex-shrink:0; margin-top:1px; }
+    .notice-body { font-size:13px; line-height:1.55; color:#9D174D; }
+    .notice-body strong { color:var(--rose-deep); }
+
+    /* AI VERDICT */
+    .verdict-wrap { margin-top:16px; }
+    .verdict-loading { display:flex; align-items:center; gap:12px; background:#F8FAFC; border:1px solid var(--border); border-radius:var(--r); padding:13px 16px; }
+    .spinner { width:20px; height:20px; border:2.5px solid #E5E7EB; border-top-color:var(--rose); border-radius:50%; animation:spin .7s linear infinite; flex-shrink:0; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .crit-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+    .crit { display:flex; gap:11px; border-radius:var(--r); padding:11px 14px; border:1px solid; }
+    .crit.ok { background:var(--green-50); border-color:var(--green-100); }
+    .crit.no { background:var(--red-50); border-color:var(--red-100); }
+    .crit-icon { font-size:13px; flex-shrink:0; margin-top:2px; }
+    .crit-name { font-size:12.5px; font-weight:700; margin-bottom:2px; }
+    .crit.ok .crit-name { color:#065F46; }
+    .crit.no .crit-name { color:#7F1D1D; }
+    .crit-fb { font-size:12.5px; line-height:1.5; }
+    .crit.ok .crit-fb { color:#064E3B; }
+    .crit.no .crit-fb { color:#991B1B; }
+    .verdict-result { display:flex; gap:12px; align-items:flex-start; border-radius:var(--r); padding:14px 16px; }
+    .verdict-result.vr-pass { background:var(--green-50); border:1px solid var(--green-200); }
+    .verdict-result.vr-fail { background:var(--red-50); border:1px solid var(--red-200); }
+    .vr-icon { font-size:18px; flex-shrink:0; }
+    .vr-title { font-size:13.5px; font-weight:700; margin-bottom:2px; }
+    .vr-pass .vr-title { color:var(--green); }
+    .vr-fail .vr-title { color:var(--red); }
+    .vr-text { font-size:13px; line-height:1.55; }
+    .vr-pass .vr-text { color:#064E3B; }
+    .vr-fail .vr-text { color:#7F1D1D; }
+
+    @media(max-width:480px){
+      nav { padding:0 16px; }
+      .hero { padding:26px 16px 22px; }
+      .wrap { padding:20px 14px 48px; }
+      .q-card { padding:20px 16px 18px; }
+      .action-row { flex-direction:column; align-items:stretch; }
+      .btn { justify-content:center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">
+    <div class="nav-mark"><svg viewBox="0 0 16 16"><path d="M8 1L10 6H15L11 9.5L12.5 15L8 12L3.5 15L5 9.5L1 6H6Z"/></svg></div>
+    Akademiet AI
+  </a>
+  <div class="nav-tag">Eksamen &nbsp;·&nbsp; Kreativ skrivning</div>
+</nav>
+
+<!-- HERO (only shown on phase 1) -->
+<div class="hero" id="heroSection">
+  <div class="hero-grid"></div>
+  <div class="hero-blob"></div>
+  <div class="hero-inner">
+    <div class="hero-chip"><span class="hero-chip-dot"></span> Sidekursus-eksamen</div>
+    <h1>Eksamen: AI til<br><em>kreativ skrivning</em></h1>
+    <p class="hero-lead">15 spørgsmål — ét ad gangen. Du får svar med det samme. Du skal have mindst 12 rigtige for at komme videre.</p>
+    <div class="hero-pills">
+      <div class="hero-pill"><span>📝</span> 15 spørgsmål</div>
+      <div class="hero-pill"><span>🎯</span> Kræver 12/15</div>
+      <div class="hero-pill"><span>🤖</span> AI-vurderet opgave</div>
+    </div>
+  </div>
+</div>
+
+<!-- PROGRESS STRIP -->
+<div class="prog-strip" id="progStrip">
+  <div class="prog-inner">
+    <div class="prog-nums">Spørgsmål <span id="progCur">1</span> af 15</div>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+    <div class="score-live" id="scoreLive">0 rigtige</div>
+  </div>
+</div>
+
+<!-- ═══ PHASE 1 — ONE QUESTION AT A TIME ═══ -->
+<div class="phase active" id="phase1">
+  <div class="wrap">
+    <div class="q-card" id="qCard">
+      <div class="q-meta">
+        <div class="q-num-tag" id="qNumTag">Spørgsmål 1 af 15</div>
+        <div class="q-score-tag" id="qScoreTag">0 / 0 rigtige</div>
+      </div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="opts"></div>
+      <div id="feedbackBox"></div>
+    </div>
+    <div class="next-row" id="nextRow" style="display:none;">
+      <button class="btn btn-rose" id="nextBtn" onclick="nextQuestion()">
+        Næste spørgsmål
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PHASE 2 — RESULTS ═══ -->
+<div class="phase" id="phase2">
+  <div class="wrap">
+    <div id="scorePanel"></div>
+    <div class="action-row" id="resultActions"></div>
+  </div>
+</div>
+
+<!-- ═══ PHASE 3 — PRACTICAL TASK ═══ -->
+<div class="phase" id="phase3">
+  <div class="wrap">
+    <div class="notice">
+      <div class="notice-icon">✅</div>
+      <div class="notice-body"><strong>Flot!</strong> Du bestod flervalgsdelen. Ét praktisk skridt tilbage — skriv en rigtig prompt og lad AI vurdere den.</div>
+    </div>
+
+    <div class="task-card">
+      <div class="task-lbl">Praktisk opgave</div>
+      <div class="task-title">Skriv en komplet kreativ AI-prompt</div>
+      <div class="task-desc">Vælg ét scenarie og skriv en komplet prompt klar til brug i Claude eller ChatGPT.</div>
+      <div class="reqs">
+        <div class="req"><div class="req-dot">A</div>Åbningsscene til en fortælling: brug <em>in medias res</em>, en karakter med en intern konflikt og 2–3 sanselige detaljer om stedet.</div>
+        <div class="req"><div class="req-dot">B</div>Overwind-teknikken: inkludér dit eksisterende materiale, hvad du ønsker opnået, problemet du sidder fast i — og bed om diagnose + to retninger + første sætning for hver.</div>
+        <div class="req"><div class="req-dot">C</div>Sparringspartner-feedback: indsæt et udkast og bed om feedback på åbningslinje, tempo og den svageste sætning med et alternativt forslag.</div>
+      </div>
+      <div class="req" style="background:var(--rose-50);border-radius:var(--r);padding:10px 13px;"><div class="req-dot">!</div><strong>Prompten skal vise mindst 2 teknikker fra kurset og være klar til direkte indsætning.</strong></div>
+
+      <div style="margin-top:18px;">
+        <div class="task-lbl">Dit svar</div>
+        <textarea id="practicalAnswer" placeholder="Skriv din komplette prompt her..." oninput="updateCharCount()"></textarea>
+        <div class="char-count" id="charCount">0 tegn</div>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;">
+        <button class="btn btn-rose" id="gradeBtn" onclick="gradePractical()">
+          <span id="gradeBtnTxt">🤖 Lad AI vurdere mit svar</span>
+        </button>
+      </div>
+
+      <div id="verdictWrap" style="display:none;margin-top:16px;"></div>
+    </div>
+
+    <div class="action-row" id="practicalActions" style="display:none;margin-top:20px;">
+      <button class="btn btn-outline" onclick="retryPractical()">
+        <svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg>
+        Prøv igen
+      </button>
+      <a class="btn btn-green" id="finishBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" style="display:none;">
+        Kursus færdigt — tilbage til platformen
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── API ────────────────────────────────────────────────────
+const API_BASE = (typeof window !== 'undefined' && window.LEARNAI_API)
+  || localStorage.getItem('learnai_api_base')
+  || (() => { try { const h = location.hostname; return (h==='localhost'||h==='127.0.0.1') ? '' : location.origin; } catch(e){ return ''; } })();
+
+// ─── DATA ────────────────────────────────────────────────────
+// correct: 0=A, 1=B, 2=C, 3=D  — distribution: A×3, B×4, C×4, D×4
+const QS = [
+  { q:"Hvad er det centrale princip i Stormmandens metode?",
+    opts:["At du beder AI generere den én bedste idé frem for mange usorterede","At du genererer mange idéer på én gang uden at filtrere dem undervejs","At AI skriver et første udkast som du derefter redigerer færdigt","At du altid definerer et klart tema og en konkret målgruppe inden du formulerer din prompt"],
+    c:1, exp:"Stormmandens metode handler om kvantitet frem for kvalitet — du beder om mange idéer på én gang uden at filtrere, så du får overraskende retninger at vælge imellem." },
+  { q:"Hvad er den vigtigste regel i Sparringspartner-teknikken?",
+    opts:["AI skriver første udkast og du forbedrer det trin for trin bagefter","Du og AI skriver skiftevis afsnit for at holde momentum i projektet","Du skriver altid dit eget første udkast inden du beder AI om feedback","AI genererer fem meget varierede varianter og du vælger derefter den bedste til videre arbejde"],
+    c:2, exp:"Du ALTID skriver dit eget første udkast — uanset kvalitet. AI's feedback på noget du selv har skrevet er langt mere værdifuld end AI-tekst fra bunden." },
+  { q:"Hvad opnår du konkret ved at give AI en specifik rolle i din prompt?",
+    opts:["AI's tekst bliver mere kompakt og holder sig inden for færre ord","AI svarer hurtigere og bruger langt kortere og mere direkte formuleringer i hvert enkelt svar","AI trækker på mere specialiseret terminologi fra sin sprogmodel","AI leverer mere målrettet kreativ hjælp tilpasset din specifikke kontekst"],
+    c:3, exp:"En specifik rolle (fx 'erfaren redaktør') giver AI en kontekst at arbejde ud fra, så den leverer mere målrettet og relevant kreativ hjælp." },
+  { q:"Hvad er de tre elementer AI bedes vurdere i Sparringspartner-prompten?",
+    opts:["Åbningslinje, tempo og den svageste sætning i teksten","Karakter, konflikt og den dominerende stemning i teksten","Åbningslinje, midterdel og afslutningen på det samlede udkast","Titel, struktur og det stærkeste enkeltafsnit i teksten"],
+    c:0, exp:"De tre specifikke elementer er: åbningslinje, tempo og den svageste sætning — og AI skal foreslå en alternativ formulering til den svageste." },
+  { q:"Hvad er kernen i dialog med subtext i kreativ skrivning?",
+    opts:["Dialogen afsluttes altid med en linje der overrasker læseren","Karaktererne taler i overlappende og hinanden afbrydende sætninger for at skabe en realistisk og troværdig dialog","Den ene karakter forstår altid mere end den anden i situationen","Karaktererne taler om noget neutralt mens den reelle konflikt gemmer sig under ordene"],
+    c:3, exp:"Subtext betyder at folk ikke siger hvad de mener. De taler om vejret — men det handler om noget andet. Den skjulte konflikt er det der giver dialogen dybde." },
+  { q:"Hvad er formålet med at forbyde ord som 'kærlighed' og 'sorg' i lyrik-prompten?",
+    opts:["For at undgå at AI genererer tekst der minder for meget om kendte og klassiske digteres typiske stil","For at tvinge AI til at bruge konkrete sanseindtryk frem for abstraktioner","For at sikre at digtet ikke overskrider den fastsatte linjegrænse","For at forhindre at AI gentager de samme ord på tværs af strofer"],
+    c:1, exp:"Abstrakte ord som 'kærlighed' og 'sorg' giver klichéfyldt lyrik. Ved at forbyde dem tvinger du AI til at vise følelsen gennem konkrete sanselige billeder i stedet." },
+  { q:"Hvad betyder 'in medias res' som brugt i scene-generator-prompten?",
+    opts:["At åbningsscenen altid indeholder et flashback til fortiden der forklarer karakterens nuværende situation","At alle scener skal have en klar begyndelse, midte og afslutning","At historien starter direkte i handlingen uden baggrundsbeskrivelse","At perspektivet skifter mindst én gang inden for den åbne scene"],
+    c:2, exp:"'In medias res' betyder 'midt i handlingen' — ingen baggrundsbeskrivelse, ingen opstilling. Scenen begynder i et allerede igangværende forløb." },
+  { q:"Hvad kendetegner en effektiv åbningshook til en blogpost?",
+    opts:["Den fanger med et konkret, personligt eller provokerende element","Den definerer emnet klart og præcist så læseren ved hvad der venter","Den indeholder de vigtigste nøgleord placeret tidligt i teksten","Den giver en kort oversigt over artiklens struktur og centrale pointer"],
+    c:0, exp:"En god åbningshook springer ind i noget konkret, personligt eller overraskende — ikke en definition af emnet. Eksemplet fra kurset starter med en deadline og et writers-block." },
+  { q:"Hvad er den primære fordel ved Persona-metoden?",
+    opts:["AI husker automatisk alle dine kreative præferencer og stilvalg på tværs af mange sessioner","AI genererer altid minimum fem varianter uden at du beder om det","Metoden forhindrer at AI producerer upassende kreativt indhold","Du genbruger en fast system-prompt frem for at starte fra nul hver gang"],
+    c:3, exp:"Persona-metoden handler om genbrug — du skriver system-prompten én gang og bruger den som udgangspunkt for alle fremtidige kreative AI-sessioner." },
+  { q:"Hvad sker konkret i trin 3 i Idémaskinen?",
+    opts:["Du besvarer AI's fem spørgsmål med dine egne uperfekte og ufærdige spontane formuleringer","AI opsummerer dine svar og præsenterer tre mulige vinkler på projektet","Du vælger en første sætning baseret på det tema I har identificeret","AI skriver et komplet synopsis baseret på din indledende beskrivelse"],
+    c:1, exp:"Trin 3 er opsamlingen: AI bruger dine svar til at identificere det centrale tema og foreslå tre vinkler — fra den mest personlige til den mest universelle." },
+  { q:"Hvad beder du specifikt AI om i Overwind-teknikken?",
+    opts:["At skrive de næste to-tre hundrede ord i projektet så du har noget konkret råmateriale at arbejde med","At gennemgå alle de svagheder du selv allerede har identificeret","En diagnose plus to mulige retninger og en første sætning for hver","Fem alternative åbningsscener til hele projektet fra begyndelsen"],
+    c:2, exp:"Overwind kræver tre ting fra AI: én diagnose af det reelle problem, to mulige retninger fremad (én sikker, én overraskende) og en første sætning for hver retning." },
+  { q:"Hvad siger iterationsreglen om kreativ brug af AI?",
+    opts:["Første AI-output er sjældent det bedste — brug mindst to-tre runder","Det bedste output kommer typisk altid præcis i den anden iteration","Mere end tre runder giver sjældent ekstra kreativ kvalitetsmæssig gevinst","Første output er bedst da AI's kreativitet falder med gentagne forsøg"],
+    c:0, exp:"Iterationsreglen er klar: første output er aldrig det bedste. Brug mindst 2-3 runder — bed om forbedringer, variationer eller justeringer." },
+  { q:"Hvad er den korrekte rækkefølge i tre-akters modellen?",
+    opts:["Eksposition → Stigning → Klimaks og efterfølgende afvikling","Introduktion → Komplikation → Afslutning med ny ligevægt","Karakter → Konflikt → Konsekvens og derefter en ny begyndelse","Opstilling → Konfrontation → Løsning"],
+    c:3, exp:"Tre-akters modellen er: Opstilling → Konfrontation → Løsning. Kurset anbefaler at kortlægge en scene i denne struktur inden du skriver den." },
+  { q:"Hvad kan AI ifølge kurset IKKE erstatte i din kreative skrivning?",
+    opts:["Generering af mange kreative idéer og variationer over et bestemt tema eller kreativt udgangspunkt","Din personlige stemme, autenticitet og ejerskab over den færdige tekst","Feedback på konkrete sætningers rytme og det præcise ordvalg","Brainstorming på tværs af genre, tone og narrativt perspektiv"],
+    c:1, exp:"AI kan generere, brainstorme og give feedback — men den kan ikke have din personlige stemme, kende din læsers kontekst eller sikre at teksten er autentisk din." },
+  { q:"Hvad er essensen af genskriv-teknikken som præsenteret i lyrik-modulet?",
+    opts:["Du kombinerer to AI-genererede digte ved at udvælge fra begge","Du beder AI omskrive dit digt tre gange med stigende kompleksitet","Du tager to gode linjer fra AI's digt og skriver resten selv","Du bruger AI's digt som løs inspiration og skriver et nyt fra bunden"],
+    c:2, exp:"Genskriv-teknikken: tag de 2 bedste linjer fra AI's digt — smid resten — og skriv det resterende selv. Det giver ejerskab og kombinerer AI's overraskende formuleringer med din stemme." }
+];
+
+const PRACTICAL = {
+  task:"Skriv en komplet kreativ AI-prompt til ét af tre scenarier: (A) åbningsscene til en fortælling in medias res med intern konflikt, (B) Overwind-teknik med de tre påkrævede elementer, eller (C) Sparringspartner-feedback med de tre specifikke feedbackpunkter fra kurset. Prompten skal demonstrere mindst 2 teknikker fra kurset og være klar til direkte brug.",
+  solution:"En stærk prompt indeholder for scenarie A: rolle/setting, karakter med specifik intern frygt, in medias res-instruks, 2-3 sanselige detaljer og et slutkrav. For scenarie B: eksisterende materiale, hvad der ønskes opnået, konkret blokering, og krav om diagnose + to retninger + første sætning for hver. For scenarie C: udkasttekst, eksplicit krav om feedback på åbningslinje, tempo og den svageste sætning, og krav om alternativ formulering.",
+  criteria:[
+    "Prompten er klar til direkte brug i en AI-assistent uden yderligere forklaring",
+    "Prompten demonstrerer tydeligt mindst én specifik teknik fra kurset (in medias res, subtext, overwind, sparringspartner, persona, rolle, iterationsregel)",
+    "Prompten indeholder konkrete og specifikke instruktioner frem for vage generelle anmodninger",
+    "Prompten er valgt til ét specifikt scenarie og er konsekvent i sin struktur og formål",
+    "Prompten viser forståelse for hvad AI er god til i kreativ sammenhæng og udnytter AI's styrker korrekt"
+  ]
+};
+
+// ─── STATE ────────────────────────────────────────────────────
+let cur = 0;
+let score = 0;
+let answered = false;
+
+// ─── RENDER CURRENT QUESTION ─────────────────────────────────
+function renderQ() {
+  const q = QS[cur];
+  const letters = ['A','B','C','D'];
+  answered = false;
+
+  document.getElementById('qNumTag').textContent = `Spørgsmål ${cur+1} af 15`;
+  document.getElementById('qScoreTag').textContent = `${score} / ${cur} rigtige`;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('feedbackBox').innerHTML = '';
+  document.getElementById('nextRow').style.display = 'none';
+
+  document.getElementById('opts').innerHTML = q.opts.map((o,i) => `
+    <div class="opt" id="opt${i}" onclick="selectOpt(${i})">
+      <div class="opt-marker">${letters[i]}</div>
+      <span class="opt-letter">${letters[i]}</span>
+      <span class="opt-text">${o}</span>
+    </div>
+  `).join('');
+
+  // Update progress
+  const pct = (cur / 15) * 100;
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progCur').textContent = cur + 1;
+  document.getElementById('scoreLive').textContent = score + ' rigtige';
+}
+
+function selectOpt(chosen) {
+  if (answered) return;
+  answered = true;
+
+  const q = QS[cur];
+  const correct = q.c;
+  const isRight = chosen === correct;
+  if (isRight) score++;
+
+  // Lock all options
+  document.querySelectorAll('.opt').forEach(o => o.classList.add('locked'));
+
+  // Style chosen option
+  const chosenEl = document.getElementById('opt' + chosen);
+  chosenEl.classList.add(isRight ? 'is-correct' : 'is-wrong');
+  chosenEl.querySelector('.opt-marker').textContent = isRight ? '✓' : '✗';
+
+  // Highlight correct if wrong
+  if (!isRight) {
+    const corrEl = document.getElementById('opt' + correct);
+    corrEl.classList.add('is-missed');
+    corrEl.querySelector('.opt-marker').textContent = '✓';
+  }
+
+  // Feedback box
+  const fb = document.getElementById('feedbackBox');
+  fb.innerHTML = `
+    <div class="feedback-box ${isRight ? 'fb-pass' : 'fb-fail'}">
+      <div class="fb-icon">${isRight ? '✅' : '❌'}</div>
+      <div>
+        <div class="fb-title">${isRight ? 'Rigtigt!' : 'Forkert — se forklaring'}</div>
+        <div class="fb-body">${q.exp}</div>
+      </div>
+    </div>`;
+
+  // Update score display
+  document.getElementById('qScoreTag').textContent = `${score} / ${cur+1} rigtige`;
+  document.getElementById('scoreLive').textContent = score + ' rigtige';
+
+  // Show next button
+  const nextRow = document.getElementById('nextRow');
+  nextRow.style.display = 'flex';
+  const nextBtn = document.getElementById('nextBtn');
+  if (cur === 14) {
+    nextBtn.innerHTML = 'Se resultat <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 18 15 12 9 6"/></svg>';
+  }
+}
+
+function nextQuestion() {
+  cur++;
+  if (cur < 15) {
+    renderQ();
+    document.getElementById('qCard').style.animation = 'none';
+    requestAnimationFrame(() => { document.getElementById('qCard').style.animation = ''; });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    showResults();
+  }
+}
+
+// ─── RESULTS ─────────────────────────────────────────────────
+function showResults() {
+  const passed = score >= 12;
+  document.getElementById('heroSection').style.display = 'none';
+  document.getElementById('progStrip').style.display = 'none';
+
+  document.getElementById('scorePanel').innerHTML = `
+    <div class="score-panel ${passed ? 'pass' : 'fail'}">
+      <div class="score-big">${score}<span class="score-of">/15</span></div>
+      <div class="score-label">${passed ? '🎉 Du bestod!' : '❌ Ikke nok rigtige'}</div>
+      <div class="score-note">${passed
+        ? `Godt klaret — ${score} ud af 15. Du kan nu gå til den praktiske opgave.`
+        : `Du fik ${score} ud af 15. Du skal bruge mindst 12. Gennemgå kurset og prøv igen.`
+      }</div>
+    </div>`;
+
+  document.getElementById('resultActions').innerHTML = passed
+    ? `<span></span><button class="btn btn-rose" onclick="showPhase(3)">Fortsæt til praktisk opgave <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="9 18 15 12 9 6"/></svg></button>`
+    : `<span></span><button class="btn btn-rose" onclick="retryMCQ()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.45"/></svg> Prøv igen</button>`;
+
+  showPhase(2);
+}
+
+// ─── PRACTICAL ────────────────────────────────────────────────
+async function gradePractical() {
+  const answer = document.getElementById('practicalAnswer').value.trim();
+  if (answer.length < 40) { alert('Skriv en mere fyldestgørende prompt inden du sender.'); return; }
+
+  const btn = document.getElementById('gradeBtn');
+  btn.disabled = true;
+  document.getElementById('gradeBtnTxt').textContent = 'Vurderer...';
+
+  const wrap = document.getElementById('verdictWrap');
+  wrap.style.display = 'block';
+  wrap.innerHTML = `<div class="verdict-loading"><div class="spinner"></div><span style="font-size:13.5px;color:var(--muted);font-weight:500;">AI vurderer din prompt — et øjeblik...</span></div>`;
+
+  try {
+    const res = await fetch(API_BASE + '/api/grade', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ task:PRACTICAL.task, solution:PRACTICAL.solution, answer, criteria:PRACTICAL.criteria })
+    });
+    if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error || `HTTP ${res.status}`); }
+    const data = await res.json();
+
+    const passCount = (data.passed||[]).filter(Boolean).length;
+    const practicalPass = passCount >= 4;
+
+    let html = `<div class="crit-list">` + PRACTICAL.criteria.map((c,i) => {
+      const ok = data.passed && data.passed[i];
+      return `<div class="crit ${ok?'ok':'no'}">
+        <div class="crit-icon">${ok?'✓':'✗'}</div>
+        <div><div class="crit-name">${c}</div><div class="crit-fb">${(data.feedback&&data.feedback[i])||''}</div></div>
+      </div>`;
+    }).join('') + `</div>`;
+
+    html += `<div class="verdict-result ${practicalPass?'vr-pass':'vr-fail'}">
+      <div class="vr-icon">${practicalPass?'🎉':'🔄'}</div>
+      <div>
+        <div class="vr-title">${practicalPass ? 'Godkendt! Kursus gennemført.' : `${passCount}/5 kriterier — ikke nok endnu`}</div>
+        <div class="vr-text">${practicalPass
+          ? 'Du har vist at du kan anvende kursets teknikker i praksis.'
+          : 'Gennemgå feedbacken ovenfor, ret din prompt og prøv igen.'
+        }</div>
+      </div>
+    </div>`;
+
+    wrap.innerHTML = html;
+    const ar = document.getElementById('practicalActions');
+    ar.style.display = 'flex';
+    if (practicalPass) document.getElementById('finishBtn').style.display = 'inline-flex';
+
+  } catch(err) {
+    wrap.innerHTML = `<div class="verdict-result vr-fail"><div class="vr-icon">⚠</div><div><div class="vr-title">Kunne ikke nå serveren</div><div class="vr-text">${err.message||'Tjek at API-serveren kører.'}</div></div></div>`;
+  } finally {
+    btn.disabled = false;
+    document.getElementById('gradeBtnTxt').textContent = '🤖 Lad AI vurdere mit svar';
+  }
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────
+function showPhase(n) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.getElementById('phase'+n).classList.add('active');
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function retryMCQ() {
+  cur = 0; score = 0; answered = false;
+  document.getElementById('heroSection').style.display = '';
+  document.getElementById('progStrip').style.display = '';
+  renderQ();
+  showPhase(1);
+}
+
+function retryPractical() {
+  document.getElementById('practicalAnswer').value = '';
+  document.getElementById('charCount').textContent = '0 tegn';
+  document.getElementById('verdictWrap').style.display = 'none';
+  document.getElementById('verdictWrap').innerHTML = '';
+  document.getElementById('practicalActions').style.display = 'none';
+  document.getElementById('finishBtn').style.display = 'none';
+  window.scrollTo({ top:0, behavior:'smooth' });
+}
+
+function updateCharCount() {
+  document.getElementById('charCount').textContent = document.getElementById('practicalAnswer').value.length + ' tegn';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────
+renderQ();
+</script>
+
+</body>
+</html>

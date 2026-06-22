@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dit diplom · Kursus D | LearnAI</title>
+<title>Dit diplom · Kursus D | Akademiet AI</title>
 <meta name="description" content="Tillykke med Kursus D! Hent dit badge, dit personlige bevis og se hvordan du kommer videre.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -178,6 +178,17 @@
   .cert-foot-label{font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:0.2rem}
   .cert-foot-value{font-size:0.9rem;font-weight:600;color:var(--ink)}
   .cert-foot .right{text-align:right}
+  /* Verifikations-kode */
+  .cert-verify{margin-top:1.1rem;padding-top:0.9rem;border-top:1px dashed rgba(169,119,43,0.4);display:flex;flex-direction:column;align-items:center;gap:0.18rem;text-align:center}
+  .cv-label{font-size:0.62rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink-mute)}
+  .cv-code{font-family:'Courier New',monospace;font-size:1.02rem;font-weight:700;letter-spacing:0.1em;color:var(--brass-deep)}
+  .cv-url{font-size:0.72rem;color:var(--ink-mute)}
+  .verify-chip{display:none;flex-direction:column;align-items:center;gap:0.4rem;margin-top:0.5rem;padding:0.85rem 1.1rem;background:var(--brass-soft);border:1px solid rgba(200,164,78,0.4);border-radius:14px}
+  .verify-chip.show{display:flex}
+  .vc-label{font-size:0.64rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-mute)}
+  .vc-code{font-family:'Courier New',monospace;font-size:1.15rem;font-weight:700;letter-spacing:0.08em;color:var(--brass-deep)}
+  .vc-copy{font-family:inherit;font-size:0.72rem;font-weight:700;border:none;background:var(--brass-deep);color:#fff;padding:0.32rem 0.85rem;border-radius:8px;cursor:pointer}
+  .vc-copy:hover{filter:brightness(1.08)}
   .cert-actions{margin-top:1.6rem;display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap}
 
   /* ---------- Opsalg-kort (C / D+) ---------- */
@@ -246,8 +257,8 @@
     <div class="panel-body" style="text-align:center">
       <div class="gate-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
       <h1 class="hero-title" style="font-size:1.7rem">Log ind for at se dit diplom</h1>
-      <p class="hero-text" style="font-size:1rem">Dit diplom er personligt. Log ind på LearnAI, så viser vi dit navn, dit bevis og dit badge.</p>
-      <div style="margin-top:1.6rem"><a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-gold">Gå til LearnAI og log ind</a></div>
+      <p class="hero-text" style="font-size:1rem">Dit diplom er personligt. Log ind på Akademiet AI, så viser vi dit navn, dit bevis og dit badge.</p>
+      <div style="margin-top:1.6rem"><a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="btn btn-gold">Gå til Akademiet AI og log ind</a></div>
     </div>
   </div>
 </div>
@@ -297,6 +308,11 @@
               Tilføj badge til profil
             </button>
             <span class="badge-status" id="badgeStatus"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Badget er på din profil</span>
+            <div class="verify-chip" id="verifyChip">
+              <span class="vc-label">Din verifikations-kode</span>
+              <span class="vc-code" id="verifyChipCode">—</span>
+              <button class="vc-copy" type="button" onclick="copyVerifyCode()">Kopiér kode</button>
+            </div>
           </div>
         </div>
       </div>
@@ -307,7 +323,7 @@
       <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Dit personlige bevis</span></div>
 
       <div class="certificate reveal d1" id="certificate">
-        <div class="cert-top"><div class="cert-logo-icon">LA</div><div class="cert-logo-text">LearnAI DK</div></div>
+        <div class="cert-top"><div class="cert-logo-icon">AA</div><div class="cert-logo-text">Akademiet AI</div></div>
         <div class="cert-kicker">Officielt bevis</div>
         <div class="cert-headline">Bestået Kursus D</div>
 
@@ -327,6 +343,11 @@
             <div class="cert-foot-label">Udstedt til</div>
             <div class="cert-foot-value" id="certEmail">—</div>
           </div>
+        </div>
+        <div class="cert-verify" id="certVerify" style="display:none">
+          <span class="cv-label">Verificér ægtheden</span>
+          <span class="cv-code" id="certVerifyCode">—</span>
+          <span class="cv-url">akademiet-ai.dk/verificer.html</span>
         </div>
       </div>
 
@@ -413,9 +434,9 @@ function showGate(on){ document.getElementById('gate').classList.toggle('show', 
 showGate(true);
 
 (async () => {
-  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc, updateDoc, arrayUnion;
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc, updateDoc, arrayUnion, setDoc;
   try {
-    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc, updateDoc, arrayUnion }] = await Promise.all([
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc, updateDoc, arrayUnion, setDoc }] = await Promise.all([
       import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
       import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
       import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
@@ -431,7 +452,7 @@ showGate(true);
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
-  window._fb = { db, doc, getDoc, updateDoc, arrayUnion };
+  window._fb = { db, doc, getDoc, updateDoc, arrayUnion, setDoc };
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) { showGate(true); return; }
@@ -459,10 +480,10 @@ function applyUser(u, badges) {
   document.getElementById('certBadgeMount').innerHTML = badgeSVG('b', 'D', name);
 
   // Find evt. eksisterende D-badge for korrekt dato + knap-tilstand
-  let earnedAt = null, hasBadge = false;
+  let earnedAt = null, hasBadge = false, code = null;
   if (Array.isArray(badges)) {
     const b = badges.find(x => x && x.level === 'D' && x.type !== 'side');
-    if (b) { hasBadge = true; earnedAt = b.earnedAt || null; }
+    if (b) { hasBadge = true; earnedAt = b.earnedAt || null; code = b.code || null; }
   }
   const when = earnedAt ? new Date(earnedAt) : new Date();
   const dato = when.toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
@@ -471,6 +492,7 @@ function applyUser(u, badges) {
   document.getElementById('badgeDate').textContent = dato;
 
   if (hasBadge) markBadgeAdded();
+  if (code) showVerifyCode(code);
 }
 window.applyUser = applyUser;
 
@@ -508,6 +530,59 @@ function badgeSVG(uid, level, name) {
   </svg>`;
 }
 
+// ---------- Verifikations-kode ----------
+function genVerifyCode(level){
+  const ab = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // uden 0/O/1/I/L for at undgå forveksling
+  const a = new Uint32Array(6);
+  (window.crypto || window.msCrypto).getRandomValues(a);
+  let s = '';
+  for (let i = 0; i < 6; i++) s += ab[a[i] % ab.length];
+  return 'AKAI-' + level + '-' + s;
+}
+
+async function reserveVerifyCode(level, name, course, date){
+  const { db, doc, getDoc, setDoc } = window._fb;
+  for (let attempt = 0; attempt < 4; attempt++){
+    const code = genVerifyCode(level);
+    const ref = doc(db, 'verifications', code);
+    let exists = false;
+    try { const s = await getDoc(ref); exists = s.exists(); } catch(e){ exists = false; }
+    if (exists) continue;
+    await setDoc(ref, {
+      name: name,
+      level: level,
+      course: course,
+      date: date,
+      issuedAt: new Date().toISOString()
+    });
+    return code;
+  }
+  return null;
+}
+
+function showVerifyCode(code){
+  if (!code) return;
+  const cc = document.getElementById('certVerifyCode'); if (cc) cc.textContent = code;
+  const cv = document.getElementById('certVerify');     if (cv) cv.style.display = '';
+  const vc = document.getElementById('verifyChipCode'); if (vc) vc.textContent = code;
+  const chip = document.getElementById('verifyChip');   if (chip) chip.classList.add('show');
+}
+
+function copyVerifyCode(){
+  const el = document.getElementById('verifyChipCode');
+  const code = el ? el.textContent : '';
+  if (!code || code === '—') return;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(
+      () => showToast('success', 'Kode kopieret!'),
+      () => showToast('info', 'Markér koden og kopiér manuelt.')
+    );
+  } else {
+    showToast('info', 'Markér koden og kopiér manuelt.');
+  }
+}
+window.copyVerifyCode = copyVerifyCode;
+
 // ---------- Tilføj badge til profil ----------
 let badgeAdded = false;
 function markBadgeAdded() {
@@ -531,21 +606,28 @@ async function addBadge() {
     // Tjek om badget allerede findes (undgå dublet)
     const snap = await getDoc(doc(db, 'users', window._user.uid));
     const existing = (snap.exists() && Array.isArray(snap.data().badges)) ? snap.data().badges : [];
-    if (existing.some(b => b && b.level === 'D' && b.type !== 'side')) {
+    const prior = existing.find(b => b && b.level === 'D' && b.type !== 'side');
+    if (prior) {
       markBadgeAdded();
+      if (prior.code) showVerifyCode(prior.code);
       showToast('success', 'Badget er allerede på din profil.');
       return;
     }
+    const fullName = `${(window._user.firstName || '')} ${(window._user.lastName || '')}`.trim() || 'Kursist';
+    const dato = new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+    const code = await reserveVerifyCode('D', fullName, 'Kursus D — Amatør', dato);
     const badge = {
       level: 'D',
       type: 'main',
       title: 'Niveau D bestået',
       icon: '🥉',
-      date: new Date().toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' }),
+      date: dato,
       earnedAt: new Date().toISOString()
     };
+    if (code) badge.code = code;
     await updateDoc(doc(db, 'users', window._user.uid), { badges: arrayUnion(badge) });
     markBadgeAdded();
+    if (code) showVerifyCode(code);
     showToast('success', 'Badget er nu på din profil!');
   } catch (e) {
     console.error(e);
