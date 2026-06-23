@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akademiet AI — Logo-væg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --forest:#2F5D45; --forest-deep:#214636; --caramel:#B9772B;
+    --gold-soft:#E6C79A; --reward:#E0B33D; --ivory:#F3F0E7;
+    --ink:#23291f; --muted:#6b7466; --line:rgba(35,41,31,.12);
+    --dark:#0E0F14;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--ivory);color:var(--ink);
+       font-family:'Outfit',system-ui,sans-serif;line-height:1.55;
+       -webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+  h1,h2,.word{font-family:'Lora',serif}
+  .eyebrow{font-size:12px;letter-spacing:.22em;text-transform:uppercase;
+           font-weight:700;color:var(--caramel)}
+  h2{font-size:clamp(20px,3vw,26px);margin:0 0 4px;font-weight:600}
+  .sub{color:var(--muted);font-size:14.5px;margin:0 0 26px;max-width:60ch}
+  section{padding:46px 0;border-bottom:1px solid var(--line)}
+  section:last-child{border-bottom:none}
+
+  /* ---------- HERO ---------- */
+  .hero{background:radial-gradient(120% 140% at 80% -10%,#37684f 0%,var(--forest) 45%,var(--forest-deep) 100%);
+        color:var(--ivory);padding:62px 0 58px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;inset:0;
+        background-image:radial-gradient(rgba(230,199,154,.10) 1px,transparent 1px);
+        background-size:26px 26px;mask-image:linear-gradient(180deg,#000,transparent 80%)}
+  .hero .wrap{position:relative;z-index:1;display:flex;align-items:center;gap:30px;flex-wrap:wrap}
+  .hero .lockup{display:flex;align-items:center;gap:18px}
+  .hero .word{font-size:clamp(30px,5vw,46px);font-weight:700;letter-spacing:-.01em}
+  .hero p{margin:14px 0 0;color:rgba(243,240,231,.78);max-width:46ch;font-size:15px}
+  .hero .eyebrow{color:var(--gold-soft)}
+
+  /* ---------- THE WALL ---------- */
+  .wall{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));
+        gap:0;border-radius:18px;overflow:hidden;border:1px solid var(--line);
+        box-shadow:0 18px 50px rgba(33,70,54,.14)}
+  .cell{aspect-ratio:1;display:grid;place-items:center;position:relative}
+  .cell svg{width:46%;height:46%}
+  .bg-ivory{background:var(--ivory)}
+  .bg-forest{background:var(--forest)}
+  .bg-deep{background:var(--forest-deep)}
+  .bg-caramel{background:var(--caramel)}
+  .bg-dark{background:var(--dark)}
+  .bg-soft{background:#e7ddca}
+
+  /* ---------- SCALE ROW ---------- */
+  .scale{display:flex;align-items:flex-end;gap:34px;flex-wrap:wrap;
+         background:#fff;border:1px solid var(--line);border-radius:16px;padding:34px 30px}
+  .scale .item{display:flex;flex-direction:column;align-items:center;gap:10px}
+  .scale .px{font-size:12px;color:var(--muted);font-weight:600}
+
+  /* ---------- BACKGROUNDS ---------- */
+  .bgs{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px}
+  .swatch{border-radius:16px;aspect-ratio:5/4;display:grid;place-items:center;
+          border:1px solid var(--line);position:relative}
+  .swatch svg{width:60px;height:60px}
+  .swatch .tag{position:absolute;left:12px;bottom:10px;font-size:11px;font-weight:600;
+               padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.85);color:var(--ink)}
+  .swatch.on-dark .tag,.swatch.on-forest .tag,.swatch.on-caramel .tag,.swatch.on-deep .tag{
+               background:rgba(255,255,255,.16);color:#fff}
+
+  /* ---------- USAGE NAVBARS ---------- */
+  .nav-demos{display:flex;flex-direction:column;gap:14px}
+  .navbar{display:flex;align-items:center;gap:11px;padding:13px 20px;border-radius:14px;
+          border:1px solid var(--line);font-weight:700;font-size:16px}
+  .navbar .right{margin-left:auto;font-weight:600;font-size:13px;opacity:.8}
+  .navbar svg{width:32px;height:32px;flex:none}
+  .nav-light{background:rgba(243,240,231,.9);color:var(--ink)}
+  .nav-white{background:#fff;color:var(--ink)}
+  .nav-forest{background:var(--forest);color:var(--ivory)}
+  .nav-dark{background:var(--dark);color:#fff}
+
+  /* ---------- COLORS ---------- */
+  .tokens{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+  .token{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+  .token .chip{height:74px}
+  .token .meta{padding:11px 13px}
+  .token .nm{font-weight:700;font-size:13.5px}
+  .token .hex{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;
+              text-transform:uppercase;letter-spacing:.03em}
+
+  footer{padding:30px 0 50px;color:var(--muted);font-size:12.5px;text-align:center}
+</style>
+</head>
+<body>
+
+<!-- mark template reused via JS clone -->
+<template id="mark">
+  <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <rect width="40" height="40" rx="11" fill="#2F5D45"></rect>
+    <path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"></path>
+  </svg>
+</template>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="lockup">
+      <svg width="76" height="76" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="40" height="40" rx="11" fill="#2F5D45"></rect>
+        <path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"></path>
+      </svg>
+      <div>
+        <div class="eyebrow">Brand · Logo</div>
+        <div class="word">Akademiet AI</div>
+      </div>
+    </div>
+    <p>Grøn afrundet boks med en gylden 4-takket stjerne. Ét mærke — nu ens på tværs af hele platformen.</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Logo-væg</div>
+    <h2>Ét mærke, mange flader</h2>
+    <p class="sub">Samme logo på lyst, mørkt, skovgrønt og karamel — det holder formen overalt.</p>
+    <div class="wall" id="wall"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Skalering</div>
+    <h2>Fra favicon til hero</h2>
+    <p class="sub">Den 4-takkede stjerne forbliver tydelig helt ned til 16 px.</p>
+    <div class="scale" id="scale"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Baggrunde</div>
+    <h2>Godkendt brug</h2>
+    <p class="sub">Mærket fungerer både på lys og mørk baggrund. På skovgrøn giver den gyldne stjerne kontrasten.</p>
+    <div class="bgs" id="bgs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">I brug</div>
+    <h2>I menulinjen</h2>
+    <p class="sub">Sådan ser top-logoet ud på de fire slags sider på platformen.</p>
+    <div class="nav-demos" id="navs"></div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="eyebrow">Farver</div>
+    <h2>Honning &amp; Skov</h2>
+    <p class="sub">Mærkets to faste farver står først.</p>
+    <div class="tokens">
+      <div class="token"><div class="chip" style="background:#2F5D45"></div><div class="meta"><div class="nm">Skovgrøn (boks)</div><div class="hex">#2F5D45</div></div></div>
+      <div class="token"><div class="chip" style="background:#E6C79A"></div><div class="meta"><div class="nm">Gylden stjerne</div><div class="hex">#E6C79A</div></div></div>
+      <div class="token"><div class="chip" style="background:#B9772B"></div><div class="meta"><div class="nm">Karamel</div><div class="hex">#B9772B</div></div></div>
+      <div class="token"><div class="chip" style="background:#E0B33D"></div><div class="meta"><div class="nm">Belønnings-guld</div><div class="hex">#E0B33D</div></div></div>
+      <div class="token"><div class="chip" style="background:#F3F0E7"></div><div class="meta"><div class="nm">Ivory</div><div class="hex">#F3F0E7</div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer>Akademiet AI — logo-mærke · grøn boks #2F5D45 + gylden 4-takket stjerne #E6C79A</footer>
+
+<script>
+  const tpl = document.getElementById('mark');
+  const m = () => tpl.content.firstElementChild.cloneNode(true);
+
+  // wall
+  const bgs = ['bg-ivory','bg-forest','bg-soft','bg-deep','bg-caramel','bg-dark'];
+  const wall = document.getElementById('wall');
+  for(let i=0;i<42;i++){
+    const c=document.createElement('div');
+    c.className='cell '+bgs[(i*5+Math.floor(i/7))%bgs.length];
+    c.appendChild(m()); wall.appendChild(c);
+  }
+
+  // scale
+  const scale=document.getElementById('scale');
+  [16,24,32,48,72,112].forEach(px=>{
+    const it=document.createElement('div'); it.className='item';
+    const s=m(); s.setAttribute('width',px); s.setAttribute('height',px);
+    const lbl=document.createElement('div'); lbl.className='px'; lbl.textContent=px+' px';
+    it.appendChild(s); it.appendChild(lbl); scale.appendChild(it);
+  });
+
+  // backgrounds
+  const bgrid=document.getElementById('bgs');
+  [['Ivory','bg-ivory',''],['Hvid','','on-white'],['Skovgrøn','bg-forest','on-forest'],
+   ['Skov dyb','bg-deep','on-deep'],['Karamel','bg-caramel','on-caramel'],['Mørk','bg-dark','on-dark']]
+   .forEach(([name,cls,mod])=>{
+    const sw=document.createElement('div');
+    sw.className='swatch '+(cls||'')+' '+mod;
+    if(cls==='') sw.style.background='#fff';
+    sw.appendChild(m());
+    const t=document.createElement('div'); t.className='tag'; t.textContent=name;
+    sw.appendChild(t); bgrid.appendChild(sw);
+  });
+
+  // navbars
+  const navs=document.getElementById('navs');
+  [['nav-light','Akademiet AI','Kursus A · Del 1 af 5'],
+   ['nav-white','Akademiet AI','Tilbage til platformen'],
+   ['nav-forest','Akademiet AI','Kursus D · Gratis'],
+   ['nav-dark','Akademiet AI','Kursus C+']]
+   .forEach(([cls,name,right])=>{
+    const n=document.createElement('div'); n.className='navbar '+cls;
+    n.appendChild(m());
+    const t=document.createElement('span'); t.textContent=name; n.appendChild(t);
+    const r=document.createElement('span'); r.className='right'; r.textContent=right; n.appendChild(r);
+    navs.appendChild(n);
+  });
+</script>
+</body>
+</html>
