@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akademiet AI — AI som din digitale medstifter</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --blue-deep:   #060d1a;
+      --blue-glow:   #1a3a6e;
+      --blue-accent: #60a5fa;
+      --text:        #eff6ff;
+      --text-soft:   rgba(239,246,255,0.72);
+      --text-muted:  rgba(239,246,255,0.45);
+    }
+    html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--blue-deep); color: var(--text); overflow-x: hidden; }
+    body { animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .page-out { animation: fadeOut 0.5s ease forwards !important; }
+    @keyframes fadeOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(-12px) scale(0.98); } }
+    .bg-blobs { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
+    .blob { position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.35; }
+    .blob-1 { width: 650px; height: 650px; background: radial-gradient(circle, #1e40af 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%, -50%); animation: blobFloat 9s ease-in-out infinite; }
+    .blob-2 { width: 380px; height: 380px; background: radial-gradient(circle, #1e3a8a 0%, transparent 70%); top: -80px; right: -40px; opacity: 0.5; }
+    .blob-3 { width: 280px; height: 280px; background: radial-gradient(circle, #0c1a3a 0%, transparent 70%); bottom: 40px; left: -60px; opacity: 0.6; }
+    @keyframes blobFloat { 0%, 100% { transform: translate(-50%, -50%) scale(1) translateY(0); } 50% { transform: translate(-50%, -50%) scale(1.07) translateY(-20px); } }
+    .grid-overlay { position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.04; background-image: linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size: 40px 40px; }
+    .landing { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+    .top-nav { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 20px 32px; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-weight: 700; font-size: 15px; }
+    .nav-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--blue-glow); display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(96,165,250,0.3); }
+    .nav-mark svg { width: 15px; height: 15px; fill: white; }
+    .nav-pill { font-size: 12px; font-weight: 600; color: var(--blue-accent); background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); padding: 5px 14px; border-radius: 999px; }
+    .center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px 24px 80px; max-width: 700px; margin: 0 auto; width: 100%; }
+    .badge { display: inline-flex; align-items: center; justify-content: center; width: 64px; height: 64px; border-radius: 18px; background: linear-gradient(135deg, var(--blue-glow), #0f2252); color: var(--text); font-size: 20px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 28px; box-shadow: 0 0 0 1px rgba(96,165,250,0.25), 0 0 40px rgba(30,64,175,0.6), 0 0 80px rgba(30,64,175,0.3); }
+    .eyebrow { font-size: 11.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
+    .title { font-family: 'Playfair Display', serif; font-size: clamp(30px, 5.5vw, 52px); font-weight: 700; line-height: 1.15; color: var(--text); letter-spacing: -0.3px; margin-bottom: 20px; }
+    .title em { font-style: italic; color: var(--blue-accent); }
+    .subtitle { font-size: clamp(14px, 2vw, 16px); color: var(--text-soft); line-height: 1.75; margin-bottom: 40px; max-width: 540px; }
+    .start-btn { display: inline-flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.95); color: var(--blue-deep); font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; padding: 14px 30px; border-radius: 999px; text-decoration: none; transition: background 0.18s, transform 0.18s, box-shadow 0.18s; box-shadow: 0 4px 24px rgba(0,0,0,0.25); }
+    .start-btn:hover { background: #ffffff; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .start-btn svg { width: 15px; height: 15px; flex-shrink: 0; fill: none; stroke: var(--blue-deep); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+    @media (max-width: 480px) { .top-nav { padding: 16px 20px; } .badge { width: 54px; height: 54px; font-size: 17px; } }
+  </style>
+</head>
+<body>
+<div class="bg-blobs">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+</div>
+<div class="grid-overlay"></div>
+<div class="landing">
+  <nav class="top-nav">
+    <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="nav-logo">
+      <svg class="ai-logo-mark" width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      Akademiet AI
+    </a>
+    <div class="nav-pill">Sidekursus &nbsp;·&nbsp; Iværksætteri</div>
+  </nav>
+  <main class="center">
+    <div class="badge">I1</div>
+    <p class="eyebrow">Sidekursus · Del 1 af 3</p>
+    <h1 class="title">AI som din<br><em>digitale medstifter</em></h1>
+    <p class="subtitle">
+      Lær hvordan du sparer måneder på forretningsplaner, bygger en personlig markedsføringskanal og automatiserer den daglige drift med kunstig intelligens.
+    </p>
+    <a href="https://magnuscode-ai.github.io/ai-kursus/kursus-ivaerksaetteri.html" class="start-btn" id="startBtn">
+      Begynd kurset
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </a>
+  </main>
+</div>
+<script>
+  document.getElementById('startBtn').addEventListener('click', function(e) {
+    e.preventDefault();
+    var dest = this.href;
+    document.body.classList.add('page-out');
+    setTimeout(function() { window.location.href = dest; }, 480);
+  });
+</script>
+</body>
+</html>

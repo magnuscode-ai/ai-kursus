@@ -1,0 +1,275 @@
+!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Akademiet AI — Mini-quiz Iværksætteri</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --green:       #B45309;
+      --green-light: #FFFBEB;
+      --green-mid:   #FDE68A;
+      --blue:        #185FA5;
+      --red:         #C0392B;
+      --red-light:   <#FDECEA;
+      --bg:          #FFF8F3;
+      --white:       #FFFFFF;
+      --text:        #1A1A1A;
+      --muted:       #6B7280;
+      --border:      #E2E8F0;
+      --radius:      14px;
+      --shadow:      0 4px 24px rgba(180,83,9,0.12);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 2rem 1rem 4rem; }
+    .logo-bar { display: flex; align-items: center; gap: 9px; margin-bottom: 2.5rem; text-decoration: none; }
+    .logo-icon { width: 32px; height: 32px; background: var(--green); border-radius: 8px; display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 16px; height: 16px; fill: white; }
+    .logo-text { font-size: 16px; font-weight: 700; color: var(--text); }
+    .card { background: var(--white); border-radius: 20px; box-shadow: var(--shadow); width: 100%; max-width: 640px; overflow: hidden; }
+    .quiz-header { background: var(--green); padding: 2rem 2rem 1.5rem; color: white; }
+    .quiz-tag { display: inline-block; background: rgba(255,255,255,0.18); font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 0.75rem; }
+    .quiz-header h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; line-height: 1.25; margin-bottom: 0.4rem; }
+    .quiz-header p { font-size: 14px; opacity: 0.85; }
+    .progress-bar-wrap { padding: 1.25rem 2rem 0; }
+    .progress-meta { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .progress-track { height: 6px; background: var(--border); border-radius: 99px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 99px; transition: width 0.4s ease; }
+    .question-wrap { padding: 1.75rem 2rem 0; }
+    .q-number { font-size: 11px; font-weight: 700; color: var(--green); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.6rem; }
+    .q-text { font-size: 17px; font-weight: 600; line-height: 1.5; }
+    .options { padding: 1.25rem 2rem 0; display: flex; flex-direction: column; gap: 10px; }
+    .option-btn { display: flex; align-items: flex-start; gap: 12px; background: var(--bg); border: 2px solid var(--border); border-radius: var(--radius); padding: 13px 16px; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text); line-height: 1.5; width: 100%; transition: border-color 0.15s, background 0.15s; }
+    .option-btn:hover:not(:disabled) { border-color: var(--green); background: var(--green-light); }
+    .option-letter { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--white); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--muted); }
+    .option-btn.correct { border-color: var(--green); background: var(--green-light); }
+    .option-btn.correct .option-letter { background: var(--green); border-color: var(--green); color: white; }
+    .option-btn.wrong { border-color: var(--red); background: var(--red-light); }
+    .option-btn.wrong .option-letter { background: var(--red); border-color: var(--red); color: white; }
+    .option-btn.dimmed { opacity: 0.4; }
+    .option-btn:disabled { cursor: default; }
+    .feedback { margin: 1rem 2rem 0; padding: 12px 16px; border-radius: var(--radius); font-size: 14px; display: none; gap: 10px; line-height: 1.5; }
+    .feedback.show { display: flex; }
+    .feedback.correct-fb { background: var(--green-light); color: var(--green); }
+    .feedback.wrong-fb { background: var(--red-light); color: var(--red); }
+    .next-wrap { padding: 1.25rem 2rem 2rem; display: flex; justify-content: flex-end; }
+    .btn-next { background: var(--green); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; display: none; align-items: center; gap: 8px; }
+    .btn-next.show { display: flex; }
+    .divider { height: 1px; background: var(--border); margin: 0 2rem; }
+    .result-screen { display: none; padding: 2.5rem 2rem; text-align: center; flex-direction: column; align-items: center; }
+    .result-screen.show { display: flex; }
+    .result-icon { font-size: 56px; margin-bottom: 1rem; }
+    .result-title { font-family: 'DM Serif Display', serif; font-size: 28px; margin-bottom: 0.5rem; }
+    .score-badge { display: inline-flex; padding: 10px 24px; border-radius: 99px; font-size: 20px; font-weight: 700; margin-bottom: 1.75rem; }
+    .score-badge.pass { background: var(--green-light); color: var(--green); }
+    .score-badge.fail { background: var(--red-light); color: var(--red); }
+    .result-message { background: var(--bg); border-radius: var(--radius); padding: 1rem 1.25rem; font-size: 14px; color: var(--muted); line-height: 1.6; text-align: left; width: 100%; margin-bottom: 1.5rem; }
+    .btn-retry { background: white; border: 2px solid var(--border); padding: 12px 26px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; margin-right: 10px; }
+    .btn-continue { background: var(--green); color: white; border: none; padding: 12px 26px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; text-decoration: none; display: none; align-items: center; gap: 6px; }
+    .btn-continue.show { display: inline-flex; }
+    .btn-row { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  </style>
+</head>
+<body>
+
+  <a href="kursus-ivaerksaetteri.html" class="logo-bar">
+    <svg class="ai-logo-mark" width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    <span class="logo-text">Akademiet AI</span>
+  </a>
+
+  <div class="card">
+    <div class="quiz-header">
+      <div class="quiz-tag">Iværksætteri I1 · Mini-quiz</div>
+      <h1>Tjek din forståelse</h1>
+      <p>8 spørgsmål · Minimum 6 rigtige · +50 coins ved beståelse</p>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-meta">
+        <span id="prog-label">Spørgsmål 1 af 8</span>
+        <span id="prog-score">0 rigtige</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="question-wrap">
+      <div class="q-number" id="q-number">Spørgsmål 1</div>
+      <div class="q-text" id="q-text"></div>
+    </div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"><span class="feedback-icon" id="fb-icon"></span><span id="fb-text"></span></div>
+    <div class="divider" style="margin-top:1.25rem;"></div>
+    <div class="next-wrap"><button class="btn-next" id="btn-next" onclick="nextQuestion()">Næste spørgsmål <span>→</span></button></div>
+
+    <div class="result-screen" id="result-screen">
+      <div class="result-icon" id="result-icon"></div>
+      <h2 class="result-title" id="result-title"></h2>
+      <p id="result-sub" style="font-size:15px;color:var(--muted);margin-bottom:1.5rem;"></p>
+      <div class="score-badge" id="score-badge"></div>
+      <div class="result-message" id="result-message"></div>
+      <div class="btn-row">
+        <button class="btn-retry" onclick="restartQuiz()">↺ Prøv igen</button>
+        <a href="platform.html" class="btn-continue" id="btn-continue">Tilbage til platform →</a>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, updateDoc, increment, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+onAuthStateChanged(auth,u=>{
+  if(!u){ alert('Du skal være logget ind. Omdirigerer til platform...'); window.location.href='platform.html'; }
+});
+window._awardQuizCoins=async()=>{
+  const u=auth.currentUser; if(!u)return;
+  try{
+    const ref=doc(db,'users',u.uid);
+    const snap=await getDoc(ref);
+    const passed=(snap.data()?.ivQuizPassed||[]);
+    if(passed.includes('i1'))return;
+    await updateDoc(ref,{coins:increment(50),ivQuizPassed:arrayUnion('i1')});
+  }catch(e){console.error('coins:',e);}
+};
+</script>
+
+<script>
+const questions = [
+  { q: "Hvad er den vigtigste forskel på et svagt og stærkt idévaliderings-prompt?", options: [
+    "Stærkt prompt beder om bekræftelse — svagt beder om kritik",
+    "Stærkt prompt bruger rolle, struktur og beder eksplicit om risici og billige tests",
+    "Svagt prompt er kortere — det er altid bedre",
+    "Der er ingen forskel — AI giver altid ærlige svar"
+  ], correct: 1, explanation: "Uden rolle og negativ afgrænsning tendenser AI mod at bekræfte din idé. Struktur (problem, risici, test) tvinger ærlig feedback." },
+  { q: "Business Model Canvas har 9 felter. Hvad bør du gøre når AI har udfyldt dem?", options: [
+    "Publicere modellen med det samme",
+    "Finde det svageste led og designe den billigste test for netop det",
+    "Kopiere direkte til investorpitch uden ændringer",
+    "Ignorere omkostningsstrukturen — den finder du senere"
+  ], correct: 1, explanation: "Canvas er et arbejdsværktøj — det svageste led er der værdien af AI-feedback ligger. Test det før du bygger videre." },
+  { q: "Du bruger AI til markedsanalyse i Danmark. Hvad er det vigtigste næste skridt?", options: [
+    "Stole 100% på AI's tal og navne",
+    "Faktatjekke konkurrenter og tal med Perplexity, virk.dk eller primære kilder",
+    "Springe analysen over og gå direkte til produkt",
+    "Kun bruge internationale kilder"
+  ], correct: 1, explanation: "AI kan hallucinere overbevisende konkurrentdata. Brug analysen som udkast — verificér altid kritiske fakta." },
+  { q: "En god 60-sekunders pitch til investorer bør IKKE indeholde:", options: [
+    "Konkret traktion eller fremskridt",
+    "Buzzwords uden substans og påstanden 'vi har ingen konkurrenter'",
+    "Klart problem og målgruppe",
+    "Hvad kapitalen skal bruges til"
+  ], correct: 1, explanation: "Investorer mister tillid til vage buzzwords og benægtelse af konkurrence. Vær konkret og ærlig." },
+  { q: "AI laver et 12-måneders budget for din startup. Hvad er den rigtige tilgang?", options: [
+    "Sende budgettet til banken uden gennemgang",
+    "Behandle det som udkast — markér antagelser og valider med revisor/bogholder",
+    "Kun bruge optimistisk omsætnings-scenarie",
+    "Ignorere faste omkostninger i starten"
+  ], correct: 1, explanation: "AI-budgetter er gode til struktur — men antagelser skal valideres. Konservativ omsætning + professionel gennemgang er standard." },
+  { q: "Hvad er den bedste brug af AI til marketing som ny iværksætter?", options: [
+    "Lade AI poste automatisk uden din godkendelse",
+    "Lave content-plan og udkast — men tilpasse med din stemme og fakta",
+    "Kun bruge AI til billeder — aldrig tekst",
+    "Kopiere konkurrenters opslag 1:1"
+  ], correct: 1, explanation: "AI accelererer planlægning og udkast — men autenticitet og fakta er din konkurrencefordel." },
+  { q: "Du overvejer selskabsform i Danmark. Hvad er korrekt om AI's juridiske rådgivning?", options: [
+    "AI kan erstatte en revisor fuldt ud",
+    "AI giver god overblik — men tjek altid med virk.dk, revisor eller advokat",
+    "Enkeltmandsfirma og ApS er identiske",
+    "CVR-registrering er ikke nødvendig for online salg"
+  ], correct: 1, explanation: "AI forklarer koncepter godt — men juridiske og skattemæssige beslutninger kræver professionel rådgivning." },
+  { q: "Hvad er hovedformålet med dit iværksætter prompt-bibliotek?", options: [
+    "At gemme prompts du aldrig bruger igen",
+    "At have testede prompts ét klik væk — så du ikke starter fra nul hver gang",
+    "At dele prompts offentligt med alle konkurrenter",
+    "At erstatte al læring fra kurset"
+  ], correct: 1, explanation: "Biblioteket er din personlige værktøjskasse — prompts du har testet i kurset, klar til daglig brug." }
+];
+const PASS_SCORE = 6;
+let current = 0, score = 0, answered = false;
+
+function render() {
+  const q = questions[current];
+  document.getElementById('q-number').textContent = `Spørgsmål ${current + 1}`;
+  document.getElementById('q-text').textContent = q.q;
+  document.getElementById('prog-label').textContent = `Spørgsmål ${current + 1} af ${questions.length}`;
+  document.getElementById('progress-fill').style.width = `${(current / questions.length) * 100}%`;
+  document.getElementById('prog-score').textContent = score === 1 ? '1 rigtig' : `${score} rigtige`;
+  const optEl = document.getElementById('options');
+  optEl.innerHTML = '';
+  ['A','B','C','D'].forEach((letter, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-letter">${letter}</span><span>${q.options[i]}</span>`;
+    btn.onclick = () => selectAnswer(i);
+    optEl.appendChild(btn);
+  });
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btn-next').className = 'btn-next';
+  answered = false;
+}
+
+function selectAnswer(idx) {
+  if (answered) return;
+  answered = true;
+  const q = questions[current];
+  const isRight = idx === q.correct;
+  if (isRight) score++;
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === idx && !isRight) btn.classList.add('wrong');
+    else btn.classList.add('dimmed');
+  });
+  const fb = document.getElementById('feedback');
+  fb.className = `feedback show ${isRight ? 'correct-fb' : 'wrong-fb'}`;
+  document.getElementById('fb-icon').textContent = isRight ? '✓' : '✗';
+  document.getElementById('fb-text').textContent = q.explanation;
+  const btn = document.getElementById('btn-next');
+  btn.className = 'btn-next show';
+  btn.innerHTML = current === questions.length - 1 ? 'Se resultat <span>→</span>' : 'Næste spørgsmål <span>→</span>';
+}
+
+function nextQuestion() {
+  current++;
+  if (current >= questions.length) showResult();
+  else render();
+}
+
+function showResult() {
+  ['progress-bar-wrap','question-wrap','options','feedback','divider','next-wrap'].forEach(cls => {
+    const el = document.querySelector('.' + cls); if(el) el.style.display = 'none';
+  });
+  const passed = score >= PASS_SCORE;
+  document.getElementById('result-icon').textContent = passed ? '🎉' : '💪';
+  document.getElementById('result-title').textContent = passed ? 'Godt klaret!' : 'Ikke helt endnu';
+  document.getElementById('result-sub').textContent = passed
+    ? `Du svarede rigtigt på ${score} ud af ${questions.length} — +50 coins er på vej!`
+    : `Du fik ${score} ud af ${questions.length}. Du skal have mindst ${PASS_SCORE}. Prøv igen!`;
+  const badge = document.getElementById('score-badge');
+  badge.className = `score-badge ${passed ? 'pass' : 'fail'}`;
+  badge.textContent = `${score} / ${questions.length} rigtige`;
+  document.getElementById('result-message').innerHTML = passed
+    ? '<strong>Du har styr på:</strong> idévalidering, canvas, markedsanalyse, pitch, finans, marketing, drift og prompt-bibliotek. Velkommen tilbage på platformen!'
+    : '<strong>Tip:</strong> Gå tilbage til kurset og gennemgå modulerne du var usikker på. Ubegrænsede forsøg!';
+  if (passed) { document.getElementById('btn-continue').classList.add('show'); window._awardQuizCoins?.(); }
+  document.getElementById('result-screen').className = 'result-screen show';
+}
+
+function restartQuiz() {
+  current = 0; score = 0;
+  ['progress-bar-wrap','question-wrap','options','divider','next-wrap'].forEach(cls => {
+    const el = document.querySelector('.' + cls); if(el) el.style.display = '';
+  });
+  document.getElementById('result-screen').className = 'result-screen';
+  document.getElementById('btn-continue').classList.remove('show');
+  render();
+}
+render();
+</script>
+</body>
+</html>
