@@ -2016,6 +2016,14 @@
     .pc-error{ background:#f4dcd6; color:#a3392b; border-radius:12px; padding:0.85rem 1rem; font-size:14px; font-weight:600; display:flex; gap:9px; align-items:flex-start; line-height:1.5; }
     .pc-error .ti{ flex:none; margin-top:2px; }
 
+    /* ===== Modul 3 · Prompt-guide ===== */
+    .pg-guide{ background:var(--primary-soft); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.3rem 1.45rem; margin:1.5rem 0; }
+    .pg-guide-head{ display:flex; align-items:center; gap:9px; font-family:var(--serif); font-weight:600; font-size:16.5px; color:var(--primary); margin-bottom:0.95rem; }
+    .pg-guide-head .ti{ font-size:19px; }
+    .pg-guide-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:0.7rem; }
+    .pg-guide-list li{ display:flex; gap:10px; font-size:14.5px; line-height:1.5; color:var(--ink); }
+    .pg-guide-list li .ti{ flex:none; margin-top:1px; color:var(--primary); font-size:17px; }
+    .pg-guide-foot{ margin-top:1rem; font-size:12.5px; color:var(--ink-soft); font-style:italic; line-height:1.5; }
   </style>
 </head>
 <body>
@@ -2268,6 +2276,18 @@
 
         <h3>3 · Din tur — prompt-coachen <i class="ti ti-robot" aria-hidden="true"></i></h3>
         <p>Nu er det dig. Skriv et prompt herunder, så vurderer en rigtig AI det og giver dig konkret feedback — uden at skrive et færdigt prompt for dig. Du har 3 forsøg.</p>
+
+        <div class="pg-guide reveal">
+          <div class="pg-guide-head"><i class="ti ti-clipboard" aria-hidden="true"></i> Sådan skriver du et godt prompt</div>
+          <ul class="pg-guide-list">
+            <li><i class="ti ti-circle-check" aria-hidden="true"></i><span><b>Vær konkret om målet.</b> Hvad vil du have — og hvad skal det bruges til?</span></li>
+            <li><i class="ti ti-circle-check" aria-hidden="true"></i><span><b>Giv kontekst.</b> Hvem er du, og hvad er situationen? Jo mindre AI'en skal gætte, jo bedre.</span></li>
+            <li><i class="ti ti-circle-check" aria-hidden="true"></i><span><b>Sig hvordan svaret skal se ud.</b> Længde, tone, sprog eller form (liste, afsnit, tabel).</span></li>
+            <li><i class="ti ti-circle-check" aria-hidden="true"></i><span><b>Vis et eksempel</b> — hvis det er svært at forklare præcis hvad du mener.</span></li>
+            <li><i class="ti ti-circle-check" aria-hidden="true"></i><span><b>Ret undervejs.</b> Får du ikke det rigtige, så sig hvad der skal ændres.</span></li>
+          </ul>
+          <div class="pg-guide-foot">Du behøver ikke alle punkter hver gang — vælg det, der passer til din opgave.</div>
+        </div>
 
         <div class="pc-box reveal" id="promptCoach">
           <textarea id="pcInput" class="pc-input" rows="3" maxlength="600" spellcheck="false" placeholder="Skriv dit prompt her — fx: Du er en rejseguide. Jeg skal til Rom i 3 dage med min kæreste, og vi elsker mad og historie..."></textarea>
@@ -2875,17 +2895,15 @@
       }); });
     }
     function buildPrompt(text){
-      return 'Du er "Prompt-coach" på et AI-kursus for lidt øvede brugere (13-40 år). Vurder brugerens prompt ud fra anatomien i et stærkt prompt:\n'+
-        '1) ROLLE - har AI\u2019en fået en rolle/ekspertise?\n'+
-        '2) KONTEKST - er brugerens situation/baggrund med?\n'+
-        '3) OPGAVE - er det klart og specifikt hvad der ønskes?\n'+
-        '4) FORMAT - er længde, tone, sprog eller form angivet?\n'+
-        '5) EKSEMPEL - er der vist et eksempel (valgfrit, men løfter)?\n\n'+
-        'Giv en score fra 1 til 10. Vær fair men ærlig: et vagt prompt med kun en opgave ligger 3-5; et prompt der rammer rolle, kontekst, opgave og format ligger 8-10.\n\n'+
-        'ABSOLUT REGEL: Skriv ALDRIG et færdigt eller forbedret prompt, og vis aldrig en omskrivning. Giv kun konkrete pejlemærker og spørgsmål, så brugeren selv kan løfte det.\n\n'+
-        'Hvis teksten slet ikke er et prompt (fx bare "hej"), så giv en lav score og forklar venligt hvad et prompt er.\n\n'+
-        'Svar KUN med ren, gyldig JSON i præcis dette format - ingen markdown, ingen baktegn, ingen tekst udenfor:\n'+
-        '{"score": <heltal 1-10>, "ros": "<1-2 sætninger om hvad der konkret er godt>", "loft": ["<konkret pejlemærke som et spørgsmål, ALDRIG en omskrivning>", "<evt. nr 2>"], "naeste": "<1 kort linje der inviterer til at løfte scoren>"}\n\n'+
+      return 'Du er en erfaren ekspert i prompt-engineering, der coacher en lidt øvet bruger (13-40 år).\n'+
+        'Vurder HVOR GODT brugerens prompt reelt ville få et stærkt, brugbart svar fra en AI — bedømt ud fra promptets tydelige formål, ikke ud fra en fast tjekliste.\n'+
+        'Et kort, præcist prompt der passer til en simpel opgave kan sagtens være fremragende. Et langt prompt fyldt med "rolle" og "format" er ikke automatisk godt, hvis det er uklart eller upassende.\n'+
+        'Det afgørende er: er det tydeligt hvad brugeren vil have, er der nok at gå ud fra, og ville en AI kunne levere noget skarpt og relevant?\n\n'+
+        'Vær en ærlig, kalibreret dommer. Brug hele skalaen 1-10, og lad scoren afspejle reel kvalitet — ikke hvor mange "dele" der er med. Forbedrer brugeren prompten meningsfuldt, SKAL scoren stige. Bedøm prompten som den er skrevet.\n\n'+
+        'Din feedback skal være professionel, konkret og passe til netop denne situation — ikke generiske regler. Pejlemærker i "loft" skal handle om præcis det, DETTE prompt mangler for at blive bedre, og kun hvis det reelt ville hjælpe. Nævn ikke rolle, format eller eksempel, hvis det ikke giver mening her.\n\n'+
+        'ABSOLUT REGEL: Skriv ALDRIG et færdigt eller forbedret prompt, og vis aldrig en omskrivning. Giv kun pejlemærker og spørgsmål, så brugeren selv kan løfte det.\n\n'+
+        'Svar KUN med ren, gyldig JSON i præcis dette format — ingen markdown, ingen baktegn, ingen tekst udenfor:\n'+
+        '{"score": <heltal 1-10>, "ros": "<1-2 sætninger om hvad der konkret fungerer i netop dette prompt>", "loft": ["<konkret, situationsbestemt pejlemærke som spørgsmål — kun hvis det reelt løfter>", "<evt. nr 2>"], "naeste": "<1 kort, opmuntrende linje>"}\n\n'+
         'Brugerens prompt:\n"""\n'+text+'\n"""';
     }
     async function send(){
@@ -2898,7 +2916,7 @@
         const res=await fetch(WORKER,{
           method:'POST',
           headers:{ 'Content-Type':'application/json' },
-          body:JSON.stringify({ model:'claude-haiku-4-5-20251001', max_tokens:500, messages:[{ role:'user', content:buildPrompt(text) }] })
+          body:JSON.stringify({ model:'claude-sonnet-4-6', max_tokens:600, messages:[{ role:'user', content:buildPrompt(text) }] })
         });
         if(!res.ok) throw new Error('http '+res.status);
         const data=await res.json();
