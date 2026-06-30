@@ -104,6 +104,53 @@
   </style>
 </head>
 <body>
+  <!-- Firebase: tildel D-badge automatisk til loggede-ind brugere der lander her -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+    import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+    const app = initializeApp({
+      apiKey:'AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA',
+      authDomain:'learnai-dk.firebaseapp.com',
+      projectId:'learnai-dk',
+      storageBucket:'learnai-dk.firebasestorage.app',
+      messagingSenderId:'3073076360',
+      appId:'1:3073076360:web:b853d118e943395de4833d'
+    });
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    onAuthStateChanged(auth, async user => {
+      if (!user || !user.emailVerified) return;
+      try {
+        const ref  = doc(db, 'users', user.uid);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) return;
+        const data = snap.data();
+
+        // Tildel D-badge kun én gang
+        const hasBadge = Array.isArray(data.badges) &&
+          data.badges.some(b => b && b.level === 'D' && b.type === 'kursus');
+        if (hasBadge) return;
+
+        const badge = {
+          level:    'D',
+          type:     'kursus',
+          title:    'Niveau D',
+          icon:     'bronze',
+          date:     new Date().toLocaleDateString('da-DK'),
+          earnedAt: new Date().toISOString()
+        };
+        await updateDoc(ref, {
+          badges:           arrayUnion(badge),
+          completedCourses: arrayUnion('D')
+        });
+      } catch(e) {
+        console.warn('Badge-tildeling fejlede:', e);
+      }
+    });
+  </script>
   <header class="topbar">
     <a href="https://magnuscode-ai.github.io/ai-kursus/platform.html" class="topbar-logo">
       <svg class="topbar-mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
