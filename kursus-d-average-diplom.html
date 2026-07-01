@@ -181,7 +181,7 @@
   .cert-track{font-size:0.82rem;letter-spacing:0.05em;color:#8a6a34;margin-top:0.15rem;font-weight:500}
 
   .cert-medallion{display:flex;justify-content:center;margin:0.5rem 0}
-  .cert-medallion .medallion-shell{width:130px;height:130px}
+  .cert-medallion .medallion-shell{width:180px;height:180px}
 
   .cert-presented{font-size:0.8rem;color:#6a5636;letter-spacing:0.05em;margin-bottom:0.15rem}
   .cert-name{font-family:var(--serif);font-size:1.95rem;font-weight:600;color:#2b2013;line-height:1.12}
@@ -294,26 +294,28 @@
   .toast.out{opacity:0;transition:opacity 0.3s ease}
   @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 
-  /* Print: kun beviset — fylder hele A4-arket lodret */
+  /* Print: kun beviset — fylder ét helt A4-ark lodret */
   @page{ size:A4 portrait; margin:0; }
   @media print{
     html,body{background:#fffdf7 !important;margin:0 !important;padding:0 !important}
-    body *{visibility:hidden}
-    #certificate, #certificate *{visibility:visible}
-    #certificate{position:fixed;inset:0;width:100%;height:100%;max-width:none;margin:0;
+    .backdrop,.topbar,.toast-wrap,.confetti-layer,.gate{display:none !important}
+    /* Fjern alle wrapper-bokse fra flowet, så kun beviset bliver til en side */
+    .wrap,main{display:contents !important}
+    main>*{display:none !important}
+    #certSection{display:contents !important}
+    #certSection>*{display:none !important}
+    #certificate{display:block !important;position:fixed;inset:0;width:100%;height:100%;max-width:none;margin:0;
       aspect-ratio:auto;background:#fffdf7 !important;border-radius:0;filter:none;box-shadow:none;
       print-color-adjust:exact;-webkit-print-color-adjust:exact}
     .cert-frame{inset:10mm;border-color:#8a5a1e;border-radius:4px}
     .cert-inner{padding:14mm 16mm}
-    /* Lidt større typografi når det fylder et helt ark */
     .cert-logo{width:66px;height:66px}
-    .cert-brand-name{font-size:1.8rem}
-    .cert-headline{font-size:2.4rem}
-    .cert-name{font-size:2.3rem}
-    .cert-body{font-size:0.95rem;max-width:52ch}
-    .cert-medallion .medallion-shell{width:150px;height:150px}
-    .cv-code{font-size:1.2rem}
-    .topbar,.toast-wrap,.backdrop,.confetti-layer{display:none !important}
+    .cert-brand-name{font-size:1.9rem}
+    .cert-headline{font-size:2.5rem}
+    .cert-name{font-size:2.4rem}
+    .cert-body{font-size:0.98rem;max-width:54ch}
+    .cert-medallion .medallion-shell{width:214px;height:214px}
+    .cv-code{font-size:1.25rem}
   }
 </style>
 </head>
@@ -351,7 +353,7 @@
         <span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Kursus D gennemført</span>
       </div>
       <h1 class="hero-title reveal d1">Tillykke!</h1>
-      <p class="hero-text reveal d2">Du har nu lært <strong>hvordan en AI faktisk tænker</strong>, hvordan du <strong>opretter og indstiller din AI rigtigt</strong>, og hvordan du <strong>skriver prompts som en professionel</strong> — med rolle, kontekst og format, så du får skarpe, brugbare svar. Det er flot gået.</p>
+      <p class="hero-text reveal d2">Du har nu lært <strong>hvordan en AI faktisk tænker</strong>, hvordan du <strong>opretter og indstiller din AI rigtigt</strong>, og hvordan du <strong>skriver prompts som en professionel</strong> — med rolle, kontekst og format, så du får skarpe, brugbare svar. Det er godt gået.</p>
       <div class="reveal d2"><div class="coins-pill" id="coinsPill">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 0 1 5 0c0 1.2-1 1.8-2.5 2.5v1"/><path d="M12 16h.01"/></svg>
         100 coins er lagt på din profil
@@ -390,7 +392,7 @@
     </section>
 
     <!-- ===== DEL 3: BEVIS ===== -->
-    <section class="section">
+    <section class="section" id="certSection">
       <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Dit personlige bevis</span></div>
 
       <div class="certificate reveal d1" id="certificate">
