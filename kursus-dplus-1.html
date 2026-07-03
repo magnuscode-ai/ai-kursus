@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — Kursus D+ · Modul 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--green),var(--brass));transition:width .1s linear}
+
+  /* topbar */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .sb-toggle{display:none;background:var(--panel);border:1px solid var(--line);border-radius:10px;width:40px;height:40px;align-items:center;justify-content:center;color:var(--green);cursor:pointer}
+
+  /* forløbsbjælke (folded, centreret) */
+  .journey-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* layout */
+  .layout{position:relative;z-index:1;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr) 312px;align-items:start}
+  .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;background:var(--panel);padding:26px 20px}
+  .sidebar-left{border-right:1px solid var(--line)}
+  .sidebar-right{border-left:1px solid var(--line)}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .main{padding:44px 56px 90px;min-width:0}
+
+  .sb-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);margin-bottom:6px}
+  .sb-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:20px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:11px 13px}
+  .sb-note strong{color:var(--green-700)}
+  .sb-item{display:flex;gap:13px;align-items:flex-start;padding:11px 12px;border-radius:13px}
+  .sb-item + .sb-item{margin-top:2px}
+  .sb-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--green-mid)}
+  .sb-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .sb-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .sb-item.done .sb-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .sb-item.done .sb-check{margin-left:auto;color:var(--green);font-weight:800;font-size:15px}
+  .sb-item.current{background:#fff;border:1px solid #cfe0d1;box-shadow:var(--shadow-sm)}
+  .sb-item.current .sb-ic{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 4px rgba(27,70,54,.10)}
+  .sb-item.current .sb-sub{color:var(--green-mid);font-weight:700}
+  .sb-item.locked{opacity:.72}
+  .sb-item.locked .sb-label{color:var(--ink-soft)}
+  .sb-subnav{margin:6px 0 6px 46px;display:flex;flex-direction:column;gap:2px}
+  .sb-subnav a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;transition:.2s}
+  .sb-subnav a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .sb-subnav a:hover{background:var(--green-soft);color:var(--green-deep)}
+  .sb-subnav a.active{color:var(--green-deep);font-weight:700}
+  .sb-subnav a.active::before{opacity:1;background:var(--green)}
+  .sb-line{width:1px;height:16px;background:var(--line);margin:2px 0 2px 28px}
+
+  .rt-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-bottom:9px;transition:.22s}
+  .rt-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfc4a6}
+  .rt-logo{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px}
+  .rt-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .rt-tag{font-size:11.5px;color:var(--ink-faint)}
+  .rt-arrow{margin-left:auto;color:var(--ink-faint);font-size:15px}
+  .rt-logo.claude{background:linear-gradient(135deg,#c1783f,#d99a5b)}
+  .rt-logo.chatgpt{background:linear-gradient(135deg,#0f8a6a,#22b088)}
+  .rt-logo.gemini{background:linear-gradient(135deg,#3b6fb0,#6a97d0)}
+  .rt-logo.copilot{background:linear-gradient(135deg,#2f6a7a,#4a97a8)}
+  .rt-logo.perplexity{background:linear-gradient(135deg,#8a6a2a,#c2a04a)}
+  .rt-tip{margin-top:16px;background:var(--green-tint);border:1px solid #cfe0d1;border-radius:13px;padding:14px}
+  .rt-tip-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green-700);margin-bottom:8px}
+  .rt-tip-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .rt-tip-list li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;align-items:flex-start;line-height:1.45}
+  .rt-tip-list li span{color:var(--green)}
+
+  /* hero */
+  .hero{max-width:800px;margin:0 auto;text-align:center;padding:24px 0 6px}
+  .hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);background:var(--green-tint);border:1px solid #cfe0d1;padding:8px 16px;border-radius:var(--r-pill)}
+  .hero-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,70,54,.4)}50%{box-shadow:0 0 0 6px rgba(27,70,54,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,62px);line-height:1.08;letter-spacing:-.02em;margin:20px 0 18px;color:var(--ink)}
+  .hero h1 em{font-style:italic;background:linear-gradient(120deg,var(--green-mid),var(--brass) 82%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);line-height:1.65;max-width:600px;margin:0 auto}
+  .hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero-stat{font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm)}
+
+  /* lesson */
+  .lesson{max-width:760px;margin:0 auto}
+  .sec{margin-top:60px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-700);margin-bottom:14px}
+  .sec-eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--green-light),transparent);border-radius:2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:clamp(25px,3.2vw,32px);color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sec h2 em{font-style:italic;color:var(--brass-deep)}
+  .sec p.lead{font-size:16.5px;color:var(--ink-soft);line-height:1.72;margin-top:14px}
+  .sec p.lead + p.lead{margin-top:14px}
+  .sec p.lead strong{color:var(--green-700)}
+
+  .pull{background:var(--green-tint);border:1px solid #cfe0d1;border-left:4px solid var(--green);border-radius:var(--r);padding:20px 24px;margin-top:24px}
+  .pull p{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--green-deep);line-height:1.5}
+
+  /* de magiske opfølgninger */
+  .magic{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px}
+  .magic-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:.22s}
+  .magic-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfe0d1}
+  .magic-ic{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--green-soft);border:1px solid #c6d8c9;display:grid;place-items:center;font-size:19px}
+  .magic-t{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+  .magic-d{font-size:13px;color:var(--ink-faint);line-height:1.5}
+
+  /* ── interaktiv: Prøv igen-værksted ── */
+  .lab{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .lab-head{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;padding:20px 24px}
+  .lab-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#bfe0cd;margin-bottom:5px}
+  .lab-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .lab-head p{font-size:13.5px;color:#d7e7dd;margin-top:5px;line-height:1.5}
+  .lab-body{padding:22px 24px}
+  .lab-scenario{font-size:13.5px;color:var(--ink-soft);background:var(--green-tint);border:1px solid #cfe0d1;border-radius:11px;padding:12px 15px;margin-bottom:18px;line-height:1.5}
+  .lab-scenario strong{color:var(--green-700)}
+  .lab-answer-wrap{position:relative}
+  .lab-answer-label{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .lab-answer-label .who{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#c1783f,#d99a5b);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:800}
+  .lab-answer{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;font-size:14.5px;color:var(--ink);line-height:1.62;white-space:pre-line;min-height:120px;transition:opacity .28s ease,transform .28s ease}
+  .lab-answer.swap{opacity:0;transform:translateY(8px)}
+  .lab-coach{margin-top:12px;font-size:13.5px;color:var(--green-700);background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:11px;padding:11px 15px;display:none;align-items:center;gap:9px;line-height:1.45}
+  .lab-coach.show{display:flex;animation:pop .4s ease}
+  @keyframes pop{0%{transform:scale(.96);opacity:0}100%{transform:scale(1);opacity:1}}
+  .lab-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+  .lab-btn{font-size:14px;font-weight:700;color:var(--green-deep);background:var(--cream);border:1.5px solid var(--line);border-radius:var(--r-pill);padding:11px 18px;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px}
+  .lab-btn:hover{border-color:var(--green-light);background:#fff;transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .lab-btn.used{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+  .lab-btn .chk{opacity:0;font-weight:800}
+  .lab-btn.used .chk{opacity:1}
+  .lab-foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:22px;padding-top:18px;border-top:1px solid var(--line-soft);flex-wrap:wrap}
+  .lab-progress{display:flex;align-items:center;gap:11px;font-size:13px;color:var(--ink-soft);font-weight:600}
+  .lab-dots{display:flex;gap:6px}
+  .lab-dot{width:11px;height:11px;border-radius:50%;background:var(--line);transition:.3s}
+  .lab-dot.on{background:var(--green);transform:scale(1.15)}
+  .lab-reset{font-size:12.5px;color:var(--ink-faint);background:none;border:none;cursor:pointer;text-decoration:underline;font-weight:600}
+  .lab-reset:hover{color:var(--green)}
+
+  /* completion */
+  .done-box{margin-top:24px;text-align:center;background:linear-gradient(160deg,var(--green-tint),#fff);border:1px solid #cfe0d1;border-radius:var(--r-lg);padding:30px 26px;display:none}
+  .done-box.show{display:block;animation:pop .5s ease}
+  .done-emoji{font-size:34px}
+  .done-box h4{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green-deep);margin:6px 0 6px}
+  .done-box p{font-size:14.5px;color:var(--ink-soft);max-width:420px;margin:0 auto;line-height:1.6}
+
+  .cta{max-width:760px;margin:56px auto 0;text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:42px 30px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(47,106,74,.09),transparent 70%);pointer-events:none}
+  .cta-tag{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+  .cta h2{position:relative;font-family:var(--serif);font-weight:700;font-size:29px;color:var(--ink);margin:10px 0 8px}
+  .cta p{position:relative;font-size:15px;color:var(--ink-soft);max-width:440px;margin:0 auto 22px;line-height:1.6}
+  .cta-btn{position:relative;display:inline-flex;align-items:center;gap:11px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:17px;font-weight:700;padding:16px 34px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+  .cta-btn.locked{opacity:.55;pointer-events:none;filter:grayscale(.3)}
+  .cta-meta{position:relative;font-size:12.5px;color:var(--ink-faint);margin-top:16px}
+
+  .backdrop{display:none}
+  @media(max-width:1180px){.layout{grid-template-columns:260px minmax(0,1fr)}.sidebar-right{display:none}.main{padding:38px 40px 80px}}
+  @media(max-width:900px){
+    .sb-toggle{display:flex}
+    .layout{grid-template-columns:1fr}
+    .sidebar-left{position:fixed;top:64px;left:0;width:300px;max-width:86vw;height:calc(100vh - 64px);transform:translateX(-102%);transition:transform .28s ease;z-index:900;box-shadow:var(--shadow-lg)}
+    .sidebar-left.open{transform:translateX(0)}
+    .backdrop.show{display:block;position:fixed;inset:64px 0 0;background:rgba(20,30,25,.35);z-index:850}
+    .main{padding:30px 20px 70px}
+    .magic{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="scroll-bar" id="scrollBar"></div>
+
+<header class="topbar">
+  <a class="brand" href="platform.html">
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    <span>Akademiet AI</span>
+  </a>
+  <span class="topbar-badge">Kursus D+ · Modul 1</span>
+  <button class="sb-toggle" id="sbToggle" aria-label="Vis forloeb">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+</header>
+
+<!-- forløbsbjælke -->
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Forberedelse</span><span class="j-sep">›</span>
+    <span class="j-step current">Modul 1 · Snak videre</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 2 · Fejl</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 3 · Rykke op</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 4 · Vejen til C</span><span class="j-sep">›</span>
+    <span class="j-step">Mini-tjek</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<div class="layout">
+
+  <!-- venstre sidebar -->
+  <aside class="sidebar sidebar-left" id="sidebarLeft">
+    <div class="sb-head">📋 Dit forløb</div>
+    <div class="sb-note">Du er i gang med <strong>Modul 1</strong>. Læs roligt igennem og prøv øvelsen — så er du klar til næste modul.</div>
+
+    <div class="sb-item done"><div class="sb-ic">🎓</div><div><div class="sb-label">Forberedelse</div><div class="sb-sub">Kursus D+ · afsluttet</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-line"></div>
+    <div class="sb-item current"><div class="sb-ic">💬</div><div><div class="sb-label">Modul 1 · Snak videre</div><div class="sb-sub">Du er her nu</div></div></div>
+    <div class="sb-subnav" id="subnav">
+      <a href="#s-ide" class="active">Den vigtigste vane</a>
+      <a href="#s-magi">De magiske opfølgninger</a>
+      <a href="#s-lab">Prøv det selv</a>
+    </div>
+    <div class="sb-line"></div>
+    <div class="sb-item locked"><div class="sb-ic">🔍</div><div><div class="sb-label">Modul 2 · Når AI finder på</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">✅</div><div><div class="sb-label">Modul 3 · Klar til at rykke op</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">✨</div><div><div class="sb-label">Modul 4 · Vejen til C</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">⭐</div><div><div class="sb-label">Mini-tjek · Er du klar?</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">📜</div><div><div class="sb-label">Bevis &amp; coins</div><div class="sb-sub">D+-bevis · 50 coins</div></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <section class="hero">
+      <div class="hero-tag"><span class="pulse"></span>Kursus D+ · Modul 1 af 4</div>
+      <h1>Snak <em>videre</em> med AI'en</h1>
+      <p class="hero-sub">Det bedste trick er ikke den perfekte besked. Det er at blive ved med at snakke — og bede AI'en prøve igen.</p>
+      <div class="hero-stats">
+        <span class="hero-stat">⏱ Ca. 10 min</span>
+        <span class="hero-stat">💬 1 stor vane</span>
+        <span class="hero-stat">🌿 Roligt tempo</span>
+      </div>
+    </section>
+
+    <div class="lesson">
+
+      <section class="sec" id="s-ide">
+        <div class="sec-eyebrow">Den vigtigste vane</div>
+        <h2>Du behøver ikke ramme rigtigt <em>første gang</em></h2>
+        <p class="lead">Mange tror, at man skal skrive den helt perfekte besked, før AI'en svarer godt. Men sådan virker det slet ikke. AI'en <strong>husker samtalen</strong> — så du kan bare snakke videre og bede om noget bedre.</p>
+        <p class="lead">Er svaret for langt? Sig <strong>"gør det kortere"</strong>. Er det for indviklet? Sig <strong>"forklar det enklere"</strong>. Lyder det for stift? Sig <strong>"gør tonen mere venlig"</strong>. Du behøver ikke starte forfra.</p>
+        <div class="pull"><p>"Det handler ikke om den perfekte besked — det handler om at snakke videre."</p></div>
+      </section>
+
+      <section class="sec" id="s-magi">
+        <div class="sec-eyebrow">Værktøjskassen</div>
+        <h2>De fire magiske <em>opfølgninger</em></h2>
+        <p class="lead">Gem de her fire i baghovedet. Med dem kan du forbedre stort set ethvert svar — uden at kunne noget som helst teknisk.</p>
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">✂️</div><div><div class="magic-t">"Gør det kortere"</div><div class="magic-d">Skærer det lange ned til det, der betyder noget.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">😊</div><div><div class="magic-t">"Gør tonen venligere"</div><div class="magic-d">Samme besked — bare varmere og rarere.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🧒</div><div><div class="magic-t">"Forklar det enklere"</div><div class="magic-d">Væk med de svære ord. Nemt at forstå.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">📋</div><div><div class="magic-t">"Gør det til punkter"</div><div class="magic-d">Fra en mur af tekst til et hurtigt overblik.</div></div></div>
+        </div>
+      </section>
+
+      <section class="sec" id="s-lab">
+        <div class="sec-eyebrow">Prøv det selv</div>
+        <h2>"Prøv igen"-<em>værkstedet</em></h2>
+        <p class="lead">Her er et svar fra en AI, som ikke helt rammer plet. Tryk på en opfølgning og se, hvad der sker — helt som når du selv snakker videre.</p>
+
+        <div class="lab">
+          <div class="lab-head">
+            <div class="kick">Interaktiv øvelse</div>
+            <h3>Gør svaret bedre</h3>
+            <p>Prøv mindst to opfølgninger for at gennemføre.</p>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">📝 <strong>Situationen:</strong> Du bad en AI skrive en mail til din udlejer om en vandhane, der drypper. Første svar blev sådan her:</div>
+
+            <div class="lab-answer-wrap">
+              <div class="lab-answer-label"><span class="who">AI</span>AI'ens svar</div>
+              <div class="lab-answer" id="labAnswer">Kære udlejer,
+
+Jeg skriver til Dem for at gøre opmærksom på en problematik vedrørende en vandhane i lejemålet, som gennem den seneste periode har udvist tegn på en vedvarende dryppen, hvilket formodes at kunne medføre et unødigt vandspild samt potentielle følgeskader, hvorfor jeg hermed skal anmode om, at der snarest belejligt foranstaltes en udbedring heraf.
+
+Med venlig hilsen</div>
+            </div>
+
+            <div class="lab-coach" id="labCoach"><span>🌿</span><span id="labCoachText"></span></div>
+
+            <div class="lab-actions" id="labActions">
+              <button class="lab-btn" data-act="kort"><span>✂️</span>Gør det kortere<span class="chk">✓</span></button>
+              <button class="lab-btn" data-act="venlig"><span>😊</span>Gør tonen venligere<span class="chk">✓</span></button>
+              <button class="lab-btn" data-act="enkel"><span>🧒</span>Forklar det enklere<span class="chk">✓</span></button>
+              <button class="lab-btn" data-act="punkter"><span>📋</span>Gør det til punkter<span class="chk">✓</span></button>
+            </div>
+
+            <div class="lab-foot">
+              <div class="lab-progress">Prøvet:
+                <div class="lab-dots"><span class="lab-dot" id="d0"></span><span class="lab-dot" id="d1"></span><span class="lab-dot" id="d2"></span><span class="lab-dot" id="d3"></span></div>
+              </div>
+              <button class="lab-reset" id="labReset">↺ Vis det oprindelige svar igen</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="done-box" id="doneBox">
+          <div class="done-emoji">🎉</div>
+          <h4>Sådan! Du har fanget det</h4>
+          <p>Du gjorde ikke noget teknisk — du bad bare om igen, og svaret blev bedre hver gang. Det er hele hemmeligheden bag at snakke videre med AI.</p>
+        </div>
+      </section>
+
+      <div class="cta">
+        <span class="cta-tag">Modul 1 gennemført</span>
+        <h2>Godt gået — videre til Modul 2</h2>
+        <p>Nu ved du, hvordan man snakker videre. I næste modul ser vi på, hvad du gør, når AI'en tager fejl med selvtillid.</p>
+        <a href="kursus-dplus-2.html" class="cta-btn locked" id="ctaBtn">Videre til Modul 2
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <p class="cta-meta" id="ctaMeta">Prøv øvelsen ovenfor for at låse op</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- højre sidebar -->
+  <aside class="sidebar sidebar-right">
+    <div class="sb-head">🧰 AI Redskaber</div>
+    <div class="sb-note">Åbn et værktøj i en ny fane og <strong>prøv opfølgningerne</strong> med det samme.</div>
+
+    <a class="rt-card" href="https://claude.ai" target="_blank" rel="noopener"><span class="rt-logo claude">C</span><div><div class="rt-name">Claude</div><div class="rt-tag">Anthropic</div></div><span class="rt-arrow">↗</span></a>
+    <a class="rt-card" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="rt-logo chatgpt">G</span><div><div class="rt-name">ChatGPT</div><div class="rt-tag">OpenAI</div></div><span class="rt-arrow">↗</span></a>
+    <a class="rt-card" href="https://gemini.google.com" target="_blank" rel="noopener"><span class="rt-logo gemini">Gm</span><div><div class="rt-name">Gemini</div><div class="rt-tag">Google</div></div><span class="rt-arrow">↗</span></a>
+    <a class="rt-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener"><span class="rt-logo copilot">Co</span><div><div class="rt-name">Copilot</div><div class="rt-tag">Microsoft</div></div><span class="rt-arrow">↗</span></a>
+    <a class="rt-card" href="https://perplexity.ai" target="_blank" rel="noopener"><span class="rt-logo perplexity">Px</span><div><div class="rt-name">Perplexity</div><div class="rt-tag">AI-søgning</div></div><span class="rt-arrow">↗</span></a>
+
+    <div class="rt-tip">
+      <div class="rt-tip-h">💡 Modul 1 · Genvej</div>
+      <ul class="rt-tip-list">
+        <li><span>✂️</span>"Gør det kortere"</li>
+        <li><span>😊</span>"Gør tonen venligere"</li>
+        <li><span>🧒</span>"Forklar det enklere"</li>
+        <li><span>📋</span>"Gør det til punkter"</li>
+      </ul>
+    </div>
+  </aside>
+
+</div>
+
+<script>
+  // scroll-progress
+  var bar=document.getElementById('scrollBar');
+  addEventListener('scroll',function(){var h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+  // mobil drawer
+  var sb=document.getElementById('sidebarLeft'),bd=document.getElementById('backdrop'),tg=document.getElementById('sbToggle');
+  tg.addEventListener('click',function(){sb.classList.add('open');bd.classList.add('show');});
+  bd.addEventListener('click',function(){sb.classList.remove('open');bd.classList.remove('show');});
+
+  // aktivt sub-nav
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  addEventListener('scroll',function(){var idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<170)idx=i;});links.forEach(function(a,i){a.classList.toggle('active',i===idx);});},{passive:true});
+  links.forEach(function(a){a.addEventListener('click',function(){sb.classList.remove('open');bd.classList.remove('show');});});
+
+  // ── Prøv igen-værkstedet ──
+  var ORIG="Kære udlejer,\n\nJeg skriver til Dem for at gøre opmærksom på en problematik vedrørende en vandhane i lejemålet, som gennem den seneste periode har udvist tegn på en vedvarende dryppen, hvilket formodes at kunne medføre et unødigt vandspild samt potentielle følgeskader, hvorfor jeg hermed skal anmode om, at der snarest belejligt foranstaltes en udbedring heraf.\n\nMed venlig hilsen";
+  var DATA={
+    kort:{text:"Hej,\n\nVandhanen i køkkenet er begyndt at dryppe. Kan I få den ordnet?\n\nMvh [dit navn]",coach:"Kortere og klarere — det siger stadig alt det vigtige. 👏"},
+    venlig:{text:"Hej 🙂\n\nHåber du har det godt! Der er lige en vandhane hos mig, der er begyndt at dryppe. Er der en chance for, at den kan blive kigget på? Tusind tak!\n\nMvh [dit navn]",coach:"Samme besked — bare varmere i tonen. 🌿"},
+    enkel:{text:"Hej,\n\nMin vandhane drypper. Vil du sende en til at ordne den?\n\nTak. Mvh [dit navn]",coach:"Ingen svære ord. Nemt at læse for alle. ✨"},
+    punkter:{text:"Hej,\n\nEn kort besked om et lille problem:\n• Vandhanen i køkkenet drypper\n• Det har stået på et par dage\n• Kan den blive ordnet i denne uge?\n\nTak! Mvh [dit navn]",coach:"Nu kan det overskues på ét sekund. 📋"}
+  };
+  var ans=document.getElementById('labAnswer'),coach=document.getElementById('labCoach'),coachT=document.getElementById('labCoachText');
+  var dots=[document.getElementById('d0'),document.getElementById('d1'),document.getElementById('d2'),document.getElementById('d3')];
+  var doneBox=document.getElementById('doneBox'),ctaBtn=document.getElementById('ctaBtn'),ctaMeta=document.getElementById('ctaMeta');
+  var used={},tried=0,unlocked=false;
+
+  function paintDots(){for(var i=0;i<4;i++)dots[i].classList.toggle('on',i<tried);}
+  function swap(text){ans.classList.add('swap');setTimeout(function(){ans.textContent=text;ans.classList.remove('swap');},260);}
+
+  document.getElementById('labActions').addEventListener('click',function(e){
+    var b=e.target.closest('.lab-btn');if(!b)return;
+    var act=b.getAttribute('data-act');
+    swap(DATA[act].text);
+    coachT.textContent=DATA[act].coach;coach.classList.add('show');
+    if(!used[act]){used[act]=true;b.classList.add('used');tried++;paintDots();}
+    if(tried>=2&&!unlocked){unlocked=true;doneBox.classList.add('show');
+      ctaBtn.classList.remove('locked');ctaMeta.textContent="Du er klar til Modul 2 🌿";}
+  });
+  document.getElementById('labReset').addEventListener('click',function(){
+    swap(ORIG);coach.classList.remove('show');
+  });
+</script>
+</body>
+</html>
