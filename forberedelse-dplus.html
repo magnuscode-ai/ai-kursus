@@ -195,9 +195,20 @@
     .hero-cards{grid-template-columns:1fr}
     .ov-grid{grid-template-columns:1fr}
   }
+
+  /* ── side-overgange & entre-animationer ── */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);
+    transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .anim{opacity:0;animation:aiRise .62s cubic-bezier(.22,.61,.36,1) both}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.anim{opacity:1!important;animation:none!important}}
 </style>
 </head>
 <body>
+<div class="page-veil" id="pageVeil"></div>
 <div class="scroll-bar" id="scrollBar"></div>
 
 <header class="topbar">
@@ -379,6 +390,28 @@
     links.forEach((a,i)=>a.classList.toggle('active',i===idx));
   },{passive:true});
   links.forEach(a=>a.addEventListener('click',closeSb));
+</script>
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  var targets=[];
+  var hero=document.querySelector('.main .hero'); if(hero) targets.push(hero);
+  var lesson=document.querySelector('.main .lesson');
+  if(lesson){ Array.prototype.forEach.call(lesson.children,function(c){targets.push(c);}); }
+  Array.prototype.forEach.call(document.querySelectorAll('.main > *'),function(c){ if(c!==hero&&c!==lesson&&targets.indexOf(c)<0) targets.push(c); });
+  targets.forEach(function(el,i){ el.classList.add('anim'); el.style.animationDelay=(0.05+i*0.075)+'s'; });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    if(a.classList.contains('locked')) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
 </script>
 </body>
 </html>
