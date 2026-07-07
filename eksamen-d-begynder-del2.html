@@ -421,7 +421,7 @@
             </div>
             <div class="criteria-card">
               <div class="criteria-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.3 8.7 8.7 21.3a2.4 2.4 0 0 1-3.4 0l-2.6-2.6a2.4 2.4 0 0 1 0-3.4L15.3 2.7a2.4 2.4 0 0 1 3.4 0l2.6 2.6a2.4 2.4 0 0 1 0 3.4Z"/><path d="m7.5 10.5 2 2M11 7l2 2M14.5 3.5l2 2"/></svg></div>
-              <div class="criteria-body"><h4>Tilpas længde</h4><p>Dit prompt skal være mindst 30 tegn og vise, at du har tænkt over det.</p></div>
+              <div class="criteria-body"><h4>Tilpas længde</h4><p>Skriv fyldigt nok til at vise, at du har tænkt dig om — jo mere du beskriver, jo bedre.</p></div>
             </div>
           </div>
 
@@ -437,8 +437,9 @@
           </div>
 
           <div class="prompt-area-wrap">
-            <div class="prompt-area-label">Skriv dit prompt her<span class="prompt-char-count" id="charCount">0 tegn</span></div>
-            <textarea class="prompt-textarea" id="promptInput" placeholder="Skriv dit prompt her — husk de 3 regler: hvem du er, hvad du vil have, og hvilket format..." oninput="updateCharCount()" rows="5"></textarea>
+            <div class="prompt-area-label">Skriv dit prompt her<span class="prompt-char-count" id="charCount">0 / 1000 tegn</span></div>
+            <textarea class="prompt-textarea" id="promptInput" maxlength="1000" placeholder="Skriv dit prompt her — husk de 3 regler: hvem du er, hvad du vil have, og hvilket format..." oninput="updateCharCount()" rows="5"></textarea>
+            <p class="prompt-hint" style="margin:.5rem 0 0;font-size:.8rem;color:var(--ink-mute);line-height:1.4">Jo mere du beskriver, jo bedre bedømmelse — der er ingen minimumsgrænse. Maks 1000 tegn.</p>
           </div>
 
           <div class="attempt-warning" id="attemptWarning"></div>
@@ -613,13 +614,13 @@ let promptAttempts = 0;
 
 function updateCharCount() {
   const val = document.getElementById('promptInput').value;
-  document.getElementById('charCount').textContent = val.length + ' tegn';
+  document.getElementById('charCount').textContent = val.length + ' / 1000 tegn';
 }
 
 async function submitPrompt() {
   const prompt = document.getElementById('promptInput').value.trim();
-  if (prompt.length < 20) {
-    showToast('error', 'Promptet er for kort. Skriv mindst 20 tegn.');
+  if (prompt.length < 10) {
+    showToast('error', 'Skriv et prompt først — gerne et par sætninger om det, du vil have hjælp til.');
     return;
   }
   promptAttempts++;
