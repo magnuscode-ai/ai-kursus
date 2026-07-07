@@ -449,8 +449,9 @@
           </div>
 
           <div class="prompt-area-wrap">
-            <div class="prompt-area-label">Skriv dit prompt her<span class="prompt-char-count" id="charCount">0 tegn</span></div>
-            <textarea class="prompt-textarea" id="promptInput" placeholder="Skriv den besked til AI'en, du selv ville sende — tag udgangspunkt i en rigtig situation fra dit arbejde eller din hverdag..." oninput="updateCharCount()" rows="5"></textarea>
+            <div class="prompt-area-label">Skriv dit prompt her<span class="prompt-char-count" id="charCount">0 / 1000 tegn</span></div>
+            <textarea class="prompt-textarea" id="promptInput" maxlength="1000" placeholder="Skriv den besked til AI'en, du selv ville sende — tag udgangspunkt i en rigtig situation fra dit arbejde eller din hverdag..." oninput="updateCharCount()" rows="5"></textarea>
+            <p class="prompt-hint" style="margin:.5rem 0 0;font-size:.8rem;color:var(--ink-mute);line-height:1.4">Jo mere du beskriver din situation, jo bedre bedømmelse — der er ingen minimumsgrænse. Maks 1000 tegn.</p>
           </div>
 
           <div class="attempt-warning" id="attemptWarning"></div>
@@ -636,13 +637,13 @@ function toggleChecklist() {
 
 function updateCharCount() {
   const val = document.getElementById('promptInput').value;
-  document.getElementById('charCount').textContent = val.length + ' tegn';
+  document.getElementById('charCount').textContent = val.length + ' / 1000 tegn';
 }
 
 async function submitPrompt() {
   const prompt = document.getElementById('promptInput').value.trim();
-  if (prompt.length < 30) {
-    showToast('error', 'Promptet er for kort. Skriv mindst 30 tegn — gerne mere.');
+  if (prompt.length < 10) {
+    showToast('error', 'Skriv et prompt først — gerne et par sætninger om en rigtig situation.');
     return;
   }
   promptAttempts++;
@@ -781,7 +782,7 @@ ${prompt}
   };
   // Holistisk beståelse: begge porte SKAL være opfyldt, OG output-kvaliteten skal være høj nok.
   // Kravene tælles ikke mekanisk — de løfter kun kvalitetsscoren via Sonnets vurdering.
-  const passed = meaningful && realSituation && quality >= 7 && prompt.length >= 40;
+  const passed = meaningful && realSituation && quality >= 7;
   const mangel = (typeof j.mangel === 'string' && j.mangel.trim()) ? j.mangel.trim() : '';
   return { passed, quality, meaningful, realSituation, strengths, mangel, source: 'ai' };
 }
@@ -808,11 +809,11 @@ function evaluatePromptLocal(prompt) {
   const looksLikeSentences = /[.!?]/.test(prompt) || words.length >= 12;
   const meaningful = words.length >= 8 && avgWordLen >= 2.5 && avgWordLen <= 14 && looksLikeSentences;
   // Port 2 — ægte situation: har kontekst ELLER en specifik konkret opgave og er ikke rent generisk
-  const realSituation = (strengths.context || strengths.specific) && !genericOnly && prompt.length >= 40;
+  const realSituation = (strengths.context || strengths.specific) && !genericOnly;
 
   const strengthCount = Object.values(strengths).filter(Boolean).length;
   const quality = Math.min(10, 4 + strengthCount * 1.5 + (meaningful ? 1 : 0));
-  const passed = meaningful && realSituation && strengthCount >= 3 && prompt.length >= 50;
+  const passed = meaningful && realSituation && strengthCount >= 3;
 
   // Byg en "mangel"-linje ud fra hvad der halter mest
   let mangel = '';
