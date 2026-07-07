@@ -519,29 +519,28 @@ const firebaseConfig = {
    For hvert spørgsmål: ét korrekt svar (correct) + tre
    forkerte (wrong). Svarene blandes tilfældigt ved start,
    så det rigtige svar kan lande på A, B, C eller D.
-   Alle forkerte svar er lige så lange eller længere end
-   det rigtige — man kan altså ikke gætte på længden.
+   Alle fire svar er holdt nogenlunde lige lange — man kan altså ikke gætte på længden.
    ========================================================= */
 const QUESTIONS = [
   // ---------- AFSNIT 1 — Sådan tænker en AI ----------
   {
     modul: "Sådan tænker en AI",
     q: "Hvordan laver en AI egentlig sit svar?",
-    correct: "Den forudsiger det mest sandsynlige næste ord, stump for stump",
+    correct: "Den forudsiger blot det mest sandsynlige næste ord, stump for stump",
     wrong: [
       "Den slår spørgsmålet op i en stor og altid opdateret database online",
       "Den henter et færdigt svar, som et menneske har skrevet på forhånd",
-      "Den forstår spørgsmålet præcist og regner det rigtige svar ud hver gang"
+      "Den forstår spørgsmålet og regner det rigtige svar ud hver gang"
     ],
     explain: "En AI <b>slår ikke noget op</b> — den gætter det mest sandsynlige næste ord igen og igen. Derfor lyder den flydende, men kan tage fejl."
   },
   {
     modul: "Sådan tænker en AI",
     q: "Hvad er et \"token\", som du lærte i Modul 1?",
-    correct: "En lille tekststump — et ord eller en del af et ord",
+    correct: "En lille tekststump — ofte et helt ord eller en del af et ord",
     wrong: [
-      "En mønt eller et point, du betaler med, hver gang du stiller spørgsmål",
-      "Et særligt kodeord, der låser de mere avancerede funktioner op for dig",
+      "En mønt eller et point, du betaler med for hvert spørgsmål",
+      "Et kodeord, der låser de avancerede funktioner op for dig",
       "Den samlede besked, du sender, talt som ét stort og udeleligt hele"
     ],
     explain: "AI'en ser tekst som <b>tokens</b> — små stumper på et ord eller en orddel. Den arbejder med stumperne, ikke med hele ord ad gangen."
@@ -549,11 +548,11 @@ const QUESTIONS = [
   {
     modul: "Sådan tænker en AI",
     q: "Hvorfor kan en AI ikke vide, hvem der vandt kampen i går?",
-    correct: "Den er trænet på ældre tekst og er ikke live på nettet",
+    correct: "Den er trænet på ældre tekst og er slet ikke koblet live på nettet",
     wrong: [
-      "Den vil helst ikke svare på sport, fordi emnet er for følsomt for den",
-      "Den venter med at svare, til mindst tre andre har stillet samme spørgsmål",
-      "Den kender godt svaret, men holder det skjult for at beskytte dit privatliv"
+      "Den svarer nødigt på sport, fordi emnet er for følsomt for den",
+      "Den venter, til mindst tre andre har stillet samme spørgsmål",
+      "Den kender godt svaret, men skjuler det for at beskytte dit privatliv"
     ],
     explain: "AI'ens viden stopper på et tidspunkt, og den er <b>ikke live på nettet</b>. Helt nye begivenheder kender den ikke — medmindre værktøjet selv kan søge."
   },
@@ -562,31 +561,31 @@ const QUESTIONS = [
   {
     modul: "Opsætning af din AI",
     q: "Hvad gør det, at du sætter en \"personlig stil\" op i Claude?",
-    correct: "Den tilpasser tone og format til dig på tværs af samtaler",
+    correct: "Den tilpasser både tone og format til dig på tværs af alle samtaler",
     wrong: [
       "Den ændrer farverne og skrifttypen på hele hjemmesidens udseende",
       "Den giver dig adgang til en helt anden og hemmelig udgave af modellen",
-      "Den gemmer alle dine gamle samtaler, så du kan finde dem frem bagefter"
+      "Den gemmer dine gamle samtaler, så du kan finde dem frem igen"
     ],
     explain: "En <b>personlig stil</b> får AI'en til at svare i din tone og dit format hver gang — så du slipper for at gentage det i hvert prompt."
   },
   {
     modul: "Opsætning af din AI",
     q: "Hvorfor er det værd at bruge to minutter på opsætningen først?",
-    correct: "Det gør AI'en til din — ikke bare en generisk hjælper",
+    correct: "Det gør AI'en til din helt egen — ikke bare en generisk hjælper",
     wrong: [
-      "Det er et krav, før firmaet overhovedet vil lade dig sende en besked",
-      "Det gør alle dine fremtidige svar markant hurtigere at få frem på skærmen",
-      "Det fjerner helt risikoen for, at AI'en nogensinde kan komme til at tage fejl"
+      "Det er et krav, før firmaet vil lade dig sende en besked",
+      "Det gør alle dine fremtidige svar meget hurtigere at få frem",
+      "Det fjerner helt risikoen for, at AI'en kan komme til at tage fejl"
     ],
     explain: "<b>To minutters opsætning</b> tilpasser AI'en til dig — den kender din tone og dine behov, i stedet for at svare som til en tilfældig fremmed."
   },
   {
     modul: "Opsætning af din AI",
     q: "Hvad kan du bruge \"projekter\" til i din AI?",
-    correct: "Samle alt om én opgave ét sted, så AI'en husker konteksten",
+    correct: "Samle alt om én opgave ét sted, så AI'en husker hele konteksten",
     wrong: [
-      "Dele dine samtaler offentligt, så alle andre brugere også kan læse dem",
+      "Dele dine samtaler, så alle andre brugere også kan læse dem",
       "Få AI'en til at arbejde videre helt af sig selv, mens du er logget ud",
       "Låse en samtale, så hverken du eller andre kan ændre i den bagefter"
     ],
@@ -601,7 +600,7 @@ const QUESTIONS = [
     wrong: [
       "Hilsen, undskyldning, spørgsmål og en venlig afsked til allersidst",
       "Emne, længde, sprog og det helt præcise klokkeslæt, du skriver på",
-      "Navn, alder, by og en grundig beskrivelse af dit nuværende humør"
+      "Navn, alder, by og en beskrivelse af dit nuværende humør"
     ],
     explain: "Et skarpt prompt har fire dele: <b>rolle</b> (hvem AI'en er), <b>kontekst</b> (din situation), <b>opgave</b> (hvad du vil have) og <b>format</b> (hvordan svaret skal se ud)."
   },
@@ -610,7 +609,7 @@ const QUESTIONS = [
     q: "AI'ens første svar rammer ikke helt. Hvad gør en prof?",
     correct: "Retter prompten og beder om en justering — ikke starter forfra",
     wrong: [
-      "Opgiver det og skriver i stedet svaret helt i hånden uden hjælp",
+      "Opgiver det og skriver i stedet svaret i hånden uden hjælp",
       "Stiller præcis det samme spørgsmål igen og håber på et bedre svar",
       "Skifter med det samme til et helt andet AI-program i stedet for"
     ],
@@ -621,7 +620,7 @@ const QUESTIONS = [
     q: "Hvilket prompt giver det bedste svar?",
     correct: "Skriv en kort, formel mail til min chef om en fridag på fredag",
     wrong: [
-      "Lav lige sådan en mail jeg kan sende til en på mit arbejde en dag",
+      "Lav lige sådan en mail, jeg kan sende til en på arbejdet",
       "Hjælp mig med noget tekst til en besked jeg skal have skrevet snart",
       "Skriv et eller andet pænt jeg kan sende afsted til en vigtig person"
     ],
@@ -632,9 +631,9 @@ const QUESTIONS = [
   {
     modul: "Hallucination & kritik",
     q: "Hvad betyder det, at en AI kan \"hallucinere\"?",
-    correct: "Den kan finde på fakta, der lyder rigtige, men er forkerte",
+    correct: "Den kan finde på fakta, der lyder rigtige, men i praksis er forkerte",
     wrong: [
-      "Den fryser fuldstændig og holder helt op med at svare på din besked",
+      "Den fryser fuldstændig og holder op med at svare på din besked",
       "Den skifter pludselig over til at skrive på et fremmed og ukendt sprog",
       "Den gentager dit eget spørgsmål ordret i stedet for at give et svar"
     ],
@@ -643,20 +642,20 @@ const QUESTIONS = [
   {
     modul: "Hallucination & kritik",
     q: "AI'en lyder lige sikker, uanset om den har ret eller ej. Hvad betyder det?",
-    correct: "Tonen er ikke et tegn på sandhed — tjek selv det vigtige",
+    correct: "Tonen er ikke i sig selv et tegn på sandhed — tjek selv det vigtige",
     wrong: [
-      "At den altid har ret, lige præcis når den lyder rolig og overbevisende",
-      "At den er i tvivl, hver gang den skriver et svar med mange detaljer i",
-      "At den advarer dig tydeligt, før den sender et svar, den er usikker på"
+      "At den altid har ret, når den lyder rolig og overbevisende",
+      "At den altid er i tvivl, når svaret rummer mange detaljer",
+      "At den advarer dig, før den sender et svar, den er usikker på"
     ],
     explain: "AI'en bruger <b>samme sikre tone</b>, om den så rammer rigtigt eller finder på. Du kan ikke høre forskel — derfor tjekker du selv det, der betyder noget."
   },
   {
     modul: "Hallucination & kritik",
     q: "Hvad er den bedste vane til at fange en hallucination?",
-    correct: "Spørg \"er du sikker?\" og dobbelttjek tal, navne og datoer",
+    correct: "Spørg \"er du sikker?\" og tjek tal, navne og datoer",
     wrong: [
-      "Stol fuldt på svaret, så længe det er skrevet i et flydende sprog",
+      "Stol fuldt på svaret, så længe det er skrevet i flydende sprog",
       "Skriv spørgsmålet med store bogstaver, så AI'en svarer mere præcist",
       "Vent en dag og stil så det helt samme spørgsmål en ekstra gang til"
     ],
@@ -667,9 +666,9 @@ const QUESTIONS = [
   {
     modul: "Tryg & klog brug",
     q: "Hvilke oplysninger skal du ALDRIG dele med en AI?",
-    correct: "CPR-nummer, adgangskoder, kreditkort og MitID",
+    correct: "Dit CPR-nummer, dine adgangskoder, dine kreditkort og dit MitID",
     wrong: [
-      "En idé til en gave, du går og overvejer at give en god ven til jul",
+      "En idé til en gave, du overvejer at give en god ven til jul",
       "En tekst, du selv har skrevet og gerne vil have luget fejlene ud af",
       "Et helt almindeligt spørgsmål om, hvordan en bestemt ret bedst laves"
     ],
@@ -678,21 +677,21 @@ const QUESTIONS = [
   {
     modul: "Tryg & klog brug",
     q: "Hvornår bør et menneske ALTID tjekke AI'ens svar efter?",
-    correct: "Ved helbred, økonomi og juridiske spørgsmål",
+    correct: "Ved vigtige spørgsmål om dit helbred, din økonomi og jura",
     wrong: [
-      "Når du beder den foreslå en helt almindelig ret til aftensmaden i dag",
+      "Når du beder den foreslå en helt almindelig ret til aftensmaden",
       "Når du vil have den til at omskrive en kort og venlig besked lidt pænere",
-      "Når du beder den forklare et dagligdags ord, du er kommet i tvivl om"
+      "Når du vil have den til at omskrive en kort og venlig besked pænere"
     ],
     explain: "Til <b>helbred, økonomi og jura</b> skal en fagperson altid afgøre. Brug AI'en til at forberede dig — men lad ikke den have det sidste ord."
   },
   {
     modul: "Tryg & klog brug",
     q: "Hvad er en god grundregel, før du sender noget til en AI?",
-    correct: "Skriv ikke noget, du ikke ville sige højt på en café",
+    correct: "Skriv ikke noget til den, du ikke ville sige højt på en café",
     wrong: [
-      "Skriv altid dit fulde navn og din adresse, så svaret bliver mere præcist",
-      "Vent til sent om aftenen, hvor færrest andre bruger tjenesten samtidig",
+      "Skriv altid dit fulde navn og din adresse for et mere præcist svar",
+      "Vent til sent om aftenen, hvor færrest bruger tjenesten",
       "Brug kun korte beskeder, for ellers gemmer AI'en alt, hvad du skriver"
     ],
     explain: "Behandl AI'en som en <b>café</b>: skriv ikke noget, du ikke ville sige højt blandt fremmede. Så er du på den sikre side."
