@@ -42,6 +42,12 @@
       --radius: 14px;
       --radius-lg: 20px;
       --radius-xl: 28px;
+      /* — samlet bevægelses-signatur (ét atelier) — */
+      --ease-lux: cubic-bezier(.16, 1, .3, 1);
+      --ease-settle: cubic-bezier(.22, .8, .3, 1);
+      --dur-fast: 160ms;
+      --dur: 240ms;
+      --dur-slow: 520ms;
     }
 
     html { scroll-behavior: smooth; }
@@ -222,7 +228,7 @@
       box-shadow: var(--shadow-3d);
       opacity: 0;
       transform: translate(var(--start-x, -200px), var(--start-y, -100px)) rotate(var(--start-rot, -20deg)) scale(0.5);
-      transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: opacity 0.8s var(--ease-settle), transform 1s var(--ease-settle);
       position: relative;
       overflow: hidden;
     }
@@ -473,8 +479,8 @@
     }
     .progress-pill-fill::after {
       content: ''; position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.55) 50%, transparent 100%);
-      animation: barShimmer 2.2s ease-in-out infinite;
+      background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.38) 50%, transparent 100%);
+      animation: barShimmer 3.8s ease-in-out infinite;
     }
     @keyframes barShimmer { 0% { transform: translateX(-100%); } 60%, 100% { transform: translateX(100%); } }
     .progress-pill-pct {
@@ -2144,6 +2150,161 @@
     .m5-done.show{ display:flex; }
     .m5-done .ti{ font-size:20px; flex:none; }
     .oc-item:focus-visible, .hl-step:focus-visible, .m5-item:focus-visible{ outline:2px solid var(--accent-green,#2f6a4a); outline-offset:2px; }
+
+    /* ═══════════════════════════════════════════════════════════════════
+       LUKSUS-LAG II · ro · materiale · signatur  (additivt · rører ikke
+       indhold, logik eller brand · alt kan rulles tilbage ved at slette)
+       ═══════════════════════════════════════════════════════════════════ */
+    :root{
+      --gold-hi:#f0d68a;
+      --gold-line:rgba(201,162,74,.32);
+      --gold-glow:rgba(201,162,74,.22);
+      --ease-lux:cubic-bezier(.16,1,.3,1);
+      --sheen-lux:linear-gradient(115deg,transparent 0 40%,rgba(255,255,255,.62) 50%,transparent 60% 100%);
+    }
+
+    /* — FASE 1 · Hero: rolig, langsom aurora-drift bag titlen — */
+    #scene-welcome{ position:relative; }
+    #scene-welcome::before{
+      content:''; position:absolute; z-index:0; pointer-events:none;
+      inset:-6% -14% auto -14%; height:560px;
+      background:
+        radial-gradient(ellipse 58% 54% at 32% 34%, rgba(47,106,74,.11), transparent 68%),
+        radial-gradient(ellipse 54% 50% at 70% 42%, rgba(169,136,65,.10), transparent 70%),
+        radial-gradient(ellipse 40% 44% at 54% 20%, rgba(201,162,74,.07), transparent 72%);
+      filter:blur(10px);
+      animation:luxAurora 24s ease-in-out infinite alternate;
+    }
+    #scene-welcome > *{ position:relative; z-index:1; }
+    @keyframes luxAurora{
+      0%{ transform:translate3d(-1.6%,0,0) scale(1); opacity:.85; }
+      100%{ transform:translate3d(1.8%,-1.8%,0) scale(1.05); opacity:1; }
+    }
+
+    /* — FASE 1 · Titel-accent: levende, langsomt vandrende grøn→guld→grøn — */
+    .welcome-title .accent{
+      background:linear-gradient(118deg,
+        var(--primary) 0%, var(--brass) 42%, var(--gold-hi) 52%, var(--brass) 62%, var(--primary) 100%);
+      background-size:230% 100%;
+      -webkit-background-clip:text; background-clip:text;
+      -webkit-text-fill-color:transparent; color:transparent;
+      animation:luxAccentPan 11s var(--ease-lux) infinite;
+    }
+    @keyframes luxAccentPan{ 0%,100%{ background-position:12% 0; } 50%{ background-position:88% 0; } }
+
+    /* — FASE 1 · Badge: en hårfin, rolig guld-kant der løfter uden at skrige — */
+    .welcome-badge{ position:relative; box-shadow:0 2px 12px rgba(26,40,33,.06), inset 0 0 0 1px var(--gold-line); }
+
+    @media (prefers-reduced-motion: reduce){
+      #scene-welcome::before{ animation:none; }
+      .welcome-title .accent{ animation:none; background-position:50% 0; }
+    }
+
+    /* — FASE 2 · Knapper: blød trykfølelse (tactility) — */
+    .btn-start:active, .btn-next:active, .btn-prev:active, .btn-exam:active,
+    .btn-exam-big:active, .copy-btn:active, .guess-next:active, .kn-ask:active,
+    .it-next:active, .pc-send:active, .hl-btn:active, .home-btn:active{
+      transform:scale(.972); transition-duration:.09s;
+    }
+
+    /* — FASE 2 · Signaturkort: én sammenhængende premium-hover
+         (roligt løft + hårfin guld-kant + lys-sheen der glider over kortet) — */
+    .lux-sheen-host{
+      position:relative; overflow:hidden;
+      transition:transform .35s var(--ease-lux), box-shadow .35s var(--ease-lux);
+    }
+    .lux-sheen-host:hover{
+      transform:translateY(-3px);
+      box-shadow:var(--shadow-lg), inset 0 0 0 1px var(--gold-line);
+    }
+    .lux-sheen{
+      position:absolute; top:0; bottom:0; left:0; width:60%;
+      background:var(--sheen-lux); transform:translateX(-170%) skewX(-14deg);
+      pointer-events:none; z-index:2; opacity:0;
+      transition:transform .75s var(--ease-lux), opacity .2s ease;
+    }
+    .lux-sheen-host:hover .lux-sheen{ transform:translateX(240%) skewX(-14deg); opacity:.9; }
+    @media (prefers-reduced-motion: reduce){
+      .btn-start:active,.btn-next:active,.btn-prev:active,.btn-exam:active,.btn-exam-big:active,
+      .copy-btn:active,.guess-next:active,.kn-ask:active,.it-next:active,.pc-send:active,.hl-btn:active,.home-btn:active{ transform:none; }
+      .lux-sheen{ display:none; }
+    }
+
+    /* — FASE 4 · Salgsøjeblik: prøve-banner får levende metal + rolig ambient sheen — */
+    .exam-hero{ background-size:180% 180%; animation:luxHeroPan 18s var(--ease-lux) infinite; }
+    @keyframes luxHeroPan{ 0%,100%{ background-position:0% 50%; } 50%{ background-position:100% 50%; } }
+    .exam-hero::after{
+      content:''; position:absolute; top:0; bottom:0; left:-20%; width:42%;
+      background:linear-gradient(115deg,transparent 0 42%,rgba(255,255,255,.15) 50%,transparent 58% 100%);
+      transform:translateX(-40%) skewX(-14deg); pointer-events:none;
+      animation:luxHeroSheen 8s ease-in-out 1.6s infinite;
+    }
+    @keyframes luxHeroSheen{ 0%{ transform:translateX(-40%) skewX(-14deg); } 22%,100%{ transform:translateX(420%) skewX(-14deg); } }
+
+    /* — FASE 4 · "Start prøven": rolig, åndende guld-glød der trækker øjet mod salgshandlingen — */
+    .btn-exam-big{ animation:luxBreathe 3.8s var(--ease-lux) infinite; }
+    .btn-exam-big:hover{ animation:none; }
+    @keyframes luxBreathe{
+      0%,100%{ box-shadow:0 12px 28px rgba(0,0,0,.2), 0 0 0 0 rgba(224,179,61,0); }
+      50%{ box-shadow:0 12px 28px rgba(0,0,0,.2), 0 0 0 7px rgba(224,179,61,.18); }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .exam-hero{ animation:none; }
+      .exam-hero::after{ animation:none; display:none; }
+      .btn-exam-big{ animation:none; }
+    }
+
+    /* — FASE 3 · Glidende faneindikator: understregningen glider blødt mellem faner
+         (grøn = brand-rygrad · statisk understregning bevares som fallback uden JS) — */
+    .module-nav{ position:relative; }
+    .lux-tab-ind{
+      position:absolute; bottom:0; left:0; width:0; height:3px; border-radius:3px;
+      background:linear-gradient(90deg, var(--green-mid), var(--primary));
+      box-shadow:0 1px 7px rgba(47,106,74,.28);
+      opacity:0; pointer-events:none;
+      transition:left .42s var(--ease-lux), width .42s var(--ease-lux),
+                 background .3s ease, opacity .3s ease;
+    }
+    .module-nav.has-lux-ind .module-tab.active{ border-bottom-color:transparent; }
+    @media (prefers-reduced-motion: reduce){
+      .lux-tab-ind{ transition:opacity .2s ease; }
+      .module-nav.has-lux-ind .module-tab.active{ border-bottom-color:var(--primary); }
+      .module-nav.has-lux-ind .module-tab.exam.active{ border-bottom-color:var(--accent-green); }
+    }
+
+    /* ═══════════════ LUX v2 · samlet ro & signatur ═══════════════ */
+    /* — ét roligt hover-sprog på indholdskort (fælles token-timing) — */
+    .kn-card, .tv-box, .oc-box {
+      transition: transform var(--dur) var(--ease-lux),
+                  box-shadow var(--dur) var(--ease-lux),
+                  border-color var(--dur) var(--ease-lux);
+    }
+    .kn-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); border-color: rgba(169,136,65,0.45); }
+    /* input-/klik-bærende kort løftes IKKE (uro under skrivning) — kun blødt varmt strøg */
+    .tv-box:hover, .oc-box:hover { box-shadow: var(--shadow-lg); border-color: rgba(169,136,65,0.32); }
+
+    /* — forfinet, konsistent fokus-ring i messing (tilgængelighed + polish) — */
+    :where(a, button, [tabindex], .oc-item, .kn-ask, .module-tab, .wb-replay):focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(201,162,75,0.45);
+      border-radius: 9px;
+    }
+
+    /* — SIGNATUR: messing-tråd der tegner sig ind under hver modul-titel — */
+    .module-header { position: relative; }
+    .module-title { position: relative; display: inline-block; }
+    .module-title::after {
+      content: ''; position: absolute; left: 50%; bottom: -14px;
+      width: 58px; height: 2px; border-radius: 2px;
+      background: linear-gradient(90deg, transparent, #c9a24b 30%, #e0b33d 50%, #c9a24b 70%, transparent);
+      transform: translateX(-50%) scaleX(0); transform-origin: center; opacity: 0;
+      transition: transform var(--dur-slow) var(--ease-lux) .12s, opacity var(--dur) ease .12s;
+    }
+    .module-section.active .module-title::after { transform: translateX(-50%) scaleX(1); opacity: 1; }
+    @media (prefers-reduced-motion: reduce) {
+      .module-title::after { transition: none; transform: translateX(-50%) scaleX(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -3405,6 +3566,68 @@
       var sw = document.getElementById('scene-welcome'); if(sw) sw.classList.add('active');
       window.scrollTo({ top: 0, behavior: 'auto' });
     };
+  })();
+  </script>
+
+  <!-- LUKSUS-LAG II · signatur lys-sheen på indholdskort (additivt, robust mod JS-render) -->
+  <script>
+  (function(){
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var SEL = '.set-card, .score-card, .exam-part, .kn-card';
+    function decorate(root){
+      if(!root || !root.querySelectorAll) return;
+      var list = root.querySelectorAll(SEL);
+      for(var i=0;i<list.length;i++){
+        var card = list[i];
+        if(card.classList.contains('lux-sheen-host')) continue;
+        card.classList.add('lux-sheen-host');
+        var s = document.createElement('span');
+        s.className = 'lux-sheen'; s.setAttribute('aria-hidden','true');
+        card.appendChild(s);
+      }
+    }
+    decorate(document);
+    // Fang kort der genereres/afsløres dynamisk (fx kn-card, module-render)
+    if('MutationObserver' in window){
+      var scope = document.getElementById('scene-course') || document.body;
+      new MutationObserver(function(muts){
+        for(var m=0;m<muts.length;m++){
+          var added = muts[m].addedNodes;
+          for(var n=0;n<added.length;n++){
+            if(added[n].nodeType === 1) decorate(added[n]);
+          }
+        }
+      }).observe(scope, { childList:true, subtree:true });
+    }
+  })();
+  </script>
+
+  <!-- LUKSUS-LAG II · glidende faneindikator (additivt, progressive enhancement) -->
+  <script>
+  (function(){
+    var nav = document.querySelector('.module-nav'); if(!nav) return;
+    var ind = document.createElement('span');
+    ind.className = 'lux-tab-ind'; ind.setAttribute('aria-hidden','true');
+    nav.appendChild(ind);
+    nav.classList.add('has-lux-ind');
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function pos(){
+      var a = nav.querySelector('.module-tab.active');
+      if(!a || !a.offsetWidth){ ind.style.opacity = '0'; return; }
+      ind.style.opacity = '1';
+      ind.style.left = a.offsetLeft + 'px';
+      ind.style.width = a.offsetWidth + 'px';
+      ind.style.background = a.classList.contains('exam')
+        ? 'linear-gradient(90deg, var(--accent-green), var(--green-light))'
+        : 'linear-gradient(90deg, var(--green-mid), var(--primary))';
+    }
+    nav.addEventListener('click', function(){ requestAnimationFrame(pos); });
+    window.addEventListener('resize', pos);
+    if('ResizeObserver' in window){ try{ new ResizeObserver(pos).observe(nav); }catch(e){} }
+    if(!reduce && 'MutationObserver' in window){
+      new MutationObserver(pos).observe(nav, { subtree:true, attributes:true, attributeFilter:['class'] });
+    }
+    requestAnimationFrame(pos); setTimeout(pos, 320);
   })();
   </script>
 </body>
