@@ -2904,7 +2904,24 @@
     const fill = document.getElementById('progressFill');
     const pctEl = document.getElementById('progressPct');
     if (fill) fill.style.width = pct + '%';
-    if (pctEl) pctEl.textContent = pct + '%';
+    if (pctEl) {
+      const to = pct, cur = parseInt(pctEl.textContent, 10) || 0;
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (cur === to || reduce) {
+        pctEl.textContent = to + '%';
+      } else {
+        const gen = (pctEl._cg || 0) + 1; pctEl._cg = gen;   // guard mod overlappende tællinger
+        const from = cur, dur = 800, t0 = performance.now();  // 0,8s = synk med bjælkens width-transition
+        const ease = x => 1 - Math.pow(1 - x, 3);             // blød ease-out (samme ro som resten)
+        const step = now => {
+          if (pctEl._cg !== gen) return;
+          const p = Math.min(1, (now - t0) / dur);
+          pctEl.textContent = Math.round(from + (to - from) * ease(p)) + '%';
+          if (p < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      }
+    }
     const xpTxt = document.getElementById('xpChipTxt'), xpChip = document.getElementById('xpChip');
     if (xpTxt && XP_RANKS[num-1] && xpTxt.textContent !== XP_RANKS[num-1]) {
       xpTxt.textContent = XP_RANKS[num-1];
