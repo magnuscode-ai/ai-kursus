@@ -2205,8 +2205,8 @@
     <div class="progress-bar-wrap">
       <span class="xp-chip" id="xpChip" title="Din rang"><i class="ti ti-rocket" aria-hidden="true"></i> <span class="xp-chip-txt" id="xpChipTxt">AI-Lærling</span></span>
       <span class="progress-label" id="progressLabel">Modul 1 af 5</span>
-      <div class="progress-pill-bar"><div class="progress-pill-fill" id="progressFill" style="width:20%"></div></div>
-      <span class="progress-pill-pct" id="progressPct">20%</span>
+      <div class="progress-pill-bar"><div class="progress-pill-fill" id="progressFill" style="width:0%"></div></div>
+      <span class="progress-pill-pct" id="progressPct">0%</span>
     </div>
 
     <div class="module-nav">
@@ -2708,13 +2708,13 @@
     const trans = document.getElementById('scene-transition');
     trans.classList.add('active');
     spawnParticles();
-    setTimeout(() => { trans.classList.add('fading'); }, 3500);
+    setTimeout(() => { trans.classList.add('fading'); }, 5250);
     setTimeout(() => {
       trans.classList.remove('active');
       trans.classList.remove('fading');
       document.getElementById('scene-course').classList.add('active');
       showModule(1, true);
-    }, 4000);
+    }, 6000);
   });
 
   const XP_RANKS = ['AI-Lærling','AI-Operatør','Prompt-Smed','AI-Detektiv','AI-Mester','Klar til prøven'];
@@ -2738,7 +2738,7 @@
     const labels = ['Modul 1 af 5', 'Modul 2 af 5', 'Modul 3 af 5', 'Modul 4 af 5', 'Modul 5 af 5', 'Afsluttende prøve'];
     const lbl = document.getElementById('progressLabel');
     if (lbl) lbl.textContent = labels[num - 1];
-    const pct = num <= 5 ? Math.round((num / 5) * 100) : 100;
+    const pct = Math.round(((num - 1) / 5) * 100);
     const fill = document.getElementById('progressFill');
     const pctEl = document.getElementById('progressPct');
     if (fill) fill.style.width = pct + '%';
@@ -3074,6 +3074,7 @@
       const m=meta(score);
       const circ=2*Math.PI*32; const offset=circ*(1-score/10);
       let lifts=Array.isArray(d.loft)?d.loft.filter(Boolean):(d.loft?[d.loft]:[]); lifts=lifts.slice(0,3);
+      if(!lifts.length) lifts=['Prøv at give AI\u2019en lidt mere at gå efter — fx hvem svaret er til, eller hvordan det skal se ud.'];
       const liftHtml = lifts.length
         ? '<div class="pc-sec lift"><div class="pc-sec-head"><i class="ti ti-target" aria-hidden="true"></i> Sådan løfter du det</div><ul class="pc-lift-list">'+lifts.map(function(){return '<li></li>';}).join('')+'</ul></div>'
         : '';
@@ -3105,10 +3106,10 @@
         '- 4-6: et reelt forsøg med et mål, men vagt — mangler både kontekst og format.\n'+
         '- 1-3: slet ikke et prompt (fx bare "hej").\n'+
         'Giv ikke topkarakter for et tyndt prompt. Forbedrer brugeren prompten, SKAL scoren stige.\n\n'+
-        'Feedback skal være sød, positiv og i KORTE linjer. Ros først og mest. Foreslår du noget at løfte, så hold det som ÉN kort, blød og valgfri idé — og udelad "loft" helt, hvis prompten allerede er god (8+).\n\n'+
+        'Feedback skal være sød, positiv og i KORTE linjer. Ros ALTID noget konkret først — også ved en meget lav score (fx at de tog første skridt). Giv ALTID præcis ÉN ting at forbedre — også ved en høj score eller 10/10 (fx et lille ekstra hint). Hold løftet som én kort, blød idé.\n\n'+
         'ABSOLUT REGEL: Skriv ALDRIG et færdigt eller forbedret prompt, og vis aldrig en omskrivning. Kun korte, bløde pejlemærker.\n\n'+
         'Svar KUN med ren, gyldig JSON — ingen markdown, ingen baktegn, ingen tekst udenfor:\n'+
-        '{"score": <heltal 1-10>, "ros": "<1-2 KORTE, varme linjer om hvad der er godt>", "loft": ["<1 kort, blød valgfri idé — udelad helt hvis prompten allerede er god>"], "naeste": "<1 kort, opmuntrende linje>"}\n\n'+
+        '{"score": <heltal 1-10>, "ros": "<1-2 KORTE, varme linjer om hvad der er godt — ALTID mindst én>", "loft": ["<ALTID præcis 1 kort idé til forbedring — også ved høj og lav score>"], "naeste": "<1 kort, opmuntrende linje>"}\n\n'+
         'Brugerens prompt:\n"""\n'+text+'\n"""';
     }
     async function send(){
