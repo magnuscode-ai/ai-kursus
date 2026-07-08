@@ -2143,6 +2143,7 @@
     .m5-done{ margin-top:1rem; padding:.9rem 1.1rem; border-radius:12px; background:var(--accent-green-soft); color:var(--accent-green); font-weight:700; font-size:14.5px; display:none; align-items:center; gap:10px; animation:knIn .4s cubic-bezier(.16,1,.3,1); }
     .m5-done.show{ display:flex; }
     .m5-done .ti{ font-size:20px; flex:none; }
+    .oc-item:focus-visible, .hl-step:focus-visible, .m5-item:focus-visible{ outline:2px solid var(--accent-green,#2f6a4a); outline-offset:2px; }
   </style>
 </head>
 <body>
@@ -2445,9 +2446,9 @@
     <div class="module-section" id="module-4">
       <div class="content">
         <div class="module-header">
-          <div class="module-label">Modul 4 · Hallucination</div>
+          <div class="module-label">Modul 4 · Fejl &amp; tryghed</div>
           <h2 class="module-title">Når AI finder på</h2>
-          <p class="module-intro">AI lyder lige så sikker når den tager fejl som når den har ret. Nu giver teorien fra Modul 1 pote: du lærer <em>hvorfor</em> den hallucinerer — og hvordan du fanger den, før den narrer dig.</p>
+          <p class="module-intro">AI lyder lige så sikker når den tager fejl som når den har ret. Nu giver teorien fra Modul 1 pote: du lærer <em>hvorfor</em> den hallucinerer — og hvordan du fanger den, før den narrer dig. Til sidst ser du, hvad du trygt kan dele med en AI — og hvad du bør holde for dig selv.</p>
         </div>
 
         <h3>1 · Spot hallucinationen <i class="ti ti-target" aria-hidden="true"></i></h3>
@@ -2907,7 +2908,7 @@
       oc.innerHTML=
         '<div class="oc-head"><div class="oc-head-title">Følg med — sæt flueben efterhånden</div><div class="oc-progress" id="ocProg">0 / '+OC.length+' klaret</div></div>'+
         '<div class="oc-list">'+OC.map(function(s,i){
-          return '<div class="oc-item" data-i="'+i+'"><div class="oc-check">'+CHECK+'</div><div class="oc-body"><div class="oc-step">'+s.t+'</div>'+(s.h?'<div class="oc-hint">'+s.h+'</div>':'')+'</div></div>';
+          return '<div class="oc-item" role="button" tabindex="0" data-i="'+i+'"><div class="oc-check">'+CHECK+'</div><div class="oc-body"><div class="oc-step">'+s.t+'</div>'+(s.h?'<div class="oc-hint">'+s.h+'</div>':'')+'</div></div>';
         }).join('')+'</div>'+
         '<div class="oc-done-msg" id="ocDone"><i class="ti ti-circle-check" aria-hidden="true"></i> Flot — din konto er klar. Nu indstiller vi den rigtigt.</div>';
       function recount(){
@@ -2916,7 +2917,9 @@
         const d=document.getElementById('ocDone'); if(d) d.classList.toggle('show', done===OC.length);
       }
       oc.querySelectorAll('.oc-item').forEach(function(it){
-        it.addEventListener('click',function(){ it.classList.toggle('done'); recount(); });
+        function act(){ it.classList.toggle('done'); recount(); }
+        it.addEventListener('click', act);
+        it.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
       });
     }
 
@@ -3252,7 +3255,7 @@
     var checkMount=document.getElementById('hlCheck');
     if(checkMount){
       checkMount.innerHTML=STEPS.map(function(s,i){
-        return '<div class="hl-step" data-i="'+i+'">'+
+        return '<div class="hl-step" role="button" tabindex="0" data-i="'+i+'">'+
           '<div class="hl-step-num"><i class="ti ti-'+s.icon+'" aria-hidden="true"></i></div>'+
           '<div class="hl-step-body">'+
             '<div class="hl-step-title">'+s.title+'</div>'+
@@ -3261,11 +3264,13 @@
         '</div>';
       }).join('');
       checkMount.querySelectorAll('.hl-step').forEach(function(step){
-        step.addEventListener('click',function(){
+        function act(){
           if(step.classList.contains('done')) return;
           step.classList.add('done');
           step.querySelector('.hl-step-num').innerHTML=CHECK_SVG;
-        });
+        }
+        step.addEventListener('click', act);
+        step.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
       });
     }
   })();
@@ -3310,7 +3315,7 @@
     var doneMsg=document.getElementById('m5Done');
     if(list){
       list.innerHTML=ITEMS.map(function(it,i){
-        return '<div class="m5-item" data-i="'+i+'">'+
+        return '<div class="m5-item" role="button" tabindex="0" data-i="'+i+'">'+
           '<div class="m5-item-check"></div>'+
           '<div class="m5-item-ic"><i class="ti ti-'+it.icon+'" aria-hidden="true"></i></div>'+
           '<div class="m5-item-text">'+it.text+'</div>'+
@@ -3330,12 +3335,14 @@
         }
       }
       list.querySelectorAll('.m5-item').forEach(function(item){
-        item.addEventListener('click',function(){
+        function act(){
           item.classList.toggle('done');
           var chk=item.querySelector('.m5-item-check');
           chk.innerHTML=item.classList.contains('done')?CHECK:'';
           refresh();
-        });
+        }
+        item.addEventListener('click', act);
+        item.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); act(); } });
       });
       refresh();
     }
