@@ -2205,8 +2205,8 @@
     <div class="progress-bar-wrap">
       <span class="xp-chip" id="xpChip" title="Din rang"><i class="ti ti-rocket" aria-hidden="true"></i> <span class="xp-chip-txt" id="xpChipTxt">AI-Lærling</span></span>
       <span class="progress-label" id="progressLabel">Modul 1 af 5</span>
-      <div class="progress-pill-bar"><div class="progress-pill-fill" id="progressFill" style="width:17%"></div></div>
-      <span class="progress-pill-pct" id="progressPct">17%</span>
+      <div class="progress-pill-bar"><div class="progress-pill-fill" id="progressFill" style="width:20%"></div></div>
+      <span class="progress-pill-pct" id="progressPct">20%</span>
     </div>
 
     <div class="module-nav">
@@ -2738,7 +2738,7 @@
     const labels = ['Modul 1 af 5', 'Modul 2 af 5', 'Modul 3 af 5', 'Modul 4 af 5', 'Modul 5 af 5', 'Afsluttende prøve'];
     const lbl = document.getElementById('progressLabel');
     if (lbl) lbl.textContent = labels[num - 1];
-    const pct = Math.round((num / 6) * 100);
+    const pct = num <= 5 ? Math.round((num / 5) * 100) : 100;
     const fill = document.getElementById('progressFill');
     const pctEl = document.getElementById('progressPct');
     if (fill) fill.style.width = pct + '%';
@@ -3097,14 +3097,14 @@
       }); });
     }
     function buildPrompt(text){
-      return 'Du er en varm, opmuntrende prompt-coach på et BEGYNDER-AI-kursus. Din vigtigste opgave er at motivere — folk er nye, og en hård score kan tage modet fra dem.\n'+
-        'Vurder hvor godt brugerens prompt ville få et brugbart svar fra en AI — men vær GAVMILD og positiv i din vurdering.\n\n'+
-        'Sådan scorer du (vær rundhåndet):\n'+
-        '- 9-10: klart mål OG enten kontekst om brugeren eller et ønsket format. Har prompten både mål, lidt kontekst og et format, er det klart 9-10 — ros det varmt.\n'+
-        '- 7-8: klart mål med lidt detalje.\n'+
-        '- 4-6: ret vagt, men et reelt forsøg.\n'+
+      return 'Du er en varm, opmuntrende prompt-coach på et BEGYNDER-AI-kursus. Folk er nye, så din TONE er altid venlig og motiverende — men scoren skal være ÆRLIG, så den stiger tydeligt, når prompten faktisk bliver bedre. En ærlig score, der kan vokse, motiverer mere end topkarakter til alt.\n'+
+        'Vurder hvor godt brugerens prompt ville få et brugbart, præcist svar fra en AI. Kurset lærer fire dele: rolle, kontekst, konkret opgave og format.\n\n'+
+        'Sådan scorer du:\n'+
+        '- 9-10: klart mål OG kontekst om brugerens situation OG et ønsket format — hele billedet er der.\n'+
+        '- 7-8: klart mål plus ÉN af delene (enten kontekst eller format).\n'+
+        '- 4-6: et reelt forsøg med et mål, men vagt — mangler både kontekst og format.\n'+
         '- 1-3: slet ikke et prompt (fx bare "hej").\n'+
-        'Er du i tvivl mellem to tal, så vælg det højeste. Forbedrer brugeren prompten, skal scoren stige.\n\n'+
+        'Giv ikke topkarakter for et tyndt prompt. Forbedrer brugeren prompten, SKAL scoren stige.\n\n'+
         'Feedback skal være sød, positiv og i KORTE linjer. Ros først og mest. Foreslår du noget at løfte, så hold det som ÉN kort, blød og valgfri idé — og udelad "loft" helt, hvis prompten allerede er god (8+).\n\n'+
         'ABSOLUT REGEL: Skriv ALDRIG et færdigt eller forbedret prompt, og vis aldrig en omskrivning. Kun korte, bløde pejlemærker.\n\n'+
         'Svar KUN med ren, gyldig JSON — ingen markdown, ingen baktegn, ingen tekst udenfor:\n'+
