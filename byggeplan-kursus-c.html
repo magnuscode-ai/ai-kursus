@@ -178,6 +178,7 @@ a{color:var(--gold-deep);font-weight:600}
       <li class="a"><strong>Forløbsstruktur med C4 + C5:</strong> Den nuværende journey er C1 → Q1 → C2 → Q2 → C3 → E1 → E2. Med C4/C5 skal du beslutte den nye rækkefølge (fx C1→Q1→C2→Q2→C3→Q3→C4→Q4→C5→Q5→E1→E2) og om der skal være quiz efter C3/C4/C5. Når det er besluttet, bruges "Forløbs-opdatering"-prompten nederst til at rette journey-bar + sidebar + lås-logik på ALLE C-sider ens.</li>
       <li class="a"><strong>Indhold til C4 + C5:</strong> Disse kurser har intet indhold endnu. Beslut modul-emnerne (eller lad chatten foreslå et pensum til godkendelse) FØR den bygger.</li>
       <li><strong>Verificér eksamen-c + eksamen-c-del2:</strong> De findes nu på GitHub (modsat tidligere note). Bekræft de er komplette før re-skin — ellers bygges manglende dele først.</li>
+      <li class="a"><strong>C-belønnings-flow (til diplomet):</strong> eksamen-c-del2 skriver ikke coins/badge til Firestore endnu (kun UI-state). Beslut — som ved D — at del2 sætter et <code>passed</code>-flag, og at <strong>diplomsiden</strong> udsteder belønningen (150 coins + Sølv-badge C + <code>arrayUnion('C')</code> + bevis) ét sted med dedup, så der aldrig belønnes dobbelt.</li>
       <li><strong>quiz-c2.html</strong> er kun ~428 linjer (mod quiz-c1's ~1283) — tjek om den er færdig eller en stub, før re-skin.</li>
       <li><strong>Cheat sheets røres ikke</strong> under C-redesign (jsPDF-downloaden) — bevar koden som den er; hele cheat-sheet-designet laves i "Mit Bibliotek"-chatten senere.</li>
     </ul>
@@ -314,6 +315,28 @@ const prompts = [
  {n:'Quiz C5 (Q5)',fil:'quiz-c5.html',type:'fresh',tok:T['C5'],
   note:'Findes ikke (404). Mini-quiz efter C5. Byg frisk i quiz-design-standarden, C5-accent.',
   body:freshQuiz('quiz-c5.html',tokBlock(T['C5']),'quiz-c5','C5')},
+
+ {n:'Kursus C · Diplom',fil:'kursus-c-diplom.html',type:'fresh',tok:{prim:'#c2a038',deep:'#8a6d1e',mid:'#d0b155',warm:'#e8ce78',ink:'#5c4712',rgb:'194,160,56',wrgb:'232,206,120',mrgb:'208,177,85'},
+  note:"Findes ikke (404). Kursus C's diplom/afslutningsside — byg frisk efter kursus-d-average-diplom.html som skabelon, i C-guld. Herfra: hent bevis, download PDF, tilbage til platform, videre til C+.",
+  body:`Du skal BYGGE kursus-c-diplom.html HELT FRISK — Kursus C's diplom-/afslutningsside. Den findes ikke endnu. Byg den efter kursus-d-average-diplom.html som strukturel skabelon (belønnings-logik + PDF), men i det nye guld Honning & Skov C-design. Følg C-design-standarden. Spørg først "Hvem skriver, Alexander eller August?".
+
+HVAD SIDEN GØR (som D-diplomet):
+- GATER på at hele Kursus C er bestået. FØRST: tjek live hvad eksamen-c-del2.html skriver til Firestore ved beståelse — pt. har den kun UI-klasser ('passed'/'failed') + 'badge'-referencer, men INGEN coins/arrayUnion/verify. Etablér et rent flow som ved D: del2 sætter et passed-flag (fx cExamPassed:true), og diplomet gater på det (ikke bestået → 'Bestå prøven først' → eksamen-c.html). Afklar med Alexander om del2 skal opdateres til at sætte flaget.
+- UDSTEDER belønningen på ÉT knap-tryk ('Modtag mit badge og 150 coins'): 150 coins + Sølv-badge C {level:'C',type:'main'} + completedCourses arrayUnion('C') + AKAI-C-bevis via reserveVerify i 'verifications'-collection. DEDUP (VIGTIGT): har brugeren allerede C-badge ELLER cRewardClaimed:true → INGEN dobbelt-belønning; sæt cRewardClaimed:true ved claim.
+- PERSONLIGT BEVIS: træk navn + efternavn + email + dato fra Firebase (gør beviset personligt).
+- DOWNLOAD som PDF (jsPDF + html2canvas, fx 'bevis-kursus-c.pdf') + Print-knap.
+- KNAPPER: tilbage til platform.html, OG videre til Kursus C+ (intro-cplus.html).
+
+Design:
+1. Hent skabelon: curl -s -o kursus-d-average-diplom.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-d-average-diplom.html" (struktur + belønnings-logik) OG kursus-c1.html (C-guld-CSS).
+2. Premium, indrammet A4-certifikat i C's flagskibs-guld. Tokens:
+  --c-gold-deep:#8a6d1e; --c-gold:#c2a038; --c-gold-mid:#d0b155; --c-gold-warm:#e8ce78; --c-gold-ink:#5c4712;
+  --c-gold-rgb:194,160,56; --c-gold-warm-rgb:232,206,120; --c-gold-mid-rgb:208,177,85;
+  (diplomet må gerne have en distinkt, festlig premium-ramme — som D-diplomets Skovkammer var distinkt fra eksamen — men i varm guld, ikke grøn/brun.)
+3. Ingen emojis → SVG/glyffer. ALDRIG SVG i CSS content:''. Konfetti ved claim (burstConfetti). coins-pill skjult indtil claim. Brand "Akademiet AI", frosne navne urørt.
+4. Validér (node --check + lxml), Playwright-screenshot, lever via present_files.
+
+DOBBELT-BELØNNING MÅ ALDRIG KUNNE SKE: hvis eksamen-c-del2 allerede udsteder badge/coins, flyt udstedelsen til diplomet (som ved D), så der kun belønnes ÉT sted.`},
 
  {n:'Forløbs-opdatering (alle C-sider)',fil:'alle kursus-c*/quiz-c*/eksamen-c*',type:'fresh',tok:null,
   note:'KØR TIL SIDST — når C4/C5 + quizzer findes og journey-strukturen er besluttet. Retter forløbsbjælken + venstre sidebar + lås-logik ens på alle C-sider.',
