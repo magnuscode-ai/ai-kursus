@@ -9,21 +9,47 @@
     *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
 
     :root {
-      --ink:#0D1117; --ink-soft:#374151; --muted:#6B7280;
-      --border:#E5E7EB; --bg:#F9FAFB; --white:#FFFFFF;
-      --teal:#0D9488; --teal-deep:#0F766E;
-      --teal-50:#F0FDFA; --teal-100:#CCFBF1; --teal-200:#99F6E4; --teal-300:#5EEAD4;
-      --teal-glow:rgba(13,148,136,0.15);
-      --amber:#D97706; --amber-50:#FFFBEB; --amber-100:#FEF3C7;
-      --green:#059669; --green-light:#10B981;
-      --green-50:#ECFDF5; --green-100:#D1FAE5;
-      --red:#DC2626; --red-50:#FEF2F2;
-      --indigo:#4F46E5;
-      --r-sm:8px; --r:12px; --r-lg:18px; --r-xl:24px;
+      /* ── C2 kernefarver · Kursus C-familien · accent #c9a040 (lys guld) ── */
+      --c-gold-deep:#916d26; --c-gold:#c9a040; --c-gold-mid:#d7b15d;
+      --c-gold-warm:#efce80; --c-gold-ink:#63471a;
+      --c-gold-rgb:201,160,64; --c-gold-warm-rgb:239,206,128; --c-gold-mid-rgb:215,177,93;
+      --c-gold-tint:#f7f0d6; --c-gold-faint:#fdf9ed;
+      --c-gold-glow:rgba(var(--c-gold-rgb),.14); --c-gold-glow-h:rgba(var(--c-gold-rgb),.28);
+      --c-gold-soft:rgba(var(--c-gold-rgb),.08); --c-gold-ring:rgba(var(--c-gold-rgb),.22);
+
+      /* ── Honning & Skov basis ── */
+      --ink:#20312a; --ink-soft:#2f4338; --muted:#5a7060; --muted-2:#8aa090;
+      --border:#cfc6b0; --border-strong:#bbb0a0; --bg:#e8e2d3;
+      --white:#fbf7ee; --card:#fbf7ee; --card-2:#f5f0e5; --surface-2:#f5f0e5;
+
+      /* ── teal-navne omdirigeret til guld (bevarer eksisterende CSS) ── */
+      --teal:var(--c-gold); --teal-deep:var(--c-gold-deep);
+      --teal-50:var(--c-gold-faint); --teal-100:var(--c-gold-tint);
+      --teal-200:var(--c-gold-warm); --teal-300:var(--c-gold-mid);
+      --teal-glow:var(--c-gold-glow);
+
+      /* ── status (Honning & Skov) ── */
+      --amber:#a98841; --amber-50:#f6edce; --amber-100:#f0e4bf;
+      --green:#2f6a4a; --green-light:#3a7d5a; --green-50:#dee8de; --green-100:#cfe0cf;
+      --red:#c0392b; --red-50:#fdecea;
+      --indigo:var(--c-gold);
+
+      /* ── sidebar — beige creme-panel (som C1) ── */
+      --sb-bg:#ddd3ba; --sb-bg-2:#e3dac3; --sb-line:#c8bb9c; --sb-ink:#3d4a3a; --sb-muted:#7c8574;
+
+      /* ── varme skygger ── */
+      --shadow-sm:0 1px 2px rgba(32,49,42,.04),0 1px 3px rgba(32,49,42,.06);
+      --shadow-md:0 4px 16px rgba(32,49,42,.06),0 2px 4px rgba(32,49,42,.04);
+      --shadow-gold:0 12px 40px rgba(var(--c-gold-rgb),.22);
+
+      --r-sm:10px; --r:16px; --r-lg:22px; --r-xl:28px;
+      --ease-lux:cubic-bezier(.25,.10,.25,1.0);
+      --ease-reveal:cubic-bezier(.16,1,.30,1);
+      --ease-settle:cubic-bezier(.34,1.20,.64,1.0);
     }
 
     html { scroll-behavior:smooth; }
-    html { background:#F4F9F9; }
+    html { background:#ede7d5; }
     body { font-family:'Outfit',sans-serif; background:transparent; color:var(--ink); line-height:1.6; }
 
     /* NAV */
@@ -37,18 +63,18 @@
     .journey { background:var(--white); border-bottom:1px solid var(--border); overflow-x:auto; scrollbar-width:none; padding:0 28px; }
     .journey::-webkit-scrollbar { display:none; }
     .journey-track { display:flex; align-items:stretch; min-width:max-content; justify-content:center; margin:0 auto; }
-    .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#9CA3AF; border-bottom:2px solid transparent; white-space:nowrap; }
+    .j-item { display:flex; align-items:center; gap:7px; padding:13px 14px; font-size:12px; font-weight:600; color:#8aa090; border-bottom:2px solid transparent; white-space:nowrap; }
     .j-item.active { color:var(--teal); border-bottom-color:var(--teal); }
     .j-item.done { color:var(--green); border-bottom-color:var(--green); }
-    .j-dot { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:#F3F4F6; color:#9CA3AF; }
+    .j-dot { width:19px; height:19px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:700; background:#ece6d6; color:#8aa090; }
     .j-item.active .j-dot { background:var(--teal); color:white; }
     .j-item.done .j-dot { background:var(--green); color:white; }
-    .j-sep { color:#D1D5DB; font-size:14px; align-self:center; }
+    .j-sep { color:#cfc6b0; font-size:14px; align-self:center; }
 
     /* HERO */
     .hero { background:var(--teal-deep); padding:52px 28px 44px; position:relative; overflow:hidden; }
     .hero-grid { position:absolute; inset:0; opacity:.04; background-image:linear-gradient(rgba(255,255,255,.8) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.8) 1px,transparent 1px); background-size:40px 40px; }
-    .hero-blob { position:absolute; width:440px; height:440px; background:radial-gradient(circle,rgba(20,184,166,.3) 0%,transparent 70%); top:-160px; right:-80px; border-radius:50%; animation:blobFloat 9s ease-in-out infinite; }
+    .hero-blob { position:absolute; width:440px; height:440px; background:radial-gradient(circle,rgba(201,160,64,.3) 0%,transparent 70%); top:-160px; right:-80px; border-radius:50%; animation:blobFloat 9s ease-in-out infinite; }
     @keyframes blobFloat { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-18px) scale(1.04); } }
     .hero-inner { max-width:700px; margin:0 auto; position:relative; z-index:1; }
     .hero-chip { display:inline-flex; align-items:center; gap:8px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18); color:rgba(255,255,255,.85); font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:5px 14px; border-radius:999px; margin-bottom:20px; }
@@ -71,25 +97,25 @@
     .notice.info .notice-body { color:var(--teal-deep); }
 
     /* MODULES */
-    .mod { background:#F6FFFE; border:1px solid #B2DFDB; border-left:4px solid var(--teal-200); border-radius:var(--r-xl); margin-bottom:14px; overflow:hidden; box-shadow:0 2px 8px rgba(13,148,136,.06); transition:box-shadow .25s,border-color .25s,border-left-color .25s; }
-    .mod:hover { box-shadow:0 4px 20px rgba(13,148,136,.12); border-left-color:var(--teal); }
+    .mod { background:#fbf7ee; border:1px solid #B2DFDB; border-left:4px solid var(--teal-200); border-radius:var(--r-xl); margin-bottom:14px; overflow:hidden; box-shadow:0 2px 8px rgba(201,160,64,.06); transition:box-shadow .25s,border-color .25s,border-left-color .25s; }
+    .mod:hover { box-shadow:0 4px 20px rgba(201,160,64,.12); border-left-color:var(--teal); }
     /* .mod.open removed — no accordion */
     .mod-header { display:flex; align-items:center; gap:16px; padding:20px 24px; cursor:pointer; transition:background .15s; }
     .mod-header:hover { background:var(--teal-50); }
 
-    .mod-num { width:40px; height:40px; border-radius:11px; background:#F3F4F6; color:#9CA3AF; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex-shrink:0; transition:background .2s,color .2s; }
+    .mod-num { width:40px; height:40px; border-radius:11px; background:#ece6d6; color:#8aa090; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; flex-shrink:0; transition:background .2s,color .2s; }
 
     .mod.done .mod-num { background:var(--green); color:white; }
     .mod-text { flex:1; }
     .mod-title { font-size:15px; font-weight:700; color:var(--ink); }
     .mod-sub { font-size:12.5px; color:var(--muted); margin-top:2px; }
-    .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod-time { font-size:11.5px; font-weight:600; color:var(--muted); background:#ece6d6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
 
     .mod-done-badge { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--green); background:var(--green-50); padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.done .mod-done-badge { display:flex; }
     .mod.locked { opacity:.55; filter:grayscale(.35); pointer-events:none; }
     /* mod.locked header: pointer-events handled by parent */
-    .mod-locked-badge { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); background:#F3F4F6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
+    .mod-locked-badge { display:flex; align-items:center; gap:5px; font-size:11px; font-weight:700; color:var(--muted); background:#ece6d6; padding:4px 10px; border-radius:999px; flex-shrink:0; }
     .mod.locked .mod-locked-badge { display:flex; }
 
 
@@ -111,33 +137,33 @@
     p.prose strong { color:var(--ink); font-weight:600; }
 
     /* COPY BLOCK */
-    .copy-block { background:#0D1117; border-radius:var(--r); overflow:hidden; margin-bottom:16px; border:1px solid #1E2530; }
+    .copy-block { background:#20312a; border-radius:var(--r); overflow:hidden; margin-bottom:16px; border:1px solid #2f4338; }
     .copy-topbar { display:flex; align-items:center; justify-content:space-between; padding:9px 14px; background:rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.07); }
-    .copy-label-txt { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#4B5563; }
-    .copy-btn { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.11); color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; transition:all .18s; }
+    .copy-label-txt { font-size:10.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:#5a7060; }
+    .copy-btn { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.11); color:#8aa090; font-family:'Outfit',sans-serif; font-size:11.5px; font-weight:600; padding:4px 10px; border-radius:6px; cursor:pointer; transition:all .18s; }
     .copy-btn:hover { background:rgba(255,255,255,.14); color:white; }
     .copy-btn.copied { background:rgba(16,185,129,.15); border-color:rgba(16,185,129,.3); color:#6EE7B7; }
     .copy-btn svg { width:13px; height:13px; flex-shrink:0; }
-    .copy-text { padding:14px 16px; font-family:'Courier New',monospace; font-size:13px; line-height:1.7; color:#E2E8F0; white-space:pre-wrap; word-break:break-word; }
+    .copy-text { padding:14px 16px; font-family:'Courier New',monospace; font-size:13px; line-height:1.7; color:#e8e2d3; white-space:pre-wrap; word-break:break-word; }
 
     /* TONE CARDS */
     .tone-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px; }
     @media(max-width:520px){ .tone-grid { grid-template-columns:1fr; } }
     .tone-card { border-radius:var(--r); padding:14px 16px; border:1px solid transparent; }
-    .tone-card.t1 { background:#F1F5F9; border-color:#CBD5E1; }
+    .tone-card.t1 { background:#f5f0e5; border-color:#bbb0a0; }
     .tone-card.t2 { background:var(--teal-50); border-color:var(--teal-200); }
     .tone-card.t3 { background:var(--green-50); border-color:#A7F3D0; }
     .tone-card.t4 { background:var(--amber-50); border-color:#FDE68A; }
     .tone-label { font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin-bottom:5px; }
-    .tone-card.t1 .tone-label { color:#475569; }
+    .tone-card.t1 .tone-label { color:#5a7060; }
     .tone-card.t2 .tone-label { color:var(--teal-deep); }
     .tone-card.t3 .tone-label { color:#065F46; }
     .tone-card.t4 .tone-label { color:#92400E; }
     .tone-use { font-size:12.5px; color:var(--muted); line-height:1.5; }
 
     /* AI DEMO */
-    .ai-demo { border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; box-shadow:0 2px 12px rgba(0,0,0,.05); }
-    .ai-demo-label { background:#F8FAFC; border-bottom:1px solid var(--border); padding:8px 16px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
+    .ai-demo { border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-bottom:16px; box-shadow:0 2px 12px rgba(32,49,42,.05); }
+    .ai-demo-label { background:#f5f0e5; border-bottom:1px solid var(--border); padding:8px 16px; font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); }
     .ai-tabs { display:flex; gap:8px; padding:10px; background:var(--bg); border-bottom:1px solid var(--border); }
     .ai-tab {
       flex:1; padding:12px 14px;
@@ -150,9 +176,9 @@
     }
     /* AKTIV = lysegrøn (her er du) */
     .ai-tab.active {
-      background:linear-gradient(135deg,#34D399,#10B981);
+      background:linear-gradient(135deg,#d7b15d,#3a7d5a);
       color:white;
-      border-color:#10B981;
+      border-color:#3a7d5a;
       box-shadow:0 2px 10px rgba(16,185,129,.35);
       cursor:default;
     }
@@ -161,30 +187,30 @@
       background:var(--teal-deep);
       color:white;
       border-color:var(--teal-deep);
-      box-shadow:0 2px 8px rgba(15,118,110,.3);
+      box-shadow:0 2px 8px rgba(145,109,38,.3);
       animation:tabPulse 2.2s ease-in-out infinite;
     }
     .ai-tab:not(.active):hover {
       transform:translateY(-1px);
-      box-shadow:0 4px 14px rgba(15,118,110,.5);
+      box-shadow:0 4px 14px rgba(145,109,38,.5);
       animation:none;
     }
     @keyframes tabPulse {
-      0%,100% { box-shadow:0 2px 8px rgba(15,118,110,.3); }
-      50% { box-shadow:0 2px 14px rgba(15,118,110,.55); }
+      0%,100% { box-shadow:0 2px 8px rgba(145,109,38,.3); }
+      50% { box-shadow:0 2px 14px rgba(145,109,38,.55); }
     }
     .ai-response { padding:16px; background:var(--white); }
     .ai-response.hidden { display:none; }
     .ai-bubble { display:flex; gap:10px; align-items:flex-start; margin-bottom:12px; }
-    .ai-avatar { width:30px; height:30px; border-radius:9px; background:#374151; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
+    .ai-avatar { width:30px; height:30px; border-radius:9px; background:#2f4338; color:white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0; }
     .ai-avatar-good { background:var(--teal); }
-    .ai-msg { background:#F8FAFC; border:1px solid var(--border); border-radius:0 var(--r) var(--r) var(--r); padding:12px 14px; font-size:13.5px; line-height:1.65; color:var(--ink-soft); flex:1; }
+    .ai-msg { background:#f5f0e5; border:1px solid var(--border); border-radius:0 var(--r) var(--r) var(--r); padding:12px 14px; font-size:13.5px; line-height:1.65; color:var(--ink-soft); flex:1; }
     .ai-msg-good { background:var(--teal-50); border-color:var(--teal-200); color:#134E4A; }
     .ai-verdict { font-size:12.5px; font-weight:600; padding:8px 12px; border-radius:var(--r-sm); display:flex; align-items:center; gap:8px; }
     .ai-verdict.bad { background:var(--red-50); color:#991B1B; border:1px solid #FECACA; }
-    .ai-verdict.bad::before { content:'💡'; font-size:14px; }
+    .ai-verdict.bad::before { content:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg>'; font-size:14px; }
     .ai-verdict.good { background:var(--green-50); color:#065F46; border:1px solid #A7F3D0; }
-    .ai-verdict.good::before { content:'✅'; font-size:14px; }
+    .ai-verdict.good::before { content:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>'; font-size:14px; }
 
     /* PRACTICE */
     .practice { background:linear-gradient(135deg,#FFFBF5,#FFF8EC); border:1px solid #FDE68A; border-radius:var(--r); padding:18px 20px; margin-bottom:14px; }
@@ -205,8 +231,8 @@
     .ec-sub { font-size:12.5px; color:rgba(255,255,255,.72); margin-top:2px; }
 
     .inbox-email { background:var(--white); border-bottom:1px solid var(--border); }
-    .inbox-meta { display:flex; align-items:center; gap:10px; padding:14px 20px 10px; border-bottom:1px solid #F3F4F6; }
-    .inbox-avatar { width:36px; height:36px; border-radius:50%; background:#374151; color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .inbox-meta { display:flex; align-items:center; gap:10px; padding:14px 20px 10px; border-bottom:1px solid #ece6d6; }
+    .inbox-avatar { width:36px; height:36px; border-radius:50%; background:#2f4338; color:white; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
     .inbox-from { font-size:13px; font-weight:700; color:var(--ink); }
     .inbox-time { font-size:11.5px; color:var(--muted); margin-left:auto; }
     .inbox-subject { font-size:12px; color:var(--muted); margin-top:1px; }
@@ -214,17 +240,17 @@
     .inbox-label { font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--muted); padding:10px 20px 0; }
     .inbox-actions { padding:0 20px 18px; display:flex; justify-content:flex-end; }
     .copy-email-btn { display:inline-flex; align-items:center; gap:7px; background:var(--white); border:1.5px solid var(--teal); color:var(--teal-deep); font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:700; padding:7px 14px; border-radius:var(--r-sm); cursor:pointer; transition:all .18s; }
-    .copy-email-btn:hover { background:var(--teal); color:white; transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,148,136,.25); }
+    .copy-email-btn:hover { background:var(--teal); color:white; transform:translateY(-1px); box-shadow:0 4px 12px rgba(201,160,64,.25); }
     .copy-email-btn.copied { background:var(--green); border-color:var(--green); color:white; }
     .copy-email-btn svg { width:13px; height:13px; }
 
-    .ec-howto { background:linear-gradient(135deg,#F0FDFA,#ECFDF5); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:16px 18px; margin:18px 20px; }
+    .ec-howto { background:linear-gradient(135deg,#fdf9ed,#dee8de); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:16px 18px; margin:18px 20px; }
     .ec-howto-head { display:flex; align-items:center; gap:10px; margin-bottom:12px; padding-bottom:10px; border-bottom:1px solid var(--teal-100); }
     .ec-howto-icon { font-size:18px; }
     .ec-howto-title { font-size:13.5px; font-weight:700; color:var(--teal-deep); }
     .ec-howto-list { display:flex; flex-direction:column; gap:10px; }
     .ec-howto-step { display:flex; gap:12px; align-items:flex-start; }
-    .ec-howto-num { width:26px; height:26px; border-radius:50%; background:var(--teal); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; box-shadow:0 2px 6px rgba(13,148,136,.3); }
+    .ec-howto-num { width:26px; height:26px; border-radius:50%; background:var(--teal); color:white; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; box-shadow:0 2px 6px rgba(201,160,64,.3); }
     .ec-howto-text { font-size:13px; color:var(--teal-deep); line-height:1.6; padding-top:2px; }
     .ec-howto-text strong { color:var(--ink); font-weight:700; }
 
@@ -240,18 +266,18 @@
     .chat-avatar.ai-av { background:var(--ink); color:white; }
     .chat-bubble { max-width:85%; padding:11px 14px; font-size:13.5px; line-height:1.65; border-radius:var(--r); }
     .chat-msg.user .chat-bubble { background:var(--teal); color:white; border-radius:var(--r) 4px var(--r) var(--r); }
-    .chat-msg.ai .chat-bubble { background:#F8FAFC; border:1px solid var(--border); color:var(--ink-soft); border-radius:4px var(--r) var(--r) var(--r); }
+    .chat-msg.ai .chat-bubble { background:#f5f0e5; border:1px solid var(--border); color:var(--ink-soft); border-radius:4px var(--r) var(--r) var(--r); }
     .chat-msg.ai .chat-bubble strong { color:var(--ink); font-weight:600; }
     .chat-typing { display:none; gap:10px; align-items:center; padding:4px 0; }
     .chat-typing.show { display:flex; }
-    .chat-typing-dots { background:#F8FAFC; border:1px solid var(--border); border-radius:4px var(--r) var(--r) var(--r); padding:10px 16px; display:flex; gap:4px; align-items:center; }
+    .chat-typing-dots { background:#f5f0e5; border:1px solid var(--border); border-radius:4px var(--r) var(--r) var(--r); padding:10px 16px; display:flex; gap:4px; align-items:center; }
     .chat-typing-dots span { width:6px; height:6px; border-radius:50%; background:var(--muted); display:inline-block; animation:dotBounce 1.2s ease-in-out infinite; }
     .chat-typing-dots span:nth-child(2) { animation-delay:.2s; }
     .chat-typing-dots span:nth-child(3) { animation-delay:.4s; }
     @keyframes dotBounce { 0%,80%,100% { transform:translateY(0); opacity:.4; } 40% { transform:translateY(-5px); opacity:1; } }
     .chat-input-row { display:flex; gap:9px; align-items:flex-end; }
     .chat-textarea { flex:1; min-height:52px; max-height:140px; background:var(--bg); border:1.5px solid var(--border); border-radius:var(--r); padding:12px 14px; font-family:'Outfit',sans-serif; font-size:14px; color:var(--ink); resize:none; outline:none; transition:border-color .18s,box-shadow .18s; line-height:1.5; }
-    .chat-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .chat-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(201,160,64,.1); }
     .chat-send-btn { width:48px; height:48px; border-radius:var(--r); background:var(--teal); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:background .15s,transform .15s,box-shadow .15s; box-shadow:0 2px 8px var(--teal-glow); }
     .chat-send-btn:hover:not(:disabled) { background:var(--teal-deep); transform:translateY(-1px); }
     .chat-send-btn:disabled { opacity:.45; cursor:not-allowed; transform:none; }
@@ -266,7 +292,7 @@
     .prog-bar-inner { height:100%; background:linear-gradient(90deg,var(--teal),var(--teal-300)); border-radius:999px; width:0%; transition:width .6s ease; }
     .prog-pct { font-size:13px; font-weight:700; color:var(--teal); white-space:nowrap; min-width:36px; text-align:right; }
     .prog-steps { display:flex; align-items:center; gap:6px; flex-shrink:0; }
-    .prog-step { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:#F1F5F9; color:#94A3B8; border:2px solid #E2E8F0; pointer-events:none; user-select:none; transition:all .35s ease; position:relative; }
+    .prog-step { width:26px; height:26px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; background:#f5f0e5; color:#8aa090; border:2px solid #e8e2d3; pointer-events:none; user-select:none; transition:all .35s ease; position:relative; }
     .prog-step.active { background:var(--teal-50); border-color:var(--teal); color:var(--teal); }
     .prog-step.active::before { content:''; position:absolute; inset:-4px; border-radius:50%; border:2px solid var(--teal); opacity:0; animation:stepPulse 1.8s ease-out infinite; }
     @keyframes stepPulse { 0% { transform:scale(0.85); opacity:0.6; } 70% { transform:scale(1.4); opacity:0; } 100% { transform:scale(1.4); opacity:0; } }
@@ -288,7 +314,7 @@
     .cta p { font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:18px; }
     .cta-warn { display:inline-block; background:var(--amber-100); color:#92400E; font-size:12px; font-weight:600; padding:5px 14px; border-radius:999px; margin-bottom:18px; }
     .btn-go { display:inline-flex; align-items:center; gap:9px; background:var(--teal); color:white; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); text-decoration:none; box-shadow:0 4px 18px var(--teal-glow); transition:background .15s,transform .15s,box-shadow .15s; }
-    .btn-go:hover { background:var(--teal-deep); transform:translateY(-2px); box-shadow:0 8px 28px rgba(13,148,136,.28); }
+    .btn-go:hover { background:var(--teal-deep); transform:translateY(-2px); box-shadow:0 8px 28px rgba(201,160,64,.28); }
     .btn-go svg { width:15px; height:15px; flex-shrink:0; fill:none; stroke:white; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
     .cta-sub { margin-top:13px; font-size:12.5px; color:var(--muted); display:flex; gap:6px; justify-content:center; align-items:center; flex-wrap:wrap; }
     .cta-sub .coins { color:var(--amber); font-weight:700; }
@@ -297,7 +323,7 @@
     hr.div { border:none; border-top:1px solid var(--border); margin:22px 0; }
 
     /* DRAFT TEXT BOX (modul 4) */
-    .draft-box { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-top:14px; box-shadow:0 1px 4px rgba(0,0,0,.04); }
+    .draft-box { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; margin-top:14px; box-shadow:0 1px 4px rgba(32,49,42,.04); }
     .draft-head { display:flex; align-items:center; gap:12px; padding:14px 18px; background:linear-gradient(135deg,#FEFCE8,#FEF9E7); border-bottom:1px solid #FDE68A; }
     .draft-icon { width:34px; height:34px; border-radius:9px; background:#F59E0B; color:white; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
     .draft-title { font-size:13.5px; font-weight:700; color:#78350F; line-height:1.3; }
@@ -310,7 +336,7 @@
       display:flex; align-items:center; gap:18px;
       background:linear-gradient(135deg,var(--teal-deep) 0%,var(--teal) 100%);
       border-radius:var(--r-xl); padding:22px 24px;
-      box-shadow:0 8px 28px rgba(13,148,136,.25);
+      box-shadow:0 8px 28px rgba(201,160,64,.25);
       flex-wrap:wrap;
     }
     .lib-open-icon {
@@ -331,9 +357,9 @@
       padding:12px 22px; border-radius:var(--r);
       text-decoration:none; flex-shrink:0;
       transition:transform .15s,box-shadow .15s;
-      box-shadow:0 4px 14px rgba(0,0,0,.15);
+      box-shadow:0 4px 14px rgba(32,49,42,.15);
     }
-    .lib-open-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(0,0,0,.2); }
+    .lib-open-btn:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(32,49,42,.2); }
     .lib-open-btn svg { width:15px; height:15px; }
 
     /* GUIDE STEPS */
@@ -346,7 +372,7 @@
       background:var(--teal); color:white;
       font-size:14px; font-weight:800;
       display:flex; align-items:center; justify-content:center;
-      box-shadow:0 3px 10px rgba(13,148,136,.3);
+      box-shadow:0 3px 10px rgba(201,160,64,.3);
       flex-shrink:0;
     }
     .guide-step-line { flex:1; width:2px; background:var(--teal-100); margin-top:8px; }
@@ -363,20 +389,20 @@
 
     /* VISUAL MOCKUPS */
     .guide-step-visual {
-      background:linear-gradient(135deg,#F8FAFC,#F1F5F9);
+      background:linear-gradient(135deg,#f5f0e5,#f5f0e5);
       border:1px solid var(--border); border-radius:var(--r-lg);
       padding:14px; margin-bottom:4px;
     }
     .visual-tab {
       display:flex; align-items:center; gap:8px;
-      background:#E2E8F0; padding:6px 10px;
-      border-radius:8px 8px 0 0; border-bottom:1px solid #CBD5E1;
+      background:#e8e2d3; padding:6px 10px;
+      border-radius:8px 8px 0 0; border-bottom:1px solid #bbb0a0;
     }
     .visual-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
     .visual-dot.red { background:#FB7185; }
     .visual-dot.yellow { background:#FBBF24; }
-    .visual-dot.green { background:#34D399; }
-    .visual-tab-text { font-size:11.5px; color:#475569; font-weight:600; margin-left:6px; }
+    .visual-dot.green { background:#d7b15d; }
+    .visual-tab-text { font-size:11.5px; color:#5a7060; font-weight:600; margin-left:6px; }
     .visual-content {
       background:white; border-radius:0 0 8px 8px;
       padding:10px; display:flex; flex-direction:column; gap:6px;
@@ -398,7 +424,7 @@
     }
     .visual-bookmark-item {
       font-size:11.5px; color:var(--muted); padding:4px 8px;
-      border-radius:5px; background:#F1F5F9;
+      border-radius:5px; background:#f5f0e5;
     }
     .visual-bookmark-item.active {
       background:var(--teal-50); color:var(--teal-deep);
@@ -418,7 +444,7 @@
       flex:1; min-width:90px; max-width:130px;
       background:white; border:1px solid var(--border);
       border-radius:var(--r); padding:10px 8px;
-      text-align:center; box-shadow:0 1px 3px rgba(0,0,0,.04);
+      text-align:center; box-shadow:0 1px 3px rgba(32,49,42,.04);
     }
     .flow-icon { font-size:22px; margin-bottom:4px; }
     .flow-label { font-size:11.5px; color:var(--ink-soft); line-height:1.35; font-weight:500; }
@@ -426,7 +452,7 @@
 
     /* TIPS BOX */
     .lib-tips {
-      background:linear-gradient(135deg,#F0FDFA,#ECFDF5);
+      background:linear-gradient(135deg,#fdf9ed,#dee8de);
       border:1.5px solid var(--teal-200); border-radius:var(--r-lg);
       padding:18px 20px; margin-bottom:18px;
     }
@@ -448,7 +474,7 @@
     }
 
     /* PROMPT BIBLIOTEK */
-    .lib-intro { background:linear-gradient(135deg,#F0FDFA,#ECFDF5); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:18px 20px; margin-bottom:18px; }
+    .lib-intro { background:linear-gradient(135deg,#fdf9ed,#dee8de); border:1.5px solid var(--teal-200); border-radius:var(--r-lg); padding:18px 20px; margin-bottom:18px; }
     .lib-intro-head { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
     .lib-intro-icon { font-size:22px; }
     .lib-intro-title { font-size:14px; font-weight:700; color:var(--teal-deep); }
@@ -460,14 +486,14 @@
     .lib-toolbar-spacer { flex:1; }
     .lib-btn { display:inline-flex; align-items:center; gap:7px; padding:8px 14px; border-radius:var(--r-sm); font-family:'Outfit',sans-serif; font-size:12.5px; font-weight:700; cursor:pointer; transition:all .18s; border:1.5px solid; }
     .lib-btn-primary { background:var(--teal); color:white; border-color:var(--teal); }
-    .lib-btn-primary:hover { background:var(--teal-deep); border-color:var(--teal-deep); transform:translateY(-1px); box-shadow:0 4px 12px rgba(13,148,136,.3); }
+    .lib-btn-primary:hover { background:var(--teal-deep); border-color:var(--teal-deep); transform:translateY(-1px); box-shadow:0 4px 12px rgba(201,160,64,.3); }
     .lib-btn-outline { background:var(--white); color:var(--teal-deep); border-color:var(--teal); }
     .lib-btn-outline:hover { background:var(--teal-50); }
     .lib-btn svg { width:14px; height:14px; }
 
     .lib-grid { display:grid; gap:10px; margin-bottom:16px; }
     .lib-item { background:var(--white); border:1px solid var(--border); border-radius:var(--r-lg); overflow:hidden; transition:box-shadow .2s,border-color .2s; }
-    .lib-item:hover { box-shadow:0 4px 14px rgba(0,0,0,.06); border-color:var(--teal-200); }
+    .lib-item:hover { box-shadow:0 4px 14px rgba(32,49,42,.06); border-color:var(--teal-200); }
     .lib-item-header { display:flex; align-items:center; gap:10px; padding:12px 14px; background:var(--teal-50); border-bottom:1px solid var(--teal-100); }
     .lib-item-emoji { font-size:18px; flex-shrink:0; }
     .lib-item-title { flex:1; font-size:13.5px; font-weight:700; color:var(--ink); }
@@ -485,10 +511,10 @@
     .lib-empty-emoji { font-size:36px; margin-bottom:10px; }
 
     /* ADD PROMPT MODAL */
-    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(15,23,42,.55); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; animation:fadeIn .2s ease; }
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(32,49,42,.55); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:20px; animation:fadeIn .2s ease; }
     .modal-overlay.show { display:flex; }
     @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
-    .modal { background:var(--white); border-radius:var(--r-xl); max-width:520px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(0,0,0,.25); animation:modalSlide .25s ease; }
+    .modal { background:var(--white); border-radius:var(--r-xl); max-width:520px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 60px rgba(32,49,42,.25); animation:modalSlide .25s ease; }
     @keyframes modalSlide { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
     .modal-head { padding:18px 22px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
     .modal-title { font-size:16px; font-weight:700; color:var(--ink); }
@@ -503,16 +529,16 @@
       padding:10px 12px; font-family:'Outfit',sans-serif; font-size:13.5px; color:var(--ink);
       outline:none; transition:border-color .18s,box-shadow .18s;
     }
-    .modal-input:focus,.modal-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(13,148,136,.1); }
+    .modal-input:focus,.modal-textarea:focus { border-color:var(--teal); box-shadow:0 0 0 3px rgba(201,160,64,.1); }
     .modal-textarea { min-height:120px; resize:vertical; line-height:1.5; }
     .modal-emoji-picker { display:flex; gap:6px; flex-wrap:wrap; }
     .modal-emoji { width:36px; height:36px; border-radius:8px; border:1.5px solid var(--border); background:var(--white); cursor:pointer; font-size:18px; display:flex; align-items:center; justify-content:center; transition:all .15s; }
     .modal-emoji:hover { border-color:var(--teal); background:var(--teal-50); }
-    .modal-emoji.selected { border-color:var(--teal); background:var(--teal-50); box-shadow:0 0 0 3px rgba(13,148,136,.15); }
+    .modal-emoji.selected { border-color:var(--teal); background:var(--teal-50); box-shadow:0 0 0 3px rgba(201,160,64,.15); }
     .modal-foot { padding:14px 22px; border-top:1px solid var(--border); display:flex; gap:10px; justify-content:flex-end; }
 
     /* TOAST */
-    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#1E293B; color:white; font-size:13px; font-weight:600; padding:10px 20px; border-radius:999px; box-shadow:0 8px 32px rgba(0,0,0,.2); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
+    #toast { position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:#20312a; color:white; font-size:13px; font-weight:600; padding:10px 20px; border-radius:999px; box-shadow:0 8px 32px rgba(32,49,42,.2); opacity:0; transition:opacity .2s,transform .2s; pointer-events:none; z-index:9999; white-space:nowrap; display:flex; align-items:center; gap:8px; }
     #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 
     @media(max-width:480px){
@@ -525,35 +551,35 @@
       .cta { padding:26px 18px; }
     }
 
-/* ══ C1 DESIGN TOKENS — TEAL MAPPING ══ */
+/* ══ C1 DESIGN TOKENS — omdirigeret til C2 guld ══ */
 :root{
-  --indigo:#0D9488;--indigo-2:#0F9D8D;--indigo-deep:#0F766E;
-  --blue-glow:#5EEAD4;--blue:#14B8A6;--violet-glow:#34D399;
-  --indigo-soft:rgba(13,148,136,.08);--indigo-ring:rgba(13,148,136,.2);
-  --shadow-sm:0 1px 2px rgba(0,0,0,.04),0 1px 3px rgba(0,0,0,.06);
-  --shadow-md:0 4px 16px rgba(0,0,0,.06),0 2px 4px rgba(0,0,0,.04);
-  --shadow-indigo:0 12px 40px rgba(13,148,136,.25);
-  --card:#FFFFFF;--border-strong:#CBD5E1;
-  --surface-2:#F8FAFC;--muted-2:#94A3B8;
+  --indigo:var(--c-gold);--indigo-2:var(--c-gold-mid);--indigo-deep:var(--c-gold-deep);
+  --blue-glow:var(--c-gold-warm);--blue:var(--c-gold);--violet-glow:var(--c-gold-mid);
+  --indigo-soft:var(--c-gold-soft);--indigo-ring:var(--c-gold-ring);
+  --shadow-sm:0 1px 2px rgba(32,49,42,.04),0 1px 3px rgba(32,49,42,.06);
+  --shadow-md:0 4px 16px rgba(32,49,42,.06),0 2px 4px rgba(32,49,42,.04);
+  --shadow-indigo:var(--shadow-gold);
+  --card:#fbf7ee;--border-strong:#bbb0a0;
+  --surface-2:#f5f0e5;--muted-2:#8aa090;
 }
 
 /* ══ SCENE BACKGROUND ══ */
-.scene-bg{position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse 55% 45% at 12% 18%,rgba(13,148,136,.1),transparent 60%),radial-gradient(ellipse 50% 60% at 88% 75%,rgba(94,234,212,.08),transparent 60%),linear-gradient(180deg,#F4F9F9 0%,#F8FAFC 50%,#F0F8F8 100%)}
-.scene-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(rgba(13,148,136,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(13,148,136,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 70% at 50% 25%,#000 30%,transparent 80%)}
+.scene-bg{position:fixed;inset:0;z-index:-3;background:radial-gradient(ellipse 55% 45% at 12% 18%,rgba(201,160,64,.1),transparent 60%),radial-gradient(ellipse 50% 60% at 88% 75%,rgba(239,206,128,.08),transparent 60%),linear-gradient(180deg,#ede7d5 0%,#f5f0e5 50%,#e2dbc8 100%)}
+.scene-grid{position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:linear-gradient(rgba(201,160,64,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,160,64,.04) 1px,transparent 1px);background-size:56px 56px;mask-image:radial-gradient(ellipse 90% 70% at 50% 25%,#000 30%,transparent 80%)}
 .orb{position:fixed;border-radius:50%;filter:blur(70px);pointer-events:none;z-index:-1;opacity:.45}
-.orb-1{width:420px;height:420px;top:-140px;left:-120px;background:radial-gradient(circle,rgba(20,184,166,.5),transparent 70%);animation:float1 22s ease-in-out infinite}
-.orb-2{width:360px;height:360px;top:30%;right:-100px;background:radial-gradient(circle,rgba(52,211,153,.4),transparent 70%);animation:float2 26s ease-in-out infinite;opacity:.35}
-.orb-3{width:320px;height:320px;bottom:-80px;left:30%;background:radial-gradient(circle,rgba(13,148,136,.4),transparent 70%);animation:float3 20s ease-in-out infinite;opacity:.3}
+.orb-1{width:420px;height:420px;top:-140px;left:-120px;background:radial-gradient(circle,rgba(201,160,64,.5),transparent 70%);animation:float1 22s ease-in-out infinite}
+.orb-2{width:360px;height:360px;top:30%;right:-100px;background:radial-gradient(circle,rgba(215,177,93,.4),transparent 70%);animation:float2 26s ease-in-out infinite;opacity:.35}
+.orb-3{width:320px;height:320px;bottom:-80px;left:30%;background:radial-gradient(circle,rgba(201,160,64,.4),transparent 70%);animation:float3 20s ease-in-out infinite;opacity:.3}
 @keyframes float1{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,40px)}}
 @keyframes float2{0%,100%{transform:translate(0,0)}50%{transform:translate(-40px,-50px)}}
 @keyframes float3{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,-30px)}}
-.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--teal),var(--teal-300),#5EEAD4);z-index:1000;transition:width .1s linear;box-shadow:0 0 12px rgba(13,148,136,.5)}
+.scroll-progress{position:fixed;top:0;left:0;height:3px;width:0%;background:linear-gradient(90deg,var(--teal),var(--teal-300),#efce80);z-index:1000;transition:width .1s linear;box-shadow:0 0 12px rgba(201,160,64,.5)}
 
 /* ══ C1-STYLE TOPBAR (overrides nav) ══ */
-.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px) saturate(180%);background:rgba(248,250,252,.72);border-bottom:1px solid rgba(226,232,240,.6)}
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px) saturate(180%);background:rgba(248,250,252,.72);border-bottom:1px solid rgba(210,200,175,.6)}
 .topbar-inner{max-width:1200px;margin:0 auto;padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:20px}
 .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:800;font-size:16px}
-.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--teal-300));box-shadow:0 4px 12px rgba(13,148,136,.3);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
+.brand-mark{width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,var(--teal),var(--teal-300));box-shadow:0 4px 12px rgba(201,160,64,.3);display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px}
 .crumb{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);font-weight:500}
 .crumb .dot{width:4px;height:4px;border-radius:50%;background:var(--muted)}
 .crumb a{color:var(--muted);text-decoration:none;transition:color .2s}
@@ -565,7 +591,7 @@
 .journey-pill{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;background:rgba(255,255,255,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.9);border-radius:999px;box-shadow:var(--shadow-md);flex-wrap:nowrap;overflow-x:auto;max-width:100%;scrollbar-width:none}
 .journey-pill::-webkit-scrollbar{display:none}
 .journey-step{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;font-size:12px;font-weight:700;color:var(--muted);border-radius:999px;white-space:nowrap;transition:all .2s}
-.journey-step.current{background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;box-shadow:0 4px 14px rgba(13,148,136,.35)}
+.journey-step.current{background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;box-shadow:0 4px 14px rgba(201,160,64,.35)}
 .journey-step.done{color:var(--green)}
 .journey-step.done::before{content:'✓';font-size:11px;margin-right:-2px}
 .journey-sep{color:var(--muted-2);font-size:11px;user-select:none}
@@ -573,11 +599,11 @@
 /* ══ HERO (C1 style) ══ */
 .hero-c1{position:relative;padding:80px 28px 60px;max-width:1100px;margin:0 auto;text-align:center;overflow:hidden;opacity:0;transform:translateY(20px);transition:all 1s cubic-bezier(.16,1,.3,1)}
 .hero-c1.in{opacity:1;transform:translateY(0)}
-.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border-radius:999px;background:rgba(13,148,136,.08);border:1px solid rgba(13,148,136,.2);color:var(--teal-deep);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px}
+.hero-tag{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border-radius:999px;background:rgba(201,160,64,.08);border:1px solid rgba(201,160,64,.2);color:var(--teal-deep);font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:28px}
 .hero-tag .pulse{width:6px;height:6px;border-radius:50%;background:var(--teal-300);animation:tagPulse 2s ease-in-out infinite}
-@keyframes tagPulse{0%{box-shadow:0 0 0 0 rgba(52,211,153,.6)}100%{box-shadow:0 0 0 8px rgba(52,211,153,0)}}
+@keyframes tagPulse{0%{box-shadow:0 0 0 0 rgba(215,177,93,.6)}100%{box-shadow:0 0 0 8px rgba(215,177,93,0)}}
 .hero-c1 h1{font-family:'Lora',serif;font-weight:600;font-size:clamp(40px,6.5vw,76px);line-height:1.05;letter-spacing:-.025em;margin:0 0 24px}
-.hero-c1 h1 em{font-style:italic;background:linear-gradient(135deg,var(--teal) 0%,#5EEAD4 50%,#34D399 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-c1 h1 em{font-style:italic;background:linear-gradient(135deg,var(--teal) 0%,#efce80 50%,#d7b15d 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero-sub-c1{font-size:clamp(16px,1.8vw,19px);color:var(--muted);max-width:620px;margin:0 auto 40px;line-height:1.6}
 .hero-stats-c1{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:36px}
 .hero-stat-c1{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.95);border-radius:999px;font-size:13px;font-weight:600;color:var(--ink-soft);box-shadow:var(--shadow-sm)}
@@ -586,7 +612,7 @@
 .notice-c1{text-align:left;padding:18px 20px;border-radius:16px;background:rgba(255,255,255,.75);border:1px solid var(--border);display:flex;gap:14px;box-shadow:var(--shadow-sm)}
 .notice-c1-ic{flex:0 0 38px;width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:18px}
 .notice-c1.warn .notice-c1-ic{background:var(--amber-50)}
-.notice-c1.tip .notice-c1-ic{background:rgba(13,148,136,.08)}
+.notice-c1.tip .notice-c1-ic{background:rgba(201,160,64,.08)}
 .notice-c1 h4{margin:0 0 4px;font-size:14px;font-weight:700}
 .notice-c1 p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.55}
 .notice-c1 strong{color:var(--ink);font-weight:600}
@@ -599,14 +625,14 @@
 /* ══ PROGRESS PILL (C1 style, replaces prog-wrap) ══ */
 .progress-pill{position:sticky;top:72px;z-index:40;margin:0 auto 32px;max-width:880px;display:flex;align-items:center;gap:14px;padding:12px 20px;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.95);border-radius:999px;box-shadow:var(--shadow-md)}
 .progress-pill-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.05em;white-space:nowrap}
-.progress-pill-bar{flex:1;height:6px;border-radius:999px;background:rgba(13,148,136,.1);overflow:hidden}
+.progress-pill-bar{flex:1;height:6px;border-radius:999px;background:rgba(201,160,64,.1);overflow:hidden}
 .progress-pill-fill{height:100%;background:linear-gradient(90deg,var(--teal),var(--teal-300));border-radius:999px;width:0%;transition:width .8s cubic-bezier(.16,1,.3,1)}
 .progress-pill-pct{font-size:13px;font-weight:700;color:var(--teal);white-space:nowrap;min-width:36px;text-align:right}
 
 /* ══ STEPS RAIL ══ */
 .steps-rail{display:flex;align-items:center;justify-content:center;gap:0;margin-bottom:36px}
-.step-pill{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:#F3F4F6;color:var(--muted);border:2px solid var(--border);cursor:pointer;transition:all .25s;flex-shrink:0}
-.step-pill.active{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:0 4px 12px rgba(13,148,136,.3)}
+.step-pill{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:#ece6d6;color:var(--muted);border:2px solid var(--border);cursor:pointer;transition:all .25s;flex-shrink:0}
+.step-pill.active{background:var(--teal);color:#fff;border-color:var(--teal);box-shadow:0 4px 12px rgba(201,160,64,.3)}
 .step-pill.done{background:var(--green);color:#fff;border-color:var(--green)}
 .step-bar{height:2px;flex:1;background:var(--border);max-width:48px;margin:0 -1px;transition:background .3s}
 .step-bar.filled{background:var(--green)}
@@ -630,11 +656,11 @@
   transition:background .3s;z-index:1;
 }
 .mod.locked{opacity:.55!important;filter:grayscale(.35)!important;pointer-events:none!important}
-.mod.locked::before{background:linear-gradient(180deg,#E5E7EB,#F3F4F6)}
-.mod.done::before{background:linear-gradient(180deg,var(--green),#34D399)}
+.mod.locked::before{background:linear-gradient(180deg,#cfc6b0,#ece6d6)}
+.mod.done::before{background:linear-gradient(180deg,var(--green),#d7b15d)}
 /* unlocked-next::before: removed */
 .mod:hover:not(.locked){
-  box-shadow:0 6px 28px rgba(13,148,136,.12)!important;
+  box-shadow:0 6px 28px rgba(201,160,64,.12)!important;
   transform:translateY(-2px)!important;
 }
 .mod-header{
@@ -642,21 +668,21 @@
   background:var(--white)!important;
   transition:background .15s!important;
 }
-.mod-header:hover{background:rgba(13,148,136,.04)!important}
+.mod-header:hover{background:rgba(201,160,64,.04)!important}
 /* mod.open header removed */
 .mod-num{
   width:46px!important;height:46px!important;border-radius:12px!important;
-  background:linear-gradient(135deg,var(--teal),#14B8A6)!important;
+  background:linear-gradient(135deg,var(--teal),#c9a040)!important;
   color:white!important;font-size:18px!important;font-weight:800!important;
-  flex-shrink:0!important;box-shadow:0 4px 12px rgba(13,148,136,.25)!important;
+  flex-shrink:0!important;box-shadow:0 4px 12px rgba(201,160,64,.25)!important;
 }
-.mod.locked .mod-num{background:linear-gradient(135deg,#E5E7EB,#F3F4F6)!important;color:#9CA3AF!important;box-shadow:none!important}
-.mod.done .mod-num{background:linear-gradient(135deg,var(--green),#34D399)!important;box-shadow:0 4px 12px rgba(5,150,105,.25)!important}
+.mod.locked .mod-num{background:linear-gradient(135deg,#cfc6b0,#ece6d6)!important;color:#8aa090!important;box-shadow:none!important}
+.mod.done .mod-num{background:linear-gradient(135deg,var(--green),#d7b15d)!important;box-shadow:0 4px 12px rgba(5,150,105,.25)!important}
 /* unlocked-next .mod-num: removed */
 .mod-title{font-size:16px!important;font-weight:700!important;color:var(--ink)!important}
 .mod-sub{font-size:13px!important;color:var(--muted)!important}
 .mod-time{
-  background:rgba(13,148,136,.1)!important;
+  background:rgba(201,160,64,.1)!important;
   color:var(--teal-deep)!important;
   border-radius:999px!important;
   font-size:12px!important;font-weight:700!important;
@@ -664,7 +690,7 @@
 .mod-arrow{display:none!important}
 .mod-body{padding:24px 28px 28px!important;border-top:1px solid var(--border)!important}
 .mod-done-badge{background:var(--green-50)!important;color:var(--green)!important;border-radius:999px!important;font-size:12px!important;font-weight:700!important}
-.mod-locked-badge{background:#F3F4F6!important;color:var(--muted)!important;border-radius:999px!important;font-size:12px!important;font-weight:700!important}
+.mod-locked-badge{background:#ece6d6!important;color:var(--muted)!important;border-radius:999px!important;font-size:12px!important;font-weight:700!important}
 
 /* ══ SUMMARY (C1 styled) ══ */
 .summary-c1{background:var(--white);border:1px solid var(--border);border-radius:22px;padding:32px 36px;margin:36px 0 24px;box-shadow:var(--shadow-sm)}
@@ -676,15 +702,15 @@
 .summary-list-c1 li::before{content:'✓';color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
 
 /* ══ QUIZ CTA (C1 styled) ══ */
-.quiz-cta-c1{position:relative;background:linear-gradient(135deg,rgba(13,148,136,.12),rgba(52,211,153,.08));border:1px solid rgba(13,148,136,.25);border-radius:22px;padding:36px;text-align:center;overflow:hidden;margin-bottom:48px}
-.quiz-cta-c1::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(94,234,212,.2),transparent 60%);pointer-events:none}
-.quiz-cta-c1 .quiz-cta-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:rgba(13,148,136,.1);border:1px solid rgba(13,148,136,.2);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:14px;position:relative}
+.quiz-cta-c1{position:relative;background:linear-gradient(135deg,rgba(201,160,64,.12),rgba(215,177,93,.08));border:1px solid rgba(201,160,64,.25);border-radius:22px;padding:36px;text-align:center;overflow:hidden;margin-bottom:48px}
+.quiz-cta-c1::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(239,206,128,.2),transparent 60%);pointer-events:none}
+.quiz-cta-c1 .quiz-cta-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:999px;background:rgba(201,160,64,.1);border:1px solid rgba(201,160,64,.2);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal-deep);margin-bottom:14px;position:relative}
 .quiz-cta-c1 h3{font-family:'Lora',serif;font-weight:600;font-size:28px;color:var(--ink);margin-bottom:10px;position:relative}
 .quiz-cta-c1 p{font-size:15px;color:var(--muted);margin-bottom:20px;max-width:500px;margin-left:auto;margin-right:auto;position:relative}
 .quiz-warn-c1{display:inline-block;font-size:13px;font-weight:700;color:var(--amber);background:var(--amber-50);padding:6px 14px;border-radius:999px;margin-bottom:20px;border:1px solid #FDE68A;position:relative}
-.quiz-btn-c1{display:inline-flex;align-items:center;gap:10px;padding:14px 34px;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 8px 28px rgba(13,148,136,.35);transition:all .25s;position:relative}
-.quiz-btn-c1:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(13,148,136,.45)}
-.quiz-btn-c1.locked{background:#F3F4F6;color:var(--muted);box-shadow:none;cursor:not-allowed}
+.quiz-btn-c1{display:inline-flex;align-items:center;gap:10px;padding:14px 34px;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;box-shadow:0 8px 28px rgba(201,160,64,.35);transition:all .25s;position:relative}
+.quiz-btn-c1:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(201,160,64,.45)}
+.quiz-btn-c1.locked{background:#ece6d6;color:var(--muted);box-shadow:none;cursor:not-allowed}
 .quiz-btn-c1.locked:hover{transform:none}
 .quiz-meta-c1{margin-top:14px;font-size:13px;color:var(--muted);position:relative}
 
@@ -694,28 +720,28 @@
 @keyframes confettiFly{0%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:var(--end-transform) scale(0);opacity:0}}
 
 /* ══ CINEMATIC INTRO (teal theme) ══ */
-.cinematic-intro{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(13,148,136,.95) 0%,rgba(15,118,110,.98) 40%,#050f0d 100%);display:grid;place-items:center;overflow:hidden;transition:opacity 1s cubic-bezier(.4,0,.2,1),transform 1.2s cubic-bezier(.7,0,.3,1)}
+.cinematic-intro{position:fixed;inset:0;z-index:9999;background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(201,160,64,.95) 0%,rgba(145,109,38,.98) 40%,#050f0d 100%);display:grid;place-items:center;overflow:hidden;transition:opacity 1s cubic-bezier(.4,0,.2,1),transform 1.2s cubic-bezier(.7,0,.3,1)}
 .cinematic-intro.gone{opacity:0;transform:scale(1.1);pointer-events:none}
-.intro-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 8% 18%,#fff,transparent),radial-gradient(1px 1px at 22% 60%,#fff,transparent),radial-gradient(2px 2px at 38% 30%,rgba(52,211,153,.9),transparent),radial-gradient(1px 1px at 52% 75%,#fff,transparent),radial-gradient(2px 2px at 68% 22%,rgba(94,234,212,.9),transparent),radial-gradient(1px 1px at 82% 55%,#fff,transparent),radial-gradient(1px 1px at 15% 88%,#fff,transparent),radial-gradient(1px 1px at 75% 85%,#fff,transparent);animation:starsTwinkle2 3s ease-in-out infinite}
-.intro-stars-2{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 10% 40%,rgba(52,211,153,.7),transparent),radial-gradient(2px 2px at 55% 55%,#fff,transparent),radial-gradient(1px 1px at 80% 35%,rgba(94,234,212,.8),transparent);animation:starsTwinkle2 4s ease-in-out infinite 1s}
+.intro-stars{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 8% 18%,#fff,transparent),radial-gradient(1px 1px at 22% 60%,#fff,transparent),radial-gradient(2px 2px at 38% 30%,rgba(215,177,93,.9),transparent),radial-gradient(1px 1px at 52% 75%,#fff,transparent),radial-gradient(2px 2px at 68% 22%,rgba(239,206,128,.9),transparent),radial-gradient(1px 1px at 82% 55%,#fff,transparent),radial-gradient(1px 1px at 15% 88%,#fff,transparent),radial-gradient(1px 1px at 75% 85%,#fff,transparent);animation:starsTwinkle2 3s ease-in-out infinite}
+.intro-stars-2{position:absolute;inset:0;background-image:radial-gradient(1px 1px at 10% 40%,rgba(215,177,93,.7),transparent),radial-gradient(2px 2px at 55% 55%,#fff,transparent),radial-gradient(1px 1px at 80% 35%,rgba(239,206,128,.8),transparent);animation:starsTwinkle2 4s ease-in-out infinite 1s}
 @keyframes starsTwinkle2{0%,100%{opacity:.4}50%{opacity:1}}
 .intro-orb{position:absolute;width:400px;height:400px;border-radius:50%;filter:blur(80px);opacity:.5}
-.intro-orb-1{background:rgba(20,184,166,.6);top:-100px;left:-100px;animation:orbFloat1c 8s ease-in-out infinite}
-.intro-orb-2{background:rgba(52,211,153,.5);bottom:-100px;right:-100px;animation:orbFloat2c 10s ease-in-out infinite}
+.intro-orb-1{background:rgba(201,160,64,.6);top:-100px;left:-100px;animation:orbFloat1c 8s ease-in-out infinite}
+.intro-orb-2{background:rgba(215,177,93,.5);bottom:-100px;right:-100px;animation:orbFloat2c 10s ease-in-out infinite}
 @keyframes orbFloat1c{0%,100%{transform:translate(0,0)}50%{transform:translate(50px,40px)}}
 @keyframes orbFloat2c{0%,100%{transform:translate(0,0)}50%{transform:translate(-50px,-40px)}}
 .intro-center{position:relative;text-align:center;color:#fff;padding:0 24px;max-width:720px}
-.intro-mark{display:inline-block;width:100px;height:100px;border-radius:28px;background:linear-gradient(135deg,var(--teal) 0%,#5EEAD4 100%);position:relative;margin-bottom:32px;opacity:0;transform:scale(.5) rotate(-180deg);animation:markInC 1s cubic-bezier(.5,1.6,.4,1) .2s forwards;box-shadow:0 0 80px rgba(20,184,166,.5)}
+.intro-mark{display:inline-block;width:100px;height:100px;border-radius:28px;background:linear-gradient(135deg,var(--teal) 0%,#efce80 100%);position:relative;margin-bottom:32px;opacity:0;transform:scale(.5) rotate(-180deg);animation:markInC 1s cubic-bezier(.5,1.6,.4,1) .2s forwards;box-shadow:0 0 80px rgba(201,160,64,.5)}
 .intro-mark::after{content:'C2';position:absolute;inset:0;display:grid;place-items:center;font-family:'Lora',serif;font-weight:600;font-size:42px;color:#fff;letter-spacing:-.02em}
 @keyframes markInC{0%{opacity:0;transform:scale(.5) rotate(-180deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
 .intro-overline{display:block;font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-bottom:16px;opacity:0;transform:translateY(10px);animation:introFadeUp2 .8s cubic-bezier(.16,1,.3,1) .8s forwards}
 .intro-title{font-family:'Lora',serif;font-weight:600;font-size:clamp(40px,7vw,76px);line-height:1.05;letter-spacing:-.03em;margin:0 0 20px;color:#fff;opacity:0;transform:translateY(20px);filter:blur(12px);animation:introTitleInC 1.2s cubic-bezier(.16,1,.3,1) 1.1s forwards}
-.intro-title em{font-style:italic;background:linear-gradient(135deg,#5EEAD4,#34D399);-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro-title em{font-style:italic;background:linear-gradient(135deg,#efce80,#d7b15d);-webkit-background-clip:text;background-clip:text;color:transparent}
 @keyframes introTitleInC{0%{opacity:0;transform:translateY(20px);filter:blur(12px)}100%{opacity:1;transform:translateY(0);filter:blur(0)}}
 .intro-sub{font-size:clamp(15px,1.6vw,18px);color:rgba(255,255,255,.85);line-height:1.6;margin:0 auto 36px;max-width:540px;opacity:0;transform:translateY(12px);animation:introFadeUp2 1s cubic-bezier(.16,1,.3,1) 1.6s forwards}
 @keyframes introFadeUp2{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}
-.intro-cta{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:#fff;color:var(--teal-deep);border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;opacity:0;transform:translateY(12px);animation:introFadeUp2 1s cubic-bezier(.16,1,.3,1) 2.2s forwards;box-shadow:0 12px 40px rgba(0,0,0,.25);transition:transform .2s,box-shadow .2s}
-.intro-cta:hover{transform:translateY(-3px);box-shadow:0 18px 50px rgba(0,0,0,.3)}
+.intro-cta{display:inline-flex;align-items:center;gap:12px;padding:18px 40px;background:#fff;color:var(--teal-deep);border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;cursor:pointer;opacity:0;transform:translateY(12px);animation:introFadeUp2 1s cubic-bezier(.16,1,.3,1) 2.2s forwards;box-shadow:0 12px 40px rgba(32,49,42,.25);transition:transform .2s,box-shadow .2s}
+.intro-cta:hover{transform:translateY(-3px);box-shadow:0 18px 50px rgba(32,49,42,.3)}
 .intro-skip{position:absolute;bottom:30px;right:30px;padding:10px 18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:999px;color:rgba(255,255,255,.7);font-size:12px;font-family:'Outfit',sans-serif;cursor:pointer;opacity:0;animation:introFadeUp2 .8s ease 3s forwards;transition:all .2s}
 .intro-skip:hover{background:rgba(255,255,255,.2);color:#fff}
 
@@ -742,20 +768,20 @@
   100%{opacity:1;transform:scale(1) translateY(0)}
 }
 @keyframes ctaCharge2{
-  0%,100%{box-shadow:0 12px 40px rgba(0,0,0,.25)}
+  0%,100%{box-shadow:0 12px 40px rgba(32,49,42,.25)}
   50%{box-shadow:0 0 0 12px rgba(255,255,255,.25),0 0 80px rgba(255,255,255,.5)}
 }
 .cinematic-intro.fly-through{animation:introFlyThrough2 .72s cubic-bezier(.22,0,.7,.9) forwards;pointer-events:none}
-.warp-streak2{position:fixed;left:50%;top:50%;transform-origin:left center;background:linear-gradient(to right,rgba(255,255,255,.92) 0%,rgba(94,234,212,.6) 55%,transparent 100%);border-radius:999px;pointer-events:none;z-index:9997;animation:warpStreak2 var(--dur,.5s) cubic-bezier(.15,0,1,.55) var(--delay,0ms) both}
-.intro-flash-overlay{position:fixed;inset:0;z-index:10000;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 52%,#fff 0%,rgba(13,148,136,.9) 32%,rgba(15,118,110,.65) 58%,transparent 82%)}
+.warp-streak2{position:fixed;left:50%;top:50%;transform-origin:left center;background:linear-gradient(to right,rgba(255,255,255,.92) 0%,rgba(239,206,128,.6) 55%,transparent 100%);border-radius:999px;pointer-events:none;z-index:9997;animation:warpStreak2 var(--dur,.5s) cubic-bezier(.15,0,1,.55) var(--delay,0ms) both}
+.intro-flash-overlay{position:fixed;inset:0;z-index:10000;pointer-events:none;opacity:0;background:radial-gradient(circle at 50% 52%,#fff 0%,rgba(201,160,64,.9) 32%,rgba(145,109,38,.65) 58%,transparent 82%)}
 .intro-flash-overlay.bang{animation:flashBang2 .48s ease-out forwards}
 .hero-c1.hero-glide2{animation:heroGlide2 1s cubic-bezier(.16,1,.3,1) both}
 .intro-cta.charging2{animation:ctaCharge2 .35s ease-in-out 2}
 
 /* ══ SIDEBAR (light theme — same as C1) ══ */
-.sidebar{flex-shrink:0;position:sticky;top:62px;height:calc(100vh - 66px);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(13,148,136,.2) transparent}
+.sidebar{flex-shrink:0;position:sticky;top:62px;height:calc(100vh - 66px);overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(201,160,64,.2) transparent}
 .sidebar::-webkit-scrollbar{width:3px}
-.sidebar::-webkit-scrollbar-thumb{background:rgba(13,148,136,.2);border-radius:999px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(201,160,64,.2);border-radius:999px}
 .sidebar-left{width:258px;padding:16px 14px 60px}
 .sidebar-right{width:230px;padding:16px 14px 60px}
 .sb-inner{display:flex;flex-direction:column}
@@ -764,22 +790,22 @@
 .sb-close-btn{display:none;background:none;border:none;padding:5px;cursor:pointer;color:var(--muted);border-radius:6px;line-height:0;transition:all .15s}
 .sb-close-btn:hover{background:var(--red-50);color:var(--red)}
 .sb-close-btn svg{display:block}
-.sb-progress-wrap{padding:10px 12px;margin-bottom:12px;background:linear-gradient(135deg,rgba(13,148,136,.05),rgba(52,211,153,.05));border:1px solid rgba(13,148,136,.12);border-radius:10px}
+.sb-progress-wrap{padding:10px 12px;margin-bottom:12px;background:linear-gradient(135deg,rgba(201,160,64,.05),rgba(215,177,93,.05));border:1px solid rgba(201,160,64,.12);border-radius:10px}
 .sb-progress-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .sb-progress-label{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
 .sb-progress-pct{font-size:12px;font-weight:800;color:var(--teal)}
-.sb-progress-bar{height:4px;background:rgba(13,148,136,.1);border-radius:999px;overflow:hidden}
+.sb-progress-bar{height:4px;background:rgba(201,160,64,.1);border-radius:999px;overflow:hidden}
 .sb-progress-fill{height:100%;border-radius:999px;width:0%;background:linear-gradient(90deg,var(--teal),var(--teal-300));transition:width .6s cubic-bezier(.16,1,.3,1)}
 .sb-divider{height:1px;background:var(--border);margin:10px 2px}
 .sb-journey-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:10px;cursor:default;transition:background .15s;margin-bottom:1px;text-decoration:none;color:inherit}
 .sb-journey-item.sb-done,.sb-journey-item.sb-available{cursor:pointer}
-.sb-journey-item.sb-done:hover,.sb-journey-item.sb-available:hover{background:rgba(13,148,136,.06)}
-.sb-ji-icon{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;font-size:12px;background:rgba(226,232,240,.6);color:var(--muted-2);transition:all .2s}
+.sb-journey-item.sb-done:hover,.sb-journey-item.sb-available:hover{background:rgba(201,160,64,.06)}
+.sb-ji-icon{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;flex-shrink:0;font-size:12px;background:rgba(210,200,175,.6);color:var(--muted-2);transition:all .2s}
 .sb-journey-item.sb-done  .sb-ji-icon{background:var(--green-50);color:var(--green)}
 .sb-journey-item.sb-current .sb-ji-icon{background:linear-gradient(135deg,var(--teal),var(--blue));position:relative}
 .sb-journey-item.sb-current .sb-ji-icon::after{content:'';width:8px;height:8px;border-radius:50%;background:#fff;position:absolute;animation:sbjipulse2 2s ease-in-out infinite}
 @keyframes sbjipulse2{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.4)}50%{box-shadow:0 0 0 4px rgba(255,255,255,0)}}
-.sb-journey-item.sb-available .sb-ji-icon{background:rgba(245,158,11,.1);color:var(--amber)}
+.sb-journey-item.sb-available .sb-ji-icon{background:rgba(169,136,65,.1);color:var(--amber)}
 .sb-ji-content{flex:1;min-width:0}
 .sb-ji-label{font-size:12.5px;font-weight:600;color:var(--muted-2);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .2s}
 .sb-journey-item.sb-done    .sb-ji-label{color:var(--ink-soft)}
@@ -789,41 +815,41 @@
 .sb-ji-badge{flex-shrink:0;font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:var(--green-50);color:var(--green);opacity:0;transition:opacity .3s}
 .sb-journey-item.sb-done .sb-ji-badge{opacity:1}
 .sb-journey-item.sb-done .sb-ji-badge::before{content:'✓'}
-.sb-modules{margin:2px 0 4px 16px;padding-left:12px;border-left:2px solid rgba(13,148,136,.15)}
-.sb-connector-line{width:2px;height:6px;background:rgba(13,148,136,.15);margin:0 0 2px 16px}
+.sb-modules{margin:2px 0 4px 16px;padding-left:12px;border-left:2px solid rgba(201,160,64,.15)}
+.sb-connector-line{width:2px;height:6px;background:rgba(201,160,64,.15);margin:0 0 2px 16px}
 .sb-mod{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:10px;font-size:12px;font-weight:500;color:var(--muted);text-decoration:none;cursor:pointer;transition:all .15s;margin-bottom:1px}
-.sb-mod:hover{background:rgba(13,148,136,.07);color:var(--teal)}
-.sb-mod.active{background:rgba(13,148,136,.1);color:var(--teal);font-weight:700}
+.sb-mod:hover{background:rgba(201,160,64,.07);color:var(--teal)}
+.sb-mod.active{background:rgba(201,160,64,.1);color:var(--teal);font-weight:700}
 .sb-mod.sb-mod-done{color:var(--ink-soft)}
-.sb-mod-dot{width:7px;height:7px;border-radius:50%;background:rgba(203,213,225,.8);flex-shrink:0;transition:all .25s}
-.sb-mod.active .sb-mod-dot{background:var(--teal);box-shadow:0 0 0 2px rgba(13,148,136,.2)}
+.sb-mod-dot{width:7px;height:7px;border-radius:50%;background:rgba(207,198,176,.8);flex-shrink:0;transition:all .25s}
+.sb-mod.active .sb-mod-dot{background:var(--teal);box-shadow:0 0 0 2px rgba(201,160,64,.2)}
 .sb-mod.sb-mod-done .sb-mod-dot{background:var(--green)}
 .sb-mod-text{line-height:1.3;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-tools-intro{font-size:11.5px;color:var(--muted);margin:0 0 10px;padding:0 2px;line-height:1.5}
 .sb-tools-list{display:flex;flex-direction:column;gap:5px}
 .sb-tool-card{display:flex;align-items:center;gap:9px;padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:var(--white);text-decoration:none;color:inherit;transition:all .2s}
-.sb-tool-card:hover{border-color:rgba(13,148,136,.3);box-shadow:var(--shadow-sm);transform:translateX(2px)}
+.sb-tool-card:hover{border-color:rgba(201,160,64,.3);box-shadow:var(--shadow-sm);transform:translateX(2px)}
 .sb-tool-ico{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;line-height:1}
 .sb-tool-info{flex:1;min-width:0}
 .sb-tool-name{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.2}
 .sb-tool-by{font-size:10px;color:var(--muted)}
 .sb-tool-ext{font-size:13px;color:var(--muted-2);flex-shrink:0;transition:all .2s}
 .sb-tool-card:hover .sb-tool-ext{color:var(--teal);transform:translate(2px,-2px)}
-.sb-tip-box{padding:12px;background:rgba(13,148,136,.05);border:1px solid rgba(13,148,136,.12);border-radius:10px}
+.sb-tip-box{padding:12px;background:rgba(201,160,64,.05);border:1px solid rgba(201,160,64,.12);border-radius:10px}
 .sb-tip-tag{display:block;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin-bottom:8px}
 .sb-techniques{display:flex;flex-direction:column;gap:7px}
 .sb-tech-item{display:flex;align-items:flex-start;gap:8px}
 .sb-tech-num{font-size:9px;font-weight:900;letter-spacing:.06em;color:#fff;background:linear-gradient(135deg,var(--teal),var(--blue));border-radius:5px;padding:2px 5px;flex-shrink:0;margin-top:2px;line-height:1.5}
 .sb-tech-name{font-size:11.5px;font-weight:700;color:var(--ink);line-height:1.3}
 .sb-tech-ex{font-size:10.5px;color:var(--muted);font-style:italic;margin-top:1px;line-height:1.3}
-.sb-mob-toggle{display:none;position:fixed;bottom:22px;left:16px;z-index:1100;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(13,148,136,.45);transition:all .2s}
-.sb-mob-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(13,148,136,.55)}
-.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:1050;backdrop-filter:blur(3px)}
+.sb-mob-toggle{display:none;position:fixed;bottom:22px;left:16px;z-index:1100;align-items:center;gap:8px;padding:11px 20px;background:linear-gradient(135deg,var(--teal),var(--blue));color:#fff;border:none;border-radius:999px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 24px rgba(201,160,64,.45);transition:all .2s}
+.sb-mob-toggle:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(201,160,64,.55)}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(32,49,42,.42);z-index:1050;backdrop-filter:blur(3px)}
 .sb-overlay.show{display:block}
 @media(max-width:1280px){.sidebar-right{display:none}}
 @media(max-width:980px){
   .layout-3col{display:block}
-  .sidebar-left{position:fixed;top:0;left:0;height:100vh;width:280px;z-index:1060;transform:translateX(-102%);transition:transform .3s cubic-bezier(.16,1,.3,1);background:var(--bg);border-right:1px solid var(--border);box-shadow:8px 0 40px rgba(0,0,0,.12);padding:16px 14px 60px}
+  .sidebar-left{position:fixed;top:0;left:0;height:100vh;width:280px;z-index:1060;transform:translateX(-102%);transition:transform .3s cubic-bezier(.16,1,.3,1);background:var(--bg);border-right:1px solid var(--border);box-shadow:8px 0 40px rgba(32,49,42,.12);padding:16px 14px 60px}
   .sidebar-left.sb-open{transform:translateX(0)}
   .sb-close-btn{display:flex}
   .sb-mob-toggle{display:flex}
@@ -836,7 +862,7 @@
 
 
 /* Locked toast */
-#locked-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9990;padding:11px 22px;background:#0F172A;color:#fff;border-radius:999px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:600;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
+#locked-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%);z-index:9990;padding:11px 22px;background:#20312a;color:#fff;border-radius:999px;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:600;pointer-events:none;opacity:0;transition:opacity .25s;white-space:nowrap}
 #locked-toast.show{opacity:1}
 
 /* ══ MODULE SCROLL-IN ANIMATION (C1-style) ══ */
@@ -846,8 +872,8 @@
 /* ══ COMPLETE-ZONE (C1-style, teal) ══ */
 .complete-zone{
   margin-top:24px;padding:18px 20px;
-  background:linear-gradient(135deg,rgba(13,148,136,.05),rgba(52,211,153,.04));
-  border:1px solid rgba(13,148,136,.18);border-radius:14px;
+  background:linear-gradient(135deg,rgba(201,160,64,.05),rgba(215,177,93,.04));
+  border:1px solid rgba(201,160,64,.18);border-radius:14px;
   display:flex;align-items:center;justify-content:space-between;
   gap:14px;flex-wrap:wrap;
 }
@@ -857,7 +883,7 @@
 }
 .complete-zone-ic{
   width:34px;height:34px;border-radius:9px;
-  background:rgba(13,148,136,.1);color:var(--teal);
+  background:rgba(201,160,64,.1);color:var(--teal);
   display:grid;place-items:center;font-size:16px;flex-shrink:0;
 }
 .complete-btn{
@@ -866,16 +892,16 @@
   background:linear-gradient(135deg,var(--teal),var(--blue));
   color:#fff;font-family:'Outfit',sans-serif;font-size:13px;
   font-weight:700;cursor:pointer;
-  box-shadow:0 4px 14px rgba(13,148,136,.3);
+  box-shadow:0 4px 14px rgba(201,160,64,.3);
   transition:all .2s;
 }
-.complete-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(13,148,136,.4)}
+.complete-btn:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,160,64,.4)}
 .complete-btn:disabled{
-  background:#E5E7EB;color:#9CA3AF;
+  background:#cfc6b0;color:#8aa090;
   box-shadow:none;cursor:default;transform:none;
 }
 .complete-btn.done-state{
-  background:linear-gradient(135deg,var(--green),#34D399);
+  background:linear-gradient(135deg,var(--green),#d7b15d);
   box-shadow:0 4px 14px rgba(5,150,105,.25);
   pointer-events:none;
 }
@@ -883,6 +909,102 @@
   0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}
 }
 .complete-zone.just-done{animation:completeZonePop .35s cubic-bezier(.16,1,.3,1)}
+
+/* ══ PORTERET FRA C1 ══ */
+/* ══════════════════════════════════════════════
+   SIDEBAR — Varm Creme-panel m. runde hjørner
+══════════════════════════════════════════════ */
+.sidebar{padding-top:22px!important}
+.sidebar-left .sb-inner,.sidebar-right .sb-inner{
+  background:var(--sb-bg)!important;
+  border:1px solid var(--sb-line)!important;
+  border-radius:20px!important;
+  padding:18px 15px 22px!important;
+  box-shadow:0 2px 12px rgba(32,49,42,.05)!important;
+}
+.sidebar-left{border-right:none!important}
+.sidebar-right{border-left:none!important}
+.sidebar-left{width:270px!important;padding:22px 12px 60px!important}
+.sidebar-right{width:246px!important;padding:22px 12px 60px!important}
+
+/* Scrollbar */
+.sidebar{scrollbar-color:var(--c-gold-ring) transparent!important}
+.sidebar::-webkit-scrollbar-thumb{background:var(--c-gold-ring)!important}
+
+/* Head */
+.sb-head{border-bottom-color:var(--sb-line)!important}
+.sb-head-label{color:var(--c-gold-ink)!important;font-size:9.5px!important;letter-spacing:.18em!important}
+
+/* Progress strip */
+.sb-progress-wrap{background:var(--sb-bg-2)!important;border-color:var(--sb-line)!important;border-radius:12px!important}
+.sb-progress-label{color:var(--sb-muted)!important}
+.sb-progress-pct{color:var(--c-gold-ink)!important}
+.sb-progress-bar{background:rgba(32,49,42,.08)!important}
+.sb-progress-fill{background:linear-gradient(90deg,var(--c-gold-deep),var(--c-gold-warm))!important}
+
+/* Journey items */
+.sb-journey-item{border-radius:11px!important}
+.sb-ji-label{color:var(--sb-muted)!important}
+.sb-ji-sub{color:var(--muted-2)!important}
+.sb-journey-item.sb-done .sb-ji-label{color:var(--sb-ink)!important}
+.sb-journey-item.sb-current .sb-ji-label{color:var(--c-gold-ink)!important;font-weight:700!important}
+.sb-journey-item.sb-available .sb-ji-label{color:var(--c-gold-deep)!important}
+.sb-journey-item.sb-done:hover,.sb-journey-item.sb-available:hover{background:rgba(194,160,56,.08)!important}
+.sb-journey-item.sb-current{background:rgba(194,160,56,.1)!important}
+
+/* Journey icons */
+.sb-ji-icon{background:rgba(32,49,42,.07)!important;color:var(--sb-muted)!important;font-size:11px!important;font-weight:700!important;border-radius:9px!important}
+.sb-journey-item.sb-done .sb-ji-icon{background:var(--green-bg)!important;color:var(--green)!important}
+.sb-journey-item.sb-current .sb-ji-icon{background:linear-gradient(135deg,var(--c-gold-deep),var(--c-gold))!important;color:#fff!important}
+.sb-journey-item.sb-available .sb-ji-icon{background:var(--c-gold-soft)!important;color:var(--c-gold-deep)!important}
+
+/* Module sub-nav */
+.sb-modules{border-left-color:var(--c-gold-ring)!important}
+.sb-connector-line{background:var(--c-gold-ring)!important}
+.sb-mod{color:var(--sb-muted)!important;font-size:11.5px;border-radius:8px}
+.sb-mod:hover{background:rgba(194,160,56,.08)!important;color:var(--sb-ink)!important}
+.sb-mod-dot{background:var(--muted-2)!important}
+
+/* Badge */
+.sb-ji-badge{background:var(--green-bg)!important;color:var(--green)!important}
+
+/* Divider */
+.sb-divider{background:var(--sb-line)!important}
+
+/* Right sidebar tools */
+.sb-tool-card{background:var(--sb-bg-2)!important;border-color:var(--sb-line)!important;border-radius:12px!important}
+.sb-tool-card:hover{background:#e9e1cd!important;border-color:var(--c-gold-mid)!important}
+.sb-tool-name{color:var(--sb-ink)!important}
+.sb-tool-by{color:var(--muted-2)!important}
+.sb-tool-ext{color:var(--muted-2)!important}
+.sb-tool-card:hover .sb-tool-ext{color:var(--c-gold-deep)!important}
+.sb-tools-intro{color:var(--sb-muted)!important;font-size:11.5px}
+
+/* Tip box */
+.sb-tip-box{background:var(--sb-bg-2)!important;border-color:var(--sb-line)!important;border-radius:12px!important}
+.sb-tip-tag{color:var(--c-gold-ink)!important}
+.sb-tech-name{color:var(--sb-ink)!important}
+.sb-tech-ex{color:var(--sb-muted)!important}
+.sb-tech-num{background:linear-gradient(135deg,var(--c-gold-deep),var(--c-gold))!important;color:#fff!important}
+
+/* Mobile toggle */
+.sb-mob-toggle{background:linear-gradient(135deg,var(--c-gold-deep),var(--c-gold))!important}
+
+/* Mobile breakpoint */
+@media(max-width:980px){
+  .sidebar-left{background:transparent!important}
+  .sidebar-left .sb-inner{border-radius:0!important;border:none!important;box-shadow:none!important;background:var(--sb-bg)!important;height:100%}
+}
+
+
+/* ══ Intro — mørk skov + guld-motes (som C1) ══ */
+.cinematic-intro{background:radial-gradient(ellipse 70% 70% at 50% 50%,rgba(47,106,74,.30) 0%,rgba(18,40,28,.97) 45%,#0a1410 100%)!important}
+.intro-mark{background:linear-gradient(145deg,#2F5D45 0%,#3a7057 100%)!important;box-shadow:0 0 70px rgba(var(--c-gold-rgb),.4),0 0 0 1px rgba(var(--c-gold-rgb),.25),0 20px 60px rgba(0,0,0,.4)!important}
+.intro-mark::after{color:#e8c766!important;text-shadow:0 0 20px rgba(var(--c-gold-warm-rgb),.45)!important}
+.intro-title em{background:linear-gradient(135deg,var(--c-gold-warm),var(--c-gold-mid))!important;-webkit-background-clip:text!important;background-clip:text!important;color:transparent!important}
+.intro-cta{color:var(--c-gold-ink)!important}
+/* ══ Rolig baggrund — fjern new-tech grid ══ */
+.scene-grid{display:none!important}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -922,7 +1044,7 @@
     <span class="journey-step">C3 · Møder &amp; indhold</span><span class="journey-sep">›</span>
     <span class="journey-step">E1 · Eksamen del 1</span><span class="journey-sep">›</span>
     <span class="journey-step">E2 · Eksamen del 2</span><span class="journey-sep">›</span>
-    <span class="journey-step">🥈 Bevis &amp; coins</span>
+    <span class="journey-step"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="9" r="5"/><path d="M9 13.3 7 21l5-3 5 3-2-7.7"/></svg> Bevis &amp; coins</span>
   </div>
 </div>
 
@@ -933,7 +1055,7 @@
   <div class="sb-inner">
 
     <div class="sb-head">
-      <span class="sb-head-label">📚 Dit forløb</span>
+      <span class="sb-head-label"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg> Dit forløb</span>
       <button class="sb-close-btn" id="sbCloseBtn" aria-label="Luk">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
@@ -948,17 +1070,17 @@
     </div>
 
     <div class="sb-journey-item sb-done" id="sbKursusD" data-href="forberedelse-c.html">
-      <div class="sb-ji-icon">🎓</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 4 2 9l10 5 10-5-10-5z"/><path d="M6 11v5c0 1 3 3 6 3s6-2 6-3v-5"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">Kursus D + Forberedelse</div><div class="sb-ji-sub">Bestået</div></div>
       <div class="sb-ji-badge"></div>
     </div>
     <div class="sb-journey-item sb-done" id="sbKursusC1" data-href="kursus-c1.html">
-      <div class="sb-ji-icon">📗</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">C1 · Prompt-teknik</div><div class="sb-ji-sub">Gennemført</div></div>
       <div class="sb-ji-badge"></div>
     </div>
     <div class="sb-journey-item sb-done" id="sbQuizC1" data-href="quiz-c1.html">
-      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">C1 Mini-quiz</div><div class="sb-ji-sub">Bestået</div></div>
       <div class="sb-ji-badge"></div>
     </div>
@@ -981,22 +1103,22 @@
     <div class="sb-connector-line"></div>
 
     <div class="sb-journey-item sb-locked" id="sbQuizC2" data-href="quiz-c2.html">
-      <div class="sb-ji-icon">📝</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">C2 Mini-quiz</div><div class="sb-ji-sub">+25 coins</div></div>
       <div class="sb-ji-badge"></div>
     </div>
     <div class="sb-journey-item sb-locked" id="sbKursusC3" data-href="kursus-c3.html">
-      <div class="sb-ji-icon">🎙️</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">C3 · Møder &amp; indhold</div><div class="sb-ji-sub">Professionel brug</div></div>
       <div class="sb-ji-badge"></div>
     </div>
     <div class="sb-journey-item sb-locked" id="sbEksamen1" data-href="eksamen-c.html">
-      <div class="sb-ji-icon">📋</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">Eksamen · Del 1</div><div class="sb-ji-sub">15 MC-spørgsmål</div></div>
       <div class="sb-ji-badge"></div>
     </div>
     <div class="sb-journey-item sb-locked" id="sbEksamen2" data-href="eksamen-c-del2.html" data-no-retake="1">
-      <div class="sb-ji-icon">🥈</div>
+      <div class="sb-ji-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="9" r="5"/><path d="M9 13.3 7 21l5-3 5 3-2-7.7"/></svg></div>
       <div class="sb-ji-content"><div class="sb-ji-label">Eksamen · Del 2</div><div class="sb-ji-sub">Silver badge · 200 coins</div></div>
       <div class="sb-ji-badge"></div>
     </div>
@@ -1010,14 +1132,14 @@
   <h1>AI til emails og<br><em>produktivitet</em></h1>
   <p class="hero-sub-c1">Del C1 gav dig teknikkerne. Nu sætter vi dem i spil — med live email-øvelser og dit eget personlige prompt-bibliotek du kan tage med dig.</p>
   <div class="hero-stats-c1">
-    <span class="hero-stat-c1">⏱ Ca. 1 time</span>
-    <span class="hero-stat-c1">📋 5 moduler</span>
-    <span class="hero-stat-c1">✉️ Live email-opgave</span>
-    <span class="hero-stat-c1">📚 Prompt-bibliotek</span>
+    <span class="hero-stat-c1">Ca. 1 time</span>
+    <span class="hero-stat-c1">5 moduler</span>
+    <span class="hero-stat-c1">Live email-opgave</span>
+    <span class="hero-stat-c1">Prompt-bibliotek</span>
   </div>
   <div class="hero-notice-c1">
-    <div class="notice-c1 warn"><div class="notice-c1-ic">✅</div><div><h4>Forudsætning</h4><p>C2 bygger direkte på C1. Har du ikke gennemført C1, anbefaler vi at gøre det først.</p></div></div>
-    <div class="notice-c1 tip"><div class="notice-c1-ic">💡</div><div><h4>Inden du starter</h4><p>Åbn Claude eller ChatGPT i højre sidebar — hvert modul indeholder øvelser du skal gennemføre med det samme.</p></div></div>
+    <div class="notice-c1 warn"><div class="notice-c1-ic"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg></div><div><h4>Forudsætning</h4><p>C2 bygger direkte på C1. Har du ikke gennemført C1, anbefaler vi at gøre det først.</p></div></div>
+    <div class="notice-c1 tip"><div class="notice-c1-ic"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg></div><div><h4>Inden du starter</h4><p>Åbn Claude eller ChatGPT i højre sidebar — hvert modul indeholder øvelser du skal gennemføre med det samme.</p></div></div>
   </div>
 </section>
 
@@ -1060,7 +1182,7 @@
       <div class="ai-demo">
         <div class="ai-demo-label">Se hvad et svagt vs. stærkt prompt giver</div>
         <div class="ai-tabs">
-          <button class="ai-tab active" onclick="switchTab(this,'demo1-bad')">❌ Svagt prompt</button>
+          <button class="ai-tab active" onclick="switchTab(this,'demo1-bad')"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg> Svagt prompt</button>
           <button class="ai-tab" onclick="switchTab(this,'demo1-good')">✓ Stærkt prompt — klik her</button>
         </div>
         <div class="ai-response" id="demo1-bad">
@@ -1124,7 +1246,7 @@
       </div>
 
       <div class="notice info" style="margin-top:18px;">
-        <div class="notice-icon">📚</div>
+        <div class="notice-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></div>
         <div>
           <div class="notice-head">De færdige skabeloner finder du i modul 5</div>
           <div class="notice-body">I prompt-biblioteket har du klar-til-brug skabeloner til begge teknikker — plus mulighed for at tilføje dine egne.</div>
@@ -1132,7 +1254,7 @@
       </div>
       <div class="complete-zone" id="completeZone-m1">
         <div class="complete-zone-text">
-          <div class="complete-zone-ic">📖</div>
+          <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
           <span>Modul 1 gennemgået — klar til at fortsætte?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m1" onclick="markDone('m1')">
@@ -1156,14 +1278,14 @@
       </div>
       <div class="mod-time">15 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-locked-badge"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Låst</div>
     </div>
     <div class="mod-body">
       <p class="prose">Du har netop modtaget denne email fra en samarbejdspartner. Din opgave: brug det du har lært — skriv det bedst mulige svar med AI's hjælp. Indsæt dit svar i chatten nedenfor og få feedback.</p>
 
       <div class="email-challenge">
         <div class="ec-header">
-          <div class="ec-icon">📬</div>
+          <div class="ec-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg></div>
           <div>
             <div class="ec-title">Indkommende email — læs grundigt</div>
             <div class="ec-sub">Dette er situationen du skal håndtere</div>
@@ -1201,7 +1323,7 @@ PartnerCo</div>
         </div>
 
         <div class="ec-howto">
-          <div class="ec-howto-head"><div class="ec-howto-icon">📝</div><div class="ec-howto-title">Sådan løser du opgaven</div></div>
+          <div class="ec-howto-head"><div class="ec-howto-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div><div class="ec-howto-title">Sådan løser du opgaven</div></div>
           <div class="ec-howto-list">
             <div class="ec-howto-step"><div class="ec-howto-num">1</div><div class="ec-howto-text"><strong>Kopiér emailen</strong> ovenfor med knappen, og åbn Claude.ai eller ChatGPT i et nyt vindue.</div></div>
             <div class="ec-howto-step"><div class="ec-howto-num">2</div><div class="ec-howto-text"><strong>Indsæt emailen i AI</strong> og bed den skrive et svar. Brug rolleprompt og negativ afgrænsning fra C1.</div></div>
@@ -1213,7 +1335,7 @@ PartnerCo</div>
           <div class="chat-messages" id="ec-msgs">
             <div class="chat-msg ai">
               <div class="chat-avatar ai-av">AI</div>
-              <div class="chat-bubble">Indsæt dit email-svar herunder — jeg giver dig kort feedback på hvad der er godt og hvad du kan skærpe. 📧</div>
+              <div class="chat-bubble">Indsæt dit email-svar herunder — jeg giver dig kort feedback på hvad der er godt og hvad du kan skærpe. <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg></div>
             </div>
           </div>
           <div class="chat-typing" id="ec-typing">
@@ -1231,7 +1353,7 @@ PartnerCo</div>
       </div>
       <div class="complete-zone" id="completeZone-m2">
         <div class="complete-zone-text">
-          <div class="complete-zone-ic">📖</div>
+          <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
           <span>Modul 2 gennemgået — klar til at fortsætte?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m2" onclick="markDone('m2')">
@@ -1255,7 +1377,7 @@ PartnerCo</div>
       </div>
       <div class="mod-time">12 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-locked-badge"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Låst</div>
     </div>
     <div class="mod-body">
       <p class="prose">Den mest undervurderede måde at bruge AI på: som sparringspartner når du står foran en beslutning. AI ser blinde vinkler du selv overser — fordi du er for tæt på problemet.</p>
@@ -1263,7 +1385,7 @@ PartnerCo</div>
       <p class="prose">Det vigtigste princip: <strong>bed ikke AI om at træffe beslutningen</strong>. Bed den om at hjælpe dig med at tænke klarere. Forskellen er enorm.</p>
 
       <div style="background:var(--teal-50);border:1px solid var(--teal-200);border-radius:var(--r);padding:14px 16px;margin-bottom:16px;">
-        <div style="font-size:12.5px;font-weight:700;color:var(--teal-deep);margin-bottom:8px;">📌 Tre principper for god beslutningsanalyse</div>
+        <div style="font-size:12.5px;font-weight:700;color:var(--teal-deep);margin-bottom:8px;"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 16v6"/><path d="M9 3h6l-1 7 3 3H7l3-3-1-7z"/></svg> Tre principper for god beslutningsanalyse</div>
         <div style="font-size:13px;line-height:1.7;color:#134E4A;">
           <strong>1.</strong> Beskriv begge muligheder lige grundigt — også fordele <em>og</em> ulemper for begge.<br>
           <strong>2.</strong> Bed AI tænke skridt for skridt (kædetænkning fra C1).<br>
@@ -1288,7 +1410,7 @@ PartnerCo</div>
       </div>
 
       <div class="notice info" style="margin-top:18px;">
-        <div class="notice-icon">📚</div>
+        <div class="notice-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></div>
         <div>
           <div class="notice-head">Den færdige skabelon ligger i biblioteket</div>
           <div class="notice-body">I modul 5 finder du en klar-til-brug beslutnings-prompt med alle tre principper indbygget.</div>
@@ -1296,7 +1418,7 @@ PartnerCo</div>
       </div>
       <div class="complete-zone" id="completeZone-m3">
         <div class="complete-zone-text">
-          <div class="complete-zone-ic">📖</div>
+          <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
           <span>Modul 3 gennemgået — klar til at fortsætte?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m3" onclick="markDone('m3')">
@@ -1320,7 +1442,7 @@ PartnerCo</div>
       </div>
       <div class="mod-time">10 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-locked-badge"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Låst</div>
     </div>
     <div class="mod-body">
       <p class="prose">Et af de mest undervurderede AI-værktøjer: omskriv samme indhold til en ny målgruppe. Du skriver én version — AI laver de andre på sekunder.</p>
@@ -1354,7 +1476,7 @@ PartnerCo</div>
       <!-- KLADDE-TEKST -->
       <div class="draft-box">
         <div class="draft-head">
-          <div class="draft-icon">📄</div>
+          <div class="draft-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></div>
           <div>
             <div class="draft-title">Kladde-tekst — brug den hvis du ikke har en selv</div>
             <div class="draft-sub">147 ord · Status fra et fiktivt projekt</div>
@@ -1372,7 +1494,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
       </div>
       <div class="complete-zone" id="completeZone-m4">
         <div class="complete-zone-text">
-          <div class="complete-zone-ic">📖</div>
+          <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
           <span>Modul 4 gennemgået — klar til at fortsætte?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m4" onclick="markDone('m4')">
@@ -1396,7 +1518,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
       </div>
       <div class="mod-time">8 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
-      <div class="mod-locked-badge">🔒 Låst</div>
+      <div class="mod-locked-badge"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Låst</div>
     </div>
     <div class="mod-body">
 
@@ -1404,7 +1526,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
       <!-- BIG OPEN BUTTON -->
       <div class="lib-open-card">
-        <div class="lib-open-icon">📚</div>
+        <div class="lib-open-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></div>
         <div class="lib-open-text">
           <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
           <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
@@ -1416,13 +1538,13 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
       </div>
 
       <!-- PDF DOWNLOAD -->
-      <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(13,148,136,.05);border:1px solid rgba(13,148,136,.2);border-radius:14px;margin:12px 0 24px;">
-        <span style="font-size:26px;flex-shrink:0;">📄</span>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(201,160,64,.05);border:1px solid rgba(201,160,64,.2);border-radius:14px;margin:12px 0 24px;">
+        <span style="font-size:26px;flex-shrink:0;"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h4"/></svg></span>
         <div style="flex:1;">
           <div style="font-size:14px;font-weight:700;color:var(--ink);margin-bottom:3px;">C2 Prompt-snydelap</div>
           <div style="font-size:12.5px;color:var(--muted);">10 C2-prompts på én A4-side — print og hav ved siden af computeren</div>
         </div>
-        <button onclick="downloadC2PDF()" id="c2PdfBtn" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--teal),#0D9488);color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(13,148,136,.3);flex-shrink:0;">
+        <button onclick="downloadC2PDF()" id="c2PdfBtn" style="display:inline-flex;align-items:center;gap:7px;padding:9px 20px;border-radius:999px;border:none;background:linear-gradient(135deg,var(--teal),#c9a040);color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(201,160,64,.3);flex-shrink:0;">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Download PDF
         </button>
@@ -1447,20 +1569,20 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
                 <div class="visual-dot red"></div>
                 <div class="visual-dot yellow"></div>
                 <div class="visual-dot green"></div>
-                <div class="visual-tab-text">📚 Mit Prompt-Bibliotek — Akademiet AI</div>
+                <div class="visual-tab-text"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg> Mit Prompt-Bibliotek — Akademiet AI</div>
               </div>
               <div class="visual-content">
                 <div class="visual-prompt-row">
-                  <span>✉️</span> Den svære email
-                  <span class="visual-copy-mini">📋</span>
+                  <span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg></span> Den svære email
+                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
                 </div>
                 <div class="visual-prompt-row">
                   <span>⏰</span> Opfølgning når ingen svarer
-                  <span class="visual-copy-mini">📋</span>
+                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
                 </div>
                 <div class="visual-prompt-row">
-                  <span>🎯</span> Beslutningshjælp
-                  <span class="visual-copy-mini">📋</span>
+                  <span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span> Beslutningshjælp
+                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
                 </div>
               </div>
             </div>
@@ -1478,10 +1600,10 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
             <div class="guide-step-text">Tryk <kbd>Ctrl</kbd> + <kbd>D</kbd> (Windows) eller <kbd>Cmd</kbd> + <kbd>D</kbd> (Mac) mens biblioteket er åbent. Browseren spørger om du vil gemme det som bogmærke — sig ja. Næste gang du skal bruge en prompt, åbner du bare bogmærket.</div>
             <div class="guide-step-visual visual-2">
               <div class="visual-bookmark-bar">
-                <span class="visual-bookmark-item">🏠 Hjem</span>
-                <span class="visual-bookmark-item active">📚 Mit Prompt-Bibliotek</span>
-                <span class="visual-bookmark-item">📧 Mail</span>
-                <span class="visual-bookmark-item">📅 Kalender</span>
+                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/></svg> Hjem</span>
+                <span class="visual-bookmark-item active"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg> Mit Prompt-Bibliotek</span>
+                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg> Mail</span>
+                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9.5h16M8 3v4M16 3v4"/></svg> Kalender</span>
               </div>
               <div class="visual-arrow-down">↑ Sådan ser dit bookmark ud i browseren</div>
             </div>
@@ -1500,12 +1622,12 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
             <div class="guide-step-visual visual-3">
               <div class="flow-chain">
                 <div class="flow-step">
-                  <div class="flow-icon">📋</div>
+                  <div class="flow-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></div>
                   <div class="flow-label">Klik kopiér i biblioteket</div>
                 </div>
                 <div class="flow-arrow">→</div>
                 <div class="flow-step">
-                  <div class="flow-icon">✍️</div>
+                  <div class="flow-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
                   <div class="flow-label">Udfyld pladsholderne</div>
                 </div>
                 <div class="flow-arrow">→</div>
@@ -1541,14 +1663,14 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
       <!-- TIPS BOX -->
       <div class="lib-tips">
-        <div class="lib-tips-title">💡 Hvad du også kan med biblioteket</div>
+        <div class="lib-tips-title"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg> Hvad du også kan med biblioteket</div>
         <div class="lib-tips-list">
-          <div class="lib-tip-item"><span>✍️</span> <strong>Udfyld pladsholdere direkte</strong> — kopiér-knappen åbner et vindue så du tilpasser prompten inden den kopieres</div>
+          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span> <strong>Udfyld pladsholdere direkte</strong> — kopiér-knappen åbner et vindue så du tilpasser prompten inden den kopieres</div>
           <div class="lib-tip-item"><span>⭐</span> <strong>Favoritter øverst</strong> — marker dine mest brugte prompts med en stjerne</div>
-          <div class="lib-tip-item"><span>➕</span> <strong>Tilføj dine egne prompts</strong> — og tildel dem en kategori du selv har oprettet</div>
-          <div class="lib-tip-item"><span>🗂️</span> <strong>Rediger kategorier</strong> — omdøb, slet og sorter kategorier som du vil</div>
-          <div class="lib-tip-item"><span>🔍</span> <strong>Søg i alle prompts</strong> med <kbd>Ctrl</kbd>+<kbd>K</kbd> — finder hurtigt det rigtige</div>
-          <div class="lib-tip-item"><span>📈</span> <strong>Vokser med dig</strong> — flere prompts tilføjes automatisk når du tager kursus C, B og A</div>
+          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 5v14M5 12h14"/></svg></span> <strong>Tilføj dine egne prompts</strong> — og tildel dem en kategori du selv har oprettet</div>
+          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></span> <strong>Rediger kategorier</strong> — omdøb, slet og sorter kategorier som du vil</div>
+          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></span> <strong>Søg i alle prompts</strong> med <kbd>Ctrl</kbd>+<kbd>K</kbd> — finder hurtigt det rigtige</div>
+          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/></svg></span> <strong>Vokser med dig</strong> — flere prompts tilføjes automatisk når du tager kursus C, B og A</div>
         </div>
       </div>
 
@@ -1570,7 +1692,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
       <div class="complete-zone" id="completeZone-m5">
         <div class="complete-zone-text">
-          <div class="complete-zone-ic">📖</div>
+          <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
           <span>Modul 5 gennemgået — prompt-biblioteket er klar?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m5" onclick="markDone('m5')">
@@ -1585,7 +1707,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
   <!-- SUMMARY (C1-style) -->
   <div class="summary-c1">
-    <span class="summary-tag">📋 Sammenfatning</span>
+    <span class="summary-tag"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg> Sammenfatning</span>
     <h3>Del C2 — Det du har lært</h3>
     <ul class="summary-list-c1">
       <li>Den svære email — med rolleprompt + negativ afgrænsning</li>
@@ -1601,13 +1723,13 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
   <!-- QUIZ CTA (C1-style) -->
   <div class="quiz-cta-c1">
-    <span class="quiz-cta-tag">📝 Mini-quiz</span>
+    <span class="quiz-cta-tag"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg> Mini-quiz</span>
     <h3>Klar til mini-quizzen?</h3>
     <p>6 spørgsmål der tester om du har forstået Del C2. Du skal have mindst 5 rigtige for at låse Del C3 op.</p>
     <span class="quiz-warn-c1">⚠️ Quizzen skal bestås for at gå videre</span>
 
-    <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#F3F4F6; color:#9CA3AF; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
-      🔒 Åbn dit prompt-bibliotek først
+    <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#ece6d6; color:#8aa090; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
+      <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Åbn dit prompt-bibliotek først
     </div>
     <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mini-quizzen låses op når du har åbnet modul 5 og dit bibliotek</div>
 
@@ -1638,7 +1760,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 
     <div class="sb-tools-list">
       <a class="sb-tool-card" href="https://claude.ai" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#7C3AED,#A78BFA)">C</span><div class="sb-tool-info"><div class="sb-tool-name">Claude</div><div class="sb-tool-by">Anthropic</div></div><span class="sb-tool-ext">↗</span></a>
-      <a class="sb-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#059669,#34D399)">G</span><div class="sb-tool-info"><div class="sb-tool-name">ChatGPT</div><div class="sb-tool-by">OpenAI</div></div><span class="sb-tool-ext">↗</span></a>
+      <a class="sb-tool-card" href="https://chatgpt.com" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#2f6a4a,#d7b15d)">G</span><div class="sb-tool-info"><div class="sb-tool-name">ChatGPT</div><div class="sb-tool-by">OpenAI</div></div><span class="sb-tool-ext">↗</span></a>
       <a class="sb-tool-card" href="https://gemini.google.com" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#1a73e8,#4285f4);font-size:10px">Gm</span><div class="sb-tool-info"><div class="sb-tool-name">Gemini</div><div class="sb-tool-by">Google</div></div><span class="sb-tool-ext">↗</span></a>
       <a class="sb-tool-card" href="https://copilot.microsoft.com" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#0078d4,#50B0F1);font-size:10px">Co</span><div class="sb-tool-info"><div class="sb-tool-name">Copilot</div><div class="sb-tool-by">Microsoft</div></div><span class="sb-tool-ext">↗</span></a>
       <a class="sb-tool-card" href="https://www.perplexity.ai" target="_blank" rel="noopener"><span class="sb-tool-ico" style="background:linear-gradient(135deg,#1C1C2E,#20B2AA);font-size:10px">Px</span><div class="sb-tool-info"><div class="sb-tool-name">Perplexity</div><div class="sb-tool-by">AI-søgning</div></div><span class="sb-tool-ext">↗</span></a>
@@ -1647,7 +1769,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
     <div class="sb-divider"></div>
 
     <div class="sb-tip-box">
-      <span class="sb-tip-tag">💡 C2 Teknik-genvej</span>
+      <span class="sb-tip-tag"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg> C2 Teknik-genvej</span>
       <div class="sb-techniques">
         <div class="sb-tech-item"><span class="sb-tech-num">01</span><div><div class="sb-tech-name">Svær email</div><div class="sb-tech-ex">Rolle + negativ afgrænsning</div></div></div>
         <div class="sb-tech-item"><span class="sb-tech-num">02</span><div><div class="sb-tech-name">Tone-guide</div><div class="sb-tech-ex">Formelt / neutralt / varmt / direkte</div></div></div>
@@ -1667,7 +1789,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
 </button>
 <div class="sb-overlay" id="sbOverlay"></div>
 
-<div id="locked-toast">🔒 <span>Gennemfør det forrige modul først</span></div>
+<div id="locked-toast"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> <span>Gennemfør det forrige modul først</span></div>
 
 <div id="toast">
   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1685,7 +1807,7 @@ const db=getFirestore(app);
 let _c2User=null;
 onAuthStateChanged(auth,async u=>{
   if(!u){
-    showToast('Du skal være logget ind for at tilgå dette kursus 🔒');
+    showToast('Du skal være logget ind for at tilgå dette kursus <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>');
     setTimeout(()=>window.location.href='platform.html',1800);
     return;
   }
@@ -1784,7 +1906,7 @@ function markDone(id) {
 
   // Vis toast
   const names = {m1:'Modul 1',m2:'Modul 2',m3:'Modul 3',m4:'Modul 4',m5:'Modul 5'};
-  showToast('✅ ' + names[id] + ' markeret som færdig!');
+  showToast('<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> ' + names[id] + ' markeret som færdig!');
 
   unlockNext(id);
   window._saveC2Progress?.(id);
@@ -1816,7 +1938,7 @@ function updateProgress() {
   const openId = modIds.find(id => document.getElementById(id)?.classList.contains('open'));
   modIds.forEach((id, i) => {
     const dot = document.getElementById('sbDot' + (i+1));
-    if (dot) dot.style.background = modDone[id] ? 'var(--green)' : 'rgba(203,213,225,.8)';
+    if (dot) dot.style.background = modDone[id] ? 'var(--green)' : 'rgba(207,198,176,.8)';
     const pill = document.querySelector('.steps-rail .step-pill[data-mod="' + id + '"]');
     if (pill) {
       pill.classList.toggle('done', !!modDone[id]);
@@ -2006,8 +2128,8 @@ Emne: Vores samarbejde — jeg er oprigtigt skuffet
 
 Kursisten indsætter nu deres email-svar. Din opgave er at give KORT, KONKRET feedback i to dele:
 
-✅ **Hvad fungerer godt:** 1-2 specifikke ting der er stærke i svaret
-💡 **Hvad kan forbedres:** 1-2 konkrete forbedringer — vær specifik
+<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> **Hvad fungerer godt:** 1-2 specifikke ting der er stærke i svaret
+<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg> **Hvad kan forbedres:** 1-2 konkrete forbedringer — vær specifik
 
 Hold feedbacken under 120 ord. Vær direkte og konstruktiv. Svar altid på dansk.
 Hvis kursisten ikke har sendt et email-svar (fx bare spørger dig om noget), bed dem venligt om at indsætte deres email-svar.`;
@@ -2117,7 +2239,7 @@ function hideIntroWild(){
 function spawnBtnParticlesC2(btn){
   if(!btn)return;
   const r=btn.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2;
-  const cols=['#fff','#5EEAD4','#34D399','#0D9488','#FCD34D'];
+  const cols=['#fff','#efce80','#d7b15d','#c9a040','#FCD34D'];
   for(let i=0;i<24;i++){
     const p=document.createElement('div');
     const ang=(i/24)*Math.PI*2,dist=80+Math.random()*200,sz=3+Math.random()*8,col=cols[Math.floor(Math.random()*cols.length)];
@@ -2179,7 +2301,7 @@ if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)hideIntroCalm();
   document.getElementById('sidebarLeft')?.addEventListener('click',e=>{
     const item=e.target.closest('.sb-journey-item');
     if(!item||item.classList.contains('sb-current'))return;
-    if(item.classList.contains('sb-locked')){showToast('Fuldfør det forrige trin for at låse op 🔒');return;}
+    if(item.classList.contains('sb-locked')){showToast('Fuldfør det forrige trin for at låse op <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>');return;}
     if(item.dataset.noRetake==='1'&&item.classList.contains('sb-done')){showToast('Eksamen kan kun tages én gang 🏅');return;}
     const href=item.dataset.href;if(href)window.location.href=href;
   });
@@ -2198,7 +2320,7 @@ if(window.matchMedia('(prefers-reduced-motion:reduce)').matches)hideIntroCalm();
 
 /* ── CONFETTI ── */
 function spawnConfettiC2(){
-  const colors=['#0D9488','#5EEAD4','#34D399','#FCD34D','#F472B6'];
+  const colors=['#c9a040','#efce80','#d7b15d','#FCD34D','#F472B6'];
   const wrap=document.createElement('div');wrap.className='confetti';
   for(let i=0;i<50;i++){
     const s=document.createElement('span');
@@ -2214,19 +2336,19 @@ function spawnConfettiC2(){
 
 /* ── C2 BIBLIOTEK ── */
 const DEFAULT_PROMPTS_SEED=[
-  {id:'d1',emoji:'✉️',title:'Den svære email',source:'C2 — Modul 1',category:'C2',fav:false,
+  {id:'d1',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg>',title:'Den svære email',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Du er erfaren forretningskommunikatør. Hjælp mig med at skrive en email til [modtager] om [situation]. Tone: ærlig men ikke anklagende. Undgå passive formuleringer og floskler. Maks 120 ord — kom direkte til sagen.'},
   {id:'d2',emoji:'⏰',title:'Opfølgning når ingen svarer',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Skriv en opfølgnings-email til [person]. Jeg sendte en email om [emne] for [X] dage siden og har ikke hørt tilbage. Tone: venlig og ikke pressende, men tydelig om at jeg har brug for svar inden [dato]. Undgå sætningen "Jeg tillader mig at følge op".'},
   {id:'d3',emoji:'✏️',title:'Sprogvask af email-udkast',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Ret følgende email til korrekt, professionelt dansk. Forbedre formuleringer og flow — men ændr ikke indholdet eller meningen. Gør den mere direkte og fjern unødvendige fyldord: [indsæt din email].'},
-  {id:'d4',emoji:'🎯',title:'Beslutningshjælp',source:'C2 — Modul 3',category:'C2',fav:false,
+  {id:'d4',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>',title:'Beslutningshjælp',source:'C2 — Modul 3',category:'C2',fav:false,
    text:'Jeg skal træffe en beslutning: [beskriv situationen].\n\nMulighed A: [fordele og ulemper]\nMulighed B: [fordele og ulemper]\n\nLav en pro/contra-analyse. Peg på 2-3 blinde vinkler jeg sandsynligvis overser. Anbefal ikke en løsning — hjælp mig med at tænke klarere. Tænk skridt for skridt.'},
   {id:'d5',emoji:'🔄',title:'Omskriv til ny målgruppe',source:'C2 — Modul 4',category:'C2',fav:false,
    text:'Omskriv følgende tekst så den passer til [ny målgruppe / ny tone / nyt formål]. Behold det samme indhold og de samme fakta — tilpas kun sprog, tone og detaljeniveau. Den nye version skal lyde naturlig: [indsæt tekst].'},
-  {id:'d6',emoji:'📚',title:'Lær noget på 15 minutter',source:'C1 — Modul 3',category:'C1',fav:false,
+  {id:'d6',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg>',title:'Lær noget på 15 minutter',source:'C1 — Modul 3',category:'C1',fav:false,
    text:'Giv mig en 80/20-gennemgang af [emne]: de 20% der giver mig 80% af forståelsen. Jeg har 15 minutter og ingen forudgående viden. Skriv i klart, ikke-teknisk dansk. Afslut med 3 præcise spørgsmål jeg kan stille en ekspert.'},
-  {id:'d7',emoji:'🔍',title:'Kritisk feedback på dit arbejde',source:'C1 — Modul 2',category:'C1',fav:false,
+  {id:'d7',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>',title:'Kritisk feedback på dit arbejde',source:'C1 — Modul 2',category:'C1',fav:false,
    text:'Her er hvad jeg har lavet: [indsæt tekst/plan/idé].\n\nGiv mig de 3 største svagheder. Hvad mangler? Hvad er uklart? Hvad ville en kritisk læser reagere på? Vær direkte og specifik — undgå at starte med ros.'},
   {id:'d8',emoji:'👤',title:'Rolleprompt-skabelon',source:'C1 — Modul 2',category:'C1',fav:false,
    text:'Du er [konkret rolle, fx "erfaren juridisk rådgiver med speciale i ansættelsesret"]. [Opgave]. Konteksten er: [baggrund]. Skriv som du ville til [målgruppe]. Undgå [det du ikke vil have].'},
@@ -2269,21 +2391,21 @@ function _addPromptsToLibrary(newPrompts, categoryName) {
 }
 
 const C2_PROMPTS=[
-  {id:'c2p1',emoji:'✉️',title:'Den svære email — C2 version',source:'C2 — Modul 1',category:'C2',fav:false,
+  {id:'c2p1',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg>',title:'Den svære email — C2 version',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Du er en professionel kommunikationsrådgiver.\nSkriv en email til [modtager] om [emnet].\nTone: direkte men respektfuld. Maks 150 ord.\nUndgå: undskyldende formuleringer, passive konstruktioner.\nKonkluder med ét klart næste skridt.'},
   {id:'c2p2',emoji:'⏰',title:'Opfølgning — ingen svar (C2)',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Skriv en opfølgnings-email til [navn] der ikke svarede fra [dato] om [emne].\nTone: venlig men tydelig. Maks 60 ord.\nUndgå desperation. Afslut med lavt-friktions spørgsmål.'},
   {id:'c2p3',emoji:'🎭',title:'Tilpas tone til situation',source:'C2 — Modul 2',category:'C2',fav:false,
    text:'Omskriv denne email til [tone: formel/uformel/empatisk/direkte]:\n[Indsæt original email]\nBehold alle pointer og fakta. Maks [X] ord.'},
-  {id:'c2p4',emoji:'📋',title:'Opsummér email-tråd',source:'C2 — Modul 1',category:'C2',fav:false,
+  {id:'c2p4',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg>',title:'Opsummér email-tråd',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Her er en email-tråd: [indsæt tråd]\nGiv: 1) 3-linje opsummering 2) Hvem har hvad ansvar\n3) Hvad mangler stadig svar. Maks 120 ord.'},
   {id:'c2p5',emoji:'🤝',title:'Svar på svær feedback',source:'C2 — Modul 2',category:'C2',fav:false,
    text:'Hjælp mig at svare på: [feedback]\nSvar skal anerkende, ikke undskylde unødigt, foreslå næste skridt.\nTone: rolig og professionel. Maks 100 ord.'},
-  {id:'c2p6',emoji:'💡',title:'AI som sparringspartner (C2)',source:'C2 — Modul 4',category:'C2',fav:false,
+  {id:'c2p6',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg>',title:'AI som sparringspartner (C2)',source:'C2 — Modul 4',category:'C2',fav:false,
    text:'Ærlig sparringspartner. Jeg overvejer [beslutning/situation].\nGiv: 1) Argumenter FOR 2) Argumenter IMOD\n3) Hvad overser jeg 4) Din direkte anbefaling.'},
   {id:'c2p7',emoji:'🔄',title:'Omskriv til anden målgruppe (C2)',source:'C2 — Modul 3',category:'C2',fav:false,
    text:'Omskriv til [målgruppe]: [tekst]\nBehold alle fakta. Tilpas kompleksitet og tone. Maks [X] ord.'},
-  {id:'c2p8',emoji:'✅',title:'Tjek og forbedring af tekst',source:'C2 — Modul 1',category:'C2',fav:false,
+  {id:'c2p8',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg>',title:'Tjek og forbedring af tekst',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Gennemgå kritisk: [tekst]\nRet grammatik, tone, klarhed og gentagelser.\nBehold min stemme. Vis originalen → din version.'},
 ];
 
@@ -2291,8 +2413,8 @@ function addC2AndOpen(){
   const added=_addPromptsToLibrary(C2_PROMPTS,'C2');
   if(added<0)return;
   const btn=document.getElementById('c2LibBtn');
-  if(btn){btn.innerHTML='✅ Tilføjet! Åbn bibliotek <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';}
-  showToast(added>0?`✅ ${added} C2-prompts gemt i biblioteket`:'✅ Allerede i biblioteket');
+  if(btn){btn.innerHTML='<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> Tilføjet! Åbn bibliotek <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';}
+  showToast(added>0?`<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> ${added} C2-prompts gemt i biblioteket`:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> Allerede i biblioteket');
   setTimeout(()=>window.open('bibliotek.html','_blank'),400);
 }
 
@@ -2304,13 +2426,13 @@ function downloadC2PDF(){
     const {jsPDF}=window.jspdf;
     if(!jsPDF)throw new Error('jsPDF ikke indlæst');
     const pdf=new jsPDF('p','mm','a4');
-    const W=210,pad=16,ink=[13,17,23],teal=[13,148,136],muted=[107,114,128];
+    const W=210,pad=16,ink=[13,17,23],teal=[201,160,64],muted=[107,114,128];
     function tx(s,x,y,o={}){pdf.setFontSize(o.sz||9.5);pdf.setFont('helvetica',o.st||'normal');pdf.setTextColor(...(o.c||ink));pdf.text(String(s),x,y,{maxWidth:o.mw,align:o.al||'left'});}
     function fb(x,y,w,h,...c){pdf.setFillColor(...c);pdf.rect(x,y,w,h,'F');}
     fb(0,0,W,32,...teal);
     tx('Akademiet AI',pad,12,{sz:10,st:'bold',c:[255,255,255]});
     tx('Kursus C2 — Prompt-snydelap',pad,20,{sz:18,st:'bold',c:[255,255,255]});
-    tx('Emails · Tone · Sparring · Omskrivning · akademiet-ai.dk',pad,27,{sz:9,c:[94,234,212]});
+    tx('Emails · Tone · Sparring · Omskrivning · akademiet-ai.dk',pad,27,{sz:9,c:[239,206,128]});
     const allP=[...C2_PROMPTS];
     const cw=(W-pad*2-8)/2,c1=pad,c2x=pad+cw+8;
     let cy=[38,38];
@@ -2328,7 +2450,7 @@ function downloadC2PDF(){
     pdf.setDrawColor(...[167,243,208]);pdf.setLineWidth(.25);pdf.line(pad,fy,W-pad,fy);
     tx(`Akademiet AI C2 · akademiet-ai.dk · ${new Date().toLocaleDateString('da-DK')}`,W/2,fy+5,{sz:7,c:muted,al:'center'});
     pdf.save('Akademiet-AI-C2-Snydelap.pdf');
-    showToast('✅ PDF downloadet!');
+    showToast('<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> PDF downloadet!');
   }catch(e){showToast('PDF fejl: '+e.message);}
   if(btn){btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF';btn.disabled=false;}
 }
