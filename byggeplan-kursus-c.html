@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — Byggeplan: Kursus C-systemet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Honning & Skov fundament */
+  --bg:#e8e2d3; --card:#fbf7ee; --card-2:#f5f0e5; --ink:#20312a; --ink-2:#2f4338;
+  --muted:#5a7060; --muted-2:#8aa090; --border:#cfc6b0; --border-strong:#bbb0a0;
+  --green:#2f6a4a; --green-bg:#dee8de; --amber:#a98841; --amber-bg:#f6edce; --red:#c0392b; --red-bg:#fdecea;
+  --gold:#c2a038; --gold-deep:#8a6d1e; --gold-ink:#5c4712; --gold-warm:#e8ce78; --gold-tint:#f7f0d6; --gold-faint:#fdf9ed;
+  --sb-bg:#ddd3ba; --sb-line:#c8bb9c;
+  --r-sm:10px; --r:16px; --r-lg:22px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:
+  radial-gradient(ellipse 55% 45% at 12% 8%,rgba(194,160,56,.06),transparent 60%),
+  radial-gradient(ellipse 50% 60% at 90% 90%,rgba(47,106,74,.05),transparent 60%),
+  linear-gradient(175deg,#ede7d5,#e8e2d3 50%,#e2dbc8);
+  color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.7;min-height:100vh;padding:0 20px 90px}
+.wrap{max-width:900px;margin:0 auto}
+
+/* Header */
+header{text-align:center;padding:64px 0 30px}
+.logo{display:inline-flex;align-items:center;gap:11px;margin-bottom:26px}
+.logo svg{width:38px;height:38px}
+.logo span{font-family:'Lora',serif;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.overline{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold-deep);font-weight:700;margin-bottom:14px}
+h1{font-family:'Lora',serif;font-weight:600;font-size:clamp(32px,5vw,50px);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
+h1 em{font-style:italic;color:var(--gold)}
+.lede{font-size:16px;color:var(--muted);max-width:600px;margin:0 auto}
+
+/* Section */
+section{margin-top:40px}
+.sec-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#fff;font-weight:800;font-size:14px;margin-right:12px;flex-shrink:0}
+h2{font-family:'Lora',serif;font-weight:600;font-size:26px;letter-spacing:-.01em;display:flex;align-items:center;margin-bottom:18px;padding-top:14px;border-top:1px solid var(--border)}
+h3{font-family:'Lora',serif;font-weight:600;font-size:19px;margin:26px 0 10px}
+p{margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(32,49,42,.05)}
+ul{margin:8px 0 12px 4px;list-style:none}
+li{position:relative;padding-left:22px;margin-bottom:7px;font-size:14.5px}
+li::before{content:'';position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:2px;background:var(--gold)}
+li.g::before{background:var(--green)} li.a::before{background:var(--amber)} li.r::before{background:var(--red)}
+strong{color:var(--ink);font-weight:700}
+code{background:var(--gold-tint);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-family:'Outfit';font-size:13px;font-weight:600;color:var(--gold-ink)}
+.note{background:var(--green-bg);border-left:3px solid var(--green);border-radius:var(--r-sm);padding:12px 16px;margin:12px 0;font-size:14px}
+.warn{background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:12px 16px;margin:12px 0;font-size:14px}
+
+/* Token table */
+.tok-tbl{width:100%;border-collapse:collapse;font-size:12.5px;font-family:'Outfit';margin-top:6px;overflow:hidden;border-radius:var(--r-sm);border:1px solid var(--border)}
+.tok-tbl th,.tok-tbl td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--border)}
+.tok-tbl th{background:var(--card-2);font-weight:700;color:var(--gold-ink);text-transform:uppercase;letter-spacing:.05em;font-size:10.5px}
+.tok-tbl td{background:var(--card)}
+.tok-tbl tr:last-child td{border-bottom:none}
+.sw{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:6px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.mono{font-variant-numeric:tabular-nums}
+
+/* Prompt cards */
+.prompt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);margin-bottom:22px;overflow:hidden;box-shadow:0 2px 14px rgba(32,49,42,.06)}
+.pc-head{display:flex;align-items:center;gap:12px;padding:16px 22px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.pc-badge{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#fff;font-weight:800;font-size:13px;display:grid;place-items:center;flex-shrink:0}
+.pc-title{font-family:'Lora',serif;font-weight:600;font-size:18px;flex:1;min-width:180px}
+.pc-file{font-family:'Outfit';font-size:12px;color:var(--muted);font-weight:600}
+.tag{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:999px}
+.tag.reskin{background:var(--gold-tint);color:var(--gold-ink);border:1px solid var(--gold-warm)}
+.tag.fresh{background:var(--green-bg);color:#0f5132;border:1px solid #a7d3b4}
+.pc-body{padding:18px 22px}
+.pc-note{font-size:13.5px;color:var(--muted);margin-bottom:14px}
+.prompt-box{position:relative;background:#26332b;border-radius:var(--r-sm);overflow:hidden}
+.prompt-box textarea{width:100%;background:transparent;border:none;color:#e9e4d4;font-family:'Outfit';font-size:12.8px;line-height:1.62;padding:16px 18px;resize:vertical;min-height:60px;outline:none;white-space:pre-wrap}
+.copy-btn{position:absolute;top:10px;right:10px;background:linear-gradient(135deg,var(--gold-deep),var(--gold));color:#fff;border:none;border-radius:8px;padding:7px 14px;font-family:'Outfit';font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.25);transition:transform .15s,filter .15s}
+.copy-btn:hover{transform:translateY(-1px);filter:brightness(1.08)}
+.copy-btn.done{background:linear-gradient(135deg,#215c3d,var(--green))}
+
+.foot{text-align:center;margin-top:50px;padding-top:24px;border-top:1px solid var(--border);font-size:13px;color:var(--muted-2)}
+a{color:var(--gold-deep);font-weight:600}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    <span>Akademiet AI</span>
+  </div>
+  <div class="overline">Intern byggeplan</div>
+  <h1>Kursus C-systemet — <em>redesign & byg</em></h1>
+  <p class="lede">Åbn denne fil i en ny chat. Find siden du vil lave, tryk <strong>Kopiér prompt</strong>, indsæt den i chatten — så ved den præcis hvad den skal gøre.</p>
+</header>
+
+<!-- ══ SÅDAN BRUGER DU PLANEN ══ -->
+<section>
+  <div class="card">
+    <h3 style="margin-top:0">Sådan bruger du planen</h3>
+    <ul>
+      <li>Start en <strong>frisk chat</strong> til hver side (kvaliteten falder i lange tråde).</li>
+      <li>Har chatten adgang til denne fil (i projektet), så nævn den. Ellers indsæt bare prompten — den er selvbærende, og hukommelsen kender allerede standarden fra C1/C2.</li>
+      <li>Rækkefølgen nedenfor er anbefalet, men du kan tage siderne i den orden du vil.</li>
+      <li class="g"><strong>To slags opgaver:</strong> <span style="color:var(--gold-ink)">RE-SKIN</span> = siden findes med indhold i gammelt look → kun det visuelle laves om, indhold+JS urørt. <span style="color:#0f5132">BYG FRISK</span> = siden findes ikke → bygges ny i C-designet.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 1. DESIGN-STANDARDEN ══ -->
+<section>
+  <h2><span class="sec-num">1</span>C-design-standarden</h2>
+  <p>Det fælles fundament for alle C-sider. Hver prompt bygger på dette.</p>
+  <div class="card">
+    <h3 style="margin-top:0">Token-system (accenten)</h3>
+    <p>Hele accenten styres af <strong>8 variabler i <code>:root</code></strong> (5 hex + 3 rgb). Afledte glow/tint/shadow-tokens skal pege på <code>var(--c-gold-rgb)</code> — aldrig hardkodede tal — så et nyt niveau kun kræver de 8. Gamle accent-variabler (<code>--teal</code>, <code>--indigo</code>, <code>--violet</code>, <code>--vio</code>, <code>--blue</code>) omdirigeres til guld-tokens, så eksisterende CSS følger med automatisk.</p>
+
+    <h3>Fælles fundament (uændret på alle niveauer)</h3>
+    <ul>
+      <li>Pergament <code>#e8e2d3</code> · creme-kort <code>#fbf7ee</code> · ink <code>#20312a</code> · kant <code>#cfc6b0</code></li>
+      <li>Fonte: <strong>Lora</strong> (serif overskrifter) + <strong>Outfit</strong> (brødtekst)</li>
+      <li><strong>Sidebar:</strong> beige creme-panel <code>#ddd3ba</code> (<code>--sb-bg</code>) med runde 20px hjørner — porteres uændret fra C1</li>
+      <li><strong>Cinematic intro:</strong> mørk skov <code>rgba(47,106,74)</code>→<code>#0a1410</code> + guld-motes, grønt logo <code>#2F5D45</code> + guld niveau-mærke</li>
+    </ul>
+
+    <h3>Farve-variation (VIGTIGT — ikke alt skal være guld)</h3>
+    <ul>
+      <li><strong>Guld</strong> = primær/struktur: hero, modul-numre, progress, knapper, aktiv navigation</li>
+      <li class="g"><strong>Grøn</strong> = positivt: tips, gode eksempler, completion/'færdig', succes</li>
+      <li class="a"><strong>Rav</strong> = advarsler / 'pas på'</li>
+      <li class="r"><strong>Rød</strong> = fejl / dårlige eksempler</li>
+    </ul>
+
+    <h3>Faste regler</h3>
+    <ul>
+      <li class="r"><strong>Aldrig SVG i CSS <code>content:''</code></strong> — CSS kan ikke rendere SVG (viser rå kode). Brug rene glyffer <code>✓</code> / <code>✕</code> der. SVG-ikoner bruges kun i HTML.</li>
+      <li>Ingen emojis → rene SVG-linjeikoner (<code>1.15em</code>, <code>stroke=currentColor</code>) / nummererede guld-badges / geometriske glyffer</li>
+      <li><strong>Demoer:</strong> adskil brugerens prompt (egen boks + label "Dit prompt") tydeligt fra AI'ens svar (boble + label "AI'ens svar"). Skriv <strong>"Dit prompt"</strong> — ikke "Din".</li>
+      <li>Behold AI-værktøjers <strong>ægte logofarver</strong> (Gemini/Copilot-blå osv.) i sidebar — de er brand-mærker</li>
+      <li><strong>Brand:</strong> synligt navn altid <strong>"Akademiet AI"</strong> — aldrig "LearnAI". Frosne kodenavne urørt: <code>learnai-dk</code>, <code>learnai-proxy</code>, <code>learnai_api_base</code>, <code>LEARNAI_API</code></li>
+    </ul>
+
+    <h3>Workflow (hver fil)</h3>
+    <ul>
+      <li>Hent altid live rå-fil fra GitHub før redigering — gæt aldrig på strukturen</li>
+      <li>Kirurgiske ændringer (str_replace / scriptet recolor), ikke fuld omskrivning — INDHOLD + JS byte-uændret ved re-skin</li>
+      <li>Validér: <code>node --check</code> (JS) + Python/lxml (DOM-balance)</li>
+      <li>Verificér visuelt med Playwright-screenshot (tving <code>.reveal</code> frem; dismiss intro); pixel-sample hvis view-værktøjet svigter</li>
+      <li>Tjek: 0 synlig "LearnAI", 0 rester af gammel accent (teal/indigo/violet), brand + frosne navne intakte</li>
+      <li>Lever komplet upload-klar fil via <code>present_files</code></li>
+    </ul>
+  </div>
+</section>
+
+<!-- ══ 2. TOKEN-VÆRDIER ══ -->
+<section>
+  <h2><span class="sec-num">2</span>Token-værdier pr. niveau</h2>
+  <p>De præcise 8 tokens for hvert niveau (accent-progression: guld → gul → orange). Kopiér ind i den relevante prompt — de står også i hver prompt nedenfor.</p>
+  <table class="tok-tbl">
+    <thead><tr><th>Niveau</th><th>--c-gold</th><th>deep</th><th>mid</th><th>warm</th><th>ink</th><th>rgb</th></tr></thead>
+    <tbody id="tokRows"></tbody>
+  </table>
+  <p style="font-size:12.5px;color:var(--muted-2);margin-top:8px">Mini-quizzer arver accenten fra kurset lige før dem (quiz-c1 = C1, quiz-c2 = C2, quiz-c3 = C3 osv.). C1 = <code>#c2a038</code>, C2 = <code>#c9a040</code> (allerede lavet).</p>
+</section>
+
+<!-- ══ 3. PROMPTS ══ -->
+<section>
+  <h2><span class="sec-num">3</span>Prompts pr. side</h2>
+  <p>Anbefalet rækkefølge. Hver prompt er klar til at indsætte i en frisk chat.</p>
+  <div id="promptList"></div>
+</section>
+
+<!-- ══ 4. ÅBNE BESLUTNINGER ══ -->
+<section>
+  <h2><span class="sec-num">4</span>Åbne beslutninger (afklar først)</h2>
+  <div class="card">
+    <ul>
+      <li class="a"><strong>Forløbsstruktur med C4 + C5:</strong> Den nuværende journey er C1 → Q1 → C2 → Q2 → C3 → E1 → E2. Med C4/C5 skal du beslutte den nye rækkefølge (fx C1→Q1→C2→Q2→C3→Q3→C4→Q4→C5→Q5→E1→E2) og om der skal være quiz efter C3/C4/C5. Når det er besluttet, bruges "Forløbs-opdatering"-prompten nederst til at rette journey-bar + sidebar + lås-logik på ALLE C-sider ens.</li>
+      <li class="a"><strong>Indhold til C4 + C5:</strong> Disse kurser har intet indhold endnu. Beslut modul-emnerne (eller lad chatten foreslå et pensum til godkendelse) FØR den bygger.</li>
+      <li><strong>Verificér eksamen-c + eksamen-c-del2:</strong> De findes nu på GitHub (modsat tidligere note). Bekræft de er komplette før re-skin — ellers bygges manglende dele først.</li>
+      <li><strong>quiz-c2.html</strong> er kun ~428 linjer (mod quiz-c1's ~1283) — tjek om den er færdig eller en stub, før re-skin.</li>
+      <li><strong>Cheat sheets røres ikke</strong> under C-redesign (jsPDF-downloaden) — bevar koden som den er; hele cheat-sheet-designet laves i "Mit Bibliotek"-chatten senere.</li>
+    </ul>
+  </div>
+</section>
+
+<div class="foot">Akademiet AI · Byggeplan for Kursus C-systemet · genereret juli 2026<br>Reference: <a href="https://magnuscode-ai.github.io/ai-kursus/farver-kursus-c.html">farver-kursus-c.html</a></div>
+
+</div>
+
+<script>
+// ── Token-data ──
+const T = {
+ 'Forberedelse C':{fil:'forberedelse-c',prim:'#b8902a',deep:'#805d10',mid:'#c6a147',warm:'#debe6a',ink:'#523704',rgb:'184,144,42',wrgb:'222,190,106',mrgb:'198,161,71'},
+ 'C3':{fil:'kursus-c3',prim:'#bd9438',deep:'#85611e',mid:'#cba555',warm:'#e3c278',ink:'#573b12',rgb:'189,148,56',wrgb:'227,194,120',mrgb:'203,165,85'},
+ 'C4':{fil:'kursus-c4',prim:'#b58830',deep:'#7d5516',mid:'#c3994d',warm:'#dbb670',ink:'#4f2f0a',rgb:'181,136,48',wrgb:'219,182,112',mrgb:'195,153,77'},
+ 'C5':{fil:'kursus-c5',prim:'#a07020',deep:'#683d06',mid:'#ae813d',warm:'#c69e60',ink:'#3a1700',rgb:'160,112,32',wrgb:'198,158,96',mrgb:'174,129,61'},
+ 'Eksamen del 1':{fil:'eksamen-c',prim:'#95681a',deep:'#5d3500',mid:'#a37937',warm:'#bb965a',ink:'#2f0f00',rgb:'149,104,26',wrgb:'187,150,90',mrgb:'163,121,55'},
+ 'Eksamen del 2':{fil:'eksamen-c-del2',prim:'#8a5e20',deep:'#522b06',mid:'#986f3d',warm:'#b08c60',ink:'#240500',rgb:'138,94,32',wrgb:'176,140,96',mrgb:'152,111,61'},
+ 'C+':{fil:'intro-cplus / kursus-cplus',prim:'#bf6b1e',deep:'#873804',mid:'#cd7c3b',warm:'#e5995e',ink:'#591200',rgb:'191,107,30',wrgb:'229,153,94',mrgb:'205,124,59'}
+};
+
+// token-blok streng til en prompt
+function tokBlock(t){
+  return `  --c-gold-deep:${t.deep}; --c-gold:${t.prim}; --c-gold-mid:${t.mid}; --c-gold-warm:${t.warm}; --c-gold-ink:${t.ink};\n  --c-gold-rgb:${t.rgb}; --c-gold-warm-rgb:${t.wrgb}; --c-gold-mid-rgb:${t.mrgb};`;
+}
+
+// ── Token-tabel ──
+const rows = document.getElementById('tokRows');
+for(const [name,t] of Object.entries(T)){
+  const tr=document.createElement('tr');
+  tr.innerHTML = `<td><strong>${name}</strong><br><span style="color:var(--muted-2);font-size:11px">${t.fil}</span></td>
+    <td><span class="sw" style="background:${t.prim}"></span><span class="mono">${t.prim}</span></td>
+    <td><span class="sw" style="background:${t.deep}"></span><span class="mono">${t.deep}</span></td>
+    <td><span class="sw" style="background:${t.mid}"></span><span class="mono">${t.mid}</span></td>
+    <td><span class="sw" style="background:${t.warm}"></span><span class="mono">${t.warm}</span></td>
+    <td><span class="sw" style="background:${t.ink}"></span><span class="mono">${t.ink}</span></td>
+    <td class="mono">${t.rgb}</td>`;
+  rows.appendChild(tr);
+}
+
+// ── Prompt-definitioner ──
+const reskinSteps = (fil,tok,extra) =>
+`Du skal RE-SKINNE ${fil} til det nye guld Honning & Skov-design — præcis som C1 og C2 blev gjort. Følg C-design-standarden og C2-metoden (du kender den fra hukommelsen). Spørg først: "Hvem skriver, Alexander eller August?" hvis det er uklart.
+
+ALT INDHOLD OG AL JAVASCRIPT SKAL VÆRE BYTE-UÆNDRET — kun det visuelle ændres.
+
+Fremgang:
+1. Hent live rå-fil:
+   curl -s -o ${fil} "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/${fil}"
+2. Installér guld-token-systemet + varm Honning & Skov-palet i :root, og omdirigér sidens gamle accent-variabler (--teal / --indigo / --violet / --vio / --blue m.fl.) → guld-tokens. Brug DISSE tokens:
+${tok}
+3. Scriptet hex + rgba-recolor af ALLE hardkodede gamle/kolde farver → guld/varm. Behold AI-værktøjers ægte logofarver.
+4. Portér C1's beige runde sidebar (--sb-bg #ddd3ba, 20px). Gør intro'en mørk-skov + grønt logo + guld niveau-mærke.
+5. Fjern ALLE emojis → rene SVG-linjeikoner/glyffer. ALDRIG SVG i CSS content:'' — brug ✓/✕ glyffer der.
+6. Farve-variation: guld = primær, GRØN = tips/gode eksempler/completion, RAV = advarsel, RØD = fejl. Ikke alt guld.
+${extra?extra+'\n':''}7. Validér (node --check + lxml), Playwright-screenshot, tjek brand ("Akademiet AI") + frosne navne + 0 rester af gammel accent. Lever upload-klar fil via present_files.`;
+
+const freshCourse = (fil,tok,name,extra) =>
+`Du skal BYGGE ${fil} HELT FRISK i det nye guld Honning & Skov C-design (${name}). Den findes ikke endnu. Brug kursus-c1.html / kursus-c2.html som strukturel skabelon (samme shell: foldet topbar, centreret forløbsbjælke, venstre 'Dit forløb'-sidebar + højre 'AI Redskaber'-sidebar, hero, moduler, complete-zones, cinematic intro). Følg C-design-standarden. Spørg først "Hvem skriver, Alexander eller August?".
+
+FØR DU BYGGER: ${name} har intet indhold endnu. Foreslå et modul-pensum til Alexanders godkendelse (emner + interaktive øvelser — 'gør, ikke læs': mini-spil, live-feedback, scoring), og byg først når det er godkendt.
+
+Design:
+1. Hent skabelon: curl -s -o kursus-c1.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html" (til struktur/CSS).
+2. Brug DISSE tokens i :root:
+${tok}
+3. Beige rund sidebar (--sb-bg #ddd3ba, 20px), mørk-skov intro + grønt logo + guld '${name.replace('kursus-','').toUpperCase()}'. Ingen emojis (SVG/glyffer). Farve-variation: guld primær, grøn/rav/rød til status.
+4. Interaktive øvelser med AI via Cloudflare Worker'en (learnai-proxy) — ALDRIG nøgle i HTML. Model: haiku til simpelt, sonnet til streaming/komplekst.
+5. Lås-system som C1/C2/C3 (m1 done fra start, næste modul amber-unlocked). Brand "Akademiet AI".
+${extra?extra+'\n':''}6. Validér (node --check + lxml), Playwright-screenshot, lever via present_files.`;
+
+const freshQuiz = (fil,tok,name,cur) =>
+`Du skal BYGGE ${fil} HELT FRISK — en mini-quiz efter ${cur} — i C-quiz-designet. Den findes ikke endnu. Følg QUIZ-DESIGN-STANDARDEN (quiz-c1 sætter niveauet, du kender den fra hukommelsen): cinematic fly-ind intro, animeret baggrund, spørgsmålskort der swooper ind fra højre + exit-left, shake ved forkert / pulse+check ved rigtigt, foldbar forklaring, progress med shimmer + dots, sejr-scene (trofæ + coins + confetti), fail-scene, already-bestået-banner. Anti-gæt: svar jævnt fordelt, alt shuffles, ens svar-længde. Følg C-design-standarden (guld-look). Spørg først "Hvem skriver, Alexander eller August?".
+
+FØR DU BYGGER: foreslå quiz-spørgsmålene (om ${cur}'s indhold) til Alexanders godkendelse.
+
+Design:
+1. Brug quiz-c1.html som skabelon (hent live rå-fil), men i det nye guld-look med DISSE tokens (arver ${cur}'s accent):
+${tok}
+2. Beige rund sidebar hvis relevant, mørk-skov intro, ingen emojis (SVG/glyffer), guld primær + grøn/rav/rød til status.
+3. Coins ved beståelse skrives til Firestore (users/{uid}); lås næste trin op. Brand "Akademiet AI", frosne navne urørt.
+4. Validér (node --check + lxml), Playwright-screenshot, lever via present_files.`;
+
+const prompts = [
+ {n:'C3 · Møder & indhold',fil:'kursus-c3.html',type:'reskin',tok:T['C3'],
+  note:'Findes i gammelt violet look (2330 linjer). Har møde-simulatoren i Modul 4 (claude-haiku, 5 runder, 3 forsøg) — dens JS må IKKE røres funktionelt, kun farver.',
+  body:reskinSteps('kursus-c3.html',tokBlock(T['C3']),'   SÆRLIGT: møde-simulatorens JS (simScores, buildSystemPrompt, parseMoodsRobust, unlockM5) og lås-logikken er urørt funktionelt — recolor kun.')},
+
+ {n:'Forberedelse C',fil:'forberedelse-c.html',type:'reskin',tok:T['Forberedelse C'],
+  note:'Forberedelsessiden til Kursus C (1198 linjer, gammelt look). Accent = det reneste guld i progressionen (#b8902a).',
+  body:reskinSteps('forberedelse-c.html',tokBlock(T['Forberedelse C']),null)},
+
+ {n:'Quiz C1 (Q1)',fil:'quiz-c1.html',type:'reskin',tok:{...T['C3'],prim:'#c2a038',deep:'#8a6d1e',mid:'#d0b155',warm:'#e8ce78',ink:'#5c4712',rgb:'194,160,56',wrgb:'232,206,120',mrgb:'208,177,85'},
+  note:'Mini-quizzen efter C1 (1283 linjer). Sætter quiz-design-standarden. Arver C1-accenten #c2a038.',
+  body:reskinSteps('quiz-c1.html','  --c-gold-deep:#8a6d1e; --c-gold:#c2a038; --c-gold-mid:#d0b155; --c-gold-warm:#e8ce78; --c-gold-ink:#5c4712;\n  --c-gold-rgb:194,160,56; --c-gold-warm-rgb:232,206,120; --c-gold-mid-rgb:208,177,85;','   SÆRLIGT: bevar hele quiz-animationssystemet (fly-ind, shake, confetti, progress) — recolor kun.')},
+
+ {n:'Quiz C2 (Q2)',fil:'quiz-c2.html',type:'reskin',tok:{prim:'#c9a040',deep:'#916d26',mid:'#d7b15d',warm:'#efce80',ink:'#63471a',rgb:'201,160,64',wrgb:'239,206,128',mrgb:'215,177,93'},
+  note:'Mini-quizzen efter C2 (kun ~428 linjer — TJEK om den er komplet før re-skin). Arver C2-accenten #c9a040.',
+  body:reskinSteps('quiz-c2.html','  --c-gold-deep:#916d26; --c-gold:#c9a040; --c-gold-mid:#d7b15d; --c-gold-warm:#efce80; --c-gold-ink:#63471a;\n  --c-gold-rgb:201,160,64; --c-gold-warm-rgb:239,206,128; --c-gold-mid-rgb:215,177,93;','   FØRST: bekræft at filen er en komplet quiz og ikke en stub — hvis stub, byg den ud (spørg Alexander).')},
+
+ {n:'Eksamen del 1',fil:'eksamen-c.html',type:'reskin',tok:T['Eksamen del 1'],
+  note:'C-eksamen del 1 (637 linjer) — 15 MC om C1+C2+C3. Findes nu (verificér komplet). Accent = dyb orange-guld.',
+  body:reskinSteps('eksamen-c.html',tokBlock(T['Eksamen del 1']),'   HUSK anti-gæt-reglen: korrekt svar må ALDRIG være systematisk kortest/længst eller altid samme position (recolor rører ikke dette, men verificér ved gennemgang).')},
+
+ {n:'Eksamen del 2',fil:'eksamen-c-del2.html',type:'reskin',tok:T['Eksamen del 2'],
+  note:'C-eksamen del 2 (893 linjer) — praktisk prompt-opgave. Accent = dyb bronze-brun (finalen). Bevar holistisk sonnet-bedømmelse.',
+  body:reskinSteps('eksamen-c-del2.html',tokBlock(T['Eksamen del 2']),'   SÆRLIGT: prompt-bedømmelsen (claude-sonnet, holistisk, JSON-retur) og belønnings-logikken (150 coins + Sølv-badge C) er urørt funktionelt — recolor kun.')},
+
+ {n:'C+ · intro-cplus',fil:'intro-cplus.html',type:'reskin',tok:T['C+'],
+  note:'Cinematic intro til Kursus C+ (751 linjer). Accent = HELT orange (#bf6b1e) — broen fra C til B. REQUIRE_C-flag urørt.',
+  body:reskinSteps('intro-cplus.html',tokBlock(T['C+']),'   SÆRLIGT: Firebase-login-tjek og REQUIRE_C-flaget er urørt funktionelt — recolor kun.')},
+
+ {n:'C+ · kursus-cplus',fil:'kursus-cplus.html',type:'reskin',tok:T['C+'],
+  note:'Selve C+ plan-generatoren (1179 linjer). Accent = helt orange #bf6b1e. Bevar streaming-kald + Firestore kun-én-plan-logik.',
+  body:reskinSteps('kursus-cplus.html',tokBlock(T['C+']),'   SÆRLIGT: streaming-kaldet (claude-sonnet, ét kald), extractJSON, og cplusPlanCreated-logikken er urørt funktionelt — recolor kun.')},
+
+ {n:'C4 · (nyt kursus)',fil:'kursus-c4.html',type:'fresh',tok:T['C4'],
+  note:'Findes ikke (404). Byg frisk i C-designet. Indhold/pensum skal defineres først.',
+  body:freshCourse('kursus-c4.html',tokBlock(T['C4']),'kursus-c4',null)},
+
+ {n:'C5 · (nyt kursus)',fil:'kursus-c5.html',type:'fresh',tok:T['C5'],
+  note:'Findes ikke (404). Byg frisk i C-designet. Indhold/pensum skal defineres først.',
+  body:freshCourse('kursus-c5.html',tokBlock(T['C5']),'kursus-c5',null)},
+
+ {n:'Quiz C3 (Q3)',fil:'quiz-c3.html',type:'fresh',tok:T['C3'],
+  note:'Findes ikke (404). Mini-quiz efter C3. Byg frisk i quiz-design-standarden, C3-accent.',
+  body:freshQuiz('quiz-c3.html',tokBlock(T['C3']),'quiz-c3','C3')},
+
+ {n:'Quiz C4 (Q4)',fil:'quiz-c4.html',type:'fresh',tok:T['C4'],
+  note:'Findes ikke (404). Mini-quiz efter C4. Byg frisk i quiz-design-standarden, C4-accent.',
+  body:freshQuiz('quiz-c4.html',tokBlock(T['C4']),'quiz-c4','C4')},
+
+ {n:'Quiz C5 (Q5)',fil:'quiz-c5.html',type:'fresh',tok:T['C5'],
+  note:'Findes ikke (404). Mini-quiz efter C5. Byg frisk i quiz-design-standarden, C5-accent.',
+  body:freshQuiz('quiz-c5.html',tokBlock(T['C5']),'quiz-c5','C5')},
+
+ {n:'Forløbs-opdatering (alle C-sider)',fil:'alle kursus-c*/quiz-c*/eksamen-c*',type:'fresh',tok:null,
+  note:'KØR TIL SIDST — når C4/C5 + quizzer findes og journey-strukturen er besluttet. Retter forløbsbjælken + venstre sidebar + lås-logik ens på alle C-sider.',
+  body:`Du skal opdatere FORLØBSSTRUKTUREN ens på ALLE C-sider, så C4 + C5 + deres mini-quizzer kommer med i journey-baren, venstre 'Dit forløb'-sidebar og lås-logikken. Følg C-design-standarden. Spørg først "Hvem skriver, Alexander eller August?" OG bekræft den besluttede rækkefølge med Alexander før du rører noget.
+
+FØRST: få den endelige forløbs-rækkefølge bekræftet (fx: C1 → Q1 → C2 → Q2 → C3 → Q3 → C4 → Q4 → C5 → Q5 → Eksamen del 1 → del 2 → Bevis).
+
+Så, for HVER berørt side (kursus-c1..c5, quiz-c1..c5, eksamen-c, eksamen-c-del2, forberedelse-c, intro-cplus):
+1. Hent live rå-fil fra GitHub.
+2. Opdatér journey-baren (de centrerede trin) til den nye rækkefølge — marker done/current/kommende korrekt pr. side.
+3. Opdatér venstre 'Dit forløb'-sidebar tilsvarende.
+4. Justér lås-/unlock-logikken så den nye rækkefølge hænger sammen (næste trin låses op korrekt).
+5. Rør IKKE andet indhold. Kirurgiske str_replace.
+6. Validér (node --check + lxml), Playwright-screenshot pr. side, lever hver fil via present_files.
+
+Tag siderne én ad gangen så kvaliteten holdes.`}
+];
+
+// ── Render prompts ──
+const list = document.getElementById('promptList');
+prompts.forEach((p,i)=>{
+  const card=document.createElement('div'); card.className='prompt-card';
+  const tagTxt = p.type==='reskin'?'Re-skin':'Byg frisk';
+  card.innerHTML =
+   `<div class="pc-head">
+      <div class="pc-badge">${i+1}</div>
+      <div class="pc-title">${p.n}<br><span class="pc-file">${p.fil}</span></div>
+      <span class="tag ${p.type}">${tagTxt}</span>
+    </div>
+    <div class="pc-body">
+      <div class="pc-note">${p.note}</div>
+      <div class="prompt-box">
+        <button class="copy-btn">Kopiér prompt</button>
+        <textarea readonly rows="1"></textarea>
+      </div>
+    </div>`;
+  const ta=card.querySelector('textarea'); ta.value=p.body;
+  list.appendChild(card);
+  // auto-højde
+  requestAnimationFrame(()=>{ ta.style.height='auto'; ta.style.height=(ta.scrollHeight+4)+'px'; });
+  card.querySelector('.copy-btn').addEventListener('click',async(e)=>{
+    try{ await navigator.clipboard.writeText(p.body); }
+    catch(_){ ta.select(); document.execCommand('copy'); }
+    const b=e.target; b.textContent='Kopieret ✓'; b.classList.add('done');
+    setTimeout(()=>{ b.textContent='Kopiér prompt'; b.classList.remove('done'); },1600);
+  });
+});
+</script>
+</body>
+</html>
