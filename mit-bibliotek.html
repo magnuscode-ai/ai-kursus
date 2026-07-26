@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mit Bibliotek — Akademiet AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════════════
+   MIT BIBLIOTEK · Honning & Skov · Akademiet AI
+   ═══════════════════════════════════════════════════════════════ */
+:root{
+  --bg:#e8e2d3; --card:#fbf7ee; --card-2:#f6f0e2;
+  --ink:#20312a; --ink-2:#2f4338;
+  --muted:#5a7060; --muted-2:#8aa090; --border:#cfc6b0;
+  --sb-bg:#ddd3ba; --sb-line:#c8bb9c;
+  --green:#2f6a4a; --green-deep:#2F5D45;
+  --gold:#b8902a; --gold-2:#c2a038; --gold-warm:#c9a040; --gold-deep:#8a6d1e;
+  --gold-rgb:184,144,42; --gold-2-rgb:194,160,56;
+  --star:#E6C79A;
+  --r:16px; --r-lg:22px; --r-xl:28px;
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-settle:cubic-bezier(.22,.8,.3,1);
+  --dur-fast:160ms; --dur:240ms; --dur-slow:520ms;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;color:var(--ink);line-height:1.6;min-height:100vh;
+  background:
+    radial-gradient(1200px 600px at 78% -10%, rgba(var(--gold-rgb),.10), transparent 60%),
+    radial-gradient(900px 500px at 8% 108%, rgba(47,106,74,.08), transparent 55%),
+    linear-gradient(175deg,#ede7d5 0%,#e8e2d3 45%,#e2dbc8 100%);
+  background-attachment:fixed;
+}
+::selection{background:rgba(var(--gold-rgb),.28)}
+a{color:inherit}
+button{font-family:inherit}
+:focus-visible{outline:2.5px solid var(--gold);outline-offset:3px;border-radius:6px}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:120;height:64px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 clamp(18px,4vw,36px);
+  background:rgba(232,226,211,.88);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--sb-line);
+}
+.logo{display:flex;align-items:center;gap:10px;font-family:'Lora',serif;font-weight:600;font-size:19px;color:var(--ink);text-decoration:none}
+.logo svg{width:34px;height:34px}
+.top-r{display:flex;align-items:center;gap:12px}
+.coins-pill{display:none;align-items:center;gap:6px;font-weight:700;font-size:13.5px;color:#8a6510;background:rgba(224,179,61,.16);border:1px solid rgba(224,179,61,.45);border-radius:50px;padding:6px 13px}
+body.state-in .coins-pill{display:inline-flex}
+.top-back{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:600;color:var(--muted);text-decoration:none;padding:7px 14px;border:1px solid var(--border);border-radius:50px;background:rgba(251,247,238,.6);transition:color var(--dur-fast) var(--ease-settle),border-color var(--dur-fast) var(--ease-settle)}
+.top-back:hover{color:var(--ink);border-color:var(--gold-2)}
+.top-back svg{width:14px;height:14px}
+
+/* ── States (loading / auth-gate / in) ──────────────────────── */
+.loader-wrap{display:none;min-height:60vh;align-items:center;justify-content:center;flex-direction:column;gap:18px}
+body.state-loading .loader-wrap{display:flex}
+.loader-star{width:44px;height:44px;animation:starPulse 1.6s var(--ease-settle) infinite}
+@keyframes starPulse{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.12);opacity:1}}
+.loader-txt{font-size:13.5px;color:var(--muted);letter-spacing:.06em}
+
+.gate{display:none;min-height:70vh;align-items:center;justify-content:center;padding:40px 22px}
+body.state-auth .gate{display:flex}
+.gate-card{
+  max-width:480px;text-align:center;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:52px 44px 46px;position:relative;overflow:hidden;
+  box-shadow:0 20px 60px rgba(32,49,42,.10);
+}
+.gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--gold-deep),var(--gold-2),var(--gold-warm))}
+.gate-card svg{width:52px;height:52px;margin-bottom:20px}
+.gate-card h1{font-family:'Lora',serif;font-weight:600;font-size:26px;line-height:1.25;margin-bottom:12px}
+.gate-card p{font-size:15px;color:var(--ink-2);margin-bottom:28px}
+.btn-gold{
+  display:inline-flex;align-items:center;gap:9px;padding:15px 32px;border:none;border-radius:999px;
+  background:linear-gradient(135deg,var(--gold-deep),var(--gold-2));color:#fff;
+  font-size:15.5px;font-weight:700;cursor:pointer;text-decoration:none;
+  box-shadow:0 10px 30px rgba(138,109,30,.28);
+  transition:transform var(--dur) var(--ease-settle),box-shadow var(--dur) var(--ease-settle);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 14px 38px rgba(138,109,30,.38)}
+
+/* ── App-views (router) ─────────────────────────────────────── */
+.app{display:none}
+body.state-in .app{display:block}
+.view{display:none;max-width:1080px;margin:0 auto;padding:clamp(30px,5vw,56px) clamp(18px,4vw,36px) 90px;animation:viewIn var(--dur-slow) var(--ease-lux)}
+.view.active{display:block}
+@keyframes viewIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ── HUB: Ex Libris-segl ────────────────────────────────────── */
+.exlibris{
+  display:flex;align-items:center;gap:22px;margin-bottom:clamp(36px,5vw,54px);
+  opacity:0;transform:translateY(10px) scale(.97);
+  animation:sealIn .9s var(--ease-lux) .1s forwards;
+}
+@keyframes sealIn{to{opacity:1;transform:none}}
+.seal{
+  width:86px;height:86px;flex-shrink:0;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #3a6e52, var(--green-deep) 70%);
+  display:flex;align-items:center;justify-content:center;position:relative;
+  box-shadow:0 12px 34px rgba(32,49,42,.28), inset 0 0 0 3px rgba(230,199,154,.35), inset 0 0 0 7px rgba(230,199,154,.12);
+}
+.seal svg{width:38px;height:38px}
+.seal::after{
+  content:'';position:absolute;inset:-6px;border-radius:50%;
+  border:1.5px dashed rgba(var(--gold-rgb),.45);
+}
+.exlibris-txt .kicker{
+  font-size:11.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold-deep);margin-bottom:6px;
+}
+.exlibris-txt h1{font-family:'Lora',serif;font-weight:600;font-size:clamp(28px,4.5vw,40px);letter-spacing:-.01em;line-height:1.12}
+.exlibris-txt h1 em{font-style:italic;color:var(--gold)}
+.exlibris-txt .sub{font-size:14.5px;color:var(--muted);margin-top:7px}
+
+/* ── HUB: kabinet-kort ──────────────────────────────────────── */
+.shelf{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2.4vw,26px);perspective:1400px}
+.kabinet{
+  position:relative;display:flex;flex-direction:column;text-align:left;
+  background:linear-gradient(168deg,var(--card) 0%,var(--card-2) 100%);
+  border:1px solid var(--border);border-radius:var(--r-xl);
+  padding:30px 28px 26px;cursor:pointer;min-height:262px;
+  text-decoration:none;color:var(--ink);
+  transform-style:preserve-3d;will-change:transform;
+  box-shadow:0 14px 44px rgba(32,49,42,.10);
+  transition:box-shadow var(--dur-slow) var(--ease-lux),border-color var(--dur) var(--ease-settle);
+  opacity:0;transform:translateY(22px);
+  animation:cardRise .85s var(--ease-lux) forwards;
+  overflow:hidden;
+}
+.kabinet:nth-child(1){animation-delay:.28s}
+.kabinet:nth-child(2){animation-delay:.42s}
+.kabinet:nth-child(3){animation-delay:.56s}
+@keyframes cardRise{to{opacity:1;transform:none}}
+.kabinet::before{ /* guld-ryg som en bogryg i venstre kant */
+  content:'';position:absolute;top:0;bottom:0;left:0;width:6px;
+  background:linear-gradient(180deg,var(--gold-deep),var(--gold-2) 55%,var(--gold-warm));
+  border-radius:var(--r-xl) 0 0 var(--r-xl);
+}
+.kabinet::after{ /* glans-sweep */
+  content:'';position:absolute;top:0;bottom:0;left:-70%;width:45%;
+  background:linear-gradient(105deg,transparent,rgba(255,252,240,.55),transparent);
+  transform:skewX(-18deg);transition:left .9s var(--ease-lux);pointer-events:none;
+}
+.kabinet:hover{box-shadow:0 26px 70px rgba(32,49,42,.17);border-color:rgba(var(--gold-rgb),.5)}
+.kabinet:hover::after{left:135%}
+.kab-icon{
+  width:52px;height:52px;border-radius:15px;margin-bottom:18px;
+  background:rgba(var(--gold-rgb),.12);border:1px solid rgba(var(--gold-rgb),.3);
+  display:flex;align-items:center;justify-content:center;
+  transform:translateZ(28px);
+}
+.kab-icon svg{width:25px;height:25px;stroke:var(--gold-deep);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.kabinet h2{font-family:'Lora',serif;font-weight:600;font-size:21.5px;margin-bottom:8px;transform:translateZ(22px)}
+.kabinet p{font-size:14px;color:var(--ink-2);line-height:1.55;flex:1;transform:translateZ(14px)}
+.kab-meta{
+  display:flex;align-items:baseline;gap:8px;margin-top:20px;padding-top:16px;
+  border-top:1px solid rgba(var(--gold-rgb),.18);transform:translateZ(18px);
+}
+.kab-count{font-family:'Lora',serif;font-weight:600;font-size:30px;color:var(--gold-deep);line-height:1;font-variant-numeric:tabular-nums}
+.kab-label{font-size:12.5px;font-weight:600;color:var(--muted);letter-spacing:.02em}
+.kab-arrow{
+  position:absolute;right:22px;bottom:22px;width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(var(--gold-rgb),.35);display:flex;align-items:center;justify-content:center;
+  color:var(--gold-deep);opacity:0;transform:translateX(-6px);
+  transition:opacity var(--dur) var(--ease-settle),transform var(--dur) var(--ease-settle);
+}
+.kab-arrow svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.kabinet:hover .kab-arrow,.kabinet:focus-visible .kab-arrow{opacity:1;transform:none}
+
+/* ── Undersider (fase 2-4 shells) ───────────────────────────── */
+.view-head{display:flex;align-items:center;gap:16px;margin-bottom:34px}
+.view-back{
+  display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;flex-shrink:0;
+  border:1px solid var(--border);border-radius:50%;background:var(--card);cursor:pointer;color:var(--muted);
+  transition:color var(--dur-fast) var(--ease-settle),border-color var(--dur-fast) var(--ease-settle);
+}
+.view-back:hover{color:var(--ink);border-color:var(--gold-2)}
+.view-back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.view-head h1{font-family:'Lora',serif;font-weight:600;font-size:clamp(24px,3.6vw,32px)}
+.empty{
+  background:var(--card);border:1.5px dashed rgba(var(--gold-rgb),.4);border-radius:var(--r-xl);
+  padding:64px 40px;text-align:center;
+}
+.empty svg{width:44px;height:44px;margin-bottom:16px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;opacity:.8}
+.empty h3{font-family:'Lora',serif;font-weight:600;font-size:20px;margin-bottom:8px}
+.empty p{font-size:14.5px;color:var(--muted);max-width:420px;margin:0 auto}
+
+/* ── Footer ─────────────────────────────────────────────────── */
+.footer{border-top:1px solid var(--sb-line);padding:34px clamp(18px,4vw,36px);text-align:center}
+.footer .logo{justify-content:center;font-size:16px;margin-bottom:6px}
+.footer .logo svg{width:26px;height:26px}
+.footer p{font-size:13px;color:var(--muted)}
+
+/* ── Responsivt + reduced motion ────────────────────────────── */
+@media(max-width:860px){
+  .shelf{grid-template-columns:1fr}
+  .kabinet{min-height:0}
+  .exlibris{gap:16px}
+  .seal{width:68px;height:68px}
+  .seal svg{width:30px;height:30px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;transition-duration:.01ms!important}
+  .exlibris,.kabinet{opacity:1;transform:none}
+  .kabinet::after{display:none}
+}
+</style>
+</head>
+<body class="state-loading">
+
+<!-- ── Topbar ── -->
+<header class="topbar">
+  <a class="logo" href="platform.html">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    Akademiet AI
+  </a>
+  <div class="top-r">
+    <span class="coins-pill">🪙 <span id="navCoins">0</span></span>
+    <a class="top-back" href="platform.html">
+      <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+      Til platformen
+    </a>
+  </div>
+</header>
+
+<!-- ── Loader ── -->
+<div class="loader-wrap" aria-live="polite">
+  <svg class="loader-star" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#b8902a"/></svg>
+  <div class="loader-txt">Åbner dit bibliotek …</div>
+</div>
+
+<!-- ── Login-gate ── -->
+<div class="gate">
+  <div class="gate-card">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    <h1>Dit bibliotek venter bag login</h1>
+    <p>Mit Bibliotek er personligt — her samles dine prompts, cheat sheets og oplåste værktøjer, efterhånden som du gennemfører kurser. Log ind på platformen for at åbne det.</p>
+    <a class="btn-gold" href="platform.html">Log ind på platformen</a>
+  </div>
+</div>
+
+<!-- ── App ── -->
+<main class="app">
+
+  <!-- HUB -->
+  <section class="view" id="view-hub" data-view="hub">
+    <div class="exlibris">
+      <div class="seal" aria-hidden="true">
+        <svg viewBox="0 0 40 40"><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      </div>
+      <div class="exlibris-txt">
+        <div class="kicker">Ex libris · Akademiet AI</div>
+        <h1><span id="hubName">Dit</span> <em>bibliotek</em></h1>
+        <p class="sub">Alt du har lært, samlet ét sted — og det vokser med dig.</p>
+      </div>
+    </div>
+
+    <div class="shelf">
+      <a class="kabinet" href="#prompts" data-tilt>
+        <span class="kab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        </span>
+        <h2>Mine prompts</h2>
+        <p>Dit personlige prompt-bibliotek — skabeloner fra kurserne og dine egne, klar til at kopiere og bruge.</p>
+        <span class="kab-meta"><span class="kab-count" id="countPrompts">0</span><span class="kab-label">prompts gemt</span></span>
+        <span class="kab-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <a class="kabinet" href="#filer" data-tilt>
+        <span class="kab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h2"/></svg>
+        </span>
+        <h2>Mine filer</h2>
+        <p>Cheat sheets fra hvert gennemført kursus lander automatisk her — så du altid kan finde dem igen.</p>
+        <span class="kab-meta"><span class="kab-count" id="countFiler">0</span><span class="kab-label">cheat sheets låst op</span></span>
+        <span class="kab-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+
+      <a class="kabinet" href="#oplaasninger" data-tilt>
+        <span class="kab-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+        </span>
+        <h2>Oplåsninger</h2>
+        <p>Værktøjer der låses op, efterhånden som du gennemfører kurser — se hvad der venter forude.</p>
+        <span class="kab-meta"><span class="kab-count" id="countUnlocks">0</span><span class="kab-label">værktøjer på vej</span></span>
+        <span class="kab-arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- PROMPTS (fase 2) -->
+  <section class="view" id="view-prompts" data-view="prompts">
+    <div class="view-head">
+      <button class="view-back" data-goto="hub" aria-label="Tilbage til biblioteket"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1>Mine prompts</h1>
+    </div>
+    <div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <h3>Prompt-biblioteket flytter ind her</h3>
+      <p>Denne sektion åbner i næste opdatering — med alle dine gemte prompts, søgning og kategorier.</p>
+    </div>
+  </section>
+
+  <!-- FILER (fase 3) -->
+  <section class="view" id="view-filer" data-view="filer">
+    <div class="view-head">
+      <button class="view-back" data-goto="hub" aria-label="Tilbage til biblioteket"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1>Mine filer</h1>
+    </div>
+    <div class="empty">
+      <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      <h3>Dine cheat sheets samles her</h3>
+      <p>Når du gennemfører et kursus, lander kursets cheat sheet automatisk på denne hylde.</p>
+    </div>
+  </section>
+
+  <!-- OPLÅSNINGER (fase 4) -->
+  <section class="view" id="view-oplaasninger" data-view="oplaasninger">
+    <div class="view-head">
+      <button class="view-back" data-goto="hub" aria-label="Tilbage til biblioteket"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
+      <h1>Oplåsninger</h1>
+    </div>
+    <div class="empty">
+      <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg>
+      <h3>Værktøjerne er på vej</h3>
+      <p>Her kommer du til at kunne se — og låse op for — nye værktøjer, efterhånden som du gennemfører kurser.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <a class="logo" href="platform.html">
+    <svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+    Akademiet AI
+  </a>
+  <p>AI-kurser på dansk · Mit Bibliotek</p>
+</footer>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const app  = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db   = getFirestore(app);
+
+const $ = id => document.getElementById(id);
+
+/* ── Router (hash-baseret) ─────────────────────────────────── */
+const VIEWS = ['hub','prompts','filer','oplaasninger'];
+function currentView(){
+  const h = (location.hash || '#hub').replace('#','');
+  return VIEWS.includes(h) ? h : 'hub';
+}
+function renderRoute(){
+  const v = currentView();
+  document.querySelectorAll('.view').forEach(el=>{
+    el.classList.toggle('active', el.dataset.view === v);
+  });
+  window.scrollTo({top:0, behavior:'instant'});
+}
+window.addEventListener('hashchange', renderRoute);
+document.querySelectorAll('[data-goto]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{ location.hash = '#' + btn.dataset.goto; });
+});
+
+/* ── Tællere ───────────────────────────────────────────────── */
+const UNLOCK_CONFIG_COUNT = 3; /* fastlægges endeligt i fase 4 */
+function readLocalPrompts(){
+  try{
+    const raw = localStorage.getItem('learnai_prompt_library_v2');
+    if(!raw) return 0;
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.length : 0;
+  }catch(e){ return 0; }
+}
+function countUp(el, target){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reduce || target === 0){ el.textContent = target; return; }
+  const dur = 900, t0 = performance.now();
+  function step(t){
+    const p = Math.min((t - t0) / dur, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(eased * target);
+    if(p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+/* ── Auth-gate + brugerdata ────────────────────────────────── */
+onAuthStateChanged(auth, async (user) => {
+  if(!user || !user.emailVerified){
+    document.body.className = 'state-auth';
+    return;
+  }
+  let data = {};
+  try{
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    if(snap.exists()) data = snap.data();
+  }catch(e){ /* viser hub med fallback-værdier */ }
+
+  const first = data.firstName || (user.displayName || '').split(' ')[0] || '';
+  $('hubName').textContent = first ? (first + 's') : 'Dit';
+  $('navCoins').textContent = (data.coins != null) ? data.coins : 0;
+
+  const completedModules = Array.isArray(data.completedModules) ? data.completedModules : [];
+  document.body.className = 'state-in';
+  renderRoute();
+  countUp($('countPrompts'), readLocalPrompts());
+  countUp($('countFiler'), completedModules.length);
+  countUp($('countUnlocks'), UNLOCK_CONFIG_COUNT);
+});
+
+/* ── 3D-tilt på kabinet-kort ───────────────────────────────── */
+(function initTilt(){
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = window.matchMedia('(hover: none)').matches;
+  if(reduce || coarse) return;
+  document.querySelectorAll('[data-tilt]').forEach(card=>{
+    let raf = null;
+    card.addEventListener('pointermove', (e)=>{
+      if(raf) return;
+      raf = requestAnimationFrame(()=>{
+        const r = card.getBoundingClientRect();
+        const px = (e.clientX - r.left) / r.width  - .5;
+        const py = (e.clientY - r.top)  / r.height - .5;
+        card.style.transform = 'rotateY(' + (px * 7).toFixed(2) + 'deg) rotateX(' + (py * -7).toFixed(2) + 'deg) translateZ(0)';
+      });
+      setTimeout(()=>{ raf = null; }, 16);
+    });
+    card.addEventListener('pointerleave', ()=>{
+      card.style.transition = 'transform .7s cubic-bezier(.16,1,.3,1), box-shadow .52s cubic-bezier(.16,1,.3,1)';
+      card.style.transform = '';
+      setTimeout(()=>{ card.style.transition = ''; }, 700);
+    });
+  });
+})();
+</script>
+</body>
+</html>
