@@ -302,24 +302,28 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .ai-verdict.bad{background:var(--red-bg);border-color:var(--red);color:#991B1B}
 .ai-verdict.good{background:var(--green-bg);border-color:var(--green);color:#065F46}
 
-.prompt-block{background:#1a1208;border-radius:var(--r);padding:0;margin:18px 0;overflow:hidden;box-shadow:0 6px 24px rgba(13,17,23,.15)}
-.prompt-block-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.08)}
-.prompt-block-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#A5B4FC}
-.prompt-block-label::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--blue-glow);box-shadow:0 0 8px var(--blue-glow)}
+.prompt-block{position:relative;background:linear-gradient(160deg,#243830,#1c2b25);border:1px solid rgba(var(--c-gold-rgb),.24);border-radius:var(--r);padding:0;margin:18px 0;overflow:hidden;box-shadow:0 8px 28px rgba(32,49,42,.22),inset 0 1px 0 rgba(232,206,120,.07)}
+.prompt-block::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,var(--c-gold),var(--c-gold-deep));opacity:.85}
+.prompt-block-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px 13px 21px;border-bottom:1px solid rgba(232,206,120,.1)}
+.prompt-block-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c-gold-warm,#e8ce78)}
+.prompt-block-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c-gold);box-shadow:0 0 10px rgba(var(--c-gold-rgb),.75)}
 .prompt-block-actions{display:flex;gap:6px}
-.prompt-btn{padding:6px 12px;border-radius:6px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:all .2s}
-.prompt-btn.toggle{background:rgba(var(--c-gold-mid-rgb),.15);border-color:rgba(var(--c-gold-mid-rgb),.3);color:#A5B4FC}
-.prompt-btn.toggle:hover{background:rgba(var(--c-gold-mid-rgb),.25)}
-.prompt-btn.copy{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12);color:#cfc6b0}
-.prompt-btn.copy:hover{background:rgba(255,255,255,.15);color:#fff}
-.prompt-btn.save{background:rgba(var(--c-gold-rgb),.14);border-color:rgba(var(--c-gold-rgb),.35);color:var(--c-gold-warm,#e8ce78)}
-.prompt-btn.save:hover{background:rgba(var(--c-gold-rgb),.26)}
-.prompt-btn.save.saved{background:rgba(47,106,74,.28);border-color:rgba(110,231,183,.35);color:#6EE7B7;cursor:default;pointer-events:none}
-.prompt-btn.save:disabled{opacity:.55;cursor:wait}
+.prompt-btn{padding:6px 13px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:all .25s cubic-bezier(.22,1,.36,1)}
+.prompt-btn.toggle{background:rgba(var(--c-gold-rgb),.12);border-color:rgba(var(--c-gold-rgb),.32);color:var(--c-gold-warm,#e8ce78)}
+.prompt-btn.toggle:hover{background:rgba(var(--c-gold-rgb),.22);transform:translateY(-1px)}
+.prompt-btn.copy{background:rgba(251,247,238,.07);border-color:rgba(251,247,238,.15);color:#d9d2bf}
+.prompt-btn.copy:hover{background:rgba(251,247,238,.15);color:#fbf7ee;transform:translateY(-1px)}
+.prompt-btn.save{background:rgba(var(--c-gold-rgb),.14);border-color:rgba(var(--c-gold-rgb),.38);color:var(--c-gold-warm,#e8ce78)}
+.prompt-btn.save:hover{background:rgba(var(--c-gold-rgb),.26);transform:translateY(-1px)}
+.prompt-btn.save.saved{background:rgba(52,211,153,.16);border-color:rgba(110,231,183,.4);color:#6EE7B7;cursor:default;pointer-events:none}
+.prompt-btn.save.busy{color:transparent;position:relative;pointer-events:none}
+.prompt-btn.save.busy::after{content:'';position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;width:13px;height:13px;border-radius:50%;border:2px solid rgba(232,206,120,.3);border-top-color:var(--c-gold-warm,#e8ce78);animation:saveSpin .5s linear infinite}
+@keyframes saveSpin{to{transform:rotate(360deg)}}
 @media(max-width:640px){.prompt-block-head{flex-wrap:wrap;gap:8px}.prompt-block-actions{flex-wrap:wrap}}
-.prompt-block-body{padding:18px 20px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#cfc6b0;line-height:1.7;white-space:pre-wrap;max-height:0;overflow:hidden;transition:max-height .4s ease,padding .4s ease}
-.prompt-block.open .prompt-block-body{max-height:600px;padding:18px 20px 20px}
-.prompt-block:not(.open) .prompt-block-body{padding-top:0;padding-bottom:0}
+.prompt-block-body{padding:0 20px 0 23px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#e8e2d3;line-height:1.75;white-space:pre-wrap;max-height:0;overflow:hidden;opacity:0;transform:translateY(10px);transition:max-height .75s cubic-bezier(.22,1,.36,1),padding .75s cubic-bezier(.22,1,.36,1),opacity .6s ease .14s,transform .7s cubic-bezier(.22,1,.36,1) .14s}
+.prompt-block.open .prompt-block-body{max-height:600px;padding:20px 20px 22px 23px;opacity:1;transform:translateY(0)}
+.prompt-block:not(.open) .prompt-block-body{padding-top:0;padding-bottom:0;transition:max-height .45s cubic-bezier(.22,1,.36,1),padding .45s cubic-bezier(.22,1,.36,1),opacity .2s ease,transform .3s ease}
+@media(prefers-reduced-motion:reduce){.prompt-block-body,.prompt-block:not(.open) .prompt-block-body,.prompt-btn{transition:none;transform:none}}
 
 .callout{display:flex;gap:14px;padding:18px 22px;border-radius:var(--r);margin:22px 0;background:linear-gradient(135deg,#fdf8ec,#DBEAFE);border:1px solid #BFDBFE}
 .callout-ic{flex:0 0 32px;font-size:22px}
@@ -423,7 +427,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .temp-demo-header h4{margin:0 0 4px;font-size:17px;font-weight:700;color:var(--ink)}
 .temp-demo-header p{margin:0;font-size:14px;color:var(--muted)}
 .temp-prompt-label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.temp-prompt-box{background:#1a1208;border-radius:var(--r-sm);padding:12px 16px;margin-bottom:20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cfc6b0;border-left:3px solid var(--indigo)}
+.temp-prompt-box{background:linear-gradient(160deg,#243830,#1c2b25);border-radius:var(--r-sm);padding:12px 16px;margin-bottom:20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cfc6b0;border-left:3px solid var(--indigo)}
 .temp-slider-row{display:flex;align-items:center;gap:14px;margin-bottom:8px}
 .temp-label-low{font-size:12px;font-weight:700;color:var(--indigo);white-space:nowrap}
 .temp-label-high{font-size:12px;font-weight:700;color:#9333EA;white-space:nowrap}
@@ -512,7 +516,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .pb-drop-item-remove{margin-left:4px;opacity:.5;cursor:pointer;font-size:14px;transition:opacity .15s}
 .pb-drop-item-remove:hover{opacity:1}
 .pb-preview-label{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.pb-preview{background:#1a1208;border-radius:var(--r);padding:16px 18px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cfc6b0;line-height:1.7;min-height:60px}
+.pb-preview{background:linear-gradient(160deg,#243830,#1c2b25);border-radius:var(--r);padding:16px 18px;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#cfc6b0;line-height:1.7;min-height:60px}
 .pb-preview .ph{color:rgba(255,255,255,.2);font-style:italic}
 .pb-order-feedback{margin-bottom:14px;padding:12px 16px;border-radius:var(--r);font-size:13.5px;font-weight:600;display:none;animation:blockDrop .3s cubic-bezier(.16,1,.3,1)}
 .pb-order-feedback.show{display:block}
@@ -762,6 +766,35 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .toast-ic{font-size:18px}
 .copy-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--green),#34D399);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:600;z-index:1500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ── Kopiér-cinema: medaljon med bog → grønt tjek (fase 2b) ── */
+.copy-cinema{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;z-index:2100;pointer-events:none;opacity:0;visibility:hidden}
+.copy-cinema.play{opacity:1;visibility:visible}
+.cc-card{display:flex;flex-direction:column;align-items:center;gap:16px}
+@keyframes ccCardIn{from{opacity:0;transform:scale(.86) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes ccCardOut{from{opacity:1}to{opacity:0;transform:scale(.97) translateY(-8px)}}
+.copy-cinema.play .cc-card{animation:ccCardIn .5s cubic-bezier(.22,1,.36,1) both,ccCardOut .5s ease 1.65s both}
+.cc-medal{position:relative;width:104px;height:104px;border-radius:50%;background:linear-gradient(160deg,#fbf7ee,#f2ead8);border:1.5px solid rgba(var(--c-gold-rgb),.55);box-shadow:0 20px 55px rgba(32,49,42,.3),0 0 0 9px rgba(232,206,120,.14);display:grid;place-items:center;color:var(--c-gold-deep)}
+.cc-book{width:46px;height:46px;transition:opacity .35s ease}
+.copy-cinema.play .cc-book{animation:ccBookDim .3s ease .55s both}
+@keyframes ccBookDim{to{opacity:.22}}
+.cc-check{position:absolute;top:0;left:0;width:104px;height:104px}
+.cc-check-ring{stroke-dasharray:120;stroke-dashoffset:120}
+.copy-cinema.play .cc-check-ring{animation:ccDraw .5s cubic-bezier(.4,0,.2,1) .55s forwards}
+.cc-check-mark{stroke-dasharray:30;stroke-dashoffset:30}
+.copy-cinema.play .cc-check-mark{animation:ccDraw .35s cubic-bezier(.4,0,.2,1) .85s forwards}
+@keyframes ccDraw{to{stroke-dashoffset:0}}
+.cc-text{font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#20312a;background:linear-gradient(160deg,#fbf7ee,#f4ecdb);border:1px solid rgba(var(--c-gold-rgb),.4);border-radius:999px;padding:9px 22px;box-shadow:0 10px 30px rgba(32,49,42,.18);opacity:0}
+.copy-cinema.play .cc-text{animation:ccTextIn .45s cubic-bezier(.22,1,.36,1) .45s forwards}
+@keyframes ccTextIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+/* ── Gem-toast: luksuriøs oval med guld-emblem (fase 2b) ── */
+.save-toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%) translateY(26px) scale(.95);display:flex;align-items:center;gap:12px;padding:11px 26px 11px 12px;border-radius:999px;background:linear-gradient(160deg,#fbf7ee,#f3ebd9);border:1.5px solid rgba(var(--c-gold-rgb),.55);box-shadow:0 16px 44px rgba(32,49,42,.25),0 0 0 7px rgba(232,206,120,.13);z-index:2050;opacity:0;pointer-events:none;transition:opacity .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1)}
+.save-toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+.save-toast-ic{width:36px;height:36px;border-radius:50%;background:linear-gradient(150deg,var(--c-gold),var(--c-gold-deep));display:grid;place-items:center;color:#fff;box-shadow:0 5px 14px rgba(var(--c-gold-rgb),.45);flex-shrink:0}
+.save-toast-ic svg{width:18px;height:18px}
+.save-toast-text{font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#20312a;white-space:nowrap}
+.save-toast-text b{color:var(--c-gold-deep);font-weight:700}
+@media(max-width:480px){.save-toast-text{white-space:normal;font-size:13px}}
+@media(prefers-reduced-motion:reduce){.copy-cinema.play .cc-card,.copy-cinema.play .cc-book,.copy-cinema.play .cc-check-ring,.copy-cinema.play .cc-check-mark,.copy-cinema.play .cc-text{animation-duration:.01s;animation-delay:0s}.save-toast{transition:opacity .2s ease}}
 
 @media(max-width:720px){.hero{padding:60px 22px 40px}.main{padding:30px 22px 60px}.module-head{padding:20px 22px;gap:14px}.module-num{width:48px;height:48px;font-size:20px;flex-basis:48px}.module-title{font-size:18px}.module-body{padding:8px 22px 0}.complete-zone{margin:32px -22px 0;padding:24px 22px 28px}.module-time{display:none}.summary,.quiz-cta,.cheatsheet-cta{padding:26px 24px}.quiz-cta h3{font-size:24px}}
 @media(max-width:480px){.topbar-inner{padding:12px 16px}.crumb{display:none}.hall-grid{grid-template-columns:1fr}.mc-answers{grid-template-columns:1fr}}
@@ -800,7 +833,7 @@ body{font-family:'Outfit',system-ui,sans-serif;background:var(--bg);color:var(--
 .temp-ex-badge.precise{background:rgba(var(--c-gold-rgb),.12);color:var(--indigo-deep)}
 .temp-ex-badge.creative{background:rgba(147,51,234,.12);color:#6B21A8}
 .temp-ex-hint{font-size:10px;color:var(--muted);font-style:italic}
-.temp-ex-code{padding:9px 12px;background:#1a1208;font-family:'JetBrains Mono',monospace;font-size:11px;color:#cfc6b0;line-height:1.55}
+.temp-ex-code{padding:9px 12px;background:linear-gradient(160deg,#243830,#1c2b25);font-family:'JetBrains Mono',monospace;font-size:11px;color:#cfc6b0;line-height:1.55}
 .temp-ex-result{padding:9px 12px;font-size:12.5px;color:var(--ink-2);line-height:1.5;font-style:italic;background:rgba(251,247,238,.9)}
 .temp-ex-result em{font-style:normal;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-right:4px}
 /* ══ BAR CHART ══ */
@@ -2451,6 +2484,19 @@ h3.subhead{margin:1.6rem 0 .7rem!important}
 </section>
 <div class="toast" id="toast"><span class="toast-ic">🔒</span><span id="toastText">Gennemfør det forrige modul først</span></div>
 <div class="copy-toast" id="copyToast">✓ Kopieret</div>
+<div class="copy-cinema" id="copyCinema" aria-hidden="true">
+  <div class="cc-card">
+    <div class="cc-medal">
+      <svg class="cc-book" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 38V10a2 2 0 0 1 2-2h12v30H10a2 2 0 0 0-2 2z"/><path d="M40 38V10a2 2 0 0 0-2-2H26v30h12a2 2 0 0 1 2 2z"/></svg>
+      <svg class="cc-check" viewBox="0 0 104 104" fill="none"><circle class="cc-check-ring" cx="52" cy="52" r="38" stroke="#10B981" stroke-width="3" fill="rgba(16,185,129,.09)" transform="rotate(-90 52 52)"/><path class="cc-check-mark" d="M36 53.5l11 11L69 41" stroke="#10B981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="cc-text">Kopieret til udklipsholderen</div>
+  </div>
+</div>
+<div class="save-toast" id="saveToast" role="status">
+  <span class="save-toast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></span>
+  <span class="save-toast-text">Prompten er gemt i <b>dit bibliotek</b></span>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -2528,24 +2574,29 @@ async function _saveCategoryIfMissing(uid,name){
 }
 
 async function _savePrompt(user,btn){
-  if(btn.classList.contains('saved')||btn.disabled)return;
+  if(btn.classList.contains('saved')||btn.classList.contains('busy'))return;
   const id=btn.dataset.saveId;
   const meta=C1_SAVE_META[id];
   const copyBtn=btn.closest('.prompt-block-actions')?.querySelector('[data-copy]');
   const text=copyBtn?copyBtn.getAttribute('data-copy'):'';
   if(!meta||!text){showToast('Kunne ikke gemme prompten','⚠️');return;}
-  btn.disabled=true;btn.textContent='Gemmer…';
+  btn.classList.add('busy');
+  const t0=Date.now();
   try{
     const catId=await _saveCategoryIfMissing(user.uid,'C1');
     await setDoc(doc(db,'users',user.uid,'prompts',id),{
       title:meta.title,text:text,catId:catId,
       starred:false,copyCount:0,createdAt:Date.now(),source:meta.source
     });
-    btn.disabled=false;_markSaved(btn);
-    showToast('Gemt i dit bibliotek','📚');
+    /* Spinneren skal være synlig min. 300 ms — ro, ikke blink */
+    const wait=Math.max(0,300-(Date.now()-t0));
+    setTimeout(()=>{
+      btn.classList.remove('busy');_markSaved(btn);
+      showSaveToast();
+    },wait);
   }catch(e){
     console.error('C1 gem:',e);
-    btn.disabled=false;btn.textContent='Gem til senere';
+    btn.classList.remove('busy');btn.textContent='Gem til senere';
     showToast('Kunne ikke gemme — tjek forbindelsen','⚠️');
   }
 }
@@ -2565,6 +2616,19 @@ function showToast(text='Gennemfør det forrige modul først',icon='🔒'){
   t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600);
 }
 function showCopyToast(){const t=$('#copyToast');t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1600);}
+let _ccT=null;
+function showCopyCinema(){
+  const o=$('#copyCinema');
+  if(!o||window.matchMedia('(prefers-reduced-motion: reduce)').matches){showCopyToast();return;}
+  o.classList.remove('play');void o.offsetWidth;
+  o.classList.add('play');
+  clearTimeout(_ccT);_ccT=setTimeout(()=>o.classList.remove('play'),2250);
+}
+function showSaveToast(){
+  const t=$('#saveToast');if(!t)return;
+  t.classList.add('show');clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
 function spawnConfetti(){
   const colors=['#b8902a','#e8c766','#cda84a','#FCD34D','#2f6a4a','#f5c277'];
   const wrap=document.createElement('div');wrap.className='confetti';
@@ -2796,7 +2860,7 @@ $$('.prompt-block .prompt-btn.toggle').forEach(btn=>{
   btn.addEventListener('click',(e)=>{e.stopPropagation();const b=btn.closest('.prompt-block');b.classList.toggle('open');btn.textContent=b.classList.contains('open')?'Skjul':'Se prompt';});
 });
 $$('[data-copy]').forEach(btn=>{
-  btn.addEventListener('click',async(e)=>{e.stopPropagation();try{await navigator.clipboard.writeText(btn.dataset.copy);showCopyToast();}catch(err){}});
+  btn.addEventListener('click',async(e)=>{e.stopPropagation();try{await navigator.clipboard.writeText(btn.dataset.copy);showCopyCinema();}catch(err){}});
 });
 
 /* ── SETTINGS GUIDE ── */
