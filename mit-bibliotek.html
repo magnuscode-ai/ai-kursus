@@ -191,6 +191,148 @@ body.state-in .app{display:block}
 .empty h3{font-family:'Lora',serif;font-weight:600;font-size:20px;margin-bottom:8px}
 .empty p{font-size:14.5px;color:var(--muted);max-width:420px;margin:0 auto}
 
+/* ── PROMPTS: toolbar ───────────────────────────────────────── */
+.p-toolbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:28px}
+.p-search{position:relative;flex:1;min-width:220px}
+.p-search svg{position:absolute;left:15px;top:50%;transform:translateY(-50%);width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.p-search input{width:100%;padding:12px 16px 12px 42px;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--card);border:1px solid var(--border);border-radius:999px;outline:none;transition:border-color var(--dur-fast) var(--ease-settle),box-shadow var(--dur-fast) var(--ease-settle)}
+.p-search input:focus{border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(var(--gold-rgb),.15)}
+.p-search input::placeholder{color:var(--muted-2)}
+.btn-line{display:inline-flex;align-items:center;gap:7px;padding:11px 20px;font-size:14px;font-weight:600;color:var(--ink-2);background:var(--card);border:1px solid var(--border);border-radius:999px;cursor:pointer;transition:border-color var(--dur-fast) var(--ease-settle),color var(--dur-fast) var(--ease-settle),transform var(--dur-fast) var(--ease-settle)}
+.btn-line:hover{border-color:var(--gold-2);color:var(--ink);transform:translateY(-1px)}
+.btn-line svg,.btn-gold-sm svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.btn-gold-sm{padding:11px 22px;font-size:14px;gap:7px}
+
+/* ── PROMPTS: loading-skeleton ──────────────────────────────── */
+.p-skel{display:flex;flex-direction:column;gap:14px}
+.p-skel div{height:74px;border-radius:var(--r);background:linear-gradient(100deg,var(--card) 40%,var(--card-2) 50%,var(--card) 60%);background-size:200% 100%;animation:skel 1.3s linear infinite;border:1px solid var(--border)}
+@keyframes skel{to{background-position:-200% 0}}
+
+/* ── PROMPTS: kategorisektioner ─────────────────────────────── */
+.cat-sec{margin-bottom:26px;border-radius:var(--r-lg);background:var(--card);border:1px solid var(--border);overflow:hidden;position:relative;opacity:0;transform:translateY(14px);animation:catIn .7s var(--ease-lux) forwards;box-shadow:0 8px 26px rgba(32,49,42,.06);transition:box-shadow var(--dur) var(--ease-settle)}
+.cat-sec:nth-child(1){animation-delay:.05s}.cat-sec:nth-child(2){animation-delay:.13s}.cat-sec:nth-child(3){animation-delay:.21s}.cat-sec:nth-child(4){animation-delay:.29s}.cat-sec:nth-child(5){animation-delay:.37s}
+@keyframes catIn{to{opacity:1;transform:none}}
+.cat-sec::before{content:'';position:absolute;top:0;bottom:0;left:0;width:5px;background:var(--cat-c,var(--gold));opacity:.85;z-index:1}
+.cat-sec.dragging{opacity:.45;box-shadow:0 26px 60px rgba(32,49,42,.22)}
+.cat-sec.drag-active{box-shadow:0 14px 40px rgba(32,49,42,.12)}
+.cat-head{display:flex;align-items:center;gap:11px;padding:16px 18px 16px 22px;cursor:default;user-select:none}
+.cat-drag{display:inline-flex;align-items:center;justify-content:center;width:26px;height:30px;border:none;background:none;color:var(--muted-2);cursor:grab;border-radius:7px;flex-shrink:0;transition:color var(--dur-fast) var(--ease-settle),background var(--dur-fast) var(--ease-settle)}
+.cat-drag:hover{color:var(--ink-2);background:rgba(var(--gold-rgb),.1)}
+.cat-drag:active{cursor:grabbing}
+.cat-drag svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.cat-dot{width:11px;height:11px;border-radius:50%;background:var(--cat-c,var(--gold));flex-shrink:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--cat-c,var(--gold)) 18%,transparent)}
+.cat-head h2{font-family:'Lora',serif;font-weight:600;font-size:19px;letter-spacing:-.005em}
+.cat-count{font-size:12.5px;font-weight:700;color:var(--muted);background:var(--card-2);border:1px solid var(--border);border-radius:999px;padding:2.5px 10px;font-variant-numeric:tabular-nums}
+.cat-head-r{margin-left:auto;display:flex;align-items:center;gap:4px}
+.cat-ibtn{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;background:none;border-radius:9px;color:var(--muted);cursor:pointer;transition:color var(--dur-fast) var(--ease-settle),background var(--dur-fast) var(--ease-settle)}
+.cat-ibtn:hover{color:var(--ink);background:rgba(var(--gold-rgb),.12)}
+.cat-ibtn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cat-toggle svg{transition:transform var(--dur) var(--ease-settle)}
+.cat-sec.collapsed .cat-toggle svg{transform:rotate(-90deg)}
+.cat-body{padding:2px 16px 16px;display:flex;flex-direction:column;gap:10px}
+.cat-sec.collapsed .cat-body{display:none}
+.cat-sec.fav-sec::before{background:linear-gradient(180deg,#e0b33d,var(--gold-deep))}
+.cat-sec.fav-sec .cat-dot{display:none}
+.fav-star-ico{width:17px;height:17px;flex-shrink:0;fill:#e0b33d;stroke:#b8902a;stroke-width:1.4;stroke-linejoin:round}
+.cat-empty{border:1.5px dashed rgba(var(--gold-rgb),.35);border-radius:var(--r);padding:20px;text-align:center;font-size:13.5px;color:var(--muted)}
+.cat-empty button{border:none;background:none;color:var(--gold-deep);font-weight:700;font-size:13.5px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+
+/* ── PROMPTS: prompt-kort ───────────────────────────────────── */
+.p-card{display:flex;align-items:flex-start;gap:12px;background:var(--card-2);border:1px solid var(--border);border-radius:var(--r);padding:15px 15px 14px 16px;position:relative;transition:border-color var(--dur-fast) var(--ease-settle),box-shadow var(--dur) var(--ease-settle),transform var(--dur) var(--ease-settle)}
+.p-card:hover{border-color:rgba(var(--gold-rgb),.5);box-shadow:0 10px 28px rgba(32,49,42,.09);transform:translateY(-1px)}
+.p-card.just-in{animation:cardPop .55s var(--ease-lux)}
+@keyframes cardPop{0%{opacity:0;transform:translateY(10px) scale(.98)}100%{opacity:1;transform:none}}
+.p-star{border:none;background:none;cursor:pointer;padding:4px;margin:-2px 0 0 -4px;flex-shrink:0;color:var(--muted-2);transition:color var(--dur-fast) var(--ease-settle),transform var(--dur-fast) var(--ease-settle)}
+.p-star svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;transition:fill var(--dur-fast) var(--ease-settle)}
+.p-star:hover{color:#c99a1f;transform:scale(1.12)}
+.p-star.on{color:#c99a1f}
+.p-star.on svg{fill:#e8c34a}
+.p-star.pulse{animation:starPop .5s var(--ease-lux)}
+@keyframes starPop{0%{transform:scale(1)}40%{transform:scale(1.4) rotate(8deg)}100%{transform:scale(1)}}
+.p-main{flex:1;min-width:0}
+.p-main h3{font-family:'Lora',serif;font-weight:600;font-size:16.5px;margin-bottom:4px;line-height:1.3}
+.p-prev{font-size:13.5px;color:var(--ink-2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.p-prev .ph{color:var(--gold-deep);background:rgba(var(--gold-rgb),.13);border-radius:5px;padding:0 4px;font-weight:600}
+.p-meta{display:flex;align-items:center;gap:10px;margin-top:8px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.p-meta .m-src{background:var(--card);border:1px solid var(--border);border-radius:999px;padding:1.5px 9px;font-weight:600}
+.p-acts{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-top:1px}
+.p-copy{display:inline-flex;align-items:center;gap:6px;padding:8.5px 16px;border:1px solid rgba(var(--gold-rgb),.45);border-radius:999px;background:rgba(var(--gold-rgb),.09);color:var(--gold-deep);font-size:13px;font-weight:700;cursor:pointer;transition:background var(--dur-fast) var(--ease-settle),transform var(--dur-fast) var(--ease-settle),box-shadow var(--dur) var(--ease-settle)}
+.p-copy:hover{background:rgba(var(--gold-rgb),.16);transform:translateY(-1px);box-shadow:0 6px 16px rgba(138,109,30,.16)}
+.p-copy svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.p-copy.ok{background:rgba(47,106,74,.13);border-color:rgba(47,106,74,.5);color:var(--green)}
+.p-kebab{display:inline-flex;align-items:center;justify-content:center;width:33px;height:33px;border:none;background:none;border-radius:9px;color:var(--muted);cursor:pointer;transition:color var(--dur-fast) var(--ease-settle),background var(--dur-fast) var(--ease-settle)}
+.p-kebab:hover{color:var(--ink);background:rgba(var(--gold-rgb),.12)}
+.p-kebab svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round}
+
+/* ── Popover-menu ───────────────────────────────────────────── */
+.pop{position:absolute;z-index:200;min-width:178px;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 18px 50px rgba(32,49,42,.18);padding:6px;opacity:0;transform:translateY(-4px) scale(.98);pointer-events:none;transition:opacity var(--dur-fast) var(--ease-settle),transform var(--dur-fast) var(--ease-settle)}
+.pop.open{opacity:1;transform:none;pointer-events:auto}
+.pop button{display:flex;align-items:center;gap:10px;width:100%;padding:9.5px 12px;border:none;background:none;border-radius:9px;font-family:inherit;font-size:13.5px;font-weight:600;color:var(--ink-2);cursor:pointer;text-align:left;transition:background var(--dur-fast) var(--ease-settle),color var(--dur-fast) var(--ease-settle)}
+.pop button:hover{background:rgba(var(--gold-rgb),.1);color:var(--ink)}
+.pop button.danger{color:#9c3a2a}
+.pop button.danger:hover{background:rgba(156,58,42,.09)}
+.pop button svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.pop hr{border:none;border-top:1px solid var(--border);margin:5px 8px}
+
+/* ── Modaler ────────────────────────────────────────────────── */
+.mbg{position:fixed;inset:0;z-index:300;background:rgba(32,49,42,.4);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;padding:6vh 18px 40px;overflow-y:auto}
+.mbg.show{display:flex;animation:bgIn var(--dur) var(--ease-settle)}
+@keyframes bgIn{from{opacity:0}to{opacity:1}}
+.mcard{width:100%;max-width:560px;background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);padding:30px 28px 26px;position:relative;box-shadow:0 30px 90px rgba(32,49,42,.3);animation:mIn .5s var(--ease-lux)}
+@keyframes mIn{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.mcard::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:var(--r-lg) var(--r-lg) 0 0;background:linear-gradient(90deg,var(--gold-deep),var(--gold-2),var(--gold-warm))}
+.mcard h2{font-family:'Lora',serif;font-weight:600;font-size:21px;margin-bottom:18px;padding-right:34px}
+.m-x{position:absolute;top:16px;right:16px;width:34px;height:34px;border:none;background:none;border-radius:50%;color:var(--muted);cursor:pointer;font-size:0;display:flex;align-items:center;justify-content:center;transition:color var(--dur-fast) var(--ease-settle),background var(--dur-fast) var(--ease-settle)}
+.m-x:hover{color:var(--ink);background:rgba(var(--gold-rgb),.12)}
+.m-x svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.3;stroke-linecap:round}
+.f-lab{display:block;font-size:12.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:16px 0 7px}
+.f-lab:first-of-type{margin-top:0}
+.f-in,.f-ta,.f-sel{width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:11px 14px;outline:none;transition:border-color var(--dur-fast) var(--ease-settle),box-shadow var(--dur-fast) var(--ease-settle)}
+.f-in:focus,.f-ta:focus,.f-sel:focus{border-color:var(--gold-2);box-shadow:0 0 0 3px rgba(var(--gold-rgb),.14)}
+.f-ta{min-height:150px;resize:vertical;line-height:1.6}
+.f-sel{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235a7060' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 13px center;background-size:15px;cursor:pointer}
+.f-hint{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.5}
+.f-hint b{color:var(--gold-deep)}
+.ph-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;min-height:0}
+.ph-chips span{font-size:12px;font-weight:700;color:var(--gold-deep);background:rgba(var(--gold-rgb),.12);border:1px solid rgba(var(--gold-rgb),.32);border-radius:999px;padding:3px 11px;animation:chipIn .35s var(--ease-lux)}
+@keyframes chipIn{from{opacity:0;transform:scale(.85)}to{opacity:1;transform:none}}
+.swatches{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+.sw{width:34px;height:34px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;padding:0;background:var(--sw);position:relative;transition:transform var(--dur-fast) var(--ease-settle),border-color var(--dur-fast) var(--ease-settle),box-shadow var(--dur-fast) var(--ease-settle)}
+.sw:hover{transform:scale(1.12)}
+.sw.sel{border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in srgb,var(--sw) 30%,transparent)}
+.m-foot{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:24px}
+.m-foot .left{margin-right:auto}
+.btn-ghost{padding:11px 20px;font-size:14px;font-weight:600;color:var(--muted);background:none;border:1px solid var(--border);border-radius:999px;cursor:pointer;transition:color var(--dur-fast) var(--ease-settle),border-color var(--dur-fast) var(--ease-settle)}
+.btn-ghost:hover{color:var(--ink);border-color:var(--gold-2)}
+.btn-danger{padding:11px 22px;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,#8a3324,#a8452f);border:none;border-radius:999px;cursor:pointer;box-shadow:0 8px 22px rgba(138,51,36,.25);transition:transform var(--dur-fast) var(--ease-settle),box-shadow var(--dur-fast) var(--ease-settle)}
+.btn-danger:hover{transform:translateY(-1px);box-shadow:0 12px 30px rgba(138,51,36,.35)}
+.new-cat-inline{display:none;gap:10px;margin-top:10px;align-items:center}
+.new-cat-inline.show{display:flex;animation:chipIn .35s var(--ease-lux)}
+.new-cat-inline .f-in{flex:1}
+.fill-prev{display:none;margin-top:16px;background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;font-size:13.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;max-height:230px;overflow-y:auto}
+.fill-prev.show{display:block;animation:chipIn .3s var(--ease-lux)}
+.fill-prev .ph-f{color:var(--green);background:rgba(47,106,74,.12);border-radius:5px;padding:0 4px;font-weight:600}
+.fill-prev .ph-e{color:var(--gold-deep);background:rgba(var(--gold-rgb),.13);border-radius:5px;padding:0 4px;font-weight:600}
+.prev-toggle{display:inline-flex;align-items:center;gap:7px;border:none;background:none;color:var(--gold-deep);font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin-top:14px;padding:0}
+.prev-toggle svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;transition:transform var(--dur) var(--ease-settle)}
+.prev-toggle.open svg{transform:rotate(180deg)}
+.confirm-txt{font-size:14.5px;color:var(--ink-2);line-height:1.6}
+
+/* ── Toast ──────────────────────────────────────────────────── */
+.toast{position:fixed;left:50%;bottom:30px;transform:translate(-50%,80px);z-index:400;background:var(--ink);color:#f4efe2;font-size:14px;font-weight:600;padding:13px 24px;border-radius:999px;box-shadow:0 16px 44px rgba(32,49,42,.35);opacity:0;transition:transform .5s var(--ease-lux),opacity .5s var(--ease-lux);pointer-events:none;max-width:90vw;text-align:center}
+.toast.show{transform:translate(-50%,0);opacity:1}
+
+/* ── Prompts: responsivt ────────────────────────────────────── */
+@media(max-width:640px){
+  .p-card{flex-wrap:wrap}
+  .p-acts{width:100%;justify-content:flex-end;margin-top:4px}
+  .p-toolbar{align-items:stretch;flex-direction:column}
+  .p-toolbar-btns{display:flex;gap:10px}
+  .p-toolbar-btns .btn-gold-sm{flex:1;justify-content:center}
+  .p-toolbar-btns .btn-line{flex:1;justify-content:center}
+  .mcard{padding:26px 20px 22px}
+}
+
 /* ── Footer ─────────────────────────────────────────────────── */
 .footer{border-top:1px solid var(--sb-line);padding:34px clamp(18px,4vw,36px);text-align:center}
 .footer .logo{justify-content:center;font-size:16px;margin-bottom:6px}
@@ -300,11 +442,36 @@ body.state-in .app{display:block}
       <button class="view-back" data-goto="hub" aria-label="Tilbage til biblioteket"><svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
       <h1>Mine prompts</h1>
     </div>
-    <div class="empty">
-      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      <h3>Prompt-biblioteket flytter ind her</h3>
-      <p>Denne sektion åbner i næste opdatering — med alle dine gemte prompts, søgning og kategorier.</p>
+    <div class="p-toolbar">
+      <div class="p-search">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+        <input type="search" id="pSearch" placeholder="Søg i dine prompts …" aria-label="Søg i dine prompts" autocomplete="off">
+      </div>
+      <div class="p-toolbar-btns">
+        <button class="btn-line" id="btnNewCat" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ny kategori
+        </button>
+        <button class="btn-gold btn-gold-sm" id="btnNewPrompt" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg> Ny prompt
+        </button>
+      </div>
     </div>
+
+    <div class="p-skel" id="pSkel" aria-hidden="true"><div></div><div></div><div></div></div>
+
+    <div class="empty" id="pOnboard" hidden>
+      <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      <h3>Dit prompt-bibliotek starter her</h3>
+      <p>Skriv din første prompt — eller gem prompts undervejs i Kursus C, så lander de automatisk her, sorteret i kategorier.</p>
+    </div>
+
+    <div class="empty" id="pError" hidden>
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/></svg>
+      <h3>Kunne ikke hente dine prompts</h3>
+      <p>Tjek din internetforbindelse og prøv igen.</p>
+    </div>
+
+    <div id="catList" aria-live="polite"></div>
   </section>
 
   <!-- FILER (fase 3) -->
@@ -335,6 +502,77 @@ body.state-in .app{display:block}
 
 </main>
 
+<!-- ── Modal: prompt-editor ── -->
+<div class="mbg" id="mPrompt" role="dialog" aria-modal="true" aria-labelledby="mPromptTitle">
+  <div class="mcard">
+    <button class="m-x" data-close aria-label="Luk"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="mPromptTitle">Ny prompt</h2>
+    <label class="f-lab" for="pfTitle">Titel</label>
+    <input class="f-in" id="pfTitle" type="text" maxlength="80" placeholder="Fx: Den svære email">
+    <label class="f-lab" for="pfCat">Kategori</label>
+    <select class="f-sel" id="pfCat"></select>
+    <div class="new-cat-inline" id="pfNewCatRow">
+      <input class="f-in" id="pfNewCatName" type="text" maxlength="40" placeholder="Navn på ny kategori">
+    </div>
+    <label class="f-lab" for="pfText">Prompt</label>
+    <textarea class="f-ta" id="pfText" maxlength="4000" placeholder="Skriv din prompt her …"></textarea>
+    <p class="f-hint">Tip: Skriv en kantet parentes som <b>[modtager]</b> eller <b>[indsæt tekst]</b> — så bliver det et felt, du udfylder hver gang du kopierer prompten.</p>
+    <div class="ph-chips" id="pfChips"></div>
+    <div class="m-foot">
+      <button class="btn-ghost" data-close type="button">Annullér</button>
+      <button class="btn-gold btn-gold-sm" id="pfSave" type="button">Gem prompt</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: udfyld & kopiér ── -->
+<div class="mbg" id="mFill" role="dialog" aria-modal="true" aria-labelledby="mFillTitle">
+  <div class="mcard">
+    <button class="m-x" data-close aria-label="Luk"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="mFillTitle">Udfyld prompten</h2>
+    <div id="fillFields"></div>
+    <button class="prev-toggle" id="fillPrevToggle" type="button">
+      <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg><span>Vis preview af færdig prompt</span>
+    </button>
+    <div class="fill-prev" id="fillPrev"></div>
+    <div class="m-foot">
+      <button class="btn-ghost left" id="fillCopyRaw" type="button">Kopiér uden at udfylde</button>
+      <button class="btn-gold btn-gold-sm" id="fillCopy" type="button">Kopiér udfyldt prompt</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: kategori (ny/omdøb + farve) ── -->
+<div class="mbg" id="mCat" role="dialog" aria-modal="true" aria-labelledby="mCatTitle">
+  <div class="mcard">
+    <button class="m-x" data-close aria-label="Luk"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="mCatTitle">Ny kategori</h2>
+    <label class="f-lab" for="cfName">Navn</label>
+    <input class="f-in" id="cfName" type="text" maxlength="40" placeholder="Fx: Arbejde, Mails, Idéer …">
+    <label class="f-lab">Farve</label>
+    <div class="swatches" id="cfSwatches"></div>
+    <div class="m-foot">
+      <button class="btn-ghost" data-close type="button">Annullér</button>
+      <button class="btn-gold btn-gold-sm" id="cfSave" type="button">Gem kategori</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Modal: bekræft ── -->
+<div class="mbg" id="mConfirm" role="dialog" aria-modal="true" aria-labelledby="mConfirmTitle">
+  <div class="mcard">
+    <button class="m-x" data-close aria-label="Luk"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h2 id="mConfirmTitle">Er du sikker?</h2>
+    <p class="confirm-txt" id="confirmTxt"></p>
+    <div class="m-foot">
+      <button class="btn-ghost" data-close type="button">Annullér</button>
+      <button class="btn-danger" id="confirmGo" type="button">Slet</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <!-- ── Footer ── -->
 <footer class="footer">
   <a class="logo" href="platform.html">
@@ -347,7 +585,7 @@ body.state-in .app{display:block}
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
 import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
-import { getFirestore, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import { getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, collection, getDocs, writeBatch, increment } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 const firebaseConfig = {
   apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
@@ -384,14 +622,6 @@ document.querySelectorAll('[data-goto]').forEach(btn=>{
 
 /* ── Tællere ───────────────────────────────────────────────── */
 const UNLOCK_CONFIG_COUNT = 3; /* fastlægges endeligt i fase 4 */
-function readLocalPrompts(){
-  try{
-    const raw = localStorage.getItem('learnai_prompt_library_v2');
-    if(!raw) return 0;
-    const arr = JSON.parse(raw);
-    return Array.isArray(arr) ? arr.length : 0;
-  }catch(e){ return 0; }
-}
 function countUp(el, target){
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(reduce || target === 0){ el.textContent = target; return; }
@@ -424,9 +654,680 @@ onAuthStateChanged(auth, async (user) => {
   const completedModules = Array.isArray(data.completedModules) ? data.completedModules : [];
   document.body.className = 'state-in';
   renderRoute();
-  countUp($('countPrompts'), readLocalPrompts());
   countUp($('countFiler'), completedModules.length);
   countUp($('countUnlocks'), UNLOCK_CONFIG_COUNT);
+  initLibrary(user, data); /* asynkron — opdaterer selv prompt-tælleren */
+});
+
+/* ═══════════════════════════════════════════════════════════
+   PROMPT-BIBLIOTEK (fase 2) · Firestore: users/{uid}/prompts
+   Kategorier gemmes på brugerens dokument: promptCategories
+   ═══════════════════════════════════════════════════════════ */
+const CAT_COLORS = ['#b8902a','#2f6a4a','#8a3b2e','#2e4a6b','#5d3a5e','#b26a1e','#2f6060','#3d4a44'];
+const LS_KEY = 'learnai_prompt_library_v2';
+const COLLAPSE_KEY = 'mb_collapsed_v1';
+
+let UID = null;
+let cats = [];        /* [{id,name,color}] — rækkefølge = visningsrækkefølge */
+let prompts = [];     /* [{id,title,text,catId,starred,copyCount,createdAt,source}] */
+let searchQ = '';
+let editingId = null;     /* prompt-id under redigering */
+let editingCatId = null;  /* kategori-id under redigering */
+let fillCtx = null;       /* {prompt, btn} */
+let confirmCb = null;
+let collapsed = new Set();
+try{ collapsed = new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '[]')); }catch(e){}
+
+const userRef = () => doc(db, 'users', UID);
+const pRef = (id) => doc(db, 'users', UID, 'prompts', id);
+
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function genId(pre){ return pre + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function phFind(text){
+  const re = /\[([^\[\]\n]{1,80})\]/g, found = [], seen = new Set();
+  let m;
+  while((m = re.exec(text)) !== null){
+    const tag = m[1].trim(), key = tag.toLowerCase();
+    if(tag && !seen.has(key)){ seen.add(key); found.push({ tag, raw: m[0] }); }
+  }
+  return found;
+}
+function prevHtml(text){
+  return esc(text).replace(/\[([^\[\]\n]{1,80})\]/g, '<span class="ph">[$1]</span>');
+}
+let toastT = null;
+function showToast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=> t.classList.remove('show'), 2600);
+}
+function copyText(text, ok){
+  const done = () => ok && ok();
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done).catch(()=> legacyCopy(text, done));
+  } else legacyCopy(text, done);
+}
+function legacyCopy(text, done){
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  let okd = false;
+  try{ okd = document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+  if(okd) done(); else showToast('Kopiering fejlede — markér teksten manuelt');
+}
+
+/* ── Kategorier ────────────────────────────────────────────── */
+function catById(id){ return cats.find(c => c.id === id) || null; }
+function nextColor(){
+  const used = new Set(cats.map(c => c.color));
+  return CAT_COLORS.find(c => !used.has(c)) || CAT_COLORS[cats.length % CAT_COLORS.length];
+}
+function ensureCat(name){
+  const found = cats.find(c => c.name.toLowerCase() === name.toLowerCase());
+  if(found) return found;
+  const preset = { 'c1':'#c2a038', 'c2':'#c9a040' }[name.toLowerCase()];
+  const cat = { id: genId('c'), name, color: preset || nextColor(), _new: true };
+  cats.push(cat);
+  return cat;
+}
+async function persistCats(){
+  const clean = cats.map(c => ({ id: c.id, name: c.name, color: c.color }));
+  try{ await setDoc(userRef(), { promptCategories: clean }, { merge: true }); }
+  catch(e){ showToast('Kunne ikke gemme kategori-ændringen — tjek forbindelsen'); }
+}
+
+/* ── Init + migration ──────────────────────────────────────── */
+async function initLibrary(user, data){
+  UID = user.uid;
+  const updates = {};
+  if(Array.isArray(data.promptCategories) && data.promptCategories.length){
+    cats = data.promptCategories.map(c => ({ id: c.id, name: c.name, color: c.color }));
+  } else {
+    cats = [{ id: genId('c'), name: 'Egne prompts', color: '#2f6a4a' }];
+    updates.promptCategories = cats.map(c => ({ id: c.id, name: c.name, color: c.color }));
+  }
+  if(!data.libraryOpened) updates.libraryOpened = true; /* fase 2b: kursussider skifter knaptekst på dette flag */
+
+  try{
+    const qs = await getDocs(collection(db, 'users', UID, 'prompts'));
+    prompts = qs.docs.map(d => ({ id: d.id, ...d.data() }));
+  }catch(e){
+    $('pSkel').hidden = true;
+    $('pError').hidden = false;
+    countUp($('countPrompts'), 0);
+    return;
+  }
+  await migrateLocal();
+  if(Object.keys(updates).length){
+    try{ await setDoc(userRef(), updates, { merge: true }); }catch(e){}
+  }
+  $('pSkel').hidden = true;
+  countUp($('countPrompts'), prompts.length);
+  renderAll();
+}
+
+async function migrateLocal(){
+  let raw = null;
+  try{ raw = localStorage.getItem(LS_KEY); }catch(e){ return; }
+  if(!raw) return;
+  let arr;
+  try{ arr = JSON.parse(raw); }catch(e){ return; }
+  if(!Array.isArray(arr) || !arr.length) return;
+  const have = new Set(prompts.map(p => p.id));
+  const todo = arr.filter(o => o && o.id && o.title && o.text && !have.has('mig_' + o.id));
+  if(!todo.length) return;
+  const batch = writeBatch(db);
+  const addedIds = [];
+  let catsChanged = false;
+  todo.forEach((o, i) => {
+    const catName = (!o.category || o.category === 'Egne') ? 'Egne prompts' : String(o.category);
+    const cat = ensureCat(catName);
+    if(cat._new){ catsChanged = true; delete cat._new; }
+    const p = {
+      title: String(o.title).slice(0, 80),
+      text: String(o.text).slice(0, 4000),
+      catId: cat.id,
+      starred: !!o.fav,
+      copyCount: 0,
+      createdAt: Date.now() + i,
+      source: o.source ? String(o.source) : ''
+    };
+    const id = 'mig_' + o.id;
+    batch.set(pRef(id), p);
+    prompts.push({ id, ...p });
+    addedIds.push(id);
+  });
+  try{
+    await batch.commit();
+    if(catsChanged) await persistCats();
+  }catch(e){
+    const bad = new Set(addedIds);
+    prompts = prompts.filter(p => !bad.has(p.id));
+  }
+}
+
+/* ── Rendering ─────────────────────────────────────────────── */
+function sortPrompts(list){
+  return list.slice().sort((a, b) =>
+    (b.starred - a.starred) || ((b.copyCount || 0) - (a.copyCount || 0)) || ((b.createdAt || 0) - (a.createdAt || 0)));
+}
+function matches(p){
+  if(!searchQ) return true;
+  const q = searchQ.toLowerCase();
+  return p.title.toLowerCase().includes(q) || p.text.toLowerCase().includes(q);
+}
+function cardHtml(p){
+  const meta = [];
+  if(p.source) meta.push('<span class="m-src">' + esc(p.source) + '</span>');
+  if(p.copyCount > 0) meta.push('<span>Brugt ' + p.copyCount + (p.copyCount === 1 ? ' gang' : ' gange') + '</span>');
+  return '<article class="p-card" data-pid="' + esc(p.id) + '">' +
+    '<button class="p-star' + (p.starred ? ' on' : '') + '" data-act="star" type="button" aria-label="' + (p.starred ? 'Fjern stjerne' : 'Giv stjerne') + '" aria-pressed="' + (p.starred ? 'true' : 'false') + '">' +
+      '<svg viewBox="0 0 24 24"><path d="M12 2.7l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.5l6.5-.9z"/></svg>' +
+    '</button>' +
+    '<div class="p-main"><h3>' + esc(p.title) + '</h3>' +
+      '<p class="p-prev">' + prevHtml(p.text) + '</p>' +
+      (meta.length ? '<div class="p-meta">' + meta.join('') + '</div>' : '') +
+    '</div>' +
+    '<div class="p-acts">' +
+      '<button class="p-copy" data-act="copy" type="button"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>Kopiér</button>' +
+      '<button class="p-kebab" data-act="menu" type="button" aria-label="Flere handlinger"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg></button>' +
+    '</div></article>';
+}
+function sectionHtml(cat, list, opts){
+  const o = opts || {};
+  const isCollapsed = !o.fav && collapsed.has(cat.id) && !searchQ;
+  let body;
+  if(list.length){
+    body = list.map(cardHtml).join('');
+  } else {
+    body = '<div class="cat-empty">Ingen prompts her endnu — <button type="button" data-act="add-here">skriv én nu</button></div>';
+  }
+  const head = o.fav
+    ? '<svg class="fav-star-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.7l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.5l6.5-.9z"/></svg><h2>Favoritter</h2>'
+    : '<button class="cat-drag" type="button" aria-label="Træk for at flytte kategorien" title="Træk for at flytte">' +
+        '<svg viewBox="0 0 24 24"><path d="M9 5h.01M15 5h.01M9 12h.01M15 12h.01M9 19h.01M15 19h.01"/></svg></button>' +
+      '<span class="cat-dot" aria-hidden="true"></span><h2>' + esc(cat.name) + '</h2>';
+  return '<section class="cat-sec' + (o.fav ? ' fav-sec' : '') + (isCollapsed ? ' collapsed' : '') + '" data-cat="' + esc(cat.id) + '" style="--cat-c:' + esc(cat.color) + '">' +
+    '<header class="cat-head">' + head +
+      '<span class="cat-count">' + list.length + '</span>' +
+      '<span class="cat-head-r">' +
+        (o.fav ? '' : '<button class="cat-ibtn" data-act="cat-menu" type="button" aria-label="Kategori-indstillinger"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>') +
+        '<button class="cat-ibtn cat-toggle" data-act="collapse" type="button" aria-label="Fold sammen/ud" aria-expanded="' + (isCollapsed ? 'false' : 'true') + '"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>' +
+      '</span>' +
+    '</header>' +
+    '<div class="cat-body">' + body + '</div></section>';
+}
+function renderAll(){
+  const wrap = $('catList');
+  const vis = prompts.filter(matches);
+  $('pOnboard').hidden = !(prompts.length === 0 && !searchQ);
+  let html = '';
+  const starred = sortPrompts(vis.filter(p => p.starred));
+  if(starred.length){
+    html += sectionHtml({ id: '__fav__', name: 'Favoritter', color: '#c99a1f' }, starred, { fav: true });
+  }
+  cats.forEach(cat => {
+    const list = sortPrompts(vis.filter(p => p.catId === cat.id));
+    if(searchQ && !list.length) return;
+    html += sectionHtml(cat, list);
+  });
+  const catIds = new Set(cats.map(c => c.id));
+  const orphans = sortPrompts(vis.filter(p => !catIds.has(p.catId)));
+  if(orphans.length){
+    html += sectionHtml({ id: '__uncat__', name: 'Ukategoriseret', color: '#8aa090' }, orphans);
+  }
+  if(searchQ && !vis.length){
+    html = '<div class="cat-empty" style="padding:34px">Ingen prompts matcher &raquo;' + esc(searchQ) + '&laquo;</div>';
+  }
+  wrap.innerHTML = html;
+}
+
+/* ── Popover-menuer ────────────────────────────────────────── */
+let popEl = null;
+function closePop(){
+  if(popEl){ popEl.remove(); popEl = null; }
+}
+function openPop(anchor, items){
+  closePop();
+  popEl = document.createElement('div');
+  popEl.className = 'pop';
+  popEl.innerHTML = items.map(it => it === 'hr' ? '<hr>' :
+    '<button type="button" data-pop="' + it.k + '"' + (it.danger ? ' class="danger"' : '') + '>' + it.icon + it.label + '</button>').join('');
+  document.body.appendChild(popEl);
+  const r = anchor.getBoundingClientRect();
+  const pw = 190;
+  let left = r.right + window.scrollX - pw;
+  if(left < 8) left = 8;
+  popEl.style.left = left + 'px';
+  popEl.style.top = (r.bottom + window.scrollY + 6) + 'px';
+  requestAnimationFrame(()=> popEl && popEl.classList.add('open'));
+  return popEl;
+}
+document.addEventListener('click', (e)=>{
+  if(popEl && !popEl.contains(e.target)) closePop();
+}, true);
+window.addEventListener('scroll', closePop, { passive: true });
+
+const I = {
+  pen: '<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4z"/></svg>',
+  dup: '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>',
+  trash: '<svg viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M6 6l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14"/></svg>',
+  up: '<svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>',
+  down: '<svg viewBox="0 0 24 24"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>'
+};
+
+/* ── Modal-hjælpere ────────────────────────────────────────── */
+function openModal(id){ $(id).classList.add('show'); }
+function closeModal(id){ $(id).classList.remove('show'); }
+document.querySelectorAll('.mbg').forEach(m => {
+  m.addEventListener('click', (e)=>{
+    if(e.target === m || e.target.closest('[data-close]')) m.classList.remove('show');
+  });
+});
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'Escape'){
+    closePop();
+    document.querySelectorAll('.mbg.show').forEach(m => m.classList.remove('show'));
+  }
+});
+
+/* ── Prompt-editor ─────────────────────────────────────────── */
+function fillCatSelect(selectedId){
+  const sel = $('pfCat');
+  sel.innerHTML = cats.map(c =>
+    '<option value="' + esc(c.id) + '"' + (c.id === selectedId ? ' selected' : '') + '>' + esc(c.name) + '</option>'
+  ).join('') + '<option value="__new__">＋ Opret ny kategori …</option>';
+  $('pfNewCatRow').classList.remove('show');
+}
+function openEditor(promptId, presetCatId){
+  editingId = promptId || null;
+  const p = promptId ? prompts.find(x => x.id === promptId) : null;
+  $('mPromptTitle').textContent = p ? 'Redigér prompt' : 'Ny prompt';
+  $('pfSave').textContent = p ? 'Gem ændringer' : 'Gem prompt';
+  $('pfTitle').value = p ? p.title : '';
+  $('pfText').value = p ? p.text : '';
+  fillCatSelect(p ? p.catId : (presetCatId || (cats[0] && cats[0].id)));
+  $('pfNewCatName').value = '';
+  updateChips();
+  openModal('mPrompt');
+  setTimeout(()=> $('pfTitle').focus(), 120);
+}
+function updateChips(){
+  const phs = phFind($('pfText').value);
+  $('pfChips').innerHTML = phs.map(ph => '<span>' + esc(ph.raw) + '</span>').join('');
+}
+$('pfText').addEventListener('input', updateChips);
+$('pfCat').addEventListener('change', ()=>{
+  const isNew = $('pfCat').value === '__new__';
+  $('pfNewCatRow').classList.toggle('show', isNew);
+  if(isNew) setTimeout(()=> $('pfNewCatName').focus(), 60);
+});
+$('pfSave').addEventListener('click', async ()=>{
+  const title = $('pfTitle').value.trim();
+  const text = $('pfText').value.trim();
+  if(!title){ showToast('Giv prompten en titel'); $('pfTitle').focus(); return; }
+  if(!text){ showToast('Skriv selve prompten'); $('pfText').focus(); return; }
+  let catId = $('pfCat').value;
+  let newCatMade = false;
+  if(catId === '__new__'){
+    const name = $('pfNewCatName').value.trim();
+    if(!name){ showToast('Giv den nye kategori et navn'); $('pfNewCatName').focus(); return; }
+    const cat = ensureCat(name);
+    if(cat._new){ delete cat._new; newCatMade = true; }
+    catId = cat.id;
+  }
+  const btn = $('pfSave');
+  btn.disabled = true;
+  try{
+    if(editingId){
+      const p = prompts.find(x => x.id === editingId);
+      Object.assign(p, { title, text, catId });
+      await updateDoc(pRef(editingId), { title, text, catId });
+      showToast('Prompt opdateret ✓');
+    } else {
+      const id = genId('p');
+      const p = { title, text, catId, starred: false, copyCount: 0, createdAt: Date.now(), source: '' };
+      prompts.push({ id, ...p });
+      await setDoc(pRef(id), p);
+      showToast('Prompt gemt i dit bibliotek ✓');
+    }
+    if(newCatMade) await persistCats();
+    countUp($('countPrompts'), prompts.length);
+    closeModal('mPrompt');
+    renderAll();
+    const el = document.querySelector('.p-card[data-pid]');
+    if(el && !editingId) el.classList.add('just-in');
+  }catch(e){
+    showToast('Kunne ikke gemme — tjek forbindelsen');
+  }finally{
+    btn.disabled = false;
+  }
+});
+
+/* ── Kategori-modal (ny/omdøb + farve) ─────────────────────── */
+let cfColor = CAT_COLORS[0];
+function renderSwatches(){
+  $('cfSwatches').innerHTML = CAT_COLORS.map(c =>
+    '<button type="button" class="sw' + (c === cfColor ? ' sel' : '') + '" style="--sw:' + c + '" data-c="' + c + '" aria-label="Vælg farve"></button>'
+  ).join('');
+}
+$('cfSwatches').addEventListener('click', (e)=>{
+  const b = e.target.closest('.sw');
+  if(!b) return;
+  cfColor = b.dataset.c;
+  renderSwatches();
+});
+function openCatModal(catId){
+  editingCatId = catId || null;
+  const c = catId ? catById(catId) : null;
+  $('mCatTitle').textContent = c ? 'Omdøb kategori' : 'Ny kategori';
+  $('cfSave').textContent = c ? 'Gem ændringer' : 'Gem kategori';
+  $('cfName').value = c ? c.name : '';
+  cfColor = c ? c.color : nextColor();
+  renderSwatches();
+  openModal('mCat');
+  setTimeout(()=> $('cfName').focus(), 120);
+}
+$('cfSave').addEventListener('click', async ()=>{
+  const name = $('cfName').value.trim();
+  if(!name){ showToast('Giv kategorien et navn'); $('cfName').focus(); return; }
+  const dupe = cats.find(c => c.name.toLowerCase() === name.toLowerCase() && c.id !== editingCatId);
+  if(dupe){ showToast('Du har allerede en kategori med det navn'); return; }
+  if(editingCatId){
+    const c = catById(editingCatId);
+    c.name = name; c.color = cfColor;
+  } else {
+    cats.push({ id: genId('c'), name, color: cfColor });
+  }
+  closeModal('mCat');
+  renderAll();
+  await persistCats();
+  showToast(editingCatId ? 'Kategori opdateret ✓' : 'Kategori oprettet ✓');
+});
+
+/* ── Bekræft-modal ─────────────────────────────────────────── */
+function askConfirm(title, txt, btnLabel, cb){
+  $('mConfirmTitle').textContent = title;
+  $('confirmTxt').textContent = txt;
+  $('confirmGo').textContent = btnLabel;
+  confirmCb = cb;
+  openModal('mConfirm');
+}
+$('confirmGo').addEventListener('click', ()=>{
+  closeModal('mConfirm');
+  if(confirmCb){ const cb = confirmCb; confirmCb = null; cb(); }
+});
+
+/* ── Udfyld & kopiér ───────────────────────────────────────── */
+function startCopy(p, btn){
+  const phs = phFind(p.text);
+  if(!phs.length){
+    copyText(p.text, ()=>{ markCopied(btn); bumpCount(p); showToast('Prompt kopieret — indsæt med Ctrl+V ✓'); });
+    return;
+  }
+  fillCtx = { prompt: p, btn };
+  $('mFillTitle').textContent = 'Udfyld: ' + p.title;
+  $('fillFields').innerHTML = phs.map((ph, i) => {
+    const long = /tekst|email|emne|beskriv|kontekst|baggrund|indhold|udkast|opgave|situation|tråd/i.test(ph.tag);
+    const cap = ph.tag.charAt(0).toUpperCase() + ph.tag.slice(1);
+    return '<label class="f-lab" for="ff' + i + '">' + esc(cap) + '</label>' +
+      (long
+        ? '<textarea class="f-ta" style="min-height:80px" id="ff' + i + '" data-tag="' + esc(ph.raw) + '" placeholder="Skriv her …"></textarea>'
+        : '<input class="f-in" id="ff' + i + '" type="text" data-tag="' + esc(ph.raw) + '" placeholder="Skriv her …">');
+  }).join('');
+  $('fillPrev').classList.remove('show');
+  const tg = $('fillPrevToggle');
+  tg.classList.remove('open');
+  tg.querySelector('span').textContent = 'Vis preview af færdig prompt';
+  updateFillPrev();
+  openModal('mFill');
+  setTimeout(()=>{ const f = $('fillFields').querySelector('input,textarea'); if(f) f.focus(); }, 120);
+}
+function builtText(){
+  if(!fillCtx) return '';
+  let text = fillCtx.prompt.text;
+  $('fillFields').querySelectorAll('[data-tag]').forEach(inp => {
+    const v = inp.value.trim();
+    if(v) text = text.split(inp.dataset.tag).join(v);
+  });
+  return text;
+}
+function updateFillPrev(){
+  if(!fillCtx) return;
+  let text = fillCtx.prompt.text;
+  $('fillFields').querySelectorAll('[data-tag]').forEach(inp => {
+    const v = inp.value.trim();
+    if(v) text = text.split(inp.dataset.tag).join('\u0001' + v + '\u0002');
+  });
+  let h = esc(text)
+    .replace(/\u0001/g, '<span class="ph-f">').replace(/\u0002/g, '</span>')
+    .replace(/\[([^\[\]\n]{1,80})\]/g, '<span class="ph-e">[$1]</span>');
+  $('fillPrev').innerHTML = h;
+}
+$('fillFields').addEventListener('input', updateFillPrev);
+$('fillPrevToggle').addEventListener('click', ()=>{
+  const open = $('fillPrev').classList.toggle('show');
+  $('fillPrevToggle').classList.toggle('open', open);
+  $('fillPrevToggle').querySelector('span').textContent = open ? 'Skjul preview' : 'Vis preview af færdig prompt';
+});
+$('fillCopy').addEventListener('click', ()=>{
+  if(!fillCtx) return;
+  const { prompt, btn } = fillCtx;
+  copyText(builtText(), ()=>{
+    markCopied(btn); bumpCount(prompt);
+    closeModal('mFill'); fillCtx = null;
+    showToast('Færdig prompt kopieret — indsæt med Ctrl+V ✓');
+  });
+});
+$('fillCopyRaw').addEventListener('click', ()=>{
+  if(!fillCtx) return;
+  const { prompt, btn } = fillCtx;
+  copyText(prompt.text, ()=>{
+    markCopied(btn); bumpCount(prompt);
+    closeModal('mFill'); fillCtx = null;
+    showToast('Prompt kopieret — indsæt med Ctrl+V ✓');
+  });
+});
+function markCopied(btn){
+  if(!btn || !btn.isConnected) return;
+  btn.classList.add('ok');
+  const old = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>Kopieret';
+  setTimeout(()=>{ if(btn.isConnected){ btn.classList.remove('ok'); btn.innerHTML = old; } }, 1600);
+}
+function bumpCount(p){
+  p.copyCount = (p.copyCount || 0) + 1;
+  updateDoc(pRef(p.id), { copyCount: increment(1) }).catch(()=>{});
+  /* opdater meta i DOM uden re-render, så kortet ikke hopper under hånden */
+  const card = document.querySelector('.p-card[data-pid="' + CSS.escape(p.id) + '"]');
+  if(card){
+    let meta = card.querySelector('.p-meta');
+    const label = 'Brugt ' + p.copyCount + (p.copyCount === 1 ? ' gang' : ' gange');
+    if(!meta){
+      meta = document.createElement('div');
+      meta.className = 'p-meta';
+      card.querySelector('.p-main').appendChild(meta);
+    }
+    let cSpan = meta.querySelector('[data-cnt]');
+    if(!cSpan){
+      cSpan = document.createElement('span');
+      cSpan.setAttribute('data-cnt', '1');
+      meta.appendChild(cSpan);
+    }
+    cSpan.textContent = label;
+  }
+}
+
+/* ── Interaktion i kategorilisten (delegation) ─────────────── */
+$('catList').addEventListener('click', async (e)=>{
+  const actEl = e.target.closest('[data-act]');
+  if(!actEl) return;
+  const act = actEl.dataset.act;
+  const sec = actEl.closest('.cat-sec');
+  const catId = sec ? sec.dataset.cat : null;
+  const card = actEl.closest('.p-card');
+  const p = card ? prompts.find(x => x.id === card.dataset.pid) : null;
+
+  if(act === 'collapse' && catId && catId !== '__fav__'){
+    if(collapsed.has(catId)) collapsed.delete(catId); else collapsed.add(catId);
+    try{ localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...collapsed])); }catch(err){}
+    sec.classList.toggle('collapsed');
+    actEl.setAttribute('aria-expanded', sec.classList.contains('collapsed') ? 'false' : 'true');
+    return;
+  }
+  if(act === 'add-here'){
+    openEditor(null, catId === '__uncat__' ? null : catId);
+    return;
+  }
+  if(!p && act !== 'cat-menu') return;
+
+  if(act === 'star'){
+    p.starred = !p.starred;
+    actEl.classList.toggle('on', p.starred);
+    actEl.setAttribute('aria-pressed', p.starred ? 'true' : 'false');
+    actEl.classList.add('pulse');
+    updateDoc(pRef(p.id), { starred: p.starred }).catch(()=> showToast('Kunne ikke gemme — tjek forbindelsen'));
+    showToast(p.starred ? '⭐ Tilføjet til favoritter' : 'Fjernet fra favoritter');
+    setTimeout(renderAll, 430); /* lad pulsen køre, opdater derefter Favoritter-sektionen */
+    return;
+  }
+  if(act === 'copy'){ startCopy(p, actEl); return; }
+  if(act === 'menu'){
+    const pop = openPop(actEl, [
+      { k: 'edit', label: 'Redigér', icon: I.pen },
+      { k: 'dup', label: 'Dublér', icon: I.dup },
+      'hr',
+      { k: 'del', label: 'Slet prompt', icon: I.trash, danger: true }
+    ]);
+    pop.addEventListener('click', async (ev)=>{
+      const b = ev.target.closest('[data-pop]');
+      if(!b) return;
+      closePop();
+      if(b.dataset.pop === 'edit') openEditor(p.id);
+      if(b.dataset.pop === 'dup'){
+        const id = genId('p');
+        const np = { title: (p.title + ' (kopi)').slice(0, 80), text: p.text, catId: p.catId, starred: false, copyCount: 0, createdAt: Date.now(), source: p.source || '' };
+        prompts.push({ id, ...np });
+        try{ await setDoc(pRef(id), np); showToast('Prompt dubleret — redigér din nye version ✓'); }
+        catch(err){ prompts = prompts.filter(x => x.id !== id); showToast('Kunne ikke dublere — tjek forbindelsen'); }
+        countUp($('countPrompts'), prompts.length);
+        renderAll();
+      }
+      if(b.dataset.pop === 'del'){
+        askConfirm('Slet prompt?', '»' + p.title + '« slettes permanent fra dit bibliotek.', 'Slet prompt', async ()=>{
+          prompts = prompts.filter(x => x.id !== p.id);
+          renderAll();
+          countUp($('countPrompts'), prompts.length);
+          try{ await deleteDoc(pRef(p.id)); showToast('Prompt slettet'); }
+          catch(err){ showToast('Kunne ikke slette — tjek forbindelsen'); }
+        });
+      }
+    });
+    return;
+  }
+  if(act === 'cat-menu' && catId && catId !== '__uncat__'){
+    const idx = cats.findIndex(c => c.id === catId);
+    const items = [{ k: 'rename', label: 'Omdøb & farve', icon: I.pen }];
+    if(idx > 0) items.push({ k: 'mvup', label: 'Flyt op', icon: I.up });
+    if(idx < cats.length - 1) items.push({ k: 'mvdn', label: 'Flyt ned', icon: I.down });
+    items.push('hr', { k: 'delcat', label: 'Slet kategori', icon: I.trash, danger: true });
+    const pop = openPop(actEl, items);
+    pop.addEventListener('click', async (ev)=>{
+      const b = ev.target.closest('[data-pop]');
+      if(!b) return;
+      closePop();
+      const k = b.dataset.pop;
+      if(k === 'rename') openCatModal(catId);
+      if(k === 'mvup' || k === 'mvdn'){
+        const j = k === 'mvup' ? idx - 1 : idx + 1;
+        [cats[idx], cats[j]] = [cats[j], cats[idx]];
+        renderAll();
+        await persistCats();
+      }
+      if(k === 'delcat'){
+        if(cats.length === 1){ showToast('Du skal have mindst én kategori'); return; }
+        const inCat = prompts.filter(x => x.catId === catId);
+        const target = cats.find(c => c.id !== catId && c.name.toLowerCase() === 'egne prompts') || cats.find(c => c.id !== catId);
+        const cat = catById(catId);
+        const txt = inCat.length
+          ? '»' + cat.name + '« slettes. ' + inCat.length + (inCat.length === 1 ? ' prompt flyttes' : ' prompts flyttes') + ' til »' + target.name + '«.'
+          : '»' + cat.name + '« slettes. Kategorien er tom, så ingen prompts påvirkes.';
+        askConfirm('Slet kategori?', txt, 'Slet kategori', async ()=>{
+          cats = cats.filter(c => c.id !== catId);
+          try{
+            if(inCat.length){
+              const batch = writeBatch(db);
+              inCat.forEach(x => { x.catId = target.id; batch.update(pRef(x.id), { catId: target.id }); });
+              await batch.commit();
+            }
+            await persistCats();
+            showToast('Kategori slettet');
+          }catch(err){ showToast('Noget gik galt — genindlæs siden'); }
+          renderAll();
+        });
+      }
+    });
+  }
+});
+
+/* ── Træk-og-slip af kategorier ────────────────────────────── */
+let dragSec = null;
+$('catList').addEventListener('pointerdown', (e)=>{
+  const handle = e.target.closest('.cat-drag');
+  if(!handle) return;
+  const sec = handle.closest('.cat-sec');
+  sec.setAttribute('draggable', 'true');
+});
+$('catList').addEventListener('dragstart', (e)=>{
+  const sec = e.target.closest('.cat-sec');
+  if(!sec || sec.getAttribute('draggable') !== 'true'){ e.preventDefault(); return; }
+  dragSec = sec;
+  sec.classList.add('dragging');
+  e.dataTransfer.effectAllowed = 'move';
+  try{ e.dataTransfer.setData('text/plain', sec.dataset.cat); }catch(err){}
+});
+$('catList').addEventListener('dragover', (e)=>{
+  if(!dragSec) return;
+  e.preventDefault();
+  const over = e.target.closest('.cat-sec');
+  if(!over || over === dragSec || over.classList.contains('fav-sec')) return;
+  over.classList.add('drag-active');
+  const r = over.getBoundingClientRect();
+  if(e.clientY < r.top + r.height / 2){
+    over.parentNode.insertBefore(dragSec, over);
+  } else {
+    over.parentNode.insertBefore(dragSec, over.nextSibling);
+  }
+});
+$('catList').addEventListener('dragleave', (e)=>{
+  const over = e.target.closest('.cat-sec');
+  if(over) over.classList.remove('drag-active');
+});
+$('catList').addEventListener('drop', (e)=>{ e.preventDefault(); });
+$('catList').addEventListener('dragend', async ()=>{
+  if(!dragSec) return;
+  dragSec.classList.remove('dragging');
+  dragSec.removeAttribute('draggable');
+  document.querySelectorAll('.cat-sec.drag-active').forEach(s => s.classList.remove('drag-active'));
+  dragSec = null;
+  const order = [...document.querySelectorAll('#catList .cat-sec:not(.fav-sec)')]
+    .map(s => s.dataset.cat).filter(id => id !== '__uncat__');
+  cats.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
+  await persistCats();
+});
+
+/* ── Toolbar ───────────────────────────────────────────────── */
+$('btnNewPrompt').addEventListener('click', ()=> openEditor(null));
+$('btnNewCat').addEventListener('click', ()=> openCatModal(null));
+let searchT = null;
+$('pSearch').addEventListener('input', (e)=>{
+  clearTimeout(searchT);
+  searchT = setTimeout(()=>{ searchQ = e.target.value.trim(); renderAll(); }, 140);
 });
 
 /* ── 3D-tilt på kabinet-kort ───────────────────────────────── */
