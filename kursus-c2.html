@@ -1009,6 +1009,66 @@
 .intro-cta{color:var(--c-gold-ink)!important}
 /* ══ Rolig baggrund — fjern new-tech grid ══ */
 .scene-grid{display:none!important}
+
+/* ══ FASE 2B: Prompt-kort + kopiér-cinema + gem-toast (porteret fra kursus-c1.html — Leverance 1-facit) ══ */
+.prompt-block{position:relative;background:linear-gradient(160deg,#243830,#1c2b25);border:1px solid rgba(var(--c-gold-rgb),.24);border-radius:var(--r);padding:0;margin:18px 0;overflow:hidden;box-shadow:0 8px 28px rgba(32,49,42,.22),inset 0 1px 0 rgba(232,206,120,.07)}
+.prompt-block::before{content:'';position:absolute;top:0;bottom:0;left:0;width:3px;background:linear-gradient(180deg,var(--c-gold),var(--c-gold-deep));opacity:.85}
+.prompt-block-head{display:flex;align-items:center;justify-content:space-between;padding:13px 18px 13px 21px;border-bottom:1px solid rgba(232,206,120,.1)}
+.prompt-block-label{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c-gold-warm,#e8ce78)}
+.prompt-block-label::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--c-gold);box-shadow:0 0 10px rgba(var(--c-gold-rgb),.75);flex-shrink:0}
+.prompt-block-titlewrap{display:flex;flex-direction:column;gap:2px;min-width:0}
+.prompt-block-source{font-size:10.5px;font-weight:500;letter-spacing:.04em;text-transform:none;color:rgba(232,206,120,.55)}
+.prompt-block-actions{display:flex;gap:6px}
+.prompt-btn{padding:6px 13px;border-radius:8px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;cursor:pointer;border:1px solid;transition:all .25s cubic-bezier(.22,1,.36,1)}
+.prompt-btn.toggle{background:rgba(var(--c-gold-rgb),.12);border-color:rgba(var(--c-gold-rgb),.32);color:var(--c-gold-warm,#e8ce78)}
+.prompt-btn.toggle:hover{background:rgba(var(--c-gold-rgb),.22);transform:translateY(-1px)}
+.prompt-btn.copy{background:rgba(251,247,238,.07);border-color:rgba(251,247,238,.15);color:#d9d2bf}
+.prompt-btn.copy:hover{background:rgba(251,247,238,.15);color:#fbf7ee;transform:translateY(-1px)}
+.prompt-btn.save{background:rgba(var(--c-gold-rgb),.14);border-color:rgba(var(--c-gold-rgb),.38);color:var(--c-gold-warm,#e8ce78)}
+.prompt-btn.save:hover{background:rgba(var(--c-gold-rgb),.26);transform:translateY(-1px)}
+.prompt-btn.save.saved{background:rgba(52,211,153,.16);border-color:rgba(110,231,183,.4);color:#6EE7B7;cursor:default;pointer-events:none}
+.prompt-btn.save.busy{color:transparent;position:relative;pointer-events:none}
+.prompt-btn.save.busy::after{content:'';position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;width:13px;height:13px;border-radius:50%;border:2px solid rgba(232,206,120,.3);border-top-color:var(--c-gold-warm,#e8ce78);animation:saveSpin .5s linear infinite}
+@keyframes saveSpin{to{transform:rotate(360deg)}}
+@media(max-width:640px){.prompt-block-head{flex-wrap:wrap;gap:8px}.prompt-block-actions{flex-wrap:wrap}}
+.prompt-block-body{padding:0 20px 0 23px;font-family:'JetBrains Mono',monospace;font-size:13.5px;color:#e8e2d3;line-height:1.75;white-space:pre-wrap;max-height:0;overflow:hidden;opacity:0;transform:translateY(10px);transition:max-height .75s cubic-bezier(.22,1,.36,1),padding .75s cubic-bezier(.22,1,.36,1),opacity .6s ease .14s,transform .7s cubic-bezier(.22,1,.36,1) .14s}
+.prompt-block.open .prompt-block-body{max-height:600px;padding:20px 20px 22px 23px;opacity:1;transform:translateY(0)}
+.prompt-block:not(.open) .prompt-block-body{padding-top:0;padding-bottom:0;transition:max-height .45s cubic-bezier(.22,1,.36,1),padding .45s cubic-bezier(.22,1,.36,1),opacity .2s ease,transform .3s ease}
+@media(prefers-reduced-motion:reduce){.prompt-block-body,.prompt-block:not(.open) .prompt-block-body,.prompt-btn{transition:none;transform:none}}
+.copy-toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--green),#34D399);color:#fff;padding:12px 22px;border-radius:999px;font-size:14px;font-weight:600;z-index:1500;opacity:0;pointer-events:none;transition:all .3s cubic-bezier(.16,1,.3,1)}
+.copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.copy-cinema{position:fixed;top:0;left:0;right:0;bottom:0;display:grid;place-items:center;z-index:2100;pointer-events:none;opacity:0;visibility:hidden}
+.copy-cinema.play{opacity:1;visibility:visible}
+.cc-card{display:flex;flex-direction:column;align-items:center;gap:16px}
+@keyframes ccCardIn{from{opacity:0;transform:scale(.86) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes ccCardOut{from{opacity:1}to{opacity:0;transform:scale(.97) translateY(-8px)}}
+.copy-cinema.play .cc-card{animation:ccCardIn .5s cubic-bezier(.22,1,.36,1) both,ccCardOut .5s ease 1.65s both}
+.cc-medal{position:relative;width:104px;height:104px;border-radius:50%;background:linear-gradient(160deg,#fbf7ee,#f2ead8);border:1.5px solid rgba(var(--c-gold-rgb),.55);box-shadow:0 20px 55px rgba(32,49,42,.3),0 0 0 9px rgba(232,206,120,.14);display:grid;place-items:center;color:var(--c-gold-deep)}
+.cc-book{width:46px;height:46px;transition:opacity .35s ease}
+.copy-cinema.play .cc-book{animation:ccBookDim .3s ease .55s both}
+@keyframes ccBookDim{to{opacity:.22}}
+.cc-check{position:absolute;top:0;left:0;width:104px;height:104px}
+.cc-check-ring{stroke-dasharray:120;stroke-dashoffset:120}
+.copy-cinema.play .cc-check-ring{animation:ccDraw .5s cubic-bezier(.4,0,.2,1) .55s forwards}
+.cc-check-mark{stroke-dasharray:30;stroke-dashoffset:30}
+.copy-cinema.play .cc-check-mark{animation:ccDraw .35s cubic-bezier(.4,0,.2,1) .85s forwards}
+@keyframes ccDraw{to{stroke-dashoffset:0}}
+.cc-text{font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#20312a;background:linear-gradient(160deg,#fbf7ee,#f4ecdb);border:1px solid rgba(var(--c-gold-rgb),.4);border-radius:999px;padding:9px 22px;box-shadow:0 10px 30px rgba(32,49,42,.18);opacity:0}
+.copy-cinema.play .cc-text{animation:ccTextIn .45s cubic-bezier(.22,1,.36,1) .45s forwards}
+@keyframes ccTextIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.save-toast{position:fixed;bottom:34px;left:50%;transform:translateX(-50%) translateY(26px) scale(.95);display:flex;align-items:center;gap:12px;padding:11px 26px 11px 12px;border-radius:999px;background:linear-gradient(160deg,#fbf7ee,#f3ebd9);border:1.5px solid rgba(var(--c-gold-rgb),.55);box-shadow:0 16px 44px rgba(32,49,42,.25),0 0 0 7px rgba(232,206,120,.13);z-index:2050;opacity:0;pointer-events:none;transition:opacity .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.22,1,.36,1)}
+.save-toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+.save-toast-ic{width:36px;height:36px;border-radius:50%;background:linear-gradient(150deg,var(--c-gold),var(--c-gold-deep));display:grid;place-items:center;color:#fff;box-shadow:0 5px 14px rgba(var(--c-gold-rgb),.45);flex-shrink:0}
+.save-toast-ic svg{width:18px;height:18px}
+.save-toast-text{font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#20312a;white-space:nowrap}
+.save-toast-text b{color:var(--c-gold-deep);font-weight:700}
+@media(max-width:480px){.save-toast-text{white-space:normal;font-size:13px}}
+@media(prefers-reduced-motion:reduce){.copy-cinema.play .cc-card,.copy-cinema.play .cc-book,.copy-cinema.play .cc-check-ring,.copy-cinema.play .cc-check-mark,.copy-cinema.play .cc-text{animation-duration:.01s;animation-delay:0s}.save-toast{transition:opacity .2s ease}}
+/* Prompt-anatomi: 4 byggeklodser */
+.anatomy-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:18px 0 22px}
+.anatomy-item{background:var(--white,#fff);border:1px solid rgba(var(--c-gold-rgb),.28);border-left:3px solid var(--c-gold);border-radius:var(--r-sm);padding:14px 16px}
+.anatomy-item h5{font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c-gold-deep);margin:0 0 5px;display:flex;align-items:center;gap:7px}
+.anatomy-item p{font-size:13px;color:var(--ink-soft,#4a5a52);line-height:1.55;margin:0}
 </style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
@@ -1101,7 +1161,7 @@
       <a class="sb-mod" data-mod-id="m2" href="#"><span class="sb-mod-dot" id="sbDot2"></span><span class="sb-mod-text">Modul 2 · Tone-guide</span></a>
       <a class="sb-mod" data-mod-id="m3" href="#"><span class="sb-mod-dot" id="sbDot3"></span><span class="sb-mod-text">Modul 3 · Live email-udfordring</span></a>
       <a class="sb-mod" data-mod-id="m4" href="#"><span class="sb-mod-dot" id="sbDot4"></span><span class="sb-mod-text">Modul 4 · AI som sparringspartner</span></a>
-      <a class="sb-mod" data-mod-id="m5" href="#"><span class="sb-mod-dot" id="sbDot5"></span><span class="sb-mod-text">Modul 5 · Prompt-bibliotek</span></a>
+      <a class="sb-mod" data-mod-id="m5" href="#"><span class="sb-mod-dot" id="sbDot5"></span><span class="sb-mod-text">Modul 5 · Prompt-inspiration</span></a>
     </div>
 
     <div class="sb-connector-line"></div>
@@ -1525,8 +1585,8 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
     <div class="mod-header">
       <div class="mod-num">5</div>
       <div class="mod-text">
-        <div class="mod-title">Dit personlige prompt-bibliotek</div>
-        <div class="mod-sub">Et fast sted hvor alle dine bedste prompts bor — altid ét klik væk</div>
+        <div class="mod-title">Prompt-inspiration: 8 stærke prompts</div>
+        <div class="mod-sub">Se hvordan stærke prompts er bygget — kopiér dem, og gem dine favoritter til dit bibliotek</div>
       </div>
       <div class="mod-time">8 min</div>
       <div class="mod-done-badge">✓ Færdig</div>
@@ -1534,20 +1594,32 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
     </div>
     <div class="mod-body">
 
-      <p class="prose">Du har lært en masse prompts gennem C1 og C2. Men hvad nu hvis du om tre måneder skal bruge "den gode opfølgnings-prompt" — kan du så finde den igen? Det er præcist det <strong>dit personlige prompt-bibliotek</strong> løser.</p>
+      <p class="prose">Gennem C2 har du skrevet emails, ramt toner og trænet omskrivning. Nu samler vi det hele: her er <strong>8 gennemarbejdede prompts</strong>, der bruger alt det du har lært. Læs dem ikke bare — <strong>se hvordan de er bygget.</strong> Hver eneste af dem står på de samme fire byggeklodser:</p>
 
-      <!-- BIG OPEN BUTTON -->
-      <div class="lib-open-card">
-        <div class="lib-open-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></div>
-        <div class="lib-open-text">
-          <div class="lib-open-title">Dit prompt-bibliotek er klar</div>
-          <div class="lib-open-sub">10 udvalgte prompts fra C1 og C2 venter — plus plads til dine egne</div>
+      <!-- PROMPT-ANATOMI: de 4 byggeklodser -->
+      <div class="anatomy-grid">
+        <div class="anatomy-item">
+          <h5><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-6.5 8-6.5s8 2.5 8 6.5"/></svg> Rolle</h5>
+          <p>Hvem skal AI'en være? "Du er en professionel kommunikationsrådgiver" giver et markant skarpere svar end intet.</p>
         </div>
-        <button class="lib-open-btn" onclick="addC2AndOpen()" id="c2LibBtn">
-          Tilføj &amp; åbn bibliotek
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        </button>
+        <div class="anatomy-item">
+          <h5><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg> Tone</h5>
+          <p>Direkte men respektfuld? Venlig men tydelig? Én præcis tonebeskrivelse styrer hele svaret.</p>
+        </div>
+        <div class="anatomy-item">
+          <h5><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 8l8 8M16 8l-8 8"/></svg> Begrænsninger</h5>
+          <p>Maks-ord, "undgå passive konstruktioner", "ingen undskyldende formuleringer" — det du <em>ikke</em> vil have, er lige så vigtigt.</p>
+        </div>
+        <div class="anatomy-item">
+          <h5><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h14"/></svg> Format</h5>
+          <p>Nummererede punkter, "konkluder med ét næste skridt", original → ny version. Bestil formen — få struktur retur.</p>
+        </div>
       </div>
+
+      <p class="prose">Find byggeklodserne i kortene herunder. <strong>Kopiér</strong> de prompts du vil prøve med det samme — og tryk <strong>Gem</strong> på dine favoritter, så de lander i dit personlige bibliotek og er ét klik væk resten af forløbet.</p>
+
+      <!-- PROMPT-KORT: renderes fra C2_PROMPTS (c2p1–c2p8) -->
+      <div id="c2PromptCards"></div>
 
       <!-- PDF DOWNLOAD -->
       <div style="display:flex;align-items:center;gap:14px;padding:14px 18px;background:rgba(201,160,64,.05);border:1px solid rgba(201,160,64,.2);border-radius:14px;margin:12px 0 24px;">
@@ -1562,150 +1634,19 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
         </button>
       </div>
 
-      <!-- 3-STEP GUIDE -->
-      <h3 style="font-size:16px;font-weight:700;color:var(--ink);margin:24px 0 14px;">Sådan får du mest ud af dit bibliotek</h3>
-
-      <div class="guide-steps">
-
-        <!-- STEP 1 -->
-        <div class="guide-step">
-          <div class="guide-step-left">
-            <div class="guide-step-num">1</div>
-            <div class="guide-step-line"></div>
-          </div>
-          <div class="guide-step-right">
-            <div class="guide-step-title">Åbn dit bibliotek</div>
-            <div class="guide-step-text">Klik på den store grønne knap ovenfor. Biblioteket åbner i en ny fane med dine 10 prompts klar til brug.</div>
-            <div class="guide-step-visual visual-1">
-              <div class="visual-tab">
-                <div class="visual-dot red"></div>
-                <div class="visual-dot yellow"></div>
-                <div class="visual-dot green"></div>
-                <div class="visual-tab-text"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg> Mit Prompt-Bibliotek — Akademiet AI</div>
-              </div>
-              <div class="visual-content">
-                <div class="visual-prompt-row">
-                  <span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg></span> Den svære email
-                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
-                </div>
-                <div class="visual-prompt-row">
-                  <span>⏰</span> Opfølgning når ingen svarer
-                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
-                </div>
-                <div class="visual-prompt-row">
-                  <span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg></span> Beslutningshjælp
-                  <span class="visual-copy-mini"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 2 -->
-        <div class="guide-step">
-          <div class="guide-step-left">
-            <div class="guide-step-num">2</div>
-            <div class="guide-step-line"></div>
-          </div>
-          <div class="guide-step-right">
-            <div class="guide-step-title">Bookmark siden — så er den altid ét klik væk</div>
-            <div class="guide-step-text">Tryk <kbd>Ctrl</kbd> + <kbd>D</kbd> (Windows) eller <kbd>Cmd</kbd> + <kbd>D</kbd> (Mac) mens biblioteket er åbent. Browseren spørger om du vil gemme det som bogmærke — sig ja. Næste gang du skal bruge en prompt, åbner du bare bogmærket.</div>
-            <div class="guide-step-visual visual-2">
-              <div class="visual-bookmark-bar">
-                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 11l8-6 8 6"/><path d="M6 10v9h12v-9"/></svg> Hjem</span>
-                <span class="visual-bookmark-item active"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg> Mit Prompt-Bibliotek</span>
-                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg> Mail</span>
-                <span class="visual-bookmark-item"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 9.5h16M8 3v4M16 3v4"/></svg> Kalender</span>
-              </div>
-              <div class="visual-arrow-down">↑ Sådan ser dit bookmark ud i browseren</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 3 -->
-        <div class="guide-step">
-          <div class="guide-step-left">
-            <div class="guide-step-num">3</div>
-            <div class="guide-step-line"></div>
-          </div>
-          <div class="guide-step-right">
-            <div class="guide-step-title">Klik kopiér — udfyld pladsholdere — send til AI</div>
-            <div class="guide-step-text">Når du klikker kopiér på en prompt med pladsholdere som <em>[modtager]</em> eller <em>[situation]</em>, åbner et lille vindue automatisk. Du udfylder hvert felt — og kopierer en <strong>færdig, personlig prompt</strong> direkte. Ingen manuel søg-og-erstat.</div>
-            <div class="guide-step-visual visual-3">
-              <div class="flow-chain">
-                <div class="flow-step">
-                  <div class="flow-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="6" y="4" width="12" height="17" rx="2"/><rect x="9" y="2" width="6" height="3.4" rx="1"/><path d="M9 11h6M9 15h4"/></svg></div>
-                  <div class="flow-label">Klik kopiér i biblioteket</div>
-                </div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-step">
-                  <div class="flow-icon"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
-                  <div class="flow-label">Udfyld pladsholderne</div>
-                </div>
-                <div class="flow-arrow">→</div>
-                <div class="flow-step">
-                  <div class="flow-icon">⌨️</div>
-                  <div class="flow-label">Ctrl+V og send</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 4 -->
-        <div class="guide-step">
-          <div class="guide-step-left">
-            <div class="guide-step-num">4</div>
-          </div>
-          <div class="guide-step-right">
-            <div class="guide-step-title">Marker dine foretrukne med en stjerne</div>
-            <div class="guide-step-text">Klik på stjernen ⭐ på en prompt for at gøre den til favorit. Favoritter vises altid øverst og kan filtreres frem med ét klik — perfekt når du har 30+ prompts og hurtig adgang er vigtig.</div>
-            <div class="guide-step-visual" style="background:var(--teal-50); border:1px solid var(--teal-100); border-radius:var(--r); padding:12px 14px;">
-              <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-soft);">
-                <span style="font-size:18px;">⭐</span>
-                <div>
-                  <div style="font-weight:700; color:var(--ink); margin-bottom:2px;">Stjernen sidder til venstre for kopiér-knappen</div>
-                  <div style="font-size:12px;">Klik en gang for at tilføje — klik igen for at fjerne</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- TIPS BOX -->
-      <div class="lib-tips">
-        <div class="lib-tips-title"><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M9.5 18h5M10.5 21h3"/><path d="M12 3a6 6 0 0 0-3.8 10.7c.8.7.8 1.6.8 2.3h6c0-.7 0-1.6.8-2.3A6 6 0 0 0 12 3z"/></svg> Hvad du også kan med biblioteket</div>
-        <div class="lib-tips-list">
-          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span> <strong>Udfyld pladsholdere direkte</strong> — kopiér-knappen åbner et vindue så du tilpasser prompten inden den kopieres</div>
-          <div class="lib-tip-item"><span>⭐</span> <strong>Favoritter øverst</strong> — marker dine mest brugte prompts med en stjerne</div>
-          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M12 5v14M5 12h14"/></svg></span> <strong>Tilføj dine egne prompts</strong> — og tildel dem en kategori du selv har oprettet</div>
-          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 7a2 2 0 0 1 2-2h4l2 2h6a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg></span> <strong>Rediger kategorier</strong> — omdøb, slet og sorter kategorier som du vil</div>
-          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg></span> <strong>Søg i alle prompts</strong> med <kbd>Ctrl</kbd>+<kbd>K</kbd> — finder hurtigt det rigtige</div>
-          <div class="lib-tip-item"><span><svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19h16"/><path d="M6 15l4-5 3 3 5-7"/></svg></span> <strong>Vokser med dig</strong> — flere prompts tilføjes automatisk når du tager kursus C, B og A</div>
-        </div>
-      </div>
-
-      <!-- ØVELSE -->
+      <!-- AFRUNDING: C2 -> bibliotek-guiden -->
       <div class="practice">
-        <div class="practice-bar"><div class="p-tag">Øvelse</div><div class="p-title">Sæt dit bibliotek op nu — det tager 3 minutter</div></div>
+        <div class="practice-bar"><div class="p-tag">Afrunding</div><div class="p-title">Det var Del C2 — dit bibliotek vokser herfra</div></div>
         <div class="p-body">
-          <ol>
-            <li>Klik den store grønne knap og åbn biblioteket i en ny fane.</li>
-            <li>Bookmark siden med <kbd>Ctrl</kbd>+<kbd>D</kbd> eller <kbd>Cmd</kbd>+<kbd>D</kbd>.</li>
-            <li>Find "Den svære email" og klik kopiér. Udfyld pladsholderne i vinduet der åbner.</li>
-            <li>Indsæt med <kbd>Ctrl</kbd>+<kbd>V</kbd> i Claude eller ChatGPT og se resultatet.</li>
-            <li>Sæt en stjerne ⭐ på den prompt du brugte — så den er nem at finde næste gang.</li>
-          </ol>
-          <p style="margin-top:10px;"><strong>Det er det.</strong> Næste gang du har brug for et stærkt prompt — er biblioteket ét klik væk i din bogmærkelinje.</p>
+          <p>Du har nu et arsenal: emails der rammer tonen, opfølgninger der virker, omskrivning til enhver målgruppe — og de prompts du har gemt undervejs i C1 og C2, ligger klar i <strong>dit personlige bibliotek</strong>.</p>
+          <p style="margin-top:10px;">Inden du går videre til Del C3, viser <a href="bibliotek-guide-c.html" style="color:var(--c-gold-deep);font-weight:700;">bibliotek-guiden</a> dig hvordan du får biblioteket til at arbejde for dig: kategorier, favoritter, udfyldnings-felter og alt det der gør, at det rigtige prompt altid er ét klik væk.</p>
         </div>
       </div>
-
 
       <div class="complete-zone" id="completeZone-m5">
         <div class="complete-zone-text">
           <div class="complete-zone-ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9v16H6a2 2 0 0 0-2 2z"/><path d="M15 3h3a2 2 0 0 1 2 2v14a2 2 0 0 0-2 2h-3"/></svg></div>
-          <span>Modul 5 gennemgået — prompt-biblioteket er klar?</span>
+          <span>Modul 5 gennemgået — dine favoritter er gemt?</span>
         </div>
         <button class="complete-btn" id="completeBtn-m5" onclick="markDone('m5')">
           Markér som færdig
@@ -1728,7 +1669,7 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
       <li>Live email-udfordring med konkret feedback</li>
       <li>Beslutningshjælp som ærlig sparringspartner</li>
       <li>Omskrivning til forskellige målgrupper</li>
-      <li>Dit eget prompt-bibliotek du tager med dig</li>
+      <li>8 gennemarbejdede prompts — gemt direkte i dit personlige bibliotek</li>
       <li>Download-funktion til offline brug</li>
     </ul>
   </div>
@@ -1741,9 +1682,9 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
     <span class="quiz-warn-c1">⚠️ Quizzen skal bestås for at gå videre</span>
 
     <div id="exam-locked" style="display:inline-flex; align-items:center; gap:10px; background:#ece6d6; color:#8aa090; font-family:'Outfit',sans-serif; font-size:15px; font-weight:700; padding:14px 38px; border-radius:var(--r); cursor:not-allowed; margin-bottom:8px;">
-      <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Åbn dit prompt-bibliotek først
+      <svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg> Gennemfør alle 5 moduler først
     </div>
-    <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mini-quizzen låses op når du har åbnet modul 5 og dit bibliotek</div>
+    <div id="exam-locked-hint" style="font-size:12px; color:var(--muted); margin-bottom:8px;">Mini-quizzen låses op når du har gennemført alle 5 moduler</div>
 
     <a href="quiz-c2.html" class="quiz-btn-c1" id="exam-btn" style="display:none;">
       Start mini-quiz C2 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
@@ -1808,10 +1749,24 @@ Næste skridt: Vi indleder fase 2 i januar med fokus på integration mod økonom
   <span id="toast-msg">Kopieret!</span>
 </div>
 
+<div class="copy-toast" id="copyToast">✓ Kopieret</div>
+<div class="copy-cinema" id="copyCinema" aria-hidden="true">
+  <div class="cc-card">
+    <div class="cc-medal">
+      <svg class="cc-book" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M8 38V10a2 2 0 0 1 2-2h12v30H10a2 2 0 0 0-2 2z"/><path d="M40 38V10a2 2 0 0 0-2-2H26v30h12a2 2 0 0 1 2 2z"/></svg>
+      <svg class="cc-check" viewBox="0 0 104 104" fill="none"><circle class="cc-check-ring" cx="52" cy="52" r="38" stroke="#10B981" stroke-width="3" fill="rgba(16,185,129,.09)" transform="rotate(-90 52 52)"/><path class="cc-check-mark" d="M36 53.5l11 11L69 41" stroke="#10B981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <div class="cc-text">Kopieret til udklipsholderen</div>
+  </div>
+</div>
+<div class="save-toast" id="saveToast" role="status">
+  <span class="save-toast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></span>
+  <span class="save-toast-text">Prompten er gemt i <b>dit bibliotek</b></span>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, arrayUnion, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
@@ -1832,7 +1787,72 @@ onAuthStateChanged(auth,async u=>{
       if(saved.length>0) window._applyC2Progress(saved);
     }
   }catch(e){console.error('C2 load:',e);}
+  _initPromptSave(u);
 });
+
+/* ── GEM TIL BIBLIOTEK (fase 2b) ─────────────────────────────
+   Skriver kursusprompts til users/{uid}/prompts/{promptId} med
+   faste doc-id'er (c2p1–c2p8) — samme datamodel som mit-bibliotek.html.
+   Kategorien "C2" oprettes i promptCategories hvis den mangler.
+   Titel/kilde/tekst læses direkte fra C2_PROMPTS (én sandhedskilde,
+   delt med kortene og PDF-snydelappen). */
+const CAT_PRESET={c1:'#c2a038',c2:'#c9a040'};
+function _genCatId(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+function _markSaved(btn){btn.classList.add('saved');btn.textContent='✓ Gemt';btn.setAttribute('aria-disabled','true');}
+
+async function _initPromptSave(user){
+  const btns=document.querySelectorAll('.prompt-btn.save[data-save-id]');
+  if(!btns.length)return;
+  /* Markér allerede gemte prompts ved sideindlæsning */
+  try{
+    const qs=await getDocs(collection(db,'users',user.uid,'prompts'));
+    const have=new Set(qs.docs.map(x=>x.id));
+    btns.forEach(b=>{if(have.has(b.dataset.saveId))_markSaved(b);});
+  }catch(e){console.error('C2 bibliotek-status:',e);}
+  btns.forEach(b=>{
+    b.addEventListener('click',()=>_savePrompt(user,b));
+  });
+}
+
+async function _saveCategoryIfMissing(uid,name){
+  /* Frisk læsning af brugerdokumentet lige før skrivning — minimér race med biblioteket */
+  const uref=doc(db,'users',uid);
+  const snap=await getDoc(uref);
+  const data=snap.exists()?snap.data():{};
+  const cats=Array.isArray(data.promptCategories)?data.promptCategories.slice():[];
+  const found=cats.find(c=>c&&c.name&&c.name.toLowerCase()===name.toLowerCase());
+  if(found)return found.id;
+  const cat={id:_genCatId(),name:name,color:CAT_PRESET[name.toLowerCase()]||'#b8902a'};
+  cats.push(cat);
+  await setDoc(uref,{promptCategories:cats},{merge:true});
+  return cat.id;
+}
+
+async function _savePrompt(user,btn){
+  if(btn.classList.contains('saved')||btn.classList.contains('busy'))return;
+  const id=btn.dataset.saveId;
+  const p=(typeof C2_PROMPTS!=='undefined')?C2_PROMPTS.find(x=>x.id===id):null;
+  if(!p||!p.text){showToast('Kunne ikke gemme prompten');return;}
+  btn.classList.add('busy');
+  const t0=Date.now();
+  try{
+    const catId=await _saveCategoryIfMissing(user.uid,'C2');
+    await setDoc(doc(db,'users',user.uid,'prompts',id),{
+      title:p.title,text:p.text,catId:catId,
+      starred:false,copyCount:0,createdAt:Date.now(),source:p.source
+    });
+    /* Spinneren skal være synlig min. 300 ms — ro, ikke blink */
+    const wait=Math.max(0,300-(Date.now()-t0));
+    setTimeout(()=>{
+      btn.classList.remove('busy');_markSaved(btn);
+      showSaveToast();
+    },wait);
+  }catch(e){
+    console.error('C2 gem:',e);
+    btn.classList.remove('busy');btn.textContent='Gem til senere';
+    showToast('Kunne ikke gemme — tjek forbindelsen');
+  }
+}
 
 /* Gem et modul-ID i Firestore */
 window._saveC2Progress=async(modId)=>{
@@ -2346,62 +2366,7 @@ function spawnConfettiC2(){
 }
 
 
-/* ── C2 BIBLIOTEK ── */
-const DEFAULT_PROMPTS_SEED=[
-  {id:'d1',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg>',title:'Den svære email',source:'C2 — Modul 1',category:'C2',fav:false,
-   text:'Du er erfaren forretningskommunikatør. Hjælp mig med at skrive en email til [modtager] om [situation]. Tone: ærlig men ikke anklagende. Undgå passive formuleringer og floskler. Maks 120 ord — kom direkte til sagen.'},
-  {id:'d2',emoji:'⏰',title:'Opfølgning når ingen svarer',source:'C2 — Modul 1',category:'C2',fav:false,
-   text:'Skriv en opfølgnings-email til [person]. Jeg sendte en email om [emne] for [X] dage siden og har ikke hørt tilbage. Tone: venlig og ikke pressende, men tydelig om at jeg har brug for svar inden [dato]. Undgå sætningen "Jeg tillader mig at følge op".'},
-  {id:'d3',emoji:'✏️',title:'Sprogvask af email-udkast',source:'C2 — Modul 1',category:'C2',fav:false,
-   text:'Ret følgende email til korrekt, professionelt dansk. Forbedre formuleringer og flow — men ændr ikke indholdet eller meningen. Gør den mere direkte og fjern unødvendige fyldord: [indsæt din email].'},
-  {id:'d4',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1"/></svg>',title:'Beslutningshjælp',source:'C2 — Modul 3',category:'C2',fav:false,
-   text:'Jeg skal træffe en beslutning: [beskriv situationen].\n\nMulighed A: [fordele og ulemper]\nMulighed B: [fordele og ulemper]\n\nLav en pro/contra-analyse. Peg på 2-3 blinde vinkler jeg sandsynligvis overser. Anbefal ikke en løsning — hjælp mig med at tænke klarere. Tænk skridt for skridt.'},
-  {id:'d5',emoji:'🔄',title:'Omskriv til ny målgruppe',source:'C2 — Modul 4',category:'C2',fav:false,
-   text:'Omskriv følgende tekst så den passer til [ny målgruppe / ny tone / nyt formål]. Behold det samme indhold og de samme fakta — tilpas kun sprog, tone og detaljeniveau. Den nye version skal lyde naturlig: [indsæt tekst].'},
-  {id:'d6',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg>',title:'Lær noget på 15 minutter',source:'C1 — Modul 3',category:'C1',fav:false,
-   text:'Giv mig en 80/20-gennemgang af [emne]: de 20% der giver mig 80% af forståelsen. Jeg har 15 minutter og ingen forudgående viden. Skriv i klart, ikke-teknisk dansk. Afslut med 3 præcise spørgsmål jeg kan stille en ekspert.'},
-  {id:'d7',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>',title:'Kritisk feedback på dit arbejde',source:'C1 — Modul 2',category:'C1',fav:false,
-   text:'Her er hvad jeg har lavet: [indsæt tekst/plan/idé].\n\nGiv mig de 3 største svagheder. Hvad mangler? Hvad er uklart? Hvad ville en kritisk læser reagere på? Vær direkte og specifik — undgå at starte med ros.'},
-  {id:'d8',emoji:'👤',title:'Rolleprompt-skabelon',source:'C1 — Modul 2',category:'C1',fav:false,
-   text:'Du er [konkret rolle, fx "erfaren juridisk rådgiver med speciale i ansættelsesret"]. [Opgave]. Konteksten er: [baggrund]. Skriv som du ville til [målgruppe]. Undgå [det du ikke vil have].'},
-  {id:'d9',emoji:'💼',title:'Forbered et møde på 10 min',source:'C1 — Modul 3',category:'C1',fav:false,
-   text:'Jeg skal til møde om [emne] om 30 minutter og kender det ikke godt. Giv mig: 1) De 5 vigtigste ting at vide, 2) 3 intelligente spørgsmål jeg kan stille, 3) ét kontroversielt synspunkt der viser jeg har tænkt selv.'},
-  {id:'d10',emoji:'✂️',title:'Forkort uden at miste substans',source:'C2 — Modul 4',category:'C2',fav:false,
-   text:'Forkort følgende tekst til maks [X] ord. Behold alle vigtige pointer og kerneinformation — skær kun fyldord, gentagelser og unødvendige detaljer. Tonen skal forblive den samme: [indsæt tekst].'}
-];
-/* ── BIBLIOTEK HELPER ── */
-function _addPromptsToLibrary(newPrompts, categoryName) {
-  const SK  = 'learnai_prompt_library_v2';
-  const SKC = 'learnai_prompt_categories_v1';
-  try { localStorage.setItem('_t','1'); localStorage.removeItem('_t'); }
-  catch(e) { showToast('Browser blokerer localStorage — prøv Chrome/Firefox'); return 0; }
-  try {
-    // Seed med DEFAULT_PROMPTS hvis localStorage er tom
-    let lib = [];
-    const saved = localStorage.getItem(SK);
-    if (saved) {
-      try { lib = JSON.parse(saved); } catch(e) { lib = []; }
-    } else {
-      // Første gang — seed med standard-prompts
-      lib = DEFAULT_PROMPTS_SEED.map(p=>({...p}));
-    }
-    // Tilføj nye prompts (duplikat-tjek på id)
-    const ids = new Set(lib.map(p=>p.id));
-    let added = 0;
-    newPrompts.forEach(p => { if(!ids.has(p.id)){ lib.push(p); added++; } });
-    localStorage.setItem(SK, JSON.stringify(lib));
-    // Tilføj kategori
-    let cats = ['C1','C2','Egne'];
-    const sc = localStorage.getItem(SKC);
-    if(sc){ try{ cats=JSON.parse(sc); }catch(e){ cats=['C1','C2','Egne']; } }
-    if(!cats.includes(categoryName)) cats.push(categoryName);
-    if(!cats.includes('C1')) cats.unshift('C1');
-    if(!cats.includes('C2')) { const i=cats.indexOf('C1'); cats.splice(i+1,0,'C2'); }
-    localStorage.setItem(SKC, JSON.stringify(cats));
-    return added;
-  } catch(e) { showToast('Fejl: '+e.message); return -1; }
-}
-
+/* ── C2 PROMPTS (bruges af Modul 5-kortene, gem-flowet og PDF-snydelappen) ── */
 const C2_PROMPTS=[
   {id:'c2p1',emoji:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7.5l9 6 9-6"/></svg>',title:'Den svære email — C2 version',source:'C2 — Modul 1',category:'C2',fav:false,
    text:'Du er en professionel kommunikationsrådgiver.\nSkriv en email til [modtager] om [emnet].\nTone: direkte men respektfuld. Maks 150 ord.\nUndgå: undskyldende formuleringer, passive konstruktioner.\nKonkluder med ét klart næste skridt.'},
@@ -2421,14 +2386,54 @@ const C2_PROMPTS=[
    text:'Gennemgå kritisk: [tekst]\nRet grammatik, tone, klarhed og gentagelser.\nBehold min stemme. Vis originalen → din version.'},
 ];
 
-function addC2AndOpen(){
-  const added=_addPromptsToLibrary(C2_PROMPTS,'C2');
-  if(added<0)return;
-  const btn=document.getElementById('c2LibBtn');
-  if(btn){btn.innerHTML='<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> Tilføjet! Åbn bibliotek <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>';}
-  showToast(added>0?`<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> ${added} C2-prompts gemt i biblioteket`:'<svg width="1.15em" height="1.15em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-0.15em"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-6"/></svg> Allerede i biblioteket');
-  setTimeout(()=>window.open('bibliotek.html','_blank'),400);
+/* ── FASE 2B: Prompt-kort renderes fra C2_PROMPTS (c2p1–c2p8) ── */
+function renderC2PromptCards(){
+  const host=document.getElementById('c2PromptCards');
+  if(!host)return;
+  C2_PROMPTS.forEach((p)=>{
+    const block=document.createElement('div');
+    block.className='prompt-block';
+    block.setAttribute('data-prompt','');
+    const head=document.createElement('div');head.className='prompt-block-head';
+    const wrap=document.createElement('div');wrap.className='prompt-block-titlewrap';
+    const label=document.createElement('span');label.className='prompt-block-label';label.textContent=p.title;
+    const srcEl=document.createElement('span');srcEl.className='prompt-block-source';srcEl.textContent=p.source;
+    wrap.appendChild(label);wrap.appendChild(srcEl);
+    const actions=document.createElement('div');actions.className='prompt-block-actions';
+    const tBtn=document.createElement('button');tBtn.type='button';tBtn.className='prompt-btn toggle';tBtn.textContent='Se prompt';
+    const cBtn=document.createElement('button');cBtn.type='button';cBtn.className='prompt-btn copy';cBtn.textContent='Kopiér';
+    const sBtn=document.createElement('button');sBtn.type='button';sBtn.className='prompt-btn save';sBtn.textContent='Gem til senere';sBtn.dataset.saveId=p.id;
+    actions.appendChild(tBtn);actions.appendChild(cBtn);actions.appendChild(sBtn);
+    head.appendChild(wrap);head.appendChild(actions);
+    const body=document.createElement('div');body.className='prompt-block-body';body.textContent=p.text;
+    block.appendChild(head);block.appendChild(body);
+    tBtn.addEventListener('click',()=>{
+      const open=block.classList.toggle('open');
+      tBtn.textContent=open?'Skjul prompt':'Se prompt';
+    });
+    cBtn.addEventListener('click',async()=>{
+      try{await navigator.clipboard.writeText(p.text);}
+      catch(e){const ta=document.createElement('textarea');ta.value=p.text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();}
+      showCopyCinema();
+    });
+    host.appendChild(block);
+  });
 }
+function showCopyToast(){const t=document.getElementById('copyToast');if(!t)return;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),1600);}
+let _ccT=null;
+function showCopyCinema(){
+  const o=document.getElementById('copyCinema');
+  if(!o||window.matchMedia('(prefers-reduced-motion: reduce)').matches){showCopyToast();return;}
+  o.classList.remove('play');void o.offsetWidth;
+  o.classList.add('play');
+  clearTimeout(_ccT);_ccT=setTimeout(()=>o.classList.remove('play'),2250);
+}
+function showSaveToast(){
+  const t=document.getElementById('saveToast');if(!t)return;
+  t.classList.add('show');clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),2600);
+}
+renderC2PromptCards();
 
 /* ── C2 PDF CHEATSHEET ── */
 function downloadC2PDF(){
