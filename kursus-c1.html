@@ -1467,6 +1467,31 @@ h3.subhead{margin:1.6rem 0 .7rem!important}
 /* Reducér antal samtidige kanter: blødere kort-borders overalt */
 .concept,.usecase,.mc-card,.model-rec-card,.temp-ex-card{border-color:var(--sb-line)!important}
 
+
+/* ══ FASE 2B L3: Kategori-vælger — Honning & Skov luksus ══ */
+.catpick-overlay{position:fixed;inset:0;z-index:2200;background:rgba(18,32,24,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:grid;place-items:center;padding:22px;opacity:0;visibility:hidden;transition:opacity .35s cubic-bezier(.22,1,.36,1),visibility .35s}
+.catpick-overlay.show{opacity:1;visibility:visible}
+.catpick{width:100%;max-width:440px;background:linear-gradient(165deg,#fbf7ee,#f3ecda);border:1.5px solid rgba(var(--c-gold-rgb),.5);border-radius:22px;box-shadow:0 30px 80px rgba(12,25,16,.45),0 0 0 8px rgba(232,206,120,.1);padding:26px 26px 22px;transform:translateY(16px) scale(.97);transition:transform .4s cubic-bezier(.22,1,.36,1)}
+.catpick-overlay.show .catpick{transform:translateY(0) scale(1)}
+.catpick-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.catpick-title{font-family:'Lora',serif;font-size:20px;font-weight:600;color:#20312a;letter-spacing:-.01em}
+.catpick-sub{font-family:'Outfit',sans-serif;font-size:13px;color:#6b7a70;margin:4px 0 16px;line-height:1.5}
+.catpick-close{width:32px;height:32px;border-radius:50%;border:1px solid rgba(32,49,42,.15);background:rgba(251,247,238,.6);color:#4a5a52;font-size:14px;cursor:pointer;display:grid;place-items:center;transition:background .2s,transform .3s cubic-bezier(.22,1,.36,1);flex-shrink:0;font-family:'Outfit',sans-serif}
+.catpick-close:hover{background:#fff;transform:rotate(90deg)}
+.catpick-list{display:flex;flex-direction:column;gap:8px;max-height:250px;overflow-y:auto;margin-bottom:16px;padding-right:2px}
+.catpick-item{display:flex;align-items:center;gap:11px;padding:11px 14px;border-radius:12px;border:1px solid rgba(32,49,42,.1);background:rgba(255,255,255,.55);font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:#20312a;cursor:pointer;text-align:left;transition:all .22s cubic-bezier(.22,1,.36,1)}
+.catpick-item:hover{border-color:rgba(var(--c-gold-rgb),.55);background:#fff;transform:translateX(3px);box-shadow:0 6px 16px rgba(32,49,42,.08)}
+.catpick-dot{width:11px;height:11px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 3px rgba(32,49,42,.06)}
+.catpick-divider{display:flex;align-items:center;gap:12px;margin:2px 0 12px;font-family:'Outfit',sans-serif;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--c-gold-deep)}
+.catpick-divider::before,.catpick-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--c-gold-rgb),.4),transparent)}
+.catpick-new{display:flex;gap:8px}
+.catpick-input{flex:1;min-width:0;padding:11px 14px;border-radius:12px;border:1.5px solid rgba(32,49,42,.14);background:#fff;font-family:'Outfit',sans-serif;font-size:14px;color:#20312a;outline:none;transition:border-color .2s,box-shadow .2s}
+.catpick-input:focus{border-color:var(--c-gold);box-shadow:0 0 0 3px rgba(var(--c-gold-rgb),.15)}
+.catpick-create{padding:11px 18px;border-radius:12px;border:none;background:linear-gradient(150deg,var(--c-gold),var(--c-gold-deep));color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 16px rgba(var(--c-gold-rgb),.35);transition:transform .2s,box-shadow .2s,opacity .2s;flex-shrink:0}
+.catpick-create:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(var(--c-gold-rgb),.45)}
+.catpick-create:disabled{opacity:.55;cursor:default;transform:none}
+@media(max-width:480px){.catpick{padding:20px 18px 18px}.catpick-new{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.catpick-overlay,.catpick,.catpick-overlay.show .catpick,.catpick-item,.catpick-close{transition:none;transform:none}}
 </style>
 </head>
 <body>
@@ -2497,6 +2522,21 @@ h3.subhead{margin:1.6rem 0 .7rem!important}
   <span class="save-toast-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V6a1 1 0 0 1 1-1h5v14H5a1 1 0 0 0-1 1z"/><path d="M20 19V6a1 1 0 0 0-1-1h-5v14h5a1 1 0 0 1 1 1z"/></svg></span>
   <span class="save-toast-text">Prompten er gemt i <b>dit bibliotek</b></span>
 </div>
+<div class="catpick-overlay" id="catpickOverlay" role="dialog" aria-modal="true" aria-labelledby="catpickTitle">
+  <div class="catpick">
+    <div class="catpick-head">
+      <div class="catpick-title" id="catpickTitle">Hvor skal prompten bo?</div>
+      <button class="catpick-close" id="catpickClose" type="button" aria-label="Luk">✕</button>
+    </div>
+    <div class="catpick-sub">Vælg en kategori i dit bibliotek — eller opret en ny.</div>
+    <div class="catpick-list" id="catpickList"></div>
+    <div class="catpick-divider">Eller opret ny</div>
+    <div class="catpick-new">
+      <input class="catpick-input" id="catpickInput" type="text" maxlength="30" placeholder="Navn på ny kategori…">
+      <button class="catpick-create" id="catpickCreate" type="button">Opret &amp; gem</button>
+    </div>
+  </div>
+</div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -2542,6 +2582,11 @@ const C1_SAVE_META={
   c1p12:{title:'Kritisk feedback på dit arbejde',source:'C1 — Modul 4'}
 };
 const CAT_PRESET={c1:'#c2a038',c2:'#c9a040'};
+/* L3: bibliotekets farvepalet — ny kategori får første ledige farve (som mit-bibliotek.html) */
+const CAT_COLORS=['#b8902a','#2f6a4a','#8a3b2e','#2e4a6b','#5d3a5e','#b26a1e','#2f6060','#3d4a44'];
+function _pickFreeColor(cats){const used=new Set(cats.map(c=>c&&c.color));return CAT_COLORS.find(c=>!used.has(c))||CAT_COLORS[cats.length%CAT_COLORS.length];}
+let _libOpened=false;
+let _cpBtn=null;
 function _genCatId(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
 function _markSaved(btn){btn.classList.add('saved');btn.textContent='✓ Gemt';btn.setAttribute('aria-disabled','true');}
 
@@ -2554,8 +2599,14 @@ async function _initPromptSave(user,userData){
     const have=new Set(qs.docs.map(x=>x.id));
     btns.forEach(b=>{if(have.has(b.dataset.saveId))_markSaved(b);});
   }catch(e){console.error('C1 bibliotek-status:',e);}
+  /* L3: libraryOpened styrer knaptekst + flow */
+  _libOpened=!!(userData&&userData.libraryOpened);
+  if(_libOpened){
+    btns.forEach(b=>{if(!b.classList.contains('saved'))b.textContent='Tilføj til dit bibliotek';});
+  }
+  _wireCatPick(user);
   btns.forEach(b=>{
-    b.addEventListener('click',()=>_savePrompt(user,b));
+    b.addEventListener('click',()=>{ _libOpened ? _openCatPick(user,b) : _savePrompt(user,b); });
   });
 }
 
@@ -2567,13 +2618,13 @@ async function _saveCategoryIfMissing(uid,name){
   const cats=Array.isArray(data.promptCategories)?data.promptCategories.slice():[];
   const found=cats.find(c=>c&&c.name&&c.name.toLowerCase()===name.toLowerCase());
   if(found)return found.id;
-  const cat={id:_genCatId(),name:name,color:CAT_PRESET[name.toLowerCase()]||'#b8902a'};
+  const cat={id:_genCatId(),name:name,color:CAT_PRESET[name.toLowerCase()]||_pickFreeColor(cats)};
   cats.push(cat);
   await setDoc(uref,{promptCategories:cats},{merge:true});
   return cat.id;
 }
 
-async function _savePrompt(user,btn){
+async function _savePrompt(user,btn,catIdOpt,catNameOpt){
   if(btn.classList.contains('saved')||btn.classList.contains('busy'))return;
   const id=btn.dataset.saveId;
   const meta=C1_SAVE_META[id];
@@ -2583,7 +2634,7 @@ async function _savePrompt(user,btn){
   btn.classList.add('busy');
   const t0=Date.now();
   try{
-    const catId=await _saveCategoryIfMissing(user.uid,'C1');
+    const catId=catIdOpt||await _saveCategoryIfMissing(user.uid,'C1');
     await setDoc(doc(db,'users',user.uid,'prompts',id),{
       title:meta.title,text:text,catId:catId,
       starred:false,copyCount:0,createdAt:Date.now(),source:meta.source
@@ -2592,13 +2643,62 @@ async function _savePrompt(user,btn){
     const wait=Math.max(0,300-(Date.now()-t0));
     setTimeout(()=>{
       btn.classList.remove('busy');_markSaved(btn);
-      showSaveToast();
+      showSaveToast(catNameOpt);
     },wait);
   }catch(e){
     console.error('C1 gem:',e);
-    btn.classList.remove('busy');btn.textContent='Gem til senere';
+    btn.classList.remove('busy');btn.textContent=_libOpened?'Tilføj til dit bibliotek':'Gem til senere';
     showToast('Kunne ikke gemme — tjek forbindelsen','⚠️');
   }
+}
+
+
+/* ── L3: Kategori-vælger ───────────────────────────────────── */
+function _cpEls(){return{ov:document.getElementById('catpickOverlay'),list:document.getElementById('catpickList'),inp:document.getElementById('catpickInput'),create:document.getElementById('catpickCreate'),close:document.getElementById('catpickClose')};}
+async function _openCatPick(user,btn){
+  const e=_cpEls();if(!e.ov){_savePrompt(user,btn);return;}
+  _cpBtn=btn;
+  e.list.innerHTML='';
+  let cats=[];
+  try{
+    const s=await getDoc(doc(db,'users',user.uid));
+    if(s.exists()&&Array.isArray(s.data().promptCategories))cats=s.data().promptCategories;
+  }catch(err){console.error('katpick:',err);}
+  cats.forEach(c=>{
+    const it=document.createElement('button');it.type='button';it.className='catpick-item';
+    const dot=document.createElement('span');dot.className='catpick-dot';dot.style.background=(c&&c.color)||'#b8902a';
+    const nm=document.createElement('span');nm.textContent=(c&&c.name)||'';
+    it.appendChild(dot);it.appendChild(nm);
+    it.addEventListener('click',()=>{_closeCatPick();_savePrompt(user,_cpBtn,c.id,c.name);});
+    e.list.appendChild(it);
+  });
+  if(!cats.length){
+    const p=document.createElement('div');
+    p.style.cssText="font-family:'Outfit',sans-serif;font-size:13px;color:#6b7a70;padding:6px 2px;";
+    p.textContent='Ingen kategorier endnu — opret din første herunder.';
+    e.list.appendChild(p);
+  }
+  e.inp.value='';
+  e.ov.classList.add('show');
+}
+function _closeCatPick(){const e=_cpEls();if(e.ov)e.ov.classList.remove('show');}
+function _wireCatPick(user){
+  const e=_cpEls();if(!e.ov||e.ov._wired)return;e.ov._wired=true;
+  e.close.addEventListener('click',_closeCatPick);
+  e.ov.addEventListener('click',ev=>{if(ev.target===e.ov)_closeCatPick();});
+  document.addEventListener('keydown',ev=>{if(ev.key==='Escape')_closeCatPick();});
+  e.inp.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();e.create.click();}});
+  e.create.addEventListener('click',async()=>{
+    const name=e.inp.value.trim();
+    if(!name||!_cpBtn)return;
+    e.create.disabled=true;
+    try{
+      const catId=await _saveCategoryIfMissing(user.uid,name);
+      _closeCatPick();
+      _savePrompt(user,_cpBtn,catId,name);
+    }catch(err){console.error('katpick opret:',err);showToast('Kunne ikke oprette kategorien','⚠️');}
+    e.create.disabled=false;
+  });
 }
 
 /* Gem et modul-ID i Firestore */
@@ -2624,8 +2724,10 @@ function showCopyCinema(){
   o.classList.add('play');
   clearTimeout(_ccT);_ccT=setTimeout(()=>o.classList.remove('play'),2250);
 }
-function showSaveToast(){
+function showSaveToast(catName){
   const t=$('#saveToast');if(!t)return;
+  const tx=t.querySelector('.save-toast-text');
+  if(tx){tx.textContent='Prompten er gemt i ';const b=document.createElement('b');b.textContent=catName||'dit bibliotek';tx.appendChild(b);}
   t.classList.add('show');clearTimeout(t._t);
   t._t=setTimeout(()=>t.classList.remove('show'),2600);
 }
