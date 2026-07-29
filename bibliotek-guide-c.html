@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — Bibliotek-guiden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,500;0,600;0,700;1,400;1,500&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* ══ NIVEAU-ACCENT — Bibliotek-guiden: guld mellem C2 (#c9a040) og C3 (#bd9438) ══ */
+  --c-gold:#c39a3c;
+  --c-gold-deep:#8b6722;
+  --c-gold-mid:#d1ab59;
+  --c-gold-warm:#e9c87c;
+  --c-gold-ink:#5d4116;
+  --c-gold-rgb:195,154,60;
+  --c-gold-warm-rgb:233,200,124;
+  --c-gold-mid-rgb:209,171,89;
+  --c-gold-soft:rgba(195,154,60,.08);
+  --c-gold-glow:rgba(195,154,60,.14);
+  --c-gold-ring:rgba(195,154,60,.22);
+  /* ── Honning & Skov basis ── */
+  --ink:#20312a;--ink-2:#2f4338;--muted:#5a7060;--muted-2:#8aa090;
+  --bg:#e8e2d3;--card:#fbf7ee;--card-2:#f5f0e5;
+  --border:#cfc6b0;--border-strong:#bbb0a0;
+  --green:#2f6a4a;--green-bg:#dee8de;
+  --amber:#a98841;--amber-bg:#f6edce;
+  --red:#c0392b;--red-bg:#fdecea;
+  --shadow-sm:0 1px 2px rgba(32,49,42,.04),0 1px 3px rgba(32,49,42,.06);
+  --shadow-md:0 4px 16px rgba(32,49,42,.06),0 2px 4px rgba(32,49,42,.04);
+  --shadow-lg:0 12px 40px rgba(32,49,42,.10),0 4px 12px rgba(32,49,42,.06);
+  --r:14px;--r-lg:18px;--r-xl:24px;
+  --ease-lux:cubic-bezier(.16,1,.3,1);
+  --ease-settle:cubic-bezier(.22,1,.36,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:
+    radial-gradient(ellipse 900px 500px at 15% -5%, rgba(195,154,60,.10), transparent 60%),
+    radial-gradient(ellipse 700px 450px at 90% 15%, rgba(47,106,74,.06), transparent 60%);
+}
+.ic{width:1.05em;height:1.05em;vertical-align:-.14em}
+
+/* ── SCROLL PROGRESS ── */
+.scroll-track{position:fixed;top:0;left:0;right:0;height:3px;z-index:60;background:transparent}
+.scroll-bar{height:100%;width:0;background:linear-gradient(90deg,var(--c-gold),var(--c-gold-warm));border-radius:0 3px 3px 0;transition:width .1s linear}
+
+/* ── TOPBAR ── */
+.topbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(251,247,238,.92);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid rgba(32,49,42,.08);
+}
+.topbar-inner{max-width:1060px;margin:0 auto;padding:13px 28px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink);font-weight:800;font-size:17.5px;letter-spacing:-.01em}
+.brand svg{flex-shrink:0;border-radius:9px}
+.topbar-badge{
+  padding:6px 15px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.04em;
+  background:var(--c-gold-soft);border:1px solid var(--c-gold-ring);color:var(--c-gold-ink);white-space:nowrap;
+}
+@media(max-width:520px){.topbar-badge{font-size:11px;padding:5px 11px}.brand{font-size:16px}}
+
+/* ── LAYOUT ── */
+.wrap{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 28px}
+@media(max-width:520px){.wrap{padding:0 18px}}
+
+/* ── HERO ── */
+.hero{padding:74px 0 58px;text-align:left}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--c-gold-deep);margin-bottom:18px;
+}
+.hero-eyebrow-dot{width:7px;height:7px;border-radius:50%;background:var(--c-gold);box-shadow:0 0 0 4px var(--c-gold-glow)}
+.hero h1{
+  font-family:'Lora',serif;font-weight:600;font-size:clamp(32px,5.5vw,52px);
+  line-height:1.12;letter-spacing:-.02em;color:var(--ink);margin-bottom:20px;
+}
+.hero h1 em{font-style:italic;color:var(--c-gold-deep)}
+.hero-sub{font-size:17px;color:rgba(32,49,42,.72);line-height:1.68;max-width:640px}
+.hero-sub strong{color:rgba(32,49,42,.92)}
+.hero-path{
+  display:flex;align-items:center;gap:11px;margin-top:30px;flex-wrap:wrap;
+  font-size:12.5px;font-weight:700;letter-spacing:.05em;
+}
+.hero-path-step{
+  padding:7px 15px;border-radius:999px;border:1px solid var(--border);
+  background:var(--card);color:var(--muted);
+}
+.hero-path-step.done{border-color:rgba(47,106,74,.3);background:rgba(47,106,74,.07);color:var(--green)}
+.hero-path-step.now{
+  border-color:var(--c-gold-ring);background:linear-gradient(135deg,rgba(195,154,60,.16),rgba(195,154,60,.07));
+  color:var(--c-gold-ink);box-shadow:0 4px 14px rgba(195,154,60,.18);
+}
+.hero-path-arrow{color:var(--muted-2);font-weight:400}
+
+/* ── SEKTIONER ── */
+.section{
+  margin-bottom:84px;opacity:0;transform:translateY(40px);
+  transition:opacity .9s var(--ease-lux),transform .9s var(--ease-lux);
+}
+.section.in{opacity:1;transform:translateY(0)}
+.divider{height:1px;background:linear-gradient(90deg,transparent,rgba(32,49,42,.12),transparent);margin:0 0 84px}
+.section-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--c-gold-deep);margin-bottom:14px;
+}
+.section-eyebrow-line{width:28px;height:2px;background:linear-gradient(90deg,var(--c-gold),transparent);border-radius:2px}
+.section h2{
+  font-family:'Lora',serif;font-weight:600;font-size:clamp(25px,3.6vw,35px);
+  line-height:1.18;letter-spacing:-.015em;color:var(--ink);margin-bottom:14px;
+}
+.section h2 em{font-style:italic;color:var(--c-gold-deep)}
+.section-lead{font-size:16px;color:rgba(32,49,42,.72);line-height:1.68;margin-bottom:30px;max-width:660px}
+.section-lead strong{color:rgba(32,49,42,.92)}
+
+/* ── HVORFOR-KORT ── */
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media(max-width:680px){.why-grid{grid-template-columns:1fr}}
+.why-item{
+  background:var(--card);border:1px solid rgba(32,49,42,.08);border-radius:var(--r-lg);
+  padding:24px 24px 22px;transition:border-color .3s,box-shadow .3s,transform .3s;
+}
+.why-item:hover{border-color:var(--c-gold-ring);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.why-item-ic{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;
+  background:linear-gradient(135deg,rgba(195,154,60,.15),rgba(195,154,60,.05));
+  border:1px solid var(--c-gold-ring);color:var(--c-gold-deep);
+}
+.why-item-ic .ic{width:21px;height:21px;stroke-width:1.8}
+.why-item h4{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:7px}
+.why-item p{font-size:13.8px;color:rgba(32,49,42,.7);line-height:1.6}
+
+/* ── BIBLIOTEK-OVERBLIK ── */
+.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:26px}
+@media(max-width:680px){.hub-grid{grid-template-columns:1fr}}
+.hub-card{
+  background:var(--card);border:1px solid rgba(32,49,42,.09);border-radius:var(--r-lg);
+  padding:24px 24px 22px;position:relative;transition:border-color .3s,box-shadow .3s,transform .3s;
+}
+.hub-card:hover{border-color:var(--c-gold-ring);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.hub-card.hub-focus{border-color:rgba(195,154,60,.35);background:linear-gradient(135deg,rgba(195,154,60,.07),var(--card))}
+.hub-card-ic{
+  width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:14px;
+  background:linear-gradient(135deg,rgba(47,106,74,.12),rgba(47,106,74,.04));
+  border:1px solid rgba(47,106,74,.22);color:var(--green);
+}
+.hub-card.hub-focus .hub-card-ic{
+  background:linear-gradient(135deg,rgba(195,154,60,.15),rgba(195,154,60,.05));
+  border-color:var(--c-gold-ring);color:var(--c-gold-deep);
+}
+.hub-card-ic svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.hub-card h4{font-family:'Lora',serif;font-size:16.5px;font-weight:600;color:var(--ink);margin-bottom:7px}
+.hub-card p{font-size:13.6px;color:rgba(32,49,42,.7);line-height:1.6}
+.hub-card p strong{color:rgba(32,49,42,.9)}
+.hub-tag{
+  position:absolute;top:18px;right:18px;font-size:10px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;padding:4px 10px;border-radius:999px;
+  background:var(--c-gold-soft);border:1px solid var(--c-gold-ring);color:var(--c-gold-ink);
+}
+.hub-access{
+  display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;
+  background:linear-gradient(135deg,#22352c,#1b2b23);
+  border:1px solid rgba(195,154,60,.3);border-radius:var(--r-lg);padding:26px 30px;
+}
+@media(max-width:640px){.hub-access{grid-template-columns:1fr;gap:18px;padding:22px 20px}}
+.hub-open-btn{
+  display:inline-flex;align-items:center;gap:11px;padding:15px 32px;border-radius:999px;
+  text-decoration:none;font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;
+  color:#1b2b23;background:linear-gradient(135deg,var(--c-gold-warm),var(--c-gold-mid));
+  box-shadow:0 10px 28px rgba(0,0,0,.3);white-space:nowrap;
+  transition:transform .25s var(--ease-settle),box-shadow .25s var(--ease-settle);
+}
+.hub-open-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(0,0,0,.38)}
+.hub-open-btn .ic{width:17px;height:17px;stroke-width:2.2}
+.hub-bm{color:#d9d2bf;font-size:13.5px;line-height:1.65}
+.hub-bm strong{color:#f0ead8}
+.hub-bm .kbd{
+  display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;
+  padding:2px 8px;border-radius:6px;background:rgba(251,247,238,.1);
+  border:1px solid rgba(251,247,238,.22);color:var(--c-gold-warm);margin:0 2px;
+}
+
+/* ── DEMO-RAMMER (fælles) ── */
+.demo-frame{
+  background:var(--card);border:1px solid rgba(32,49,42,.1);border-radius:var(--r-xl);
+  box-shadow:var(--shadow-md);overflow:hidden;
+}
+.demo-head{
+  display:flex;align-items:center;gap:10px;padding:13px 22px;
+  background:linear-gradient(135deg,rgba(195,154,60,.1),rgba(195,154,60,.04));
+  border-bottom:1px solid rgba(195,154,60,.18);
+}
+.demo-head-dot{width:8px;height:8px;border-radius:50%;background:var(--c-gold);box-shadow:0 0 0 3px var(--c-gold-glow);animation:demoPulse 2.6s ease-in-out infinite}
+@keyframes demoPulse{0%,100%{box-shadow:0 0 0 3px var(--c-gold-glow)}50%{box-shadow:0 0 0 6px rgba(195,154,60,.07)}}
+.demo-head-label{font-size:11px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--c-gold-ink)}
+.demo-body{padding:26px 22px}
+@media(max-width:520px){.demo-body{padding:20px 16px}}
+
+/* ── DEMO 1: KATEGORI ── */
+.catdemo-sec{
+  border:1px solid var(--border);border-radius:var(--r-lg);background:var(--card-2);
+  overflow:hidden;margin-bottom:22px;transition:border-color .4s var(--ease-settle);
+}
+.catdemo-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid rgba(32,49,42,.07)}
+.catdemo-grip{color:var(--muted-2);cursor:grab;display:inline-flex}
+.catdemo-grip svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.catdemo-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;transition:background .4s var(--ease-settle),box-shadow .4s var(--ease-settle)}
+.catdemo-name{font-family:'Lora',serif;font-size:17px;font-weight:600;color:var(--ink);transition:opacity .25s}
+.catdemo-name.swap{opacity:0}
+.catdemo-count{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);background:rgba(32,49,42,.06);border-radius:999px;padding:3px 11px}
+.catdemo-rows{padding:10px 18px 14px}
+.catdemo-row{display:flex;align-items:center;gap:10px;padding:9px 0;font-size:13.8px;color:rgba(32,49,42,.75)}
+.catdemo-row .ic{width:15px;height:15px;color:var(--muted-2);stroke-width:2}
+.catdemo-ctrl{display:grid;grid-template-columns:1fr auto;gap:18px;align-items:end}
+@media(max-width:640px){.catdemo-ctrl{grid-template-columns:1fr}}
+.f-lab{display:block;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 7px}
+.f-in,.f-ta{
+  width:100%;font-family:inherit;font-size:14.5px;color:var(--ink);background:var(--card-2);
+  border:1px solid var(--border);border-radius:12px;padding:11px 14px;outline:none;
+  transition:border-color .25s var(--ease-settle),box-shadow .25s var(--ease-settle);
+}
+.f-in:focus,.f-ta:focus{border-color:var(--c-gold-mid);box-shadow:0 0 0 3px rgba(195,154,60,.14)}
+.swatches{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{
+  width:30px;height:30px;border-radius:50%;border:2px solid transparent;cursor:pointer;
+  transition:transform .2s var(--ease-settle),box-shadow .2s var(--ease-settle);position:relative;
+}
+.swatch:hover{transform:scale(1.12)}
+.swatch.on{box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--ink);transform:scale(1.08)}
+.catdemo-feats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+@media(max-width:640px){.catdemo-feats{grid-template-columns:1fr}}
+.catdemo-feat{
+  display:flex;align-items:flex-start;gap:11px;padding:13px 15px;border-radius:var(--r);
+  background:rgba(32,49,42,.035);border:1px solid rgba(32,49,42,.07);font-size:13.5px;
+  color:rgba(32,49,42,.75);line-height:1.55;
+}
+.catdemo-feat .ic{width:17px;height:17px;flex-shrink:0;margin-top:2px;color:var(--c-gold-deep);stroke-width:1.9}
+.catdemo-feat strong{color:rgba(32,49,42,.9)}
+
+/* ── DEMO 2: FAVORITTER & SORTERING ── */
+.favdemo-sec{margin-bottom:18px}
+.favdemo-sec-head{
+  display:flex;align-items:center;gap:9px;font-family:'Lora',serif;font-size:16px;
+  font-weight:600;color:var(--ink);margin-bottom:10px;
+}
+.favdemo-sec-head .fav-star{width:17px;height:17px;fill:#c99a1f;stroke:none}
+.favdemo-empty{
+  font-size:13px;color:var(--muted);padding:14px 16px;border:1px dashed var(--border);
+  border-radius:var(--r);background:rgba(32,49,42,.02);
+}
+.favdemo-list{display:flex;flex-direction:column;gap:9px}
+.pdemo-card{
+  display:flex;align-items:center;gap:13px;padding:13px 16px;background:var(--card-2);
+  border:1px solid var(--border);border-radius:var(--r);
+  transition:border-color .35s var(--ease-settle),box-shadow .35s var(--ease-settle),transform .45s var(--ease-lux),opacity .45s var(--ease-lux);
+}
+.pdemo-card.pop{animation:cardPop .5s var(--ease-lux)}
+@keyframes cardPop{0%{transform:scale(.97);opacity:.4}100%{transform:scale(1);opacity:1}}
+.pdemo-star{
+  border:none;background:none;cursor:pointer;padding:5px;display:inline-flex;border-radius:8px;
+  color:var(--muted-2);transition:color .25s,transform .25s var(--ease-settle),background .25s;
+}
+.pdemo-star:hover{background:rgba(195,154,60,.1);transform:scale(1.14)}
+.pdemo-star svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pdemo-star.on{color:#c99a1f}
+.pdemo-star.on svg{fill:#c99a1f;stroke:#c99a1f}
+.pdemo-info{flex:1;min-width:0}
+.pdemo-title{font-size:14.2px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pdemo-meta{font-size:11.5px;color:var(--muted);margin-top:1px}
+.pdemo-copy{
+  display:inline-flex;align-items:center;gap:7px;padding:7px 14px;border-radius:9px;
+  border:1px solid var(--c-gold-ring);background:var(--c-gold-soft);color:var(--c-gold-ink);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;
+  transition:background .25s,transform .2s var(--ease-settle);white-space:nowrap;
+}
+.pdemo-copy:hover{background:rgba(195,154,60,.16);transform:translateY(-1px)}
+.pdemo-copy .ic{width:13px;height:13px;stroke-width:2.2}
+.pdemo-count{
+  font-size:11px;font-weight:800;background:rgba(32,49,42,.08);color:var(--ink-2);
+  border-radius:999px;padding:2px 8px;min-width:24px;text-align:center;
+}
+.sortrule{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:22px;padding:15px 18px;
+  background:rgba(195,154,60,.06);border:1px solid rgba(195,154,60,.18);border-radius:var(--r);
+  font-size:13px;font-weight:700;color:var(--c-gold-ink);
+}
+.sortrule-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 13px;border-radius:999px;background:var(--card);border:1px solid var(--c-gold-ring)}
+.sortrule-chip .ic{width:14px;height:14px;stroke-width:2}
+.sortrule-arrow{color:var(--muted-2);font-weight:400}
+
+/* ── DEMO 3: UDFYLDNINGS-ØVELSE ── */
+.f-ta{min-height:120px;resize:vertical;line-height:1.65;font-family:'JetBrains Mono',monospace;font-size:13.5px}
+.ex-hint{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.55}
+.ex-hint b{color:var(--c-gold-deep)}
+.ex-insert{
+  border:none;background:none;color:var(--c-gold-deep);font-family:inherit;font-size:13px;
+  font-weight:700;cursor:pointer;padding:0;text-decoration:underline;text-underline-offset:3px;
+}
+.ex-insert:hover{color:var(--c-gold-ink)}
+.ph-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;min-height:30px}
+.ph-chip{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:999px;
+  background:rgba(195,154,60,.12);border:1px solid var(--c-gold-ring);
+  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:var(--c-gold-ink);
+  animation:chipIn .35s var(--ease-lux);
+}
+@keyframes chipIn{from{opacity:0;transform:translateY(6px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+.ph-chips-empty{font-size:12.5px;color:var(--muted-2);font-style:italic;padding-top:4px}
+.ex-fields{margin-top:6px}
+.ex-fields .f-lab{margin:16px 0 7px}
+.ex-fields .f-lab:first-of-type{margin-top:0}
+.ex-fields .f-in{font-family:'Outfit',sans-serif}
+.ex-fields .f-ta{min-height:76px;font-family:'Outfit',sans-serif;font-size:14px}
+.ex-prev-wrap{margin-top:20px}
+.ex-prev{
+  background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:16px 17px;
+  font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;max-height:260px;overflow-y:auto;color:var(--ink-2);
+}
+.ex-prev .ph-f{color:var(--green);background:rgba(47,106,74,.12);border-radius:5px;padding:0 4px;font-weight:600}
+.ex-prev .ph-e{color:var(--c-gold-deep);background:rgba(195,154,60,.13);border-radius:5px;padding:0 4px;font-weight:600}
+.ex-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--muted)}
+.ex-legend span{display:inline-flex;align-items:center;gap:6px}
+.ex-legend i{width:10px;height:10px;border-radius:3px;font-style:normal}
+.ex-legend .lg-f{background:rgba(47,106,74,.55)}
+.ex-legend .lg-e{background:rgba(195,154,60,.65)}
+.ex-copy{
+  display:inline-flex;align-items:center;gap:10px;margin-top:18px;padding:13px 28px;
+  border:none;border-radius:999px;cursor:pointer;font-family:'Outfit',sans-serif;
+  font-size:14.5px;font-weight:800;color:var(--card);
+  background:linear-gradient(135deg,var(--c-gold-deep),var(--c-gold));
+  box-shadow:0 8px 24px rgba(139,103,34,.3);
+  transition:transform .25s var(--ease-settle),box-shadow .25s var(--ease-settle),opacity .25s;
+}
+.ex-copy:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(139,103,34,.38)}
+.ex-copy:disabled{opacity:.45;cursor:default;transform:none;box-shadow:none}
+.ex-copy .ic{width:16px;height:16px;stroke-width:2.2}
+.ex-copy.copied{background:linear-gradient(135deg,#2f6a4a,#3d8560);box-shadow:0 8px 24px rgba(47,106,74,.3)}
+
+/* ── DEMO 4: DUBLÉR ── */
+.dupdemo{display:flex;flex-direction:column;gap:9px}
+.dup-btn{
+  display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:9px;
+  border:1px solid var(--border-strong);background:var(--card);color:var(--ink-2);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;white-space:nowrap;
+  transition:border-color .25s,background .25s,transform .2s var(--ease-settle);
+}
+.dup-btn:hover{border-color:var(--c-gold-mid);background:var(--c-gold-soft);transform:translateY(-1px)}
+.dup-btn:disabled{opacity:.5;cursor:default;transform:none}
+.dup-btn .ic{width:14px;height:14px;stroke-width:2}
+.dup-note{font-size:13.5px;color:rgba(32,49,42,.72);line-height:1.6;margin-top:16px}
+.dup-note strong{color:rgba(32,49,42,.9)}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(80px);
+  background:linear-gradient(135deg,#22352c,#1b2b23);color:#f0ead8;border:1px solid rgba(195,154,60,.35);
+  border-radius:999px;padding:13px 26px;font-size:14px;font-weight:600;z-index:80;
+  box-shadow:0 18px 50px rgba(20,32,26,.4);opacity:0;pointer-events:none;
+  transition:transform .5s var(--ease-lux),opacity .5s var(--ease-lux);
+  display:flex;align-items:center;gap:10px;max-width:calc(100vw - 40px);
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast .ic{width:16px;height:16px;color:var(--c-gold-warm);stroke-width:2.2;flex-shrink:0}
+
+/* ── CTA ── */
+.cta-section{
+  position:relative;z-index:1;max-width:860px;margin:0 auto;padding:0 28px 100px;
+  opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease-lux),transform .9s var(--ease-lux);
+}
+.cta-section.in{opacity:1;transform:translateY(0)}
+.cta-box{
+  background:linear-gradient(135deg,rgba(195,154,60,.25),rgba(195,154,60,.13));
+  border:1px solid rgba(195,154,60,.3);border-radius:var(--r-xl);
+  padding:52px 56px;text-align:center;position:relative;overflow:hidden;
+}
+@media(max-width:640px){.cta-box{padding:36px 26px}}
+.cta-box::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,rgba(233,200,124,.22),transparent 60%);pointer-events:none}
+.cta-tag{
+  display:inline-block;padding:6px 16px;border-radius:999px;background:rgba(32,49,42,.1);
+  border:1px solid rgba(32,49,42,.2);font-size:11px;font-weight:800;letter-spacing:.15em;
+  text-transform:uppercase;color:rgba(32,49,42,.8);margin-bottom:20px;position:relative;
+}
+.cta-box h2{font-family:'Lora',serif;font-weight:600;font-size:clamp(27px,4.5vw,42px);color:var(--ink);line-height:1.15;letter-spacing:-.02em;margin-bottom:14px;position:relative}
+.cta-box p{font-size:16px;color:rgba(32,49,42,.72);line-height:1.6;max-width:520px;margin:0 auto 34px;position:relative}
+.cta-btn{
+  display:inline-flex;align-items:center;gap:12px;padding:17px 42px;background:var(--bg);
+  color:var(--c-gold-ink);border:none;border-radius:999px;font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:800;cursor:pointer;text-decoration:none;position:relative;overflow:hidden;
+  box-shadow:0 14px 40px rgba(32,49,42,.22);transition:transform .25s var(--ease-settle),box-shadow .25s var(--ease-settle);
+}
+.cta-btn::before{
+  content:'';position:absolute;inset:0;transform:translateX(-100%);
+  background:linear-gradient(120deg,transparent 30%,rgba(195,154,60,.15) 50%,transparent 70%);
+  animation:btnShimmer 2.5s ease-in-out infinite;
+}
+@keyframes btnShimmer{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+.cta-btn:hover{transform:translateY(-3px);box-shadow:0 20px 50px rgba(32,49,42,.28)}
+.cta-meta{font-size:12.5px;color:rgba(32,49,42,.55);margin:22px auto 0 !important;max-width:none !important}
+
+/* ── FOOTER ── */
+.foot{border-top:1px solid rgba(32,49,42,.08);padding:26px 28px;text-align:center;font-size:12.5px;color:var(--muted)}
+
+/* ── REDUCED MOTION ── */
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.001s !important;animation-iteration-count:1 !important;transition-duration:.001s !important}
+  .section,.cta-section{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="scroll-track"><div class="scroll-bar" id="scrollBar"></div></div>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="platform.html">
+      <svg class="ai-logo-mark" width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      <span>Akademiet AI</span>
+    </a>
+    <span class="topbar-badge">Kursus C · Bibliotek-guiden</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow"><span class="hero-eyebrow-dot"></span>Mellem C2 og C3 · 10 minutter</div>
+  <h1>Få biblioteket til at <em>arbejde for dig</em></h1>
+  <p class="hero-sub">Du har gemt dine første prompts i C1 og C2 — nu bor de i <strong>dit personlige bibliotek</strong>. Denne guide viser dig hvordan hele biblioteket hænger sammen — og hvordan du organiserer dine prompts, så det rigtige altid er ét klik væk. Og du lærer det ved at <strong>gøre det</strong> — ikke ved at læse om det.</p>
+  <div class="hero-path">
+    <span class="hero-path-step done">C1 ✓</span>
+    <span class="hero-path-arrow">→</span>
+    <span class="hero-path-step done">C2 ✓</span>
+    <span class="hero-path-arrow">→</span>
+    <span class="hero-path-step now">Bibliotek-guiden</span>
+    <span class="hero-path-arrow">→</span>
+    <span class="hero-path-step">C3</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SEKTION 1: HVORFOR -->
+<div class="section" id="secWhy">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Hvorfor det betaler sig</div>
+  <h2>Et bibliotek der <em>vokser med dig</em></h2>
+  <p class="section-lead">De fleste skriver det samme prompt forfra igen og igen — og mister kvaliteten undervejs. Dit bibliotek gør det modsatte: hver gang du gemmer et prompt der virker, bliver du hurtigere og skarpere næste gang.</p>
+  <div class="why-grid">
+    <div class="why-item">
+      <span class="why-item-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg></span>
+      <h4>Ét klik i stedet for fem minutter</h4>
+      <p>Et godt prompt tager tid at formulere. Gemmer du det, skal du kun gøre arbejdet én gang — derefter er det altid klar.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-item-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
+      <h4>Kvaliteten stiger over tid</h4>
+      <p>Når du forbedrer et gemt prompt i stedet for at starte forfra, bygger du videre på det bedste du har lavet.</p>
+    </div>
+    <div class="why-item">
+      <span class="why-item-ic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3"/><path d="M15 3h6v6"/><path d="M21 3l-9 9"/></svg></span>
+      <h4>Med dig overalt</h4>
+      <p>Biblioteket er knyttet til din konto — ikke din computer. Dine prompts følger dig, uanset hvor du logger ind.</p>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SEKTION 1B: HELE BIBLIOTEKET -->
+<div class="section" id="secHub">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Overblikket</div>
+  <h2>Hele biblioteket — <em>ikke kun prompts</em></h2>
+  <p class="section-lead">Mit Bibliotek er mere end dine prompts. Det er din personlige samling på Akademiet AI, bygget op af tre hylder — og den vokser automatisk, hver gang du gennemfører noget nyt.</p>
+  <div class="hub-grid">
+    <div class="hub-card hub-focus">
+      <span class="hub-tag">Denne guide</span>
+      <span class="hub-card-ic"><svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+      <h4>Mine prompts</h4>
+      <p>Dit personlige prompt-bibliotek — skabelonerne fra kurserne og dine egne. Det er den hylde, resten af guiden handler om.</p>
+    </div>
+    <div class="hub-card">
+      <span class="hub-card-ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15h6M9 11h2"/></svg></span>
+      <h4>Mine filer</h4>
+      <p>Her finder du alle dine <strong>overblik</strong> — de downloadede cheat sheets fra C1 og C2 lander automatisk på denne hylde, og det samme gør overblikkene fra alle fremtidige kurser. Du skal aldrig lede efter dem igen.</p>
+    </div>
+    <div class="hub-card">
+      <span class="hub-card-ic"><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 9.9-1"/></svg></span>
+      <h4>Oplåsninger</h4>
+      <p>Værktøjer der låses op, efterhånden som du gennemfører kurser. Hylden fyldes løbende — kig forbi og se hvad der venter forude.</p>
+    </div>
+  </div>
+  <div class="hub-access">
+    <a class="hub-open-btn" href="mit-bibliotek.html" target="_blank" rel="noopener">
+      <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      Åbn Mit Bibliotek
+    </a>
+    <p class="hub-bm"><strong>Gem det som bogmærke med det samme:</strong> åbn biblioteket og tryk <span class="kbd">Ctrl</span>+<span class="kbd">D</span> (Windows) eller <span class="kbd">⌘</span>+<span class="kbd">D</span> (Mac). Så ligger det fast i din bogmærkelinje — og hele din samling er altid ét klik væk, uanset hvad du arbejder på.</p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SEKTION 2: KATEGORIER -->
+<div class="section" id="secCats">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Trin 1 · Prøv det her</div>
+  <h2>Kategorier er <em>dine</em> — helt frit</h2>
+  <p class="section-lead">Dine C1- og C2-prompts landede automatisk i kategorierne <strong>C1</strong> og <strong>C2</strong> — men du bestemmer selv. Omdøb, skift farve, opret nye, slet, og træk kategorierne i den rækkefølge du vil. Prøv det lige her: omdøb demo-kategorien og giv den en ny farve.</p>
+  <div class="demo-frame">
+    <div class="demo-head"><span class="demo-head-dot"></span><span class="demo-head-label">Prøv selv — ligesom i biblioteket</span></div>
+    <div class="demo-body">
+      <div class="catdemo-sec" id="catdemoSec">
+        <div class="catdemo-head">
+          <span class="catdemo-grip" title="I biblioteket trækker du her for at flytte kategorien"><svg viewBox="0 0 24 24"><path d="M9 5h.01M9 12h.01M9 19h.01M15 5h.01M15 12h.01M15 19h.01"/></svg></span>
+          <span class="catdemo-dot" id="catdemoDot"></span>
+          <span class="catdemo-name" id="catdemoName">Møder</span>
+          <span class="catdemo-count">3 prompts</span>
+        </div>
+        <div class="catdemo-rows">
+          <div class="catdemo-row"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Mødereferat på 2 minutter</div>
+          <div class="catdemo-row"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Dagsorden ud fra mødetråd</div>
+          <div class="catdemo-row"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>Opfølgnings-email efter møde</div>
+        </div>
+      </div>
+      <div class="catdemo-ctrl">
+        <div>
+          <label class="f-lab" for="catNameInput">Omdøb kategorien</label>
+          <input class="f-in" id="catNameInput" type="text" value="Møder" maxlength="30" autocomplete="off">
+        </div>
+        <div>
+          <span class="f-lab">Vælg farve</span>
+          <div class="swatches" id="catSwatches"></div>
+        </div>
+      </div>
+      <div class="catdemo-feats">
+        <div class="catdemo-feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span><strong>Opret nye kategorier</strong> til alt du vil — "Emails", "Rapporter", "Privat". Der er ingen grænse.</span></div>
+        <div class="catdemo-feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h.01M9 12h.01M9 19h.01M15 5h.01M15 12h.01M15 19h.01"/></svg><span><strong>Træk-og-slip</strong> i grebet til venstre flytter hele kategorien op eller ned i din rækkefølge.</span></div>
+        <div class="catdemo-feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></svg><span><strong>Omdøb &amp; farve</strong> når du vil — kategorien og alle dens prompts følger med.</span></div>
+        <div class="catdemo-feat"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg><span><strong>Slet kategorier</strong> du ikke bruger — biblioteket spørger altid først, så intet forsvinder ved et uheld.</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SEKTION 3: FAVORITTER & SORTERING -->
+<div class="section" id="secFav">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Trin 2 · Prøv det her</div>
+  <h2>Stjerner løfter det <em>bedste til tops</em></h2>
+  <p class="section-lead">Tryk på stjernen ud for et prompt, og der sker to ting: prompten hopper op i en automatisk <strong>Favoritter</strong>-sektion øverst i biblioteket — og den sorteres først i sin egen kategori. Prøv at give stjerner og trykke kopiér herunder, og se listen omorganisere sig selv.</p>
+  <div class="demo-frame">
+    <div class="demo-head"><span class="demo-head-dot"></span><span class="demo-head-label">Prøv selv — stjerner og sortering</span></div>
+    <div class="demo-body">
+      <div class="favdemo-sec" id="favSecWrap" style="display:none">
+        <div class="favdemo-sec-head"><svg class="fav-star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.7l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.5l6.5-.9z"/></svg>Favoritter</div>
+        <div class="favdemo-list" id="favList"></div>
+      </div>
+      <div class="favdemo-sec">
+        <div class="favdemo-sec-head"><span class="catdemo-dot" style="background:#2f6a4a;box-shadow:0 0 0 3px rgba(47,106,74,.15)"></span>Egne prompts</div>
+        <div class="favdemo-list" id="mainList"></div>
+      </div>
+      <div class="sortrule">
+        Sorteringen i hver kategori:
+        <span class="sortrule-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.7l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.5l6.5-.9z"/></svg>Stjerne</span>
+        <span class="sortrule-arrow">→</span>
+        <span class="sortrule-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Flest kopieringer</span>
+        <span class="sortrule-arrow">→</span>
+        <span class="sortrule-chip"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2"/><path d="M9 2h6"/></svg>Nyeste</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SEKTION 4: UDFYLDNINGS-FELTER — INTERAKTIV ØVELSE -->
+<div class="section" id="secFill">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Trin 3 · Øvelsen</div>
+  <h2>Skriv ét prompt — brug det <em>hundrede gange</em></h2>
+  <p class="section-lead">Bibliotekets stærkeste værktøj: skriver du <strong>[udfyldnings-felter]</strong> i firkantede parenteser i dit prompt, genkender biblioteket dem automatisk. Når du så skal bruge prompten, får du små felter at udfylde — og en færdig, personlig version med ét klik. Skriv dit eget prompt herunder og se det ske live.</p>
+  <div class="demo-frame">
+    <div class="demo-head"><span class="demo-head-dot"></span><span class="demo-head-label">Øvelse — skriv dit eget prompt med felter</span></div>
+    <div class="demo-body">
+      <label class="f-lab" for="exPrompt">Dit prompt — brug [felter] til alt der skifter fra gang til gang</label>
+      <textarea class="f-ta" id="exPrompt" spellcheck="false" placeholder="Fx: Skriv en venlig email til [modtager] om [emne]. Hold den under [antal ord] ord."></textarea>
+      <p class="ex-hint">Tomt felt? <button class="ex-insert" id="exInsert" type="button">Indsæt et eksempel</button> — eller skriv et prompt fra dit eget arbejde. Alt i <b>[firkantede parenteser]</b> bliver til et felt.</p>
+      <div class="ph-chips" id="exChips"><span class="ph-chips-empty">Felterne dukker op her, når du skriver [noget] i parenteser …</span></div>
+      <div class="ex-fields" id="exFields"></div>
+      <div class="ex-prev-wrap" id="exPrevWrap" style="display:none">
+        <span class="f-lab">Live preview — præcis som bibliotekets udfyld-vindue</span>
+        <div class="ex-prev" id="exPrev"></div>
+        <div class="ex-legend">
+          <span><i class="lg-f"></i>Udfyldt felt</span>
+          <span><i class="lg-e"></i>Mangler stadig</span>
+        </div>
+        <button class="ex-copy" id="exCopy" type="button">
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          <span id="exCopyLabel">Kopiér den færdige prompt</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- SEKTION 5: DUBLÉR -->
+<div class="section" id="secDup">
+  <div class="section-eyebrow"><span class="section-eyebrow-line"></span>Trin 4 · Sidste greb</div>
+  <h2>Dublér — lav <em>varianter</em> uden risiko</h2>
+  <p class="section-lead">Har du et prompt der virker, men vil prøve en anden vinkel? <strong>Dublér</strong> laver en kopi med "(kopi)" i titlen, som du kan eksperimentere frit med — originalen står urørt. Prøv knappen:</p>
+  <div class="demo-frame">
+    <div class="demo-head"><span class="demo-head-dot"></span><span class="demo-head-label">Prøv selv — dublér et prompt</span></div>
+    <div class="demo-body">
+      <div class="dupdemo" id="dupList">
+        <div class="pdemo-card">
+          <div class="pdemo-info">
+            <div class="pdemo-title">Skarp email-omskrivning</div>
+            <div class="pdemo-meta">Egne prompts</div>
+          </div>
+          <button class="dup-btn" id="dupBtn" type="button">
+            <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Dublér
+          </button>
+        </div>
+      </div>
+      <p class="dup-note"><strong>Sådan bruger de bedste det:</strong> behold ét "moder-prompt" der altid virker, og dublér det når du vil skræddersy en version til en bestemt kunde, kollega eller opgave.</p>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-box">
+    <span class="cta-tag">Biblioteket er dit</span>
+    <h2>Videre til Kursus C3</h2>
+    <p>Du ved nu hvordan du gemmer, organiserer og genbruger dine bedste prompts. I C3 tager du dem med ind i møder og indholdsproduktion — hvor de for alvor sparer dig tid.</p>
+    <a href="kursus-c3.html" class="cta-btn" id="ctaBtn">
+      Gå til Kursus C3
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+    </a>
+    <p class="cta-meta">Åbn <a href="mit-bibliotek.html" style="color:var(--c-gold-deep);font-weight:700">dit bibliotek</a> i en anden fane og prøv det hele med dine egne prompts</p>
+  </div>
+</div>
+
+<footer class="foot">Akademiet AI · Bibliotek-guiden er en del af Kursus C</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+'use strict';
+var $ = function(id){ return document.getElementById(id); };
+
+/* ── Hjælpere — porteret fra mit-bibliotek.html ── */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function phFind(text){
+  var re = /\[([^\[\]\n]{1,80})\]/g, found = [], seen = {};
+  var m;
+  while((m = re.exec(text)) !== null){
+    var tag = m[1].trim(), key = tag.toLowerCase();
+    if(tag && !seen[key]){ seen[key] = true; found.push({ tag: tag, raw: m[0] }); }
+  }
+  return found;
+}
+function sortPrompts(list){
+  return list.slice().sort(function(a, b){
+    return (b.starred - a.starred) || ((b.copyCount || 0) - (a.copyCount || 0)) || ((b.createdAt || 0) - (a.createdAt || 0));
+  });
+}
+
+/* ── Toast ── */
+var toastT = null;
+function showToast(msg){
+  var t = $('toast');
+  t.innerHTML = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' + msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(function(){ t.classList.remove('show'); }, 2600);
+}
+
+/* ── Scroll progress ── */
+window.addEventListener('scroll', function(){
+  var h = document.documentElement;
+  var max = h.scrollHeight - h.clientHeight;
+  var p = max > 0 ? (h.scrollTop / max) * 100 : 0;
+  $('scrollBar').style.width = p + '%';
+}, { passive: true });
+
+/* ── Reveal ── */
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }
+  });
+}, { threshold: 0.08 });
+document.querySelectorAll('.section,.cta-section').forEach(function(el){ obs.observe(el); });
+
+/* ══════════ DEMO 1: KATEGORI — omdøb & farve ══════════ */
+var CAT_COLORS = ['#b8902a','#2f6a4a','#8a3b2e','#2e4a6b','#5d3a5e','#b26a1e','#2f6060','#3d4a44'];
+var catColor = CAT_COLORS[0];
+function applyCatColor(c){
+  catColor = c;
+  $('catdemoDot').style.background = c;
+  $('catdemoDot').style.boxShadow = '0 0 0 3px ' + c + '26';
+  $('catdemoSec').style.borderColor = c + '55';
+  document.querySelectorAll('#catSwatches .swatch').forEach(function(s){
+    s.classList.toggle('on', s.dataset.c === c);
+  });
+}
+$('catSwatches').innerHTML = CAT_COLORS.map(function(c){
+  return '<button class="swatch" type="button" data-c="' + c + '" style="background:' + c + '" aria-label="Vælg farve ' + c + '"></button>';
+}).join('');
+$('catSwatches').addEventListener('click', function(e){
+  var b = e.target.closest('.swatch');
+  if(!b) return;
+  applyCatColor(b.dataset.c);
+  showToast('Kategorien har fået ny farve');
+});
+applyCatColor(CAT_COLORS[0]);
+var catNameT = null;
+$('catNameInput').addEventListener('input', function(){
+  var v = this.value.trim() || 'Uden navn';
+  var el = $('catdemoName');
+  el.classList.add('swap');
+  clearTimeout(catNameT);
+  catNameT = setTimeout(function(){
+    el.textContent = v;
+    el.classList.remove('swap');
+  }, 140);
+});
+
+/* ══════════ DEMO 2: FAVORITTER & SORTERING ══════════ */
+var demoPrompts = [
+  { id: 'dp1', title: 'Mødereferat på 2 minutter', starred: false, copyCount: 0, createdAt: 3 },
+  { id: 'dp2', title: 'Skarp email-omskrivning',   starred: false, copyCount: 0, createdAt: 2 },
+  { id: 'dp3', title: 'Ugeplan for projektet',     starred: false, copyCount: 0, createdAt: 1 }
+];
+var STAR_PATH = '<path d="M12 2.7l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5-5.8-3-5.8 3 1.1-6.5L2.6 9.5l6.5-.9z"/>';
+function pdemoCardHtml(p){
+  return '<div class="pdemo-card" data-pid="' + p.id + '">' +
+    '<button class="pdemo-star' + (p.starred ? ' on' : '') + '" type="button" data-star="' + p.id + '" aria-label="' + (p.starred ? 'Fjern stjerne' : 'Giv stjerne') + '" aria-pressed="' + (p.starred ? 'true' : 'false') + '"><svg viewBox="0 0 24 24">' + STAR_PATH + '</svg></button>' +
+    '<div class="pdemo-info"><div class="pdemo-title">' + esc(p.title) + '</div><div class="pdemo-meta">' + (p.starred ? 'Favorit · ' : '') + 'Kopieret ' + (p.copyCount || 0) + ' gange</div></div>' +
+    '<button class="pdemo-copy" type="button" data-copy="' + p.id + '"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Kopiér<span class="pdemo-count">' + (p.copyCount || 0) + '</span></button>' +
+  '</div>';
+}
+function renderFavDemo(popId){
+  var starred = sortPrompts(demoPrompts.filter(function(p){ return p.starred; }));
+  var all = sortPrompts(demoPrompts);
+  $('favSecWrap').style.display = starred.length ? '' : 'none';
+  $('favList').innerHTML = starred.map(pdemoCardHtml).join('');
+  $('mainList').innerHTML = all.map(pdemoCardHtml).join('');
+  if(popId){
+    document.querySelectorAll('.pdemo-card[data-pid="' + popId + '"]').forEach(function(c){ c.classList.add('pop'); });
+  }
+}
+function findDemo(id){
+  for(var i = 0; i < demoPrompts.length; i++){ if(demoPrompts[i].id === id) return demoPrompts[i]; }
+  return null;
+}
+document.addEventListener('click', function(e){
+  var sb = e.target.closest('[data-star]');
+  if(sb){
+    var p = findDemo(sb.dataset.star);
+    if(!p) return;
+    p.starred = !p.starred;
+    renderFavDemo(p.id);
+    showToast(p.starred ? '"' + esc(p.title) + '" er nu en favorit' : 'Stjernen er fjernet');
+    return;
+  }
+  var cb = e.target.closest('[data-copy]');
+  if(cb){
+    var pc = findDemo(cb.dataset.copy);
+    if(!pc) return;
+    pc.copyCount = (pc.copyCount || 0) + 1;
+    renderFavDemo(pc.id);
+    showToast('Kopieret — se hvordan sorteringen rykker');
+  }
+});
+renderFavDemo(null);
+
+/* ══════════ DEMO 3: UDFYLDNINGS-ØVELSE — parsing som bibliotekets udfyld-vindue ══════════ */
+var EX_SAMPLE = 'Du er en erfaren kommunikationsrådgiver. Skriv en professionel og venlig email til [modtager] om [emne].\n\nKontekst: [beskriv situationen kort]\n\nKrav:\n- Maks [antal ord] ord\n- Tonen skal være [tone]\n- Afslut med et konkret næste skridt';
+var exState = { phs: [], values: {} };
+
+function isLongField(tag){
+  return /tekst|email|emne|beskriv|kontekst|baggrund|indhold|udkast|opgave|situation|tråd/i.test(tag);
+}
+function rebuildFields(){
+  var text = $('exPrompt').value;
+  var phs = phFind(text);
+  var prevValues = exState.values;
+  exState.phs = phs;
+  var newValues = {};
+  phs.forEach(function(ph){
+    var key = ph.tag.toLowerCase();
+    if(prevValues[key] !== undefined) newValues[key] = prevValues[key];
+  });
+  exState.values = newValues;
+
+  if(!phs.length){
+    $('exChips').innerHTML = text.trim()
+      ? '<span class="ph-chips-empty">Ingen felter endnu — skriv [noget] i firkantede parenteser …</span>'
+      : '<span class="ph-chips-empty">Felterne dukker op her, når du skriver [noget] i parenteser …</span>';
+  } else {
+    $('exChips').innerHTML = phs.map(function(ph){
+      return '<span class="ph-chip">[' + esc(ph.tag) + ']</span>';
+    }).join('');
+  }
+
+  $('exFields').innerHTML = phs.map(function(ph, i){
+    var long = isLongField(ph.tag);
+    var cap = ph.tag.charAt(0).toUpperCase() + ph.tag.slice(1);
+    var key = ph.tag.toLowerCase();
+    var val = exState.values[key] || '';
+    return '<label class="f-lab" for="exf' + i + '">' + esc(cap) + '</label>' +
+      (long
+        ? '<textarea class="f-ta" id="exf' + i + '" data-tag="' + esc(ph.raw) + '" data-key="' + esc(key) + '" placeholder="Skriv her …">' + esc(val) + '</textarea>'
+        : '<input class="f-in" id="exf' + i + '" type="text" data-tag="' + esc(ph.raw) + '" data-key="' + esc(key) + '" placeholder="Skriv her …" value="' + esc(val) + '">');
+  }).join('');
+
+  $('exPrevWrap').style.display = phs.length ? '' : 'none';
+  updateExPrev();
+}
+function builtText(){
+  var text = $('exPrompt').value;
+  $('exFields').querySelectorAll('[data-tag]').forEach(function(inp){
+    var v = inp.value.trim();
+    if(v) text = text.split(inp.dataset.tag).join(v);
+  });
+  return text;
+}
+function updateExPrev(){
+  if(!exState.phs.length) return;
+  var text = $('exPrompt').value;
+  $('exFields').querySelectorAll('[data-tag]').forEach(function(inp){
+    var v = inp.value.trim();
+    if(v) text = text.split(inp.dataset.tag).join('\u0001' + v + '\u0002');
+  });
+  var h = esc(text)
+    .replace(/\u0001/g, '<span class="ph-f">').replace(/\u0002/g, '</span>')
+    .replace(/\[([^\[\]\n]{1,80})\]/g, '<span class="ph-e">[$1]</span>');
+  $('exPrev').innerHTML = h;
+}
+var exRebuildT = null;
+$('exPrompt').addEventListener('input', function(){
+  clearTimeout(exRebuildT);
+  exRebuildT = setTimeout(rebuildFields, 200);
+});
+$('exFields').addEventListener('input', function(e){
+  var inp = e.target.closest('[data-key]');
+  if(inp) exState.values[inp.dataset.key] = inp.value;
+  updateExPrev();
+});
+$('exInsert').addEventListener('click', function(){
+  $('exPrompt').value = EX_SAMPLE;
+  rebuildFields();
+  $('exPrompt').focus();
+});
+function copyText(text, done){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); } catch(err){}
+  document.body.removeChild(ta);
+  done();
+}
+$('exCopy').addEventListener('click', function(){
+  var btn = this;
+  copyText(builtText(), function(){
+    btn.classList.add('copied');
+    $('exCopyLabel').textContent = 'Kopieret ✓';
+    showToast('Færdig prompt kopieret — indsæt med Ctrl+V');
+    setTimeout(function(){
+      btn.classList.remove('copied');
+      $('exCopyLabel').textContent = 'Kopiér den færdige prompt';
+    }, 2200);
+  });
+});
+
+/* ══════════ DEMO 4: DUBLÉR ══════════ */
+$('dupBtn').addEventListener('click', function(){
+  var btn = this;
+  btn.disabled = true;
+  var card = document.createElement('div');
+  card.className = 'pdemo-card pop';
+  card.innerHTML = '<div class="pdemo-info"><div class="pdemo-title">Skarp email-omskrivning (kopi)</div><div class="pdemo-meta">Egne prompts · klar til eksperimenter</div></div>';
+  $('dupList').appendChild(card);
+  showToast('Prompten er dubleret — originalen er urørt');
+  setTimeout(function(){ btn.disabled = false; }, 1600);
+});
+
+})();
+</script>
+</body>
+</html>
