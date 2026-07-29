@@ -69,6 +69,7 @@ code{background:var(--gold-tint);border:1px solid var(--border);border-radius:5p
 .tag{font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:4px 11px;border-radius:999px}
 .tag.reskin{background:var(--gold-tint);color:var(--gold-ink);border:1px solid var(--gold-warm)}
 .tag.fresh{background:var(--green-bg);color:#0f5132;border:1px solid #a7d3b4}
+.tag.bygget{background:#d8ecdd;color:#256b41;border:1px solid #9ecdac}
 .pc-body{padding:18px 22px}
 .pc-note{font-size:13.5px;color:var(--muted);margin-bottom:14px}
 .prompt-box{position:relative;background:#26332b;border-radius:var(--r-sm);overflow:hidden}
@@ -264,6 +265,17 @@ ${tok}
 4. Validér (node --check + lxml), Playwright-screenshot, lever via present_files.`;
 
 const prompts = [
+ {n:'Bibliotek-guiden (MELLEM C2 og C3)',fil:'bibliotek-guide-c.html',type:'bygget',tok:null,
+  note:'FÆRDIG og live (fase 2b, L5). Selvstændig guide-side i forløbet C2 → guide → C3. Accent #c39a3c (midtpunkt mellem C2 #c9a040 og C3 #bd9438; deep #8b6722, mid #d1ab59, warm #e9c87c, ink #5d4116). C2\'s afrunding linker hertil — filnavnet er låst.',
+  body:`STATUS: Bygget og godkendt — ingen bygge-prompt nødvendig.
+
+Siden ligger i forløbet MELLEM kursus-c2.html og kursus-c3.html og lærer kursisten at bruge Mit Bibliotek ved at GØRE (interaktive demoer, ikke tekst):
+- Hub-overblik: Mine prompts / Mine filer / Oplåsninger + "Åbn Mit Bibliotek"-knap + bogmærke-guide (Ctrl+D / Cmd+D)
+- Kategori-demo (omdøb + CAT_COLORS-farver), stjerne/sorterings-demo (stjerne → kopieringer → nyeste), [udfyldnings-felter]-øvelse med bibliotekets ægte parsing-logik, Dublér-demo
+- CTA videre til kursus-c3.html
+
+VED SENERE ÆNDRINGER: hent live rå-fil fra GitHub først, kirurgiske str_replace, accenten #c39a3c må ikke skifte, og C2\'s link til siden må aldrig brydes. Fuld byggeplan for hele biblioteket: mit-bibliotek-byggeplan.html.`},
+
  {n:'C3 · Møder & indhold',fil:'kursus-c3.html',type:'reskin',tok:T['C3'],
   note:'Findes i gammelt violet look (2330 linjer). Har møde-simulatoren i Modul 4 (claude-haiku, 5 runder, 3 forsøg) — dens JS må IKKE røres funktionelt, kun farver.',
   body:reskinSteps('kursus-c3.html',tokBlock(T['C3']),'   SÆRLIGT: møde-simulatorens JS (simScores, buildSystemPrompt, parseMoodsRobust, unlockM5) og lås-logikken er urørt funktionelt — recolor kun.')},
@@ -359,7 +371,7 @@ Tag siderne én ad gangen så kvaliteten holdes.`}
 const list = document.getElementById('promptList');
 prompts.forEach((p,i)=>{
   const card=document.createElement('div'); card.className='prompt-card';
-  const tagTxt = p.type==='reskin'?'Re-skin':'Byg frisk';
+  const tagTxt = p.type==='reskin'?'Re-skin':(p.type==='bygget'?'Bygget \u2713':'Byg frisk');
   card.innerHTML =
    `<div class="pc-head">
       <div class="pc-badge">${i+1}</div>
