@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mit Bibliotek — Byggeplan</title>
+<style>
+  :root{
+    --green:#2F5D45; --green-deep:#143a2c; --caramel:#B9772B; --ivory:#F3F0E7;
+    --gold:#E0B33D; --ink:#20312a; --muted:#6b7a70; --line:#ddd6c4;
+    --card:#fbf7ee; --done:#e3efe6; --done-border:#3f8a63; --done-text:#1f5238;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Outfit',system-ui,-apple-system,'Segoe UI',sans-serif;
+    background:linear-gradient(160deg,#ece6d8,#e6dfce);
+    color:var(--ink); line-height:1.5; padding:28px 16px 60px; min-height:100vh;
+  }
+  .wrap{max-width:900px;margin:0 auto}
+  h1{font-family:Georgia,'Lora',serif;font-size:clamp(26px,4vw,36px);color:var(--green-deep);font-weight:700;letter-spacing:-0.01em}
+  .sub{color:var(--muted);margin-top:6px;font-size:15px}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .progress-wrap{margin:18px 0 8px}
+  .progress-track{height:12px;background:#d9d1bf;border-radius:50px;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,0.12)}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--caramel),var(--gold));border-radius:50px;transition:width .45s cubic-bezier(.2,.8,.2,1)}
+  .progress-label{font-size:14px;color:var(--muted);margin-top:7px;font-weight:600}
+  .progress-label b{color:var(--green-deep)}
+  .order{background:rgba(185,119,43,0.10);border:1px solid rgba(185,119,43,0.28);border-radius:12px;padding:12px 15px;font-size:13.5px;color:#5e4a2c;margin-bottom:26px}
+  .order b{color:var(--caramel)}
+  .lane{margin-bottom:14px}
+  .lane-label{display:flex;align-items:center;gap:9px;font-family:Georgia,serif;font-size:18px;color:var(--green-deep);font-weight:700;margin:22px 0 12px}
+  .lane-label .dot{width:11px;height:11px;border-radius:50%;background:var(--caramel);flex:none}
+  .arrow{text-align:center;color:#b9b09a;font-size:20px;margin:2px 0 4px;user-select:none}
+  .cards{display:grid;gap:11px}
+  .card{
+    background:var(--card);border:1.5px solid var(--line);border-radius:14px;
+    padding:14px 16px 14px 14px;display:flex;gap:13px;align-items:flex-start;cursor:pointer;
+    transition:background .2s,border-color .2s,transform .12s,box-shadow .2s;
+    box-shadow:0 2px 8px rgba(20,52,40,0.05);
+  }
+  .card:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(20,52,40,0.10);border-color:#c9bfa3}
+  .card.done{background:var(--done);border-color:var(--done-border)}
+  .check{
+    flex:none;width:26px;height:26px;border-radius:50%;border:2px solid #c4bca6;background:#fff;
+    display:flex;align-items:center;justify-content:center;margin-top:2px;transition:.2s;
+  }
+  .check svg{width:15px;height:15px;stroke:#fff;stroke-width:3.2;fill:none;opacity:0;transition:.15s;stroke-linecap:round;stroke-linejoin:round}
+  .card.done .check{background:var(--done-border);border-color:var(--done-border)}
+  .card.done .check svg{opacity:1}
+  .body{flex:1;min-width:0}
+  .row1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .name{font-weight:700;font-size:16px;color:var(--ink)}
+  .card.done .name{color:var(--done-text)}
+  .tag{font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:3px 7px;border-radius:6px;text-transform:uppercase}
+  .tag.ny{background:#e6ddf3;color:#5b3b8c}
+  .tag.bygget{background:#d8ecdd;color:#256b41}
+  .tag.opdater{background:#fbe7cf;color:#9a5a16}
+  .tag.eksisterer{background:#e3e0d6;color:#6b6450}
+  .tag.sidst{background:#f7dede;color:#9e3b3b}
+  .file{font-family:'SFMono-Regular',Consolas,monospace;font-size:12.5px;color:var(--caramel);background:rgba(185,119,43,0.08);padding:1px 6px;border-radius:5px;display:inline-block;margin-top:4px}
+  .desc{font-size:13.5px;color:#4c5a51;margin-top:6px}
+  .note{font-size:12.5px;color:#8a6a3a;background:rgba(224,179,61,0.12);border-left:3px solid var(--gold);padding:5px 9px;border-radius:0 6px 6px 0;margin-top:7px}
+  .btn{background:none;border:1.5px solid #c4bca6;color:var(--muted);font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:50px;cursor:pointer;transition:.2s}
+  .btn:hover{border-color:var(--caramel);color:var(--caramel)}
+  .foot{text-align:center;color:#9a9382;font-size:12px;margin-top:30px}
+  @media(max-width:560px){ .card{padding:13px} .name{font-size:15px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div>
+      <h1>Mit Bibliotek — Byggeplan</h1>
+      <p class="sub">Klik et felt for at farve det grønt når det er færdigt. Status gemmes automatisk. Fase 1, 2 og 2b er allerede markeret færdige.</p>
+    </div>
+    <button class="btn" id="resetBtn">Nulstil alt</button>
+  </div>
+
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="fill"></div></div>
+    <div class="progress-label" id="plabel">Henter…</div>
+  </div>
+
+  <div class="order">
+    <b>Rækkefølge herfra:</b> Fase 3 (Fil-view + cheat sheets) → Fase 4 (Oplåsninger) → Fase 5 (Integration) → Fase 6 (Fuldt systemtjek). Fase 1, 2 og 2b er færdige og live. Hver fase bygges i en frisk chat med "LÆS FØRST"-reglen: seneste bibliotek-chats + denne plan + live rå-filer fra GitHub før redigering.
+  </div>
+
+  <div id="board"></div>
+
+  <p class="foot">Skovkammer-overblik · status gemmes i denne tjekliste</p>
+</div>
+
+<script>
+const ITEMS = [
+
+  {g:"Fase 1 \u00b7 Fundament \u2014 F\u00c6RDIG", id:"f1", name:"Skelet, design-system og hub", file:"mit-bibliotek.html", tag:"bygget", tagText:"Bygget",
+   desc:"Single-file SPA med hash-routing (#hub, #prompts, #filer, #oplaasninger), Honning & Skov-design, Firebase login-gate og hub-view med de tre kabinetter: Mine prompts, Mine filer, Opl\u00e5sninger. Uploadet og live."},
+
+  {g:"Fase 2 \u00b7 Prompt-view \u2014 F\u00c6RDIG", id:"f2", name:"Det fulde prompt-bibliotek", file:"mit-bibliotek.html", tag:"bygget", tagText:"Bygget",
+   desc:"Firestore-sync: prompts i users/{uid}/prompts (title, text, catId, starred, copyCount, createdAt, source), kategorier som promptCategories p\u00e5 brugerdokumentet. Frit kategorisystem (opret/omd\u00f8b/farv/slet), tr\u00e6k-og-slip med touch-fallback, automatisk Favoritter-sektion, sortering (stjerne \u2192 kopieringer \u2192 nyeste), udfyld-vindue med [felter], Dubl\u00e9r, \u00e9ngangs-migration fra learnai_prompt_library_v2 (mig_-id'er).",
+   note:"Datamodellen er l\u00e5st \u2014 fase 3\u20136 m\u00e5 ikke \u00e6ndre den. August har tilf\u00f8jet Firestore-reglen for subcollectionen."},
+
+  {g:"Fase 2b \u00b7 Kursus-integration (L1\u2013L5) \u2014 F\u00c6RDIG", id:"l1", name:"L1 \u00b7 Gem-knapper i C1", file:"kursus-c1.html", tag:"bygget", tagText:"Bygget",
+   desc:"Gem-knap p\u00e5 alle 12 prompt-kort (c1p1\u2013c1p12) med kopi-cinema, spinner og oval gem-toast. Prompts lander i C1-kategorien (#c2a038)."},
+  {g:"Fase 2b \u00b7 Kursus-integration (L1\u2013L5) \u2014 F\u00c6RDIG", id:"l2", name:"L2 \u00b7 C2 Modul 5 genopbygget", file:"kursus-c2.html", tag:"bygget", tagText:"Bygget",
+   desc:"Modul 5 er nu et prompt-inspirationsmodul: 8 kort fra C2_PROMPTS (c2p1\u2013c2p8), anatomi-boks, afrunding der peger p\u00e5 bibliotek-guide-c.html. Bulk-logikken (addC2AndOpen m.m.) fjernet; PDF-snydelappen bevaret byte-identisk. Alle bibliotek.html-links retargetet til mit-bibliotek.html#prompts."},
+  {g:"Fase 2b \u00b7 Kursus-integration (L1\u2013L5) \u2014 F\u00c6RDIG", id:"l3", name:"L3 \u00b7 Kategori-v\u00e6lger i C1 + C2", file:"kursus-c1.html \u00b7 kursus-c2.html", tag:"bygget", tagText:"Bygget",
+   desc:"libraryOpened-flaget styrer knappen: ikke sat \u2192 \u201cGem til senere\u201d (direkte gem); sat \u2192 \u201cTilf\u00f8j til dit bibliotek\u201d med kategori-v\u00e6lger (v\u00e6lg eksisterende eller opret ny med farve fra CAT_COLORS, som ensureCat). Gem-toast viser kategorinavn."},
+  {g:"Fase 2b \u00b7 Kursus-integration (L1\u2013L5) \u2014 F\u00c6RDIG", id:"l4", name:"L4 \u00b7 Forberedelses-afsnit", file:"forberedelse-c.html", tag:"bygget", tagText:"Bygget",
+   desc:"\u201cByg dit bibliotek undervejs\u201d-sektion (accent #b8902a) med visuel kopi af gem-knappen, s\u00e5 kursisten genkender den i C1/C2."},
+  {g:"Fase 2b \u00b7 Kursus-integration (L1\u2013L5) \u2014 F\u00c6RDIG", id:"l5", name:"L5 \u00b7 Bibliotek-guiden", file:"bibliotek-guide-c.html", tag:"bygget", tagText:"Bygget",
+   desc:"Selvst\u00e6ndig side MELLEM C2 og C3 (accent #c39a3c \u2014 midtpunkt mellem C2 og C3). Interaktive demoer: kategorier, stjerner/sortering, [udfyldnings-felter]-\u00f8velse med bibliotekets \u00e6gte parsing, Dubl\u00e9r. Plus hub-overblik (Mine prompts / Mine filer / Opl\u00e5sninger), \u00c5bn-knap og bogm\u00e6rke-guide (Ctrl+D / \u2318+D). Peger videre til kursus-c3.html."},
+
+  {g:"Fase 3 \u00b7 Fil-view + cheat sheets", id:"f3a", name:"completedModules-feltet", file:"kursus-sider + Firestore", tag:"ny", tagText:"Ny",
+   desc:"Kurssiderne skal skrive completedModules (array) til users/{uid} ved quiz-/modul-gennemf\u00f8relse, s\u00e5 fil-hylden ved hvilke cheat sheets der er l\u00e5st op. F\u00f8rste skridt i fasen \u2014 fil-view g\u00e5r p\u00e5 dette felt.",
+   note:"Koordin\u00e9r med August: Firestore-regler skal tillade feltet, og skrivningen skal ske samme sted som coins/quiz-status."},
+  {g:"Fase 3 \u00b7 Fil-view + cheat sheets", id:"f3b", name:"C1 cheat sheet \u2014 redesign", file:"kursus-c1.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"Erstat hele jsPDF-downloaden (gammelt violet look, \u00f8delagte pile-glyffer og letter-spacing) med HTML-rendering + print-stylesheet i Honning & Skov. Fjern jsPDF-koden fra kursus-c1.html.",
+   note:"Besluttet i discovery: jsPDF droppes helt \u2014 ingen fonts-hack. Cheat sheetet har v\u00e6ret fredet gennem hele C-redesignet netop til denne fase."},
+  {g:"Fase 3 \u00b7 Fil-view + cheat sheets", id:"f3c", name:"C2 cheat sheet \u2014 samme system", file:"kursus-c2.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"PDF-snydelappen i C2 (bevaret byte-identisk gennem fase 2b) flyttes over p\u00e5 samme HTML + print-l\u00f8sning som C1's, s\u00e5 begge overblik ser ens ud."},
+  {g:"Fase 3 \u00b7 Fil-view + cheat sheets", id:"f3d", name:"Fil-view \u2014 \u201cMine filer\u201d-hylden", file:"mit-bibliotek.html", tag:"ny", tagText:"Ny",
+   desc:"Hylden g\u00f8res levende: \u00e9t kort pr. gennemf\u00f8rt kursus (C1, C2 og alle fremtidige) med \u00e5bn/print/download af overblikket. Cheat sheets lander automatisk her via completedModules \u2014 t\u00e6lleren p\u00e5 hub-kabinettet virker allerede."},
+
+  {g:"Fase 4 \u00b7 Opl\u00e5snings-view", id:"f4", name:"Opl\u00e5sninger-hylden", file:"mit-bibliotek.html", tag:"ny", tagText:"Ny",
+   desc:"Vis v\u00e6rkt\u00f8jer der l\u00e5ses op pr. gennemf\u00f8rt kursus \u2014 b\u00e5de dem man HAR (klik og brug) og dem der venter forude (l\u00e5st, med krav). Empty-state findes allerede fra fase 1.",
+   note:"Kr\u00e6ver beslutning fra Alexander f\u00f8rst: hvilke v\u00e6rkt\u00f8jer, og hvad l\u00e5ser dem op (kurser? coins?). Byg ikke f\u00f8r listen er godkendt."},
+
+  {g:"Fase 5 \u00b7 Integration", id:"f5a", name:"C2's links retargetet", file:"kursus-c2.html", tag:"bygget", tagText:"Bygget",
+   desc:"Allerede gjort i fase 2b (L2): alle gamle bibliotek.html-links i C2 peger nu p\u00e5 mit-bibliotek.html#prompts."},
+  {g:"Fase 5 \u00b7 Integration", id:"f5b", name:"Platform-navigation", file:"platform.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"Synligt \u201cMit Bibliotek\u201d-indgangspunkt p\u00e5 platformen (topbar eller kort), s\u00e5 biblioteket kan n\u00e5s uden at g\u00e5 gennem et kursus.",
+   note:"Hent live platform.html f\u00f8rst \u2014 husk ogs\u00e5 det \u00e5bne punkt om Kursus C-kortet (\u201cTag Kursus C+\u201d n\u00e5r completedCourses indeholder 'C')."},
+  {g:"Fase 5 \u00b7 Integration", id:"f5c", name:"bibliotek.html \u2192 redirect", file:"bibliotek.html", tag:"opdater", tagText:"Opdat\u00e9r",
+   desc:"Den gamle localStorage-side g\u00f8res til en \u00f8jeblikkelig redirect til mit-bibliotek.html. SLET IKKE filen \u2014 gamle links og bogm\u00e6rker skal stadig virke.",
+   note:"Redirect f\u00f8rst N\u00c5R migrationen er verificeret i fase 6 \u2014 ellers kan brugere miste adgang til gamle lokale prompts."},
+
+  {g:"Fase 6 \u00b7 Fuldt systemtjek", id:"f6a", name:"Ende-til-ende flow", file:"hele kæden", tag:"sidst", tagText:"Sidst",
+   desc:"Som rigtig bruger: gem prompts i C1 og C2 \u2192 \u00e5bn biblioteket (libraryOpened s\u00e6ttes) \u2192 kategori-v\u00e6lgeren skifter tekst i kurserne \u2192 kategorier/favoritter/sortering/udfyld/Dubl\u00e9r \u2192 guiden mellem C2 og C3 \u2192 fil-hylden viser cheat sheets \u2192 opl\u00e5sninger. Alt skal h\u00e6nge sammen uden d\u00f8de links."},
+  {g:"Fase 6 \u00b7 Fuldt systemtjek", id:"f6b", name:"Migration + gamle brugere", file:"bibliotek.html \u2192 mit-bibliotek.html", tag:"sidst", tagText:"Sidst",
+   desc:"Verific\u00e9r at learnai_prompt_library_v2-migrationen henter gamle lokale prompts korrekt ind i Firestore (mig_-id'er, ingen dubletter ved gentagne bes\u00f8g) \u2014 F\u00d8R redirect'en aktiveres."},
+  {g:"Fase 6 \u00b7 Fuldt systemtjek", id:"f6c", name:"Mobil, tastatur og konsol", file:"alle ber\u00f8rte sider", tag:"sidst", tagText:"Sidst",
+   desc:"390px-gennemgang af bibliotek + guide + kursus-flows (tr\u00e6k-og-slip touch-fallback!), tastaturnavigation p\u00e5 alle interaktive elementer, nul console-fejl."},
+  {g:"Fase 6 \u00b7 Fuldt systemtjek", id:"f6d", name:"Firestore-regler med August", file:"Firebase (learnai-dk)", tag:"sidst", tagText:"Sidst",
+   desc:"Gennemg\u00e5 reglerne sammen med August: prompts-subcollection, promptCategories, libraryOpened, completedModules \u2014 kun ejeren kan l\u00e6se/skrive sit eget. Ingen API-n\u00f8gler i HTML; alt AI g\u00e5r fortsat gennem learnai-proxy."},
+];
+
+const KEY = 'mit-bibliotek-byggeplan-v1';
+const DEFAULT_DONE = {f1:true, f2:true, l1:true, l2:true, l3:true, l4:true, l5:true, f5a:true};
+const hasStore = typeof window!=='undefined' && window.storage && typeof window.storage.get==='function';
+let done = {};
+
+const CHECK_SVG = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>';
+
+async function loadDone(){
+  if(hasStore){
+    try{
+      const r = await window.storage.get(KEY);
+      if(r && r.value){ done = JSON.parse(r.value) || {}; return; }
+    }catch(e){ /* ny / tom \u2014 fald igennem til default */ }
+    done = Object.assign({}, DEFAULT_DONE);
+    return;
+  }
+  try{
+    const v = localStorage.getItem(KEY);
+    if(v){ done = JSON.parse(v) || {}; return; }
+  }catch(e){ /* ingen adgang */ }
+  done = Object.assign({}, DEFAULT_DONE);
+}
+async function saveDone(){
+  if(hasStore){
+    try{ await window.storage.set(KEY, JSON.stringify(done)); return; }catch(e){ /* stille fejl */ return; }
+  }
+  try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){ /* ingen adgang */ }
+}
+
+function render(){
+  const board = document.getElementById('board');
+  const groups = [];
+  ITEMS.forEach(it=>{ if(!groups.includes(it.g)) groups.push(it.g); });
+  let html = '';
+  groups.forEach((g, gi)=>{
+    if(gi>0) html += '<div class="arrow">\u2193</div>';
+    html += '<div class="lane"><div class="lane-label"><span class="dot"></span>'+g+'</div><div class="cards">';
+    ITEMS.filter(it=>it.g===g).forEach(it=>{
+      const d = !!done[it.id];
+      html += '<div class="card'+(d?' done':'')+'" data-id="'+it.id+'" role="button" tabindex="0" aria-pressed="'+d+'">'
+        + '<div class="check">'+CHECK_SVG+'</div>'
+        + '<div class="body">'
+        + '<div class="row1"><span class="name">'+it.name+'</span><span class="tag '+it.tag+'">'+it.tagText+'</span></div>'
+        + '<span class="file">'+it.file+'</span>'
+        + '<div class="desc">'+it.desc+'</div>'
+        + (it.note?('<div class="note">'+it.note+'</div>'):'')
+        + '</div></div>';
+    });
+    html += '</div></div>';
+  });
+  board.innerHTML = html;
+  board.querySelectorAll('.card').forEach(c=>{
+    c.addEventListener('click', ()=>toggle(c.dataset.id));
+    c.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); toggle(c.dataset.id); } });
+  });
+  updateProgress();
+}
+
+function updateProgress(){
+  const total = ITEMS.length;
+  const n = ITEMS.filter(it=>done[it.id]).length;
+  const pct = Math.round((n/total)*100);
+  document.getElementById('fill').style.width = pct+'%';
+  document.getElementById('plabel').innerHTML = '<b>'+n+' af '+total+'</b> punkter f\u00e6rdige \u00b7 '+pct+'%';
+}
+
+function toggle(id){
+  done[id] = !done[id];
+  if(!done[id]) delete done[id];
+  const card = document.querySelector('.card[data-id="'+id+'"]');
+  if(card){ card.classList.toggle('done', !!done[id]); card.setAttribute('aria-pressed', !!done[id]); }
+  updateProgress();
+  saveDone();
+}
+
+document.getElementById('resetBtn').addEventListener('click', async ()=>{
+  if(!confirm('Nulstil alle gr\u00f8nne markeringer? (Fase 1\u20132b markeres f\u00e6rdige igen)')) return;
+  done = Object.assign({}, DEFAULT_DONE);
+  await saveDone();
+  render();
+});
+
+(async function init(){
+  await loadDone();
+  render();
+  if(!hasStore){
+    document.querySelector('.foot').textContent = 'Status gemmes i denne browser (pr. enhed).';
+  }
+})();
+</script>
+</body>
+</html>
