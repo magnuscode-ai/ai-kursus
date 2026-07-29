@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — AI til Økonomi &amp; Overblik · Quiz 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --amber:#b0842a; --amber-soft:#f6ecd0; --red:#b3492f; --red-soft:#f7dfd7;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  /* ── LOGIN-GATE ── */
+  .gate{position:fixed;inset:0;z-index:4000;display:none;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%)}
+  .gate.show{display:flex}
+  .gate-card{max-width:452px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+  .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--brass))}
+  .gate-ic{width:66px;height:66px;border-radius:19px;margin:6px auto 20px;display:grid;place-items:center;
+    background:var(--green-soft);border:1px solid #c6d8c9;color:var(--green)}
+  .gate-card h1{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin-bottom:11px;line-height:1.2}
+  .gate-card p{font-size:15px;color:var(--ink-soft);line-height:1.62;margin:0 auto 24px;max-width:360px}
+  .gate-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#fff;font-weight:700;font-size:16px;padding:14px 28px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .gate-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+
+  /* topbar — logo til HØJRE */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .sb-toggle{display:inline-flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;height:40px;padding:0 14px;align-items:center;justify-content:center;color:var(--green);cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+  .sb-toggle:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .sb-toggle-txt{display:inline}
+
+  /* kursus-fremdrift */
+  .cprog-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;position:relative;z-index:6}
+  .cprog{max-width:1520px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cprog-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .cprog-track{flex:1;min-width:160px;height:9px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .cprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .8s cubic-bezier(.22,.61,.36,1)}
+  .cprog-pct{font-size:12.5px;font-weight:800;color:var(--green-700);white-space:nowrap;min-width:34px;text-align:right}
+
+  /* forløbsbjælke */
+  .journey-wrap{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* ── quiz-scene ── */
+  .quizmain{position:relative;z-index:1;max-width:720px;margin:0 auto;padding:40px 24px 90px;min-height:calc(100vh - 168px)}
+
+  .screen{display:none}
+  .screen.active{display:block;animation:aiRise .5s cubic-bezier(.22,.61,.36,1) both}
+
+  /* intro */
+  .intro{text-align:center;background:linear-gradient(160deg,var(--green),var(--green-deep));color:#fff;border-radius:var(--r-lg);
+    padding:52px 34px;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;margin-top:20px}
+  .intro::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 260px at 50% 0%,rgba(224,179,61,.16),transparent 70%);pointer-events:none}
+  .intro-tag{position:relative;display:inline-flex;align-items:center;gap:9px;font-size:11.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#dcecdf;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);padding:8px 16px;border-radius:var(--r-pill)}
+  .intro-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(224,179,61,.5)}50%{box-shadow:0 0 0 7px rgba(224,179,61,0)}}
+  .intro h1{position:relative;font-family:var(--serif);font-weight:700;font-size:clamp(30px,4.6vw,44px);line-height:1.12;margin:20px 0 14px}
+  .intro h1 em{font-style:italic;color:var(--gold)}
+  .intro p{position:relative;font-size:16.5px;color:#d7e7dd;max-width:440px;margin:0 auto 12px;line-height:1.6}
+  .intro-meta{position:relative;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:22px 0 30px}
+  .intro-chip{font-size:13px;font-weight:600;color:#eaf3ec;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:8px 15px;border-radius:var(--r-pill)}
+  .btn-primary{position:relative;display:inline-flex;align-items:center;gap:11px;background:#fff;color:var(--green-deep);font-size:17px;font-weight:700;padding:16px 36px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.2);transition:.25s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 32px rgba(0,0,0,.26)}
+
+  /* progress i quizzen */
+  .qbar{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .qbar-track{flex:1;height:8px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .qbar-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .5s ease;position:relative}
+  .qbar-fill::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);animation:shimmer 2s infinite}
+  @keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+  .qdots{display:flex;gap:7px;justify-content:center;margin-bottom:22px}
+  .qdot{width:10px;height:10px;border-radius:50%;background:var(--line);transition:.3s}
+  .qdot.ok{background:var(--green);transform:scale(1.15)}
+  .qdot.no{background:var(--red)}
+  .qdot.cur{box-shadow:0 0 0 4px rgba(27,70,54,.12);background:var(--green-mid)}
+
+  /* spørgsmålskort */
+  .qcard{background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);padding:30px 30px 26px;transition:opacity .28s ease,transform .28s ease}
+  .qcard.swap{opacity:0;transform:translateY(16px)}
+  .q-counter{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:10px}
+  .q-text{font-family:var(--serif);font-weight:600;font-size:clamp(21px,3vw,26px);color:var(--ink);line-height:1.32;margin-bottom:22px}
+  .opts{display:flex;flex-direction:column;gap:11px}
+  .opt{display:flex;align-items:center;gap:13px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:15px 17px;font-size:15.5px;color:var(--ink);cursor:pointer;transition:.18s;font-family:var(--sans);line-height:1.4}
+  .opt:hover:not(.disabled){border-color:var(--green-light);transform:translateY(-2px);box-shadow:var(--shadow-sm)}
+  .opt .opt-key{flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:var(--cream);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:14px;color:var(--green-700)}
+  .opt .opt-mark{margin-left:auto;font-weight:800;font-size:17px;opacity:0}
+  .opts.locked .opt{cursor:default}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .opt-key{background:var(--green);border-color:var(--green);color:#fff}
+  .opt.correct .opt-mark{opacity:1;color:var(--green)}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .opt-key{background:var(--red);border-color:var(--red);color:#fff}
+  .opt.wrong .opt-mark{opacity:1;color:var(--red)}
+  .opt.dim{opacity:.6}
+  .opt.pulse{animation:pulseOk .5s ease}
+  .opt.shake{animation:shake .42s ease}
+  @keyframes pulseOk{0%{transform:scale(1)}45%{transform:scale(1.02)}100%{transform:scale(1)}}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
+
+  .explain{margin-top:18px;background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:12px;padding:14px 16px;font-size:14px;color:var(--green-700);line-height:1.5;display:none}
+  .explain.warn{background:var(--amber-soft);border-color:#dcc38a;color:#5c4a1e}
+  .explain.show{display:block;animation:aiRise .4s ease both}
+  .explain b{color:inherit}
+
+  .qfoot{display:flex;justify-content:flex-end;margin-top:20px}
+  .next-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:16px;font-weight:700;padding:13px 26px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 8px 22px rgba(27,70,54,.26);transition:.25s;opacity:0;pointer-events:none}
+  .next-btn.show{opacity:1;pointer-events:auto}
+  .next-btn:hover{transform:translateY(-2px)}
+
+  /* resultat */
+  .result{text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:46px 34px;box-shadow:var(--shadow-md);position:relative;overflow:hidden;margin-top:20px}
+  .result.win::before{content:'';position:absolute;inset:0;background:radial-gradient(560px 220px at 50% 0%,rgba(47,106,74,.12),transparent 70%);pointer-events:none}
+  .result-emoji{font-size:52px;position:relative}
+  .result h2{position:relative;font-family:var(--serif);font-weight:700;font-size:32px;margin:8px 0 8px;color:var(--ink)}
+  .result.win h2{color:var(--green-deep)}
+  .result.lose h2{color:var(--brass-deep)}
+  .result p{position:relative;font-size:15.5px;color:var(--ink-soft);max-width:440px;margin:0 auto 8px;line-height:1.6}
+  .score-badge{position:relative;display:inline-flex;align-items:baseline;gap:6px;margin:16px 0 26px;font-family:var(--serif)}
+  .score-badge .big{font-size:46px;font-weight:700;color:var(--green-deep)}
+  .result.lose .score-badge .big{color:var(--brass-deep)}
+  .score-badge .small{font-size:20px;font-weight:600;color:var(--ink-faint)}
+  .result-actions{position:relative;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn-ghost{display:inline-flex;align-items:center;gap:9px;background:#fff;color:var(--green-deep);font-size:15px;font-weight:700;padding:14px 26px;border:1.5px solid var(--line);border-radius:var(--r-pill);cursor:pointer;transition:.2s}
+  .btn-ghost:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .btn-go{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:16px;font-weight:700;padding:14px 30px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.26);transition:.25s}
+  .btn-go:hover{transform:translateY(-2px)}
+
+  /* konfetti */
+  #confetti{position:fixed;inset:0;z-index:3500;pointer-events:none;overflow:hidden}
+  .cft{position:absolute;top:-14px;width:9px;height:15px;border-radius:2px;animation:fall linear forwards}
+  @keyframes fall{to{transform:translateY(105vh) rotate(540deg);opacity:.25}}
+
+  /* kursusoversigt */
+  .cov{position:fixed;top:0;right:0;height:100%;width:376px;max-width:90vw;z-index:1600;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .cov.open{transform:translateX(0)}
+  .cov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+  .cov-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .cov-head h3{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep);line-height:1.2}
+  .cov-close{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:15px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .cov-close:hover{background:var(--green-soft);color:var(--green)}
+  .cov-note{font-size:12.5px;color:var(--ink-soft);padding:12px 22px;background:var(--green-tint);border-bottom:1px solid var(--line-soft);line-height:1.5}
+  .cov-body{flex:1;overflow-y:auto;padding:16px 18px 40px}
+  .cov-step{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid var(--line-soft);margin-bottom:8px}
+  .cov-step .cs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--cream);border:1px solid var(--line);color:var(--green-mid)}
+  .cov-step .cs-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .cov-step .cs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cov-step .cs-pct{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--green-700);white-space:nowrap}
+  .cov-step.done .cs-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .cov-step.current{background:linear-gradient(135deg,#fff,var(--green-tint));border-color:#cfe0d1;box-shadow:var(--shadow-sm)}
+  .cov-step.current .cs-ic{background:var(--green);border-color:var(--green);color:#fff}
+  .cov-step.locked{opacity:.7}
+
+  .backdrop{display:none}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(20,30,25,.42);z-index:1500;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.noscroll{overflow:hidden}
+
+  @media(max-width:560px){
+    .sb-toggle-txt{display:none}.sb-toggle{padding:0;width:40px}
+    .brand span{display:none}
+    .qcard{padding:24px 20px 22px}.intro{padding:40px 22px}
+  }
+
+  /* side-overgange & entre */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.screen.active,.explain.show{animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page-veil" id="pageVeil"></div>
+<div id="confetti"></div>
+
+<!-- LOGIN-GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-ic">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gateTitle">Hov — du er ikke logget ind</h1>
+    <p id="gateText">Du skal være logget ind for at tage quizzen. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.</p>
+    <a class="gate-btn" id="gateBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tryk her for at logge ind
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="sb-toggle" id="sbToggle" aria-label="Vis kursusoversigt">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span class="sb-toggle-txt">Oversigt</span>
+    </button>
+    <span class="topbar-badge">Økonomi &amp; Overblik · Quiz 1</span>
+  </div>
+  <a class="brand" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" title="Tilbage til Akademiet AI">
+    <span>Akademiet AI</span>
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+  </a>
+</header>
+
+<div class="cprog-wrap">
+  <div class="cprog">
+    <div class="cprog-label" id="cprogLabel">Trin 2 af 5 · Quiz 1</div>
+    <div class="cprog-track"><div class="cprog-fill" id="cprogFill"></div></div>
+    <div class="cprog-pct" id="cprogPct">20%</div>
+  </div>
+</div>
+
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Kursus D</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 1</span><span class="j-sep">›</span>
+    <span class="j-step current">Quiz 1</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 2 · Budget</span><span class="j-sep">›</span>
+    <span class="j-step">Quiz 2</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 3 · Klar til fremvisning</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Kursusoversigt -->
+<aside class="cov" id="courseOverview" aria-hidden="true">
+  <div class="cov-head">
+    <div><div class="cov-kick">Sidekursus</div><h3>AI til Økonomi &amp; Overblik</h3></div>
+    <button class="cov-close" id="covClose" aria-label="Luk oversigt">✕</button>
+  </div>
+  <div class="cov-note">3 moduler + 2 quizzer. Hvert trin tæller <strong>20%</strong> af dit bevis.</div>
+  <div class="cov-body">
+    <div class="cov-step done"><span class="cs-ic">🎓</span><div><div class="cs-label">Kursus D</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">💰</span><div><div class="cs-label">Modul 1 · Få overblik</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step current"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 1</div><div class="cs-sub">Du er her nu</div></div><span class="cs-pct">40%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📊</span><div><div class="cs-label">Modul 2 · Månedsbudget</div><div class="cs-sub">Låst</div></div><span class="cs-pct">60%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 2</div><div class="cs-sub">Låst</div></div><span class="cs-pct">80%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">🧾</span><div><div class="cs-label">Modul 3 · Klar til fremvisning</div><div class="cs-sub">Låst</div></div><span class="cs-pct">100%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📜</span><div><div class="cs-label">Bevis &amp; coins</div><div class="cs-sub">Kursusbevis · coins</div></div><span class="cs-pct"></span></div>
+  </div>
+</aside>
+
+<main class="quizmain">
+
+  <!-- INTRO -->
+  <section class="screen active" id="screenIntro">
+    <div class="intro">
+      <div class="intro-tag"><span class="pulse"></span>Quiz · Modul 1</div>
+      <h1>Klar til at teste <em>Modul 1?</em></h1>
+      <p>Seks korte spørgsmål om det, du lige har lært om overblik over din økonomi. Tag den i dit eget tempo.</p>
+      <div class="intro-meta">
+        <span class="intro-chip">📝 6 spørgsmål</span>
+        <span class="intro-chip">✅ Bestå med 5 rigtige</span>
+        <span class="intro-chip">🔁 Prøv igen, hvis nødvendigt</span>
+      </div>
+      <button class="btn-primary" id="startBtn">Start quiz
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- SPØRGSMÅL -->
+  <section class="screen" id="screenQuiz">
+    <div class="qbar">
+      <div class="qbar-track"><div class="qbar-fill" id="qbarFill"></div></div>
+    </div>
+    <div class="qdots" id="qdots"></div>
+
+    <div class="qcard" id="qcard">
+      <div class="q-counter" id="qCounter">Spørgsmål 1 af 6</div>
+      <div class="q-text" id="qText"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="explain" id="qExplain"></div>
+      <div class="qfoot">
+        <button class="next-btn" id="nextBtn">Næste
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTAT -->
+  <section class="screen" id="screenResult">
+    <div class="result" id="resultBox">
+      <div class="result-emoji" id="resEmoji">🎉</div>
+      <h2 id="resTitle">Bestået!</h2>
+      <p id="resText"></p>
+      <div class="score-badge"><span class="big" id="resScore">0</span><span class="small">af 6 rigtige</span></div>
+      <div class="result-actions" id="resActions"></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ── fremdrift + veil ──
+  (function(){
+    var STEP=2, TOTAL=5;                              // Quiz 1 = trin 2 → 20% gennemført
+    var pct=Math.round(((STEP-1)/TOTAL)*100);
+    var fill=document.getElementById('cprogFill'),pctEl=document.getElementById('cprogPct');
+    if(pctEl) pctEl.textContent=pct+'%';
+    requestAnimationFrame(function(){ if(fill) fill.style.width=pct+'%'; });
+  })();
+
+  // ── kursusoversigt (de tre streger) ──
+  var bd=document.getElementById('backdrop'),tg=document.getElementById('sbToggle');
+  var cov=document.getElementById('courseOverview'),covClose=document.getElementById('covClose');
+  function openCov(){ if(!cov)return; cov.classList.add('open'); bd.classList.add('show'); cov.setAttribute('aria-hidden','false'); document.body.classList.add('noscroll'); }
+  function closeCov(){ if(!cov)return; cov.classList.remove('open'); bd.classList.remove('show'); cov.setAttribute('aria-hidden','true'); document.body.classList.remove('noscroll'); }
+  if(tg) tg.addEventListener('click',openCov);
+  if(covClose) covClose.addEventListener('click',closeCov);
+  if(bd) bd.addEventListener('click',closeCov);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCov(); });
+
+  // ── QUIZ-DATA (Modul 1) ──
+  // "c:true" markerer det rigtige svar. Svarene BLANDES ved runtime, så der aldrig
+  // er et positionsmønster. Hvert rigtigt svar er skrevet så det hverken er det
+  // korteste eller længste svar i spørgsmålet.
+  var PASS=5, TOTAL_Q=6;
+  var QUESTIONS=[
+    { q:"Hvad er den vigtigste regel, når du bruger AI til din økonomi?",
+      o:[
+        {t:"AI'en regner altid rigtigt, så du kan stole blindt på den."},
+        {t:"Du tjekker altid tallene selv, før du bruger dem.", c:true},
+        {t:"AI kan se din bankkonto og retter fejlene automatisk."},
+        {t:"Når AI har svaret, er økonomien styret."}
+      ],
+      e:"AI hjælper med overblik, men tallene er dit ansvar — tjek dem altid selv." },
+
+    { q:"Kan AI'en se din bankkonto og dine tal af sig selv?",
+      o:[
+        {t:"Ja, den er koblet til din NemKonto og ser alt automatisk."},
+        {t:"Ja, hvis du logger ind med MitID."},
+        {t:"Nej — du giver den selv tallene, fx fra en liste.", c:true},
+        {t:"Kun din bank kan det."}
+      ],
+      e:"AI kan ikke se din konto. Du giver den selv tallene — fx fra et Excel-ark." },
+
+    { q:"Hvorfor skal du tjekke AI'ens tal efter?",
+      o:[
+        {t:"Fordi AI nogle gange finder på tal, der ser rigtige ud.", c:true},
+        {t:"Fordi AI altid runder beløb forkert af."},
+        {t:"Fordi det er ulovligt at regne selv."},
+        {t:"Det behøver du ikke — en AI kan aldrig tage fejl, når det gælder tal."}
+      ],
+      e:"AI kan finde på tal, der ser rigtige ud (hallucination). Derfor tjekker du efter." },
+
+    { q:"Hvad kan AI'en hjælpe dig med i din økonomi?",
+      o:[
+        {t:"Betale alle dine faste regninger automatisk."},
+        {t:"Hæve kontanter for dig i banken."},
+        {t:"Godkende dit regnskab over for SKAT."},
+        {t:"Sortere dine udgifter og give et overblik.", c:true}
+      ],
+      e:"AI er god til at sortere, regne sammen og lave overblik — ikke til at betale eller godkende." },
+
+    { q:"Hvad gælder, hvis du skal bruge tallene til SKAT?",
+      o:[
+        {t:"AI'ens overblik tæller som officiel dokumentation hos SKAT."},
+        {t:"Tallene skal være korrekte og kunne dokumenteres — AI er ikke et bilag.", c:true},
+        {t:"Du kan sende AI'ens svar direkte til Skattestyrelsen og bruge det som gyldigt bilag."},
+        {t:"SKAT godkender altid regnskaber lavet med AI."}
+      ],
+      e:"Til SKAT skal tallene være korrekte og kunne dokumenteres. AI er ikke et gyldigt bilag." },
+
+    { q:"Hvilken af disse poster er en indtægt (penge ind)?",
+      o:[
+        {t:"Huslejen, du betaler hver måned."},
+        {t:"Dit Netflix-abonnement."},
+        {t:"Din månedsløn fra arbejdet.", c:true},
+        {t:"Din indboforsikring."}
+      ],
+      e:"Løn er penge ind = indtægt. Husleje, abonnement og forsikring er penge ud = udgifter." }
+  ];
+
+  var KEYS=['A','B','C','D'];
+  function shuffle(a){ for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i];a[i]=a[j];a[j]=t; } return a; }
+
+  // byg en blandet kopi (rækkefølge af svar tilfældig pr. spørgsmål)
+  var deck=[];
+  function buildDeck(){
+    deck=QUESTIONS.map(function(Q){ return { q:Q.q, e:Q.e, o:shuffle(Q.o.slice()) }; });
+  }
+  buildDeck();
+
+  var idx=0, score=0, answered=false;
+  var screenIntro=document.getElementById('screenIntro'),
+      screenQuiz=document.getElementById('screenQuiz'),
+      screenResult=document.getElementById('screenResult');
+  var qcard=document.getElementById('qcard'),qCounter=document.getElementById('qCounter'),
+      qText=document.getElementById('qText'),qOpts=document.getElementById('qOpts'),
+      qExplain=document.getElementById('qExplain'),nextBtn=document.getElementById('nextBtn'),
+      qbarFill=document.getElementById('qbarFill'),qdots=document.getElementById('qdots');
+
+  function buildDots(){
+    qdots.innerHTML='';
+    for(var i=0;i<TOTAL_Q;i++){ var d=document.createElement('span'); d.className='qdot'; d.id='qd'+i; qdots.appendChild(d); }
+  }
+  function paintDots(){
+    for(var i=0;i<TOTAL_Q;i++){ var d=document.getElementById('qd'+i); if(!d)continue; d.className='qdot'+(i===idx?' cur':''); }
+  }
+
+  function showScreen(el){
+    [screenIntro,screenQuiz,screenResult].forEach(function(s){ s.classList.remove('active'); });
+    el.classList.add('active');
+  }
+
+  function renderQuestion(){
+    answered=false;
+    var Q=deck[idx];
+    qCounter.textContent='Spørgsmål '+(idx+1)+' af '+TOTAL_Q;
+    qText.textContent=Q.q;
+    qbarFill.style.width=Math.round(((idx)/TOTAL_Q)*100)+'%';
+    paintDots();
+    qExplain.className='explain'; qExplain.textContent='';
+    nextBtn.classList.remove('show');
+    nextBtn.textContent = (idx===TOTAL_Q-1) ? 'Se resultat' : 'Næste';
+    qOpts.className='opts'; qOpts.innerHTML='';
+    Q.o.forEach(function(opt,i){
+      var b=document.createElement('button');
+      b.className='opt'; b.type='button';
+      b.innerHTML='<span class="opt-key">'+KEYS[i]+'</span><span class="opt-txt">'+opt.t+'</span><span class="opt-mark"></span>';
+      b.addEventListener('click',function(){ choose(b,opt,Q); });
+      qOpts.appendChild(b);
+    });
+  }
+
+  function choose(btn,opt,Q){
+    if(answered) return;
+    answered=true;
+    qOpts.classList.add('locked');
+    var all=[].slice.call(qOpts.querySelectorAll('.opt'));
+    all.forEach(function(b){ b.classList.add('disabled'); });
+    if(opt.c){
+      score++;
+      btn.classList.add('correct','pulse');
+      btn.querySelector('.opt-mark').textContent='✓';
+      var d=document.getElementById('qd'+idx); if(d) d.className='qdot ok';
+      qExplain.className='explain show';
+      qExplain.innerHTML='<b>Rigtigt!</b> '+Q.e;
+    } else {
+      btn.classList.add('wrong','shake');
+      btn.querySelector('.opt-mark').textContent='✕';
+      // vis det korrekte svar
+      all.forEach(function(b){
+        var i=all.indexOf(b);
+        if(Q.o[i].c){ b.classList.add('correct'); b.querySelector('.opt-mark').textContent='✓'; }
+        else if(b!==btn){ b.classList.add('dim'); }
+      });
+      var d2=document.getElementById('qd'+idx); if(d2) d2.className='qdot no';
+      qExplain.className='explain show warn';
+      qExplain.innerHTML='<b>Ikke helt.</b> '+Q.e;
+    }
+    nextBtn.classList.add('show');
+  }
+
+  function next(){
+    if(idx<TOTAL_Q-1){
+      qcard.classList.add('swap');
+      setTimeout(function(){ idx++; renderQuestion(); qcard.classList.remove('swap'); },280);
+    } else {
+      qbarFill.style.width='100%';
+      finish();
+    }
+  }
+
+  function finish(){
+    var won=score>=PASS;
+    var box=document.getElementById('resultBox');
+    document.getElementById('resScore').textContent=score;
+    box.className='result '+(won?'win':'lose');
+    document.getElementById('resEmoji').textContent=won?'🎉':'🌱';
+    document.getElementById('resTitle').textContent=won?'Bestået!':'Ikke helt endnu';
+    document.getElementById('resText').textContent = won
+      ? 'Flot! Du har styr på det vigtigste fra Modul 1. Nu er du klar til Modul 2, hvor vi bygger et rigtigt månedsbudget med AI.'
+      : 'Du er tæt på! Kig lige Modul 1 igennem en gang til — især den gyldne regel — og prøv quizzen igen. Du skal bruge '+PASS+' rigtige.';
+    var acts=document.getElementById('resActions');
+    if(won){
+      acts.innerHTML='<a class="btn-go" href="kursus-oekonomi-2.html">Videre til Modul 2 →</a>'+
+                     '<button class="btn-ghost" id="retryBtn">Tag quizzen igen</button>';
+    } else {
+      acts.innerHTML='<button class="btn-go" id="retryBtn2" style="border:none;cursor:pointer">Prøv igen</button>'+
+                     '<a class="btn-ghost" href="kursus-oekonomi-1.html">Tilbage til Modul 1</a>';
+    }
+    var r1=document.getElementById('retryBtn'),r2=document.getElementById('retryBtn2');
+    if(r1) r1.addEventListener('click',restart);
+    if(r2) r2.addEventListener('click',restart);
+    showScreen(screenResult);
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(won) confetti();
+  }
+
+  function restart(){
+    idx=0; score=0; answered=false;
+    buildDeck(); buildDots(); renderQuestion();
+    showScreen(screenQuiz);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+
+  function startQuiz(){
+    idx=0; score=0; buildDeck(); buildDots(); renderQuestion();
+    showScreen(screenQuiz);
+  }
+
+  document.getElementById('startBtn').addEventListener('click',startQuiz);
+  nextBtn.addEventListener('click',next);
+
+  // ── konfetti ──
+  function confetti(){
+    var c=document.getElementById('confetti'); if(!c)return;
+    var cols=['#1b4636','#a98841','#e0b33d','#6fa083','#c1783f'];
+    for(var i=0;i<40;i++){
+      var d=document.createElement('i'); d.className='cft';
+      d.style.left=(Math.random()*100)+'%';
+      d.style.background=cols[i%cols.length];
+      d.style.animationDuration=(2.2+Math.random()*1.4)+'s';
+      d.style.animationDelay=(Math.random()*0.5)+'s';
+      d.style.transform='rotate('+(Math.random()*360)+'deg)';
+      c.appendChild(d);
+    }
+    setTimeout(function(){ c.innerHTML=''; },4200);
+  }
+</script>
+
+<!-- FIREBASE login-gate (login + Kursus D bestået) -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const PLATFORM = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+
+function showGate(mode){
+  const g = document.getElementById('gate');
+  if (mode === false) { g.classList.remove('show'); return; }
+  const t = document.getElementById('gateTitle');
+  const x = document.getElementById('gateText');
+  const b = document.getElementById('gateBtn');
+  if (mode === 'course') {
+    t.textContent = 'Færdiggør Kursus D først';
+    x.textContent = 'Dette sidekursus åbner, når du har gennemført hele Kursus D. Tag Kursus D først — så er du klar.';
+    b.textContent = 'Gå til Kursus D';
+    b.setAttribute('href', PLATFORM);
+  } else {
+    t.textContent = 'Hov — du er ikke logget ind';
+    x.textContent = 'Du skal være logget ind for at tage quizzen. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.';
+    b.textContent = 'Tryk her for at logge ind';
+    b.setAttribute('href', PLATFORM);
+  }
+  g.classList.add('show');
+}
+
+showGate('login');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch (e) {
+    console.warn('Firebase utilgængelig — viser quizzen som forhåndsvisning.', e);
+    showGate(false);
+    return;
+  }
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate('login'); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch (e) { console.error(e); }
+    const dDone =
+      (Array.isArray(data.completedCourses) && data.completedCourses.includes('D')) ||
+      (Array.isArray(data.badges) && data.badges.some(b => b && b.level === 'D' && b.type !== 'side'));
+    if (!dDone) { showGate('course'); return; }
+    showGate(false);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
+</script>
+</body>
+</html>
