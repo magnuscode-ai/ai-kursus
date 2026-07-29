@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — AI til Økonomi &amp; Overblik · Quiz 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --amber:#b0842a; --amber-soft:#f6ecd0;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--green),var(--brass));transition:width .1s linear}
+
+  /* ── LOGIN-GATE ── */
+  .gate{position:fixed;inset:0;z-index:4000;display:none;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%)}
+  .gate.show{display:flex}
+  .gate-card{max-width:452px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+  .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--brass))}
+  .gate-ic{width:66px;height:66px;border-radius:19px;margin:6px auto 20px;display:grid;place-items:center;
+    background:var(--green-soft);border:1px solid #c6d8c9;color:var(--green)}
+  .gate-card h1{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin-bottom:11px;line-height:1.2}
+  .gate-card p{font-size:15px;color:var(--ink-soft);line-height:1.62;margin:0 auto 24px;max-width:360px}
+  .gate-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#fff;font-weight:700;font-size:16px;padding:14px 28px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .gate-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+
+  /* topbar — logo til HØJRE (efter ønske), kursus-tag til venstre */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .sb-toggle{display:inline-flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;height:40px;padding:0 14px;align-items:center;justify-content:center;color:var(--green);cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+  .sb-toggle:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .sb-toggle-txt{display:inline}
+
+  /* ── kursus-fremdrift (procent gennem hele sidekurset) ── */
+  .cprog-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;position:relative;z-index:6}
+  .cprog{max-width:1520px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cprog-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .cprog-label b{color:var(--green-700)}
+  .cprog-track{flex:1;min-width:160px;height:9px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .cprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .8s cubic-bezier(.22,.61,.36,1)}
+  .cprog-pct{font-size:12.5px;font-weight:800;color:var(--green-700);white-space:nowrap;min-width:34px;text-align:right}
+
+  /* forløbsbjælke (folded, centreret) */
+  .journey-wrap{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* layout */
+  .layout{position:relative;z-index:1;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr) 312px;align-items:start}
+  .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;background:var(--panel);padding:26px 20px}
+  .sidebar-left{border-right:1px solid var(--line)}
+  .sidebar-right{border-left:1px solid var(--line)}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .main{padding:44px 56px 90px;min-width:0}
+
+  .sb-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);margin-bottom:6px}
+  .sb-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:20px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:11px 13px}
+  .sb-note strong{color:var(--green-700)}
+  .sb-item{display:flex;gap:13px;align-items:flex-start;padding:11px 12px;border-radius:13px}
+  .sb-item + .sb-item{margin-top:2px}
+  .sb-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--green-mid)}
+  .sb-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .sb-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .sb-item.done .sb-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .sb-item.done .sb-check{margin-left:auto;color:var(--green);font-weight:800;font-size:15px}
+  .sb-item.current{background:#fff;border:1px solid #cfe0d1;box-shadow:var(--shadow-sm)}
+  .sb-item.current .sb-ic{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 4px rgba(27,70,54,.10)}
+  .sb-item.current .sb-sub{color:var(--green-mid);font-weight:700}
+  .sb-item.locked{opacity:.72}
+  .sb-item.locked .sb-label{color:var(--ink-soft)}
+  .sb-subnav{margin:6px 0 6px 46px;display:flex;flex-direction:column;gap:2px}
+  .sb-subnav a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;transition:.2s}
+  .sb-subnav a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .sb-subnav a:hover{background:var(--green-soft);color:var(--green-deep)}
+  .sb-subnav a.active{color:var(--green-deep);font-weight:700}
+  .sb-subnav a.active::before{opacity:1;background:var(--green)}
+  .sb-line{width:1px;height:16px;background:var(--line);margin:2px 0 2px 28px}
+
+  .rt-tip{background:var(--green-tint);border:1px solid #cfe0d1;border-radius:13px;padding:15px 16px;margin-bottom:14px}
+  .rt-tip-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green-700);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .rt-tip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .rt-tip-list li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .rt-tip-list li span{color:var(--green);flex:0 0 auto}
+  .rt-rule{background:var(--amber-soft);border:1px solid #e6d3a6;border-radius:13px;padding:15px 16px}
+  .rt-rule-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rt-rule p{font-size:12.5px;color:#5c4a1e;line-height:1.55}
+  .rt-rule p strong{color:var(--brass-deep)}
+  .rt-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:14px;transition:.22s}
+  .rt-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfc4a6}
+  .rt-logo{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#c1783f,#d99a5b)}
+  .rt-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .rt-tag{font-size:11.5px;color:var(--ink-faint)}
+  .rt-arrow{margin-left:auto;color:var(--ink-faint);font-size:15px}
+
+  /* hero */
+  .hero{max-width:800px;margin:0 auto;text-align:center;padding:24px 0 6px}
+  .hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);background:var(--green-tint);border:1px solid #cfe0d1;padding:8px 16px;border-radius:var(--r-pill)}
+  .hero-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,70,54,.4)}50%{box-shadow:0 0 0 6px rgba(27,70,54,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,62px);line-height:1.08;letter-spacing:-.02em;margin:20px 0 18px;color:var(--ink)}
+  .hero h1 em{font-style:italic;background:linear-gradient(120deg,var(--green-mid),var(--brass) 82%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);line-height:1.65;max-width:600px;margin:0 auto}
+  .hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero-stat{font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm)}
+
+  /* lesson */
+  .lesson{max-width:760px;margin:0 auto}
+  .sec{margin-top:60px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-700);margin-bottom:14px}
+  .sec-eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--green-light),transparent);border-radius:2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:clamp(25px,3.2vw,32px);color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sec h2 em{font-style:italic;color:var(--brass-deep)}
+  .sec p.lead{font-size:16.5px;color:var(--ink-soft);line-height:1.72;margin-top:14px}
+  .sec p.lead + p.lead{margin-top:14px}
+  .sec p.lead strong{color:var(--green-700)}
+
+  .pull{background:var(--green-tint);border:1px solid #cfe0d1;border-left:4px solid var(--green);border-radius:var(--r);padding:20px 24px;margin-top:24px}
+  .pull p{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--green-deep);line-height:1.5}
+
+  /* magic cards */
+  .magic{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px}
+  .magic-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:.22s}
+  .magic-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfe0d1}
+  .magic-ic{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--green-soft);border:1px solid #c6d8c9;display:grid;place-items:center;font-size:19px}
+  .magic-t{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+  .magic-d{font-size:13px;color:var(--ink-faint);line-height:1.5}
+
+  /* advarsel / gylden regel-boks */
+  .warn{margin-top:24px;background:var(--amber-soft);border:1px solid #e6d3a6;border-left:4px solid var(--brass);border-radius:var(--r);padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
+  .warn .warn-ic{font-size:22px;flex:0 0 auto}
+  .warn p{font-size:14.5px;color:#5c4a1e;line-height:1.6}
+  .warn p strong{color:var(--brass-deep)}
+
+  /* ── interaktiv: kategoriserings-værksted ── */
+  .lab{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .lab-head{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;padding:20px 24px}
+  .lab-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#bfe0cd;margin-bottom:5px}
+  .lab-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .lab-head p{font-size:13.5px;color:#d7e7dd;margin-top:5px;line-height:1.5}
+  .lab-body{padding:22px 24px}
+  .lab-scenario{font-size:13.5px;color:var(--ink-soft);background:var(--green-tint);border:1px solid #cfe0d1;border-radius:11px;padding:12px 15px;margin-bottom:18px;line-height:1.5}
+  .lab-scenario strong{color:var(--green-700)}
+
+  /* kontoudtog (før sortering) */
+  .ledger{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .ledger-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;background:var(--cream);border-bottom:1px solid var(--line-soft)}
+  .ledger-row{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line-soft)}
+  .ledger-row:last-child{border-bottom:none}
+  .ledger-row .amt{font-weight:700;color:var(--green-700);font-variant-numeric:tabular-nums}
+
+  .lab-sort-btn{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .lab-sort-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,.3)}
+  .lab-sort-btn:disabled{opacity:.5;pointer-events:none}
+
+  /* buckets (efter sortering) */
+  .buckets{display:none;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:6px}
+  .buckets.show{display:grid;animation:pop .45s ease}
+  .bucket{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+  .bucket-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--green-700);margin-bottom:9px}
+  .bucket-h .b-ic{font-size:16px}
+  .chip{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.18s;margin-top:7px}
+  .chip:first-of-type{margin-top:0}
+  .chip:hover{border-color:var(--green-light);transform:translateY(-1px)}
+  .chip .c-amt{font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .chip.shake{animation:shake .4s ease}
+  .chip.correct{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);cursor:default}
+  .chip.correct .c-amt{color:var(--green)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes pop{0%{transform:scale(.97);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .lab-coach{margin-top:16px;font-size:13.5px;color:var(--green-700);background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:11px;padding:12px 15px;display:none;align-items:center;gap:9px;line-height:1.45}
+  .lab-coach.show{display:flex;animation:pop .4s ease}
+  .lab-coach.warn-tone{color:#5c4a1e;background:var(--amber-soft);border-color:#dcc38a}
+
+  /* completion */
+  .done-box{margin-top:24px;text-align:center;background:linear-gradient(160deg,var(--green-tint),#fff);border:1px solid #cfe0d1;border-radius:var(--r-lg);padding:30px 26px;display:none}
+  .done-box.show{display:block;animation:pop .5s ease}
+  .done-emoji{font-size:34px}
+  .done-box h4{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green-deep);margin:6px 0 6px}
+  .done-box p{font-size:14.5px;color:var(--ink-soft);max-width:440px;margin:0 auto;line-height:1.6}
+
+  .cta{max-width:760px;margin:56px auto 0;text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:42px 30px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(47,106,74,.09),transparent 70%);pointer-events:none}
+  .cta-tag{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+  .cta h2{position:relative;font-family:var(--serif);font-weight:700;font-size:29px;color:var(--ink);margin:10px 0 8px}
+  .cta p{position:relative;font-size:15px;color:var(--ink-soft);max-width:440px;margin:0 auto 22px;line-height:1.6}
+  .cta-btn{position:relative;display:inline-flex;align-items:center;gap:11px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:17px;font-weight:700;padding:16px 34px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+  .cta-btn.locked{opacity:.55;pointer-events:none;filter:grayscale(.3)}
+  .cta-meta{position:relative;font-size:12.5px;color:var(--ink-faint);margin-top:16px}
+
+  .backdrop{display:none}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(20,30,25,.42);z-index:1500;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.noscroll{overflow:hidden}
+  @media(max-width:1180px){.layout{grid-template-columns:260px minmax(0,1fr)}.sidebar-right{display:none}.main{padding:38px 40px 80px}}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .sidebar-left{display:none}
+    .main{padding:30px 20px 70px}
+    .magic,.buckets.show{grid-template-columns:1fr}
+    .brand span{display:none}
+  }
+  @media(max-width:560px){
+    .sb-toggle-txt{display:none}
+    .sb-toggle{padding:0;width:40px}
+    .cx-actions{flex-direction:column;align-items:stretch}
+  }
+
+  /* ── kursusoversigt (åbnes med de tre streger) ── */
+  .cov{position:fixed;top:0;right:0;height:100%;width:376px;max-width:90vw;z-index:1600;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .cov.open{transform:translateX(0)}
+  .cov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+  .cov-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .cov-head h3{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep);line-height:1.2}
+  .cov-close{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:15px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .cov-close:hover{background:var(--green-soft);color:var(--green)}
+  .cov-note{font-size:12.5px;color:var(--ink-soft);padding:12px 22px;background:var(--green-tint);border-bottom:1px solid var(--line-soft);line-height:1.5}
+  .cov-body{flex:1;overflow-y:auto;padding:16px 18px 40px}
+  .cov-step{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid var(--line-soft);margin-bottom:8px}
+  .cov-step .cs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--cream);border:1px solid var(--line);color:var(--green-mid)}
+  .cov-step .cs-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .cov-step .cs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cov-step .cs-pct{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--green-700);white-space:nowrap}
+  .cov-step.done .cs-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .cov-step.current{background:linear-gradient(135deg,#fff,var(--green-tint));border-color:#cfe0d1;box-shadow:var(--shadow-sm)}
+  .cov-step.current .cs-ic{background:var(--green);border-color:var(--green);color:#fff}
+  .cov-step.locked{opacity:.7}
+  .cov-sub{margin:2px 0 10px 46px;display:flex;flex-direction:column;gap:2px}
+  .cov-sub a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px}
+  .cov-sub a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .cov-sub a:hover{background:var(--green-soft);color:var(--green-deep)}
+
+  /* ── spil 2: indtægt eller udgift ── */
+  .game{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .game-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .game-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .game-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .game-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .game-body{padding:22px 24px}
+  .game-stage{display:flex;justify-content:center;padding:14px 0 6px;min-height:150px}
+  .game-card{width:262px;max-width:100%;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);padding:26px 22px;text-align:center;transition:transform .3s ease,opacity .3s ease}
+  .game-card.left{transform:translateX(-120%) rotate(-8deg);opacity:0}
+  .game-card.right{transform:translateX(120%) rotate(8deg);opacity:0}
+  .game-card.in{animation:pop .35s ease}
+  .game-card.ok{border-color:var(--green);box-shadow:0 0 0 3px rgba(27,70,54,.15)}
+  .game-card.no{border-color:#c98a3a;animation:shake .4s ease}
+  .gc-label{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink)}
+  .gc-amt{font-size:15px;font-weight:700;color:var(--ink-faint);margin-top:6px;font-variant-numeric:tabular-nums}
+  .game-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+  .game-btn{font-size:15px;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);border:1.5px solid var(--line);cursor:pointer;transition:.2s;background:#fff}
+  .game-btn.income{color:var(--green-deep);border-color:#a9c9b5}
+  .game-btn.income:hover{background:var(--green-soft);transform:translateY(-2px)}
+  .game-btn.expense{color:var(--brass-deep);border-color:#e6d3a6}
+  .game-btn.expense:hover{background:var(--brass-soft);transform:translateY(-2px)}
+  .game-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-soft);font-weight:600}
+  .game-streak{color:var(--brass-deep);font-weight:800}
+  .game-done{display:none;text-align:center;padding:22px 20px 4px}
+  .game-done.show{display:block;animation:pop .5s ease}
+  .game-done h4{font-family:var(--serif);font-weight:700;font-size:20px;color:var(--green-deep);margin:6px 0 6px}
+  .game-done p{font-size:14px;color:var(--ink-soft);max-width:400px;margin:0 auto;line-height:1.55}
+
+  /* ── praktisk øvelse med Claude ── */
+  .cx{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .cx-head{background:linear-gradient(135deg,#c1783f,#a5602c);color:#fff;padding:20px 24px}
+  .cx-head .kick{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f3ddc9;margin-bottom:5px}
+  .cx-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .cx-body{padding:22px 24px}
+  .cx-steps{margin:0 0 18px;padding-left:22px;display:flex;flex-direction:column;gap:9px}
+  .cx-steps li{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+  .cx-steps li b{color:var(--green-700)}
+  .cx-prompt{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .cx-prompt-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+  .cx-prompt-t{padding:15px;font-size:13.5px;color:var(--ink);line-height:1.62;white-space:pre-line}
+  .cx-copy{margin:0 15px 15px;font-size:13.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .cx-copy:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .cx-copy.done{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+  .cx-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  .cx-open{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c1783f,#a5602c);border-radius:var(--r-pill);padding:13px 24px;box-shadow:0 6px 18px rgba(193,120,63,.28);transition:.22s}
+  .cx-open:hover{transform:translateY(-2px)}
+  .cx-confirm{font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border:none;border-radius:var(--r-pill);padding:13px 24px;cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .cx-confirm:hover{transform:translateY(-2px)}
+  .cx-confirm.done{background:var(--green-soft);color:var(--green);box-shadow:none;pointer-events:none}
+
+  /* ── trin-tjekliste før quiz ── */
+  .tasklist{max-width:760px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--shadow-sm)}
+  .tl-h{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green-700);margin-bottom:12px}
+  .tl-item{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--ink-soft);padding:9px 0}
+  .tl-item + .tl-item{border-top:1px solid var(--line-soft)}
+  .tl-box{flex:0 0 24px;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--ink-faint);font-size:13px}
+  .tl-item.done{color:var(--ink)}
+  .tl-item.done .tl-box{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+
+  /* side-overgange & entre-animationer */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);
+    transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .anim{opacity:0;animation:aiRise .62s cubic-bezier(.22,.61,.36,1) both}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.anim{opacity:1!important;animation:none!important}}
+
+  /* ── MODUL 2: 3-kort række ── */
+  .magic.three{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:900px){.magic.three{grid-template-columns:1fr}}
+
+  /* ── SPIL: 50/30/20-fordeler ── */
+  .alloc{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .alloc-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .alloc-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .alloc-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .alloc-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .alloc-body{padding:22px 24px}
+  .alloc-bank{display:flex;align-items:center;justify-content:space-between;background:var(--green-tint);border:1px solid #cfe0d1;border-radius:12px;padding:12px 16px;margin-bottom:18px;transition:.25s}
+  .alloc-bank.empty{background:var(--brass-soft);border-color:#e6d3a6}
+  .alloc-bank-l{font-size:13px;font-weight:700;color:var(--green-700)}
+  .alloc-bank.empty .alloc-bank-l{color:var(--brass-deep)}
+  .alloc-bank-v{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--green-deep);font-variant-numeric:tabular-nums}
+  .alloc-bank.empty .alloc-bank-v{color:var(--brass-deep)}
+  .alloc-row{background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:11px;transition:.2s}
+  .alloc-row.hit{border-color:#a9c9b5;background:var(--green-soft)}
+  .alloc-row-top{display:flex;align-items:center;gap:12px}
+  .alloc-ic{flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:17px}
+  .alloc-meta{flex:1;min-width:0}
+  .alloc-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .alloc-target{font-size:11.5px;color:var(--ink-faint);margin-top:1px}
+  .alloc-row.hit .alloc-target{color:var(--green);font-weight:700}
+  .alloc-amt{text-align:right;white-space:nowrap}
+  .alloc-amt b{display:block;font-size:15.5px;color:var(--green-700);font-variant-numeric:tabular-nums}
+  .alloc-amt span{font-size:11.5px;color:var(--ink-faint)}
+  .alloc-bar{position:relative;height:9px;background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);margin:11px 0}
+  .alloc-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .3s ease}
+  .alloc-mark{position:absolute;top:-3px;width:2px;height:15px;background:var(--green-deep);opacity:.55;border-radius:2px;transform:translateX(-1px)}
+  .alloc-ctrl{display:flex;gap:10px;justify-content:flex-end;margin-top:2px}
+  .alloc-btn{width:40px;height:40px;border-radius:11px;border:1.5px solid var(--line);background:#fff;color:var(--green-deep);font-size:22px;font-weight:700;cursor:pointer;transition:.15s;display:grid;place-items:center;line-height:1}
+  .alloc-btn:hover{background:var(--green-soft);border-color:var(--green-light)}
+  .alloc-btn:disabled{opacity:.4;pointer-events:none}
+  .alloc-auto{margin-top:6px;font-size:13.5px;font-weight:700;color:var(--brass-deep);background:#fff;border:1.5px solid #e6d3a6;border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .alloc-auto:hover{background:var(--brass-soft)}
+  .alloc-auto:disabled{opacity:.5;pointer-events:none}
+
+  /* ── SPIL: klikbart budget (tjek tallet) ── */
+  .ledger-row.clickable{cursor:pointer;transition:background .15s}
+  .ledger-row.clickable:hover{background:var(--green-tint)}
+  .ledger-row.total{border-top:1px solid var(--line);font-weight:800}
+  .ledger-row .amt.neg{color:#a5602c}
+  .ledger-row.shake{animation:shake .4s ease}
+  .ledger-row.fixed{background:var(--green-soft)}
+  .ledger-row.fixed .amt{color:var(--green)}
+
+
+  /* ══════════ QUIZ-ARENA — eget udtryk, samme Honning & Skov-univers ══════════ */
+  .qshell{position:relative;z-index:1;max-width:880px;margin:0 auto;padding:46px 24px 96px}
+  .qtop{text-align:center;margin-bottom:30px}
+  .qkick{display:inline-flex;align-items:center;gap:9px;background:var(--brass-soft);border:1px solid #e3d3a8;
+    color:var(--brass-deep);font-size:11.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+    padding:7px 17px;border-radius:var(--r-pill);margin-bottom:18px}
+  .qkick i{width:7px;height:7px;border-radius:50%;background:var(--brass-deep);display:block}
+  .qtop h1{font-family:var(--serif);font-weight:700;font-size:clamp(31px,4.6vw,46px);color:var(--green-deep);line-height:1.14;letter-spacing:-.015em}
+  .qtop h1 em{font-style:italic;color:var(--brass-deep)}
+  .qtop p{margin:15px auto 0;max-width:520px;font-size:16px;color:var(--ink-soft);line-height:1.62}
+
+  /* prikker der viser hvor langt man er */
+  .qdots{display:flex;gap:9px;justify-content:center;margin:26px 0 4px}
+  .qdot{width:38px;height:6px;border-radius:var(--r-pill);background:var(--green-soft);border:1px solid #cfe0d1;transition:.35s}
+  .qdot.on{background:linear-gradient(90deg,var(--green),var(--brass));border-color:transparent}
+  .qdot.now{box-shadow:0 0 0 3px rgba(169,136,65,.19)}
+
+  /* selve kortet */
+  .qarena{background:var(--card);border:1px solid var(--line);border-radius:26px;box-shadow:var(--shadow-lg);overflow:hidden;margin-top:22px}
+  .qbar{background:linear-gradient(135deg,var(--green),var(--green-deep));padding:19px 30px;display:flex;align-items:center;justify-content:space-between;gap:14px;position:relative}
+  .qbar::after{content:'';position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--brass),var(--gold),var(--brass))}
+  .qbar-n{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#e9dfc4}
+  .qbar-s{font-size:12.5px;font-weight:700;color:#cfe0d1}
+  .qbody{padding:36px 34px 32px}
+  .qtext{font-family:var(--serif);font-weight:600;font-size:24px;line-height:1.36;color:var(--ink);margin-bottom:26px}
+
+  .qopts{display:flex;flex-direction:column;gap:12px}
+  .opt{display:flex;align-items:flex-start;gap:15px;width:100%;text-align:left;background:#fff;border:1.5px solid var(--line);
+    border-radius:15px;padding:17px 19px;cursor:pointer;font-family:var(--sans);font-size:15.5px;line-height:1.5;color:var(--ink);
+    transition:border-color .2s,background .2s,transform .12s,box-shadow .2s}
+  .opt:hover:not(:disabled){border-color:var(--green-light);background:var(--green-tint);transform:translateX(3px)}
+  .opt:disabled{cursor:default}
+  .opt-k{flex:0 0 30px;width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-weight:800;font-size:13.5px;
+    background:var(--brass-soft);border:1px solid #e3d3a8;color:var(--brass-deep);transition:.2s;margin-top:1px}
+  .opt-t{flex:1;padding-top:3px}
+  .opt-m{flex:0 0 auto;font-size:16px;font-weight:800;opacity:0;transition:.25s;margin-top:3px}
+  .opt.correct{border-color:#7fae8c;background:var(--green-tint)}
+  .opt.correct .opt-k{background:var(--green);border-color:var(--green);color:#fff}
+  .opt.correct .opt-m{opacity:1;color:var(--green)}
+  .opt.wrong{border-color:#d9a79c;background:#fbeeea}
+  .opt.wrong .opt-k{background:#b4543c;border-color:#b4543c;color:#fff}
+  .opt.wrong .opt-m{opacity:1;color:#b4543c}
+  .opt.dim{opacity:.5}
+
+  .qwhy{margin-top:22px;border-radius:14px;padding:16px 19px;font-size:14.5px;line-height:1.6;display:none;
+    background:var(--green-tint);border:1px dashed #a9c9b5;color:var(--green-700)}
+  .qwhy.show{display:block;animation:qfade .35s ease both}
+  .qwhy.miss{background:var(--amber-soft);border-color:#e0c789;color:#7a5a12}
+  .qwhy b{font-weight:800}
+  @keyframes qfade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+
+  .qfoot{display:flex;justify-content:flex-end;padding:0 34px 32px}
+  .qnext{display:none;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;
+    border:none;border-radius:var(--r-pill);padding:15px 32px;font-family:var(--sans);font-weight:700;font-size:15px;cursor:pointer;
+    box-shadow:0 8px 22px rgba(27,70,54,.25);transition:transform .2s,box-shadow .2s}
+  .qnext.show{display:inline-flex;animation:qfade .3s ease both}
+  .qnext:hover{transform:translateY(-2px);box-shadow:0 13px 30px rgba(27,70,54,.32)}
+
+  /* resultat */
+  .qres{display:none;text-align:center;padding:46px 34px 40px}
+  .qres.show{display:block;animation:qfade .45s ease both}
+  .qring{width:150px;height:150px;margin:0 auto 26px;position:relative}
+  .qring svg{transform:rotate(-90deg)}
+  .qring-num{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:37px;color:var(--green-deep);line-height:1}
+  .qring-num small{display:block;font-family:var(--sans);font-size:12px;font-weight:700;color:var(--ink-faint);letter-spacing:.08em;text-transform:uppercase;margin-top:5px}
+  .qres h2{font-family:var(--serif);font-weight:700;font-size:29px;color:var(--green-deep);margin-bottom:11px}
+  .qres p{font-size:15.5px;color:var(--ink-soft);line-height:1.65;max-width:440px;margin:0 auto 26px}
+  .qres-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .qbtn{display:inline-flex;align-items:center;gap:9px;border-radius:var(--r-pill);padding:15px 30px;font-family:var(--sans);
+    font-weight:700;font-size:15px;cursor:pointer;border:none;transition:transform .2s,box-shadow .2s;text-decoration:none}
+  .qbtn.go{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;box-shadow:0 8px 22px rgba(27,70,54,.25)}
+  .qbtn.again{background:#fff;border:1.5px solid var(--line);color:var(--green-700)}
+  .qbtn.back{background:var(--brass-soft);border:1px solid #e3d3a8;color:var(--brass-deep)}
+  .qbtn:hover{transform:translateY(-2px)}
+  .qtally{display:flex;gap:7px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+  .tal{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;font-size:14px;font-weight:800;
+    background:var(--green-soft);border:1px solid #cfe0d1;color:var(--green)}
+  .tal.no{background:#fbeeea;border-color:#e6c4ba;color:#b4543c}
+
+  .qhint{text-align:center;font-size:13px;color:var(--ink-faint);margin-top:20px;line-height:1.55}
+
+  @media(max-width:640px){
+    .qshell{padding:32px 15px 70px}
+    .qbody{padding:26px 20px 24px}
+    .qbar{padding:16px 20px}
+    .qfoot{padding:0 20px 26px}
+    .qtext{font-size:20.5px}
+    .opt{font-size:15px;padding:15px 15px;gap:12px}
+    .qdot{width:26px}
+    .qres{padding:36px 20px 32px}
+  }
+
+</style>
+</head>
+<body>
+<div class="page-veil" id="pageVeil"></div>
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- LOGIN-GATE (vises indtil login + Kursus D er afklaret) -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-ic">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gateTitle">Hov — du er ikke logget ind</h1>
+    <p id="gateText">Du skal være logget ind for at tage quizzen. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.</p>
+    <a class="gate-btn" id="gateBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tryk her for at logge ind
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="sb-toggle" id="sbToggle" aria-label="Vis kursusoversigt">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span class="sb-toggle-txt">Oversigt</span>
+    </button>
+    <span class="topbar-badge">Økonomi &amp; Overblik · Quiz 2</span>
+  </div>
+  <!-- Logo øverst til HØJRE — klik fører tilbage til platformen -->
+  <a class="brand" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" title="Tilbage til Akademiet AI">
+    <span>Akademiet AI</span>
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+  </a>
+</header>
+
+<!-- kursus-fremdrift i procent (regnes i JS) -->
+<div class="cprog-wrap">
+  <div class="cprog">
+    <div class="cprog-label" id="cprogLabel">Trin 4 af 5 · Quiz 2</div>
+    <div class="cprog-track"><div class="cprog-fill" id="cprogFill"></div></div>
+    <div class="cprog-pct" id="cprogPct">0%</div>
+  </div>
+</div>
+
+<!-- forløbsbjælke -->
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Kursus D</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 1</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Quiz 1</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 2 · Budget</span><span class="j-sep">›</span>
+    <span class="j-step current">Quiz 2</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 3 · Klar til fremvisning</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Kursusoversigt (åbnes af de tre streger — scroller uafhængigt af modulet) -->
+<aside class="cov" id="courseOverview" aria-hidden="true">
+  <div class="cov-head">
+    <div><div class="cov-kick">Sidekursus</div><h3>AI til Økonomi &amp; Overblik</h3></div>
+    <button class="cov-close" id="covClose" aria-label="Luk oversigt">✕</button>
+  </div>
+  <div class="cov-note">3 moduler + 2 quizzer. Hvert trin tæller <strong>20%</strong> af dit bevis.</div>
+  <div class="cov-body">
+    <div class="cov-step done"><span class="cs-ic">🎓</span><div><div class="cs-label">Kursus D</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">💰</span><div><div class="cs-label">Modul 1 · Få overblik</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 1</div><div class="cs-sub">Bestået</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">📊</span><div><div class="cs-label">Modul 2 · Månedsbudget</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step current"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 2</div><div class="cs-sub">Du er her nu</div></div><span class="cs-pct">80%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">🧾</span><div><div class="cs-label">Modul 3 · Klar til fremvisning</div><div class="cs-sub">Låst</div></div><span class="cs-pct">100%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📜</span><div><div class="cs-label">Bevis &amp; coins</div><div class="cs-sub">Kursusbevis · coins</div></div><span class="cs-pct"></span></div>
+  </div>
+</aside>
+
+<div class="qshell">
+
+  <div class="qtop">
+    <span class="qkick"><i></i> Quiz 2 · Månedsbudget</span>
+    <h1>Sidder <em>budgettet</em> fast?</h1>
+    <p>Seks spørgsmål om det, du lærte i Modul 2. Du skal have mindst 5 rigtige for at bestå — og du må prøve så mange gange, du vil.</p>
+    <div class="qdots" id="qDots"></div>
+  </div>
+
+  <div class="qarena">
+    <div class="qbar">
+      <span class="qbar-n" id="qNum">Spørgsmål 1 af 6</span>
+      <span class="qbar-s" id="qScore">0 rigtige</span>
+    </div>
+
+    <div id="qPlay">
+      <div class="qbody">
+        <div class="qtext" id="qText">—</div>
+        <div class="qopts" id="qOpts"></div>
+        <div class="qwhy" id="qWhy"></div>
+      </div>
+      <div class="qfoot">
+        <button class="qnext" id="qNext">Næste spørgsmål
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="qres" id="qRes">
+      <div class="qring">
+        <svg width="150" height="150" viewBox="0 0 150 150">
+          <circle cx="75" cy="75" r="64" fill="none" stroke="#dee8de" stroke-width="12"/>
+          <circle id="qRingArc" cx="75" cy="75" r="64" fill="none" stroke="#1b4636" stroke-width="12"
+                  stroke-linecap="round" stroke-dasharray="402" stroke-dashoffset="402"
+                  style="transition:stroke-dashoffset 1s cubic-bezier(.22,.61,.36,1)"/>
+        </svg>
+        <div class="qring-num"><span id="qResNum">0/6</span><small>rigtige</small></div>
+      </div>
+      <div class="qtally" id="qTally"></div>
+      <h2 id="qResTitle">—</h2>
+      <p id="qResText">—</p>
+      <div class="qres-btns" id="qResBtns"></div>
+    </div>
+  </div>
+
+  <div class="qhint">Spørgsmål og svarmuligheder blandes hver gang — så du lærer stoffet, ikke rækkefølgen.</div>
+
+</div>
+
+<script>
+
+  // ── kursus-fremdrift: 3 moduler + 2 quizzer = 5 trin (hvert trin = 20%) ──
+  // Quiz 2 er trin 4 → Modul 1 + Quiz 1 + Modul 2 er gennemført → 60%.
+  (function(){
+    var STEP=4, TOTAL=5;
+    var pct=Math.round(((STEP-1)/TOTAL)*100);            // = 60%
+    var f=document.getElementById('cprogFill'), p=document.getElementById('cprogPct');
+    setTimeout(function(){ if(f) f.style.width=pct+'%'; if(p) p.textContent=pct+'%'; },380);
+  })();
+
+  // ── kursusoversigt: de tre streger ──
+  (function(){
+    var cov=document.getElementById('courseOverview'),
+        bd=document.getElementById('backdrop'),
+        tg=document.getElementById('sbToggle'),
+        cl=document.getElementById('covClose');
+    function openCov(){ if(!cov)return; cov.classList.add('open'); bd.classList.add('show'); cov.setAttribute('aria-hidden','false'); document.body.classList.add('noscroll'); }
+    function closeCov(){ if(!cov)return; cov.classList.remove('open'); bd.classList.remove('show'); cov.setAttribute('aria-hidden','true'); document.body.classList.remove('noscroll'); }
+    if(tg) tg.addEventListener('click', openCov);
+    if(cl) cl.addEventListener('click', closeCov);
+    if(bd) bd.addEventListener('click', closeCov);
+    document.addEventListener('keydown', function(e){ if(e.key==='Escape') closeCov(); });
+    window.openCov=openCov; window.closeCov=closeCov;
+  })();
+
+  // ══════════════════ QUIZ 2 ══════════════════
+  (function(){
+    var PASS = 5;                       // bestå-grænse: 5 af 6 rigtige
+    var MODUL3 = 'kursus-oekonomi-3.html';
+    var MODUL2 = 'kursus-oekonomi-2.html';
+
+    // Spørgsmål. ci = indeks på det rigtige svar i opts (blandes ved runtime).
+    var BANK = [
+      { q:'Hvad er rådighedsbeløbet i et månedsbudget?', ci:0,
+        opts:[
+          'Det beløb, du har tilbage, når faste og variable udgifter er trukket fra indtægterne.',
+          'Den samlede sum af alle dine indtægter, før nogen udgifter overhovedet er trukket fra.',
+          'Det beløb, du hver måned har bundet i faste udgifter som husleje og forsikringer.',
+          'Den del af din løn, som banken automatisk flytter over på din opsparingskonto.'
+        ],
+        why:'Rådighedsbeløbet er hele budgettet i én linje: <b>indtægter − faste udgifter − variable udgifter</b>. Det er de penge, du reelt har frit.' },
+
+      { q:'Hvilken af disse udgifter er en variabel udgift?', ci:2,
+        opts:[
+          'Huslejen, som trækkes med præcis det samme beløb den første i hver måned.',
+          'Indboforsikringen, som du betaler et fast beløb for én gang om året.',
+          'Dagligvarer, hvor beløbet svinger fra den ene måned til den næste måned.',
+          'Streaming-abonnementet, der koster nøjagtig det samme beløb hver måned.'
+        ],
+        why:'Variable udgifter <b>svinger</b> fra måned til måned. De tre andre er faste — samme beløb hver gang.' },
+
+      { q:'I 50/30/20-reglen — hvad dækker de 30 %?', ci:0,
+        opts:[
+          'Ønsker — restaurant, ferie og ting, du godt kunne undvære, hvis det kneb.',
+          'Fornødenheder — husleje, mad, transport og de regninger, der skal betales.',
+          'Opsparing og afdrag på den gæld, du eventuelt har fra tidligere år.',
+          'Uforudsete udgifter, som du sætter til side i en pulje hver måned.'
+        ],
+        why:'<b>50 %</b> fornødenheder · <b>30 %</b> ønsker · <b>20 %</b> opsparing og gæld. De 30 % er det rare — det du kan skrue ned for, hvis der bliver brug for det.' },
+
+      { q:'Dine indtægter er 24.000 kr. Faste udgifter er 13.500 kr, variable er 5.200 kr. Hvad er rådighedsbeløbet?', ci:0,
+        opts:['5.300 kr','4.700 kr','9.800 kr','6.100 kr'],
+        why:'24.000 − 13.500 − 5.200 = <b>5.300 kr</b>. Træk begge slags udgifter fra — ikke kun de faste.' },
+
+      { q:'AI har lavet dit budget, og ét af tallene ser forkert ud. Hvad gør du?', ci:1,
+        opts:[
+          'Stoler på AI\u2019en — den regner hurtigere og mere sikkert, end du selv gør.',
+          'Regner efter selv og retter tallet, før du bruger budgettet til noget.',
+          'Sletter hele budgettet og starter forfra i en helt ny samtale med AI\u2019en.',
+          'Beder AI\u2019en bekræfte, at alle tallene med sikkerhed er helt rigtige.'
+        ],
+        why:'Den gyldne regel: <b>tjek altid tallene selv</b>. AI hjælper med overblikket — men ansvaret for, at tallene er rigtige, er dit.' },
+
+      { q:'Hvorfor deler man udgifter op i faste og variable?', ci:2,
+        opts:[
+          'Fordi de faste udgifter altid fylder mere i budgettet end de variable.',
+          'Fordi banken kræver, at et budget er stillet op på præcis den måde.',
+          'Fordi de variable er dem, du lettest kan skrue helt op og ned for.',
+          'Fordi variable udgifter slet ikke tælles med i dit rådighedsbeløb.'
+        ],
+        why:'De faste er svære at lave om på her og nu. De <b>variable</b> er der, du finder pengene, hvis noget skal give plads.' }
+    ];
+
+    var LETTERS = ['A','B','C','D'];
+    var qs = [], idx = 0, right = 0, marks = [], locked = false;
+
+    function shuffle(a){
+      a = a.slice();
+      for (var i=a.length-1; i>0; i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
+      return a;
+    }
+
+    // Bland både spørgsmål og svarmuligheder — ci flyttes med
+    function build(){
+      qs = shuffle(BANK).map(function(item){
+        var pairs = item.opts.map(function(t,i){ return { t:t, ok:(i===item.ci) }; });
+        pairs = shuffle(pairs);
+        var ci = 0;
+        for (var i=0;i<pairs.length;i++){ if(pairs[i].ok) ci=i; }
+        return { q:item.q, why:item.why, opts:pairs.map(function(p){return p.t;}), ci:ci };
+      });
+      idx = 0; right = 0; marks = []; locked = false;
+    }
+
+    var elDots  = document.getElementById('qDots'),
+        elNum   = document.getElementById('qNum'),
+        elScore = document.getElementById('qScore'),
+        elText  = document.getElementById('qText'),
+        elOpts  = document.getElementById('qOpts'),
+        elWhy   = document.getElementById('qWhy'),
+        elNext  = document.getElementById('qNext'),
+        elPlay  = document.getElementById('qPlay'),
+        elRes   = document.getElementById('qRes');
+
+    function dots(){
+      if(!elDots) return;
+      elDots.innerHTML = '';
+      for (var i=0;i<qs.length;i++){
+        var d = document.createElement('span');
+        d.className = 'qdot' + (i<idx ? ' on' : '') + (i===idx ? ' now' : '');
+        elDots.appendChild(d);
+      }
+    }
+
+    function render(){
+      var item = qs[idx];
+      locked = false;
+      elNum.textContent   = 'Spørgsmål ' + (idx+1) + ' af ' + qs.length;
+      elScore.textContent = right + ' rigtige';
+      elText.textContent  = item.q;
+      elWhy.className     = 'qwhy';
+      elWhy.innerHTML     = '';
+      elNext.className    = 'qnext';
+      elNext.textContent  = '';
+      elOpts.innerHTML    = '';
+
+      item.opts.forEach(function(t, i){
+        var b = document.createElement('button');
+        b.className = 'opt';
+        b.type = 'button';
+        b.innerHTML = '<span class="opt-k">' + LETTERS[i] + '</span>' +
+                      '<span class="opt-t"></span>' +
+                      '<span class="opt-m"></span>';
+        b.querySelector('.opt-t').textContent = t;
+        b.addEventListener('click', function(){ answer(i); });
+        elOpts.appendChild(b);
+      });
+      dots();
+    }
+
+    function answer(pick){
+      if (locked) return;
+      locked = true;
+      var item = qs[idx];
+      var ok = (pick === item.ci);
+      if (ok) right++;
+      marks.push(ok);
+
+      var btns = elOpts.querySelectorAll('.opt');
+      for (var i=0;i<btns.length;i++){
+        btns[i].disabled = true;
+        if (i === item.ci){
+          btns[i].classList.add('correct');
+          btns[i].querySelector('.opt-m').textContent = '\u2713';
+        } else if (i === pick){
+          btns[i].classList.add('wrong');
+          btns[i].querySelector('.opt-m').textContent = '\u2715';
+        } else {
+          btns[i].classList.add('dim');
+        }
+      }
+
+      elScore.textContent = right + ' rigtige';
+      elWhy.innerHTML = (ok ? '<b>Rigtigt.</b> ' : '<b>Ikke helt.</b> ') + item.why;
+      elWhy.className = 'qwhy show' + (ok ? '' : ' miss');
+
+      elNext.innerHTML = (idx === qs.length-1 ? 'Se dit resultat' : 'Næste spørgsmål') +
+        ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+      elNext.className = 'qnext show';
+    }
+
+    elNext.addEventListener('click', function(){
+      if (idx < qs.length-1){ idx++; render(); window.scrollTo({top:0,behavior:'smooth'}); }
+      else { finish(); }
+    });
+
+    function finish(){
+      var passed = right >= PASS;
+      elPlay.style.display = 'none';
+      elRes.className = 'qres show';
+
+      document.getElementById('qResNum').textContent = right + '/' + qs.length;
+      var arc = document.getElementById('qRingArc');
+      var full = 402;
+      arc.setAttribute('stroke', passed ? '#1b4636' : '#a98841');
+      setTimeout(function(){ arc.style.strokeDashoffset = String(full - (full * (right/qs.length))); }, 120);
+
+      var tally = document.getElementById('qTally');
+      tally.innerHTML = '';
+      marks.forEach(function(m){
+        var s = document.createElement('span');
+        s.className = 'tal' + (m ? '' : ' no');
+        s.textContent = m ? '\u2713' : '\u2715';
+        tally.appendChild(s);
+      });
+
+      var t = document.getElementById('qResTitle'),
+          x = document.getElementById('qResText'),
+          b = document.getElementById('qResBtns');
+
+      if (passed){
+        try { localStorage.setItem('akai_oekonomi_quiz2', 'passed'); } catch(e){}
+        t.textContent = right === qs.length ? 'Helt rent bord' : 'Bestået — flot klaret';
+        x.textContent = right === qs.length
+          ? 'Alle seks rigtige. Du har styr på budgettets tre dele, fast kontra variabel og 50/30/20 — og du husker at tjekke AI\u2019ens tal selv.'
+          : 'Du har fat i det vigtigste: budgettets tre dele, forskellen på faste og variable udgifter, og at ansvaret for tallene er dit. Modul 3 er låst op.';
+        b.innerHTML =
+          '<a class="qbtn go" href="' + MODUL3 + '">Videre til Modul 3' +
+          ' <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a>' +
+          '<button class="qbtn again" id="qAgain">Tag quizzen igen</button>';
+      } else {
+        t.textContent = 'Tæt på — prøv en gang til';
+        x.textContent = 'Du skal have ' + PASS + ' rigtige ud af ' + qs.length + ' for at bestå. Læs Modul 2 igennem en ekstra gang — især budgettets tre dele og 50/30/20 — og tag så quizzen forfra. Der er ingen grænse for antal forsøg.';
+        b.innerHTML =
+          '<button class="qbtn go" id="qAgain">Prøv igen</button>' +
+          '<a class="qbtn back" href="' + MODUL2 + '">Tilbage til Modul 2</a>';
+      }
+
+      var again = document.getElementById('qAgain');
+      if (again) again.addEventListener('click', restart);
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function restart(){
+      elRes.className = 'qres';
+      elPlay.style.display = '';
+      document.getElementById('qRingArc').style.strokeDashoffset = '402';
+      build();
+      render();
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    build();
+    render();
+  })();
+
+</script>
+
+<!-- FIREBASE login-gate (login + Kursus D bestået) — med fallback til forhåndsvisning -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const PLATFORM = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+
+function showGate(mode){
+  const g = document.getElementById('gate');
+  if (mode === false) { g.classList.remove('show'); return; }
+  const t = document.getElementById('gateTitle');
+  const x = document.getElementById('gateText');
+  const b = document.getElementById('gateBtn');
+  if (mode === 'course') {
+    t.textContent = 'Færdiggør Kursus D først';
+    x.textContent = 'Dette sidekursus åbner, når du har gennemført hele Kursus D. Tag Kursus D først — så er du klar til at give AI styr på din økonomi.';
+    b.textContent = 'Gå til Kursus D';
+    b.setAttribute('href', PLATFORM);
+  } else {
+    t.textContent = 'Hov — du er ikke logget ind';
+    x.textContent = 'Du skal være logget ind for at tage quizzen. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.';
+    b.textContent = 'Tryk her for at logge ind';
+    b.setAttribute('href', PLATFORM);
+  }
+  g.classList.add('show');
+}
+
+// Vis gaten indtil auth er afklaret
+showGate('login');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch (e) {
+    // Forhåndsvisning uden net (fx byggemiljø): vis modulet
+    console.warn('Firebase utilgængelig — viser modulet som forhåndsvisning.', e);
+    showGate(false);
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate('login'); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch (e) { console.error(e); }
+
+    // Kræver at hele Kursus D er gennemført (completedCourses indeholder 'D'),
+    // med D-badge som fallback. August: bekræft feltnavnet.
+    const dDone =
+      (Array.isArray(data.completedCourses) && data.completedCourses.includes('D')) ||
+      (Array.isArray(data.badges) && data.badges.some(b => b && b.level === 'D' && b.type !== 'side'));
+
+    if (!dDone) { showGate('course'); return; }
+    showGate(false);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  var targets=[];
+  var hero=document.querySelector('.main .hero'); if(hero) targets.push(hero);
+  var lesson=document.querySelector('.main .lesson');
+  if(lesson){ Array.prototype.forEach.call(lesson.children,function(c){targets.push(c);}); }
+  targets.forEach(function(el,i){ el.classList.add('anim'); el.style.animationDelay=(0.05+i*0.075)+'s'; });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    if(a.classList.contains('locked')) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
+</script>
+</body>
+</html>
