@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — AI til Økonomi &amp; Overblik · Modul 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --amber:#b0842a; --amber-soft:#f6ecd0;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--green),var(--brass));transition:width .1s linear}
+
+  /* ── LOGIN-GATE ── */
+  .gate{position:fixed;inset:0;z-index:4000;display:none;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%)}
+  .gate.show{display:flex}
+  .gate-card{max-width:452px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+  .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--brass))}
+  .gate-ic{width:66px;height:66px;border-radius:19px;margin:6px auto 20px;display:grid;place-items:center;
+    background:var(--green-soft);border:1px solid #c6d8c9;color:var(--green)}
+  .gate-card h1{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin-bottom:11px;line-height:1.2}
+  .gate-card p{font-size:15px;color:var(--ink-soft);line-height:1.62;margin:0 auto 24px;max-width:360px}
+  .gate-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#fff;font-weight:700;font-size:16px;padding:14px 28px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .gate-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+
+  /* topbar — logo til HØJRE (efter ønske), kursus-tag til venstre */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .sb-toggle{display:inline-flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;height:40px;padding:0 14px;align-items:center;justify-content:center;color:var(--green);cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+  .sb-toggle:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .sb-toggle-txt{display:inline}
+
+  /* ── kursus-fremdrift (procent gennem hele sidekurset) ── */
+  .cprog-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;position:relative;z-index:6}
+  .cprog{max-width:1520px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cprog-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .cprog-label b{color:var(--green-700)}
+  .cprog-track{flex:1;min-width:160px;height:9px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .cprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .8s cubic-bezier(.22,.61,.36,1)}
+  .cprog-pct{font-size:12.5px;font-weight:800;color:var(--green-700);white-space:nowrap;min-width:34px;text-align:right}
+
+  /* forløbsbjælke (folded, centreret) */
+  .journey-wrap{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* layout */
+  .layout{position:relative;z-index:1;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr) 312px;align-items:start}
+  .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;background:var(--panel);padding:26px 20px}
+  .sidebar-left{border-right:1px solid var(--line)}
+  .sidebar-right{border-left:1px solid var(--line)}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .main{padding:44px 56px 90px;min-width:0}
+
+  .sb-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);margin-bottom:6px}
+  .sb-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:20px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:11px 13px}
+  .sb-note strong{color:var(--green-700)}
+  .sb-item{display:flex;gap:13px;align-items:flex-start;padding:11px 12px;border-radius:13px}
+  .sb-item + .sb-item{margin-top:2px}
+  .sb-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--green-mid)}
+  .sb-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .sb-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .sb-item.done .sb-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .sb-item.done .sb-check{margin-left:auto;color:var(--green);font-weight:800;font-size:15px}
+  .sb-item.current{background:#fff;border:1px solid #cfe0d1;box-shadow:var(--shadow-sm)}
+  .sb-item.current .sb-ic{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 4px rgba(27,70,54,.10)}
+  .sb-item.current .sb-sub{color:var(--green-mid);font-weight:700}
+  .sb-item.locked{opacity:.72}
+  .sb-item.locked .sb-label{color:var(--ink-soft)}
+  .sb-subnav{margin:6px 0 6px 46px;display:flex;flex-direction:column;gap:2px}
+  .sb-subnav a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;transition:.2s}
+  .sb-subnav a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .sb-subnav a:hover{background:var(--green-soft);color:var(--green-deep)}
+  .sb-subnav a.active{color:var(--green-deep);font-weight:700}
+  .sb-subnav a.active::before{opacity:1;background:var(--green)}
+  .sb-line{width:1px;height:16px;background:var(--line);margin:2px 0 2px 28px}
+
+  .rt-tip{background:var(--green-tint);border:1px solid #cfe0d1;border-radius:13px;padding:15px 16px;margin-bottom:14px}
+  .rt-tip-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green-700);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .rt-tip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .rt-tip-list li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .rt-tip-list li span{color:var(--green);flex:0 0 auto}
+  .rt-rule{background:var(--amber-soft);border:1px solid #e6d3a6;border-radius:13px;padding:15px 16px}
+  .rt-rule-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rt-rule p{font-size:12.5px;color:#5c4a1e;line-height:1.55}
+  .rt-rule p strong{color:var(--brass-deep)}
+  .rt-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:14px;transition:.22s}
+  .rt-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfc4a6}
+  .rt-logo{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#c1783f,#d99a5b)}
+  .rt-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .rt-tag{font-size:11.5px;color:var(--ink-faint)}
+  .rt-arrow{margin-left:auto;color:var(--ink-faint);font-size:15px}
+
+  /* hero */
+  .hero{max-width:800px;margin:0 auto;text-align:center;padding:24px 0 6px}
+  .hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);background:var(--green-tint);border:1px solid #cfe0d1;padding:8px 16px;border-radius:var(--r-pill)}
+  .hero-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,70,54,.4)}50%{box-shadow:0 0 0 6px rgba(27,70,54,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,62px);line-height:1.08;letter-spacing:-.02em;margin:20px 0 18px;color:var(--ink)}
+  .hero h1 em{font-style:italic;background:linear-gradient(120deg,var(--green-mid),var(--brass) 82%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);line-height:1.65;max-width:600px;margin:0 auto}
+  .hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero-stat{font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm)}
+
+  /* lesson */
+  .lesson{max-width:760px;margin:0 auto}
+  .sec{margin-top:60px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-700);margin-bottom:14px}
+  .sec-eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--green-light),transparent);border-radius:2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:clamp(25px,3.2vw,32px);color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sec h2 em{font-style:italic;color:var(--brass-deep)}
+  .sec p.lead{font-size:16.5px;color:var(--ink-soft);line-height:1.72;margin-top:14px}
+  .sec p.lead + p.lead{margin-top:14px}
+  .sec p.lead strong{color:var(--green-700)}
+
+  .pull{background:var(--green-tint);border:1px solid #cfe0d1;border-left:4px solid var(--green);border-radius:var(--r);padding:20px 24px;margin-top:24px}
+  .pull p{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--green-deep);line-height:1.5}
+
+  /* magic cards */
+  .magic{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px}
+  .magic-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:.22s}
+  .magic-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfe0d1}
+  .magic-ic{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--green-soft);border:1px solid #c6d8c9;display:grid;place-items:center;font-size:19px}
+  .magic-t{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+  .magic-d{font-size:13px;color:var(--ink-faint);line-height:1.5}
+
+  /* advarsel / gylden regel-boks */
+  .warn{margin-top:24px;background:var(--amber-soft);border:1px solid #e6d3a6;border-left:4px solid var(--brass);border-radius:var(--r);padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
+  .warn .warn-ic{font-size:22px;flex:0 0 auto}
+  .warn p{font-size:14.5px;color:#5c4a1e;line-height:1.6}
+  .warn p strong{color:var(--brass-deep)}
+
+  /* ── interaktiv: kategoriserings-værksted ── */
+  .lab{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .lab-head{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;padding:20px 24px}
+  .lab-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#bfe0cd;margin-bottom:5px}
+  .lab-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .lab-head p{font-size:13.5px;color:#d7e7dd;margin-top:5px;line-height:1.5}
+  .lab-body{padding:22px 24px}
+  .lab-scenario{font-size:13.5px;color:var(--ink-soft);background:var(--green-tint);border:1px solid #cfe0d1;border-radius:11px;padding:12px 15px;margin-bottom:18px;line-height:1.5}
+  .lab-scenario strong{color:var(--green-700)}
+
+  /* kontoudtog (før sortering) */
+  .ledger{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .ledger-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;background:var(--cream);border-bottom:1px solid var(--line-soft)}
+  .ledger-row{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line-soft)}
+  .ledger-row:last-child{border-bottom:none}
+  .ledger-row .amt{font-weight:700;color:var(--green-700);font-variant-numeric:tabular-nums}
+
+  .lab-sort-btn{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .lab-sort-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,.3)}
+  .lab-sort-btn:disabled{opacity:.5;pointer-events:none}
+
+  /* buckets (efter sortering) */
+  .buckets{display:none;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:6px}
+  .buckets.show{display:grid;animation:pop .45s ease}
+  .bucket{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+  .bucket-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--green-700);margin-bottom:9px}
+  .bucket-h .b-ic{font-size:16px}
+  .chip{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.18s;margin-top:7px}
+  .chip:first-of-type{margin-top:0}
+  .chip:hover{border-color:var(--green-light);transform:translateY(-1px)}
+  .chip .c-amt{font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .chip.shake{animation:shake .4s ease}
+  .chip.correct{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);cursor:default}
+  .chip.correct .c-amt{color:var(--green)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes pop{0%{transform:scale(.97);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .lab-coach{margin-top:16px;font-size:13.5px;color:var(--green-700);background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:11px;padding:12px 15px;display:none;align-items:center;gap:9px;line-height:1.45}
+  .lab-coach.show{display:flex;animation:pop .4s ease}
+  .lab-coach.warn-tone{color:#5c4a1e;background:var(--amber-soft);border-color:#dcc38a}
+
+  /* completion */
+  .done-box{margin-top:24px;text-align:center;background:linear-gradient(160deg,var(--green-tint),#fff);border:1px solid #cfe0d1;border-radius:var(--r-lg);padding:30px 26px;display:none}
+  .done-box.show{display:block;animation:pop .5s ease}
+  .done-emoji{font-size:34px}
+  .done-box h4{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green-deep);margin:6px 0 6px}
+  .done-box p{font-size:14.5px;color:var(--ink-soft);max-width:440px;margin:0 auto;line-height:1.6}
+
+  .cta{max-width:760px;margin:56px auto 0;text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:42px 30px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(47,106,74,.09),transparent 70%);pointer-events:none}
+  .cta-tag{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+  .cta h2{position:relative;font-family:var(--serif);font-weight:700;font-size:29px;color:var(--ink);margin:10px 0 8px}
+  .cta p{position:relative;font-size:15px;color:var(--ink-soft);max-width:440px;margin:0 auto 22px;line-height:1.6}
+  .cta-btn{position:relative;display:inline-flex;align-items:center;gap:11px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:17px;font-weight:700;padding:16px 34px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+  .cta-btn.locked{opacity:.55;pointer-events:none;filter:grayscale(.3)}
+  .cta-meta{position:relative;font-size:12.5px;color:var(--ink-faint);margin-top:16px}
+
+  .backdrop{display:none}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(20,30,25,.42);z-index:1500;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.noscroll{overflow:hidden}
+  @media(max-width:1180px){.layout{grid-template-columns:260px minmax(0,1fr)}.sidebar-right{display:none}.main{padding:38px 40px 80px}}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .sidebar-left{display:none}
+    .main{padding:30px 20px 70px}
+    .magic,.buckets.show{grid-template-columns:1fr}
+    .brand span{display:none}
+  }
+  @media(max-width:560px){
+    .sb-toggle-txt{display:none}
+    .sb-toggle{padding:0;width:40px}
+    .cx-actions{flex-direction:column;align-items:stretch}
+  }
+
+  /* ── kursusoversigt (åbnes med de tre streger) ── */
+  .cov{position:fixed;top:0;right:0;height:100%;width:376px;max-width:90vw;z-index:1600;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .cov.open{transform:translateX(0)}
+  .cov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+  .cov-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .cov-head h3{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep);line-height:1.2}
+  .cov-close{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:15px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .cov-close:hover{background:var(--green-soft);color:var(--green)}
+  .cov-note{font-size:12.5px;color:var(--ink-soft);padding:12px 22px;background:var(--green-tint);border-bottom:1px solid var(--line-soft);line-height:1.5}
+  .cov-body{flex:1;overflow-y:auto;padding:16px 18px 40px}
+  .cov-step{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid var(--line-soft);margin-bottom:8px}
+  .cov-step .cs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--cream);border:1px solid var(--line);color:var(--green-mid)}
+  .cov-step .cs-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .cov-step .cs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cov-step .cs-pct{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--green-700);white-space:nowrap}
+  .cov-step.done .cs-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .cov-step.current{background:linear-gradient(135deg,#fff,var(--green-tint));border-color:#cfe0d1;box-shadow:var(--shadow-sm)}
+  .cov-step.current .cs-ic{background:var(--green);border-color:var(--green);color:#fff}
+  .cov-step.locked{opacity:.7}
+  .cov-sub{margin:2px 0 10px 46px;display:flex;flex-direction:column;gap:2px}
+  .cov-sub a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px}
+  .cov-sub a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .cov-sub a:hover{background:var(--green-soft);color:var(--green-deep)}
+
+  /* ── spil 2: indtægt eller udgift ── */
+  .game{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .game-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .game-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .game-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .game-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .game-body{padding:22px 24px}
+  .game-stage{display:flex;justify-content:center;padding:14px 0 6px;min-height:150px}
+  .game-card{width:262px;max-width:100%;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);padding:26px 22px;text-align:center;transition:transform .3s ease,opacity .3s ease}
+  .game-card.left{transform:translateX(-120%) rotate(-8deg);opacity:0}
+  .game-card.right{transform:translateX(120%) rotate(8deg);opacity:0}
+  .game-card.in{animation:pop .35s ease}
+  .game-card.ok{border-color:var(--green);box-shadow:0 0 0 3px rgba(27,70,54,.15)}
+  .game-card.no{border-color:#c98a3a;animation:shake .4s ease}
+  .gc-label{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink)}
+  .gc-amt{font-size:15px;font-weight:700;color:var(--ink-faint);margin-top:6px;font-variant-numeric:tabular-nums}
+  .game-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+  .game-btn{font-size:15px;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);border:1.5px solid var(--line);cursor:pointer;transition:.2s;background:#fff}
+  .game-btn.income{color:var(--green-deep);border-color:#a9c9b5}
+  .game-btn.income:hover{background:var(--green-soft);transform:translateY(-2px)}
+  .game-btn.expense{color:var(--brass-deep);border-color:#e6d3a6}
+  .game-btn.expense:hover{background:var(--brass-soft);transform:translateY(-2px)}
+  .game-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-soft);font-weight:600}
+  .game-streak{color:var(--brass-deep);font-weight:800}
+  .game-done{display:none;text-align:center;padding:22px 20px 4px}
+  .game-done.show{display:block;animation:pop .5s ease}
+  .game-done h4{font-family:var(--serif);font-weight:700;font-size:20px;color:var(--green-deep);margin:6px 0 6px}
+  .game-done p{font-size:14px;color:var(--ink-soft);max-width:400px;margin:0 auto;line-height:1.55}
+
+  /* ── praktisk øvelse med Claude ── */
+  .cx{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .cx-head{background:linear-gradient(135deg,#c1783f,#a5602c);color:#fff;padding:20px 24px}
+  .cx-head .kick{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f3ddc9;margin-bottom:5px}
+  .cx-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .cx-body{padding:22px 24px}
+  .cx-steps{margin:0 0 18px;padding-left:22px;display:flex;flex-direction:column;gap:9px}
+  .cx-steps li{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+  .cx-steps li b{color:var(--green-700)}
+  .cx-prompt{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .cx-prompt-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+  .cx-prompt-t{padding:15px;font-size:13.5px;color:var(--ink);line-height:1.62;white-space:pre-line}
+  .cx-copy{margin:0 15px 15px;font-size:13.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .cx-copy:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .cx-copy.done{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+  .cx-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  .cx-open{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c1783f,#a5602c);border-radius:var(--r-pill);padding:13px 24px;box-shadow:0 6px 18px rgba(193,120,63,.28);transition:.22s}
+  .cx-open:hover{transform:translateY(-2px)}
+  .cx-confirm{font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border:none;border-radius:var(--r-pill);padding:13px 24px;cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .cx-confirm:hover{transform:translateY(-2px)}
+  .cx-confirm.done{background:var(--green-soft);color:var(--green);box-shadow:none;pointer-events:none}
+
+  /* ── trin-tjekliste før quiz ── */
+  .tasklist{max-width:760px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--shadow-sm)}
+  .tl-h{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green-700);margin-bottom:12px}
+  .tl-item{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--ink-soft);padding:9px 0}
+  .tl-item + .tl-item{border-top:1px solid var(--line-soft)}
+  .tl-box{flex:0 0 24px;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--ink-faint);font-size:13px}
+  .tl-item.done{color:var(--ink)}
+  .tl-item.done .tl-box{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+
+  /* side-overgange & entre-animationer */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);
+    transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .anim{opacity:0;animation:aiRise .62s cubic-bezier(.22,.61,.36,1) both}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.anim{opacity:1!important;animation:none!important}}
+
+  /* ── MODUL 2: 3-kort række ── */
+  .magic.three{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:900px){.magic.three{grid-template-columns:1fr}}
+
+  /* ── SPIL: 50/30/20-fordeler ── */
+  .alloc{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .alloc-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .alloc-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .alloc-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .alloc-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .alloc-body{padding:22px 24px}
+  .alloc-bank{display:flex;align-items:center;justify-content:space-between;background:var(--green-tint);border:1px solid #cfe0d1;border-radius:12px;padding:12px 16px;margin-bottom:18px;transition:.25s}
+  .alloc-bank.empty{background:var(--brass-soft);border-color:#e6d3a6}
+  .alloc-bank-l{font-size:13px;font-weight:700;color:var(--green-700)}
+  .alloc-bank.empty .alloc-bank-l{color:var(--brass-deep)}
+  .alloc-bank-v{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--green-deep);font-variant-numeric:tabular-nums}
+  .alloc-bank.empty .alloc-bank-v{color:var(--brass-deep)}
+  .alloc-row{background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:11px;transition:.2s}
+  .alloc-row.hit{border-color:#a9c9b5;background:var(--green-soft)}
+  .alloc-row-top{display:flex;align-items:center;gap:12px}
+  .alloc-ic{flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:17px}
+  .alloc-meta{flex:1;min-width:0}
+  .alloc-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .alloc-target{font-size:11.5px;color:var(--ink-faint);margin-top:1px}
+  .alloc-row.hit .alloc-target{color:var(--green);font-weight:700}
+  .alloc-amt{text-align:right;white-space:nowrap}
+  .alloc-amt b{display:block;font-size:15.5px;color:var(--green-700);font-variant-numeric:tabular-nums}
+  .alloc-amt span{font-size:11.5px;color:var(--ink-faint)}
+  .alloc-bar{position:relative;height:9px;background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);margin:11px 0}
+  .alloc-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .3s ease}
+  .alloc-mark{position:absolute;top:-3px;width:2px;height:15px;background:var(--green-deep);opacity:.55;border-radius:2px;transform:translateX(-1px)}
+  .alloc-ctrl{display:flex;gap:10px;justify-content:flex-end;margin-top:2px}
+  .alloc-btn{width:40px;height:40px;border-radius:11px;border:1.5px solid var(--line);background:#fff;color:var(--green-deep);font-size:22px;font-weight:700;cursor:pointer;transition:.15s;display:grid;place-items:center;line-height:1}
+  .alloc-btn:hover{background:var(--green-soft);border-color:var(--green-light)}
+  .alloc-btn:disabled{opacity:.4;pointer-events:none}
+  .alloc-auto{margin-top:6px;font-size:13.5px;font-weight:700;color:var(--brass-deep);background:#fff;border:1.5px solid #e6d3a6;border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .alloc-auto:hover{background:var(--brass-soft)}
+  .alloc-auto:disabled{opacity:.5;pointer-events:none}
+
+  /* ── SPIL: klikbart budget (tjek tallet) ── */
+  .ledger-row.clickable{cursor:pointer;transition:background .15s}
+  .ledger-row.clickable:hover{background:var(--green-tint)}
+  .ledger-row.total{border-top:1px solid var(--line);font-weight:800}
+  .ledger-row .amt.neg{color:#a5602c}
+  .ledger-row.shake{animation:shake .4s ease}
+  .ledger-row.fixed{background:var(--green-soft)}
+  .ledger-row.fixed .amt{color:var(--green)}
+
+</style>
+</head>
+<body>
+<div class="page-veil" id="pageVeil"></div>
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- LOGIN-GATE (vises indtil login + Kursus D er afklaret) -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-ic">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gateTitle">Hov — du er ikke logget ind</h1>
+    <p id="gateText">Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.</p>
+    <a class="gate-btn" id="gateBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tryk her for at logge ind
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="sb-toggle" id="sbToggle" aria-label="Vis kursusoversigt">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span class="sb-toggle-txt">Oversigt</span>
+    </button>
+    <span class="topbar-badge">Økonomi &amp; Overblik · Modul 2</span>
+  </div>
+  <!-- Logo øverst til HØJRE — klik fører tilbage til platformen -->
+  <a class="brand" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" title="Tilbage til Akademiet AI">
+    <span>Akademiet AI</span>
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+  </a>
+</header>
+
+<!-- kursus-fremdrift i procent (regnes i JS) -->
+<div class="cprog-wrap">
+  <div class="cprog">
+    <div class="cprog-label" id="cprogLabel">Trin 3 af 5 · Modul 2</div>
+    <div class="cprog-track"><div class="cprog-fill" id="cprogFill"></div></div>
+    <div class="cprog-pct" id="cprogPct">0%</div>
+  </div>
+</div>
+
+<!-- forløbsbjælke -->
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Kursus D</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 1</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Quiz 1</span><span class="j-sep">›</span>
+    <span class="j-step current">Modul 2 · Budget</span><span class="j-sep">›</span>
+    <span class="j-step">Quiz 2</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 3 · Klar til fremvisning</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Kursusoversigt (åbnes af de tre streger — scroller uafhængigt af modulet) -->
+<aside class="cov" id="courseOverview" aria-hidden="true">
+  <div class="cov-head">
+    <div><div class="cov-kick">Sidekursus</div><h3>AI til Økonomi &amp; Overblik</h3></div>
+    <button class="cov-close" id="covClose" aria-label="Luk oversigt">✕</button>
+  </div>
+  <div class="cov-note">3 moduler + 2 quizzer. Hvert trin tæller <strong>20%</strong> af dit bevis.</div>
+  <div class="cov-body">
+    <div class="cov-step done"><span class="cs-ic">🎓</span><div><div class="cs-label">Kursus D</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">💰</span><div><div class="cs-label">Modul 1 · Få overblik</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 1</div><div class="cs-sub">Bestået</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step current"><span class="cs-ic">📊</span><div><div class="cs-label">Modul 2 · Månedsbudget</div><div class="cs-sub">Du er her nu</div></div><span class="cs-pct">60%</span></div>
+    <div class="cov-sub">
+      <a href="#s-tre">Budget i tre dele</a>
+      <a href="#s-fastvar">Fast eller variabel?</a>
+      <a href="#s-503020">50/30/20-fordelingen</a>
+      <a href="#s-tjek">Tjek AI's budget</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="cov-step locked"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 2</div><div class="cs-sub">Låst</div></div><span class="cs-pct">80%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">🧾</span><div><div class="cs-label">Modul 3 · Klar til fremvisning</div><div class="cs-sub">Låst</div></div><span class="cs-pct">100%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📜</span><div><div class="cs-label">Bevis &amp; coins</div><div class="cs-sub">Kursusbevis · coins</div></div><span class="cs-pct"></span></div>
+  </div>
+</aside>
+
+<div class="layout">
+
+  <!-- venstre sidebar -->
+  <aside class="sidebar sidebar-left" id="sidebarLeft">
+    <div class="sb-head">📋 Dit forløb</div>
+    <div class="sb-note">Du er i gang med <strong>Modul 2</strong>. Nu bygger vi selve budgettet — prøv de tre øvelser, så er du klar til quiz 2.</div>
+
+    <div class="sb-item done"><div class="sb-ic">🎓</div><div><div class="sb-label">Kursus D</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">💰</div><div><div class="sb-label">Modul 1 · Få overblik</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 1</div><div class="sb-sub">Bestået</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-line"></div>
+    <div class="sb-item current"><div class="sb-ic">📊</div><div><div class="sb-label">Modul 2 · Månedsbudget</div><div class="sb-sub">Du er her nu</div></div></div>
+    <div class="sb-subnav" id="subnav">
+      <a href="#s-tre" class="active">Budget i tre dele</a>
+      <a href="#s-fastvar">Fast eller variabel?</a>
+      <a href="#s-503020">50/30/20-fordelingen</a>
+      <a href="#s-tjek">Tjek AI's budget</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="sb-line"></div>
+    <div class="sb-item locked"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 2</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">🧾</div><div><div class="sb-label">Modul 3 · Klar til fremvisning</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">📜</div><div><div class="sb-label">Bevis &amp; coins</div><div class="sb-sub">Kursusbevis · coins</div></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <section class="hero">
+      <div class="hero-tag"><span class="pulse"></span>Sidekursus · Modul 2 af 3</div>
+      <h1>Byg dit <em>månedsbudget</em> — med AI som regnemaskine</h1>
+      <p class="hero-sub">I Modul 1 fik du overblik. Nu bygger vi budgettet: hvad kommer ind, hvad går ud — og hvor meget har du tilbage. AI regner hurtigt; du bestemmer og tjekker efter.</p>
+      <div class="hero-stats">
+        <span class="hero-stat">⏱ Ca. 20–25 min</span>
+        <span class="hero-stat">🎮 3 øvelser</span>
+        <span class="hero-stat">🌿 Roligt tempo</span>
+        <span class="hero-stat">🖐️ + 15–20 min med Claude</span>
+      </div>
+    </section>
+
+    <div class="lesson">
+
+      <!-- SEC 1: budget i tre dele -->
+      <section class="sec" id="s-tre">
+        <div class="sec-eyebrow">Sådan er et budget skruet sammen</div>
+        <h2>Et budget i <em>tre dele</em></h2>
+        <p class="lead">Et månedsbudget lyder svært, men det er egentlig bare tre bunker penge, du holder styr på — og så et enkelt regnestykke til sidst:</p>
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">💰</div><div><div class="magic-t">1 · Indtægter</div><div class="magic-d">Penge ind: løn, SU, ydelser, pension …</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🔒</div><div><div class="magic-t">2 · Faste udgifter</div><div class="magic-d">Det samme hver måned: husleje, forsikring, abonnementer …</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🔄</div><div><div class="magic-t">3 · Variable udgifter</div><div class="magic-d">Svinger fra måned til måned: mad, tøj, restaurant, benzin …</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🟰</div><div><div class="magic-t">= Rådighedsbeløb</div><div class="magic-d">Det, der er tilbage, når alle udgifter er trukket fra.</div></div></div>
+        </div>
+        <div class="pull"><p>"Indtægter − faste udgifter − variable udgifter = det, du har tilbage. Det er hele budgettet i én linje."</p></div>
+        <p class="lead">Hvorfor deler vi udgifter i <strong>faste</strong> og <strong>variable?</strong> Fordi de faste er svære at lave om på her og nu. De <strong>variable</strong> er derimod dem, du selv kan skrue op og ned — så det er der, du finder pengene, hvis noget skal give plads.</p>
+      </section>
+
+      <!-- SEC 2: SPIL 1 — fast eller variabel -->
+      <section class="sec" id="s-fastvar">
+        <div class="sec-eyebrow">Øvelse 1</div>
+        <h2>Fast eller <em>variabel?</em></h2>
+        <p class="lead">Før AI kan bygge dit budget, skal du kunne kende forskel. Kortene kommer ét ad gangen — læg hver udgift i den rigtige bunke.</p>
+        <div class="game">
+          <div class="game-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Sortér udgifterne</h3>
+            <p>8 udgifter — læg hver i Fast eller Variabel.</p>
+          </div>
+          <div class="game-body">
+            <div class="game-stage">
+              <div class="game-card" id="fvCard">
+                <div class="gc-label" id="fvLabel">Husleje</div>
+                <div class="gc-amt" id="fvAmt">6.800 kr</div>
+              </div>
+            </div>
+            <div class="game-btns">
+              <button class="game-btn income" id="fvFast">⬅ Fast</button>
+              <button class="game-btn expense" id="fvVar">Variabel ➡</button>
+            </div>
+            <div class="game-foot">
+              <div class="game-prog">Kort <b id="fvCur">1</b>/<span id="fvTot">8</span></div>
+              <div class="game-streak" id="fvStreak"></div>
+            </div>
+            <div class="lab-coach" id="fvCoach"><span id="fvCoachIc">🌿</span><span id="fvCoachTx"></span></div>
+          </div>
+          <div class="game-done" id="fvDone">
+            <div class="done-emoji">✅</div>
+            <h4>Flot! Du kender forskellen</h4>
+            <p id="fvDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEC 3: 50/30/20 + SPIL 2 fordeler -->
+      <section class="sec" id="s-503020">
+        <div class="sec-eyebrow">En simpel tommelfingerregel</div>
+        <h2>50 / 30 / 20 — <em>fordel din løn</em></h2>
+        <p class="lead">Mange bruger en enkel huskeregel til at fordele deres penge. Den passer ikke for alle — men den er et rigtig godt sted at starte:</p>
+        <div class="magic three">
+          <div class="magic-card"><div class="magic-ic">🧺</div><div><div class="magic-t">50% Fornødenheder</div><div class="magic-d">Det du SKAL: bolig, mad, transport, faste regninger.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🎈</div><div><div class="magic-t">30% Ønsker</div><div class="magic-d">Det du VIL: restaurant, tøj, streaming, ferie.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🏦</div><div><div class="magic-t">20% Opsparing & gæld</div><div class="magic-d">Betal dig selv først — spar op eller nedbring gæld.</div></div></div>
+        </div>
+        <p class="lead">Prøv det på en løn på <strong>20.000 kr</strong>. Fordel pengene i de tre kasser med + og − — sigt efter 50 / 30 / 20. Stregen i hver bjælke viser målet.</p>
+
+        <div class="alloc" id="alloc">
+          <div class="alloc-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Fordel 20.000 kr</h3>
+            <p>Sæt pengene i de tre kasser — ram 50 / 30 / 20.</p>
+          </div>
+          <div class="alloc-body">
+            <div class="alloc-bank">
+              <span class="alloc-bank-l">Ufordelt tilbage</span>
+              <span class="alloc-bank-v" id="allocRest">20.000 kr</span>
+            </div>
+            <div class="alloc-rows" id="allocRows"></div>
+            <button class="alloc-auto" id="allocAuto">✨ Vis 50/30/20-forslaget</button>
+            <div class="lab-coach" id="allocCoach"><span id="allocCoachIc">🌿</span><span id="allocCoachTx"></span></div>
+          </div>
+          <div class="game-done" id="allocDone">
+            <div class="done-emoji">🎯</div>
+            <h4>Ramt! Det er 50/30/20</h4>
+            <p id="allocDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEC 4: SPIL 3 — tjek AI's budget -->
+      <section class="sec" id="s-tjek">
+        <div class="sec-eyebrow">Øvelse 3 · den vigtigste vane</div>
+        <h2>Tjek AI's <em>budget</em></h2>
+        <p class="lead">AI regner lynhurtigt — men den kan regne forkert. Her har den lavet et budget-overblik. <strong>Ét tal er galt.</strong> Regn selv efter, og klik på den linje, der ikke passer.</p>
+
+        <div class="lab">
+          <div class="lab-head">
+            <div class="kick">Interaktiv øvelse</div>
+            <h3>Find det forkerte tal</h3>
+            <p>AI har lavet et budget. Ét beløb er regnet forkert — find det.</p>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">🧾 <strong>AI's budget for måneden:</strong> Rådighedsbeløbet er indtægter minus alle udgifter. Klik på den linje, hvor tallet ikke stemmer.</div>
+            <div class="ledger" id="tjekLedger">
+              <div class="ledger-h">Budget — udarbejdet af AI</div>
+              <div class="ledger-row clickable" data-id="ind"><span>Indtægter i alt</span><span class="amt">22.000 kr</span></div>
+              <div class="ledger-row clickable" data-id="fast"><span>− Faste udgifter</span><span class="amt neg">12.400 kr</span></div>
+              <div class="ledger-row clickable" data-id="var"><span>− Variable udgifter</span><span class="amt neg">4.600 kr</span></div>
+              <div class="ledger-row clickable total" data-id="raad"><span>= Rådighedsbeløb (AI's tal)</span><span class="amt">6.000 kr</span></div>
+            </div>
+            <div class="lab-coach" id="tjekCoach"><span id="tjekCoachIc">🔎</span><span id="tjekCoachTx"></span></div>
+          </div>
+        </div>
+
+        <div class="done-box" id="tjekDone">
+          <div class="done-emoji">🎯</div>
+          <h4>Sådan! Du fangede regnefejlen</h4>
+          <p>Du lod AI gøre det hurtige — og tjekkede så selv efter. Det er præcis den vane, der gør, at du kan stole på dit eget budget. Godt gået!</p>
+        </div>
+      </section>
+
+      <!-- SEC 5: Claude hands-on -->
+      <section class="sec" id="s-claude">
+        <div class="sec-eyebrow">Praktisk øvelse</div>
+        <h2>Byg dit eget budget med <em>Claude</em></h2>
+        <p class="lead">Nu prøver du det på rigtigt — med dine egne tal. Åbn Claude og byg et månedsbudget med rådighedsbeløb og en 50/30/20-fordeling. <strong>Tag den tid, du har brug for</strong>; øvelsen tæller ikke med i modulets tid.</p>
+
+        <div class="cx">
+          <div class="cx-head">
+            <div class="kick">🖐️ Hands-on · ekstra 15–20 min</div>
+            <h3>Dit eget månedsbudget + Claude</h3>
+          </div>
+          <div class="cx-body">
+            <ol class="cx-steps">
+              <li><b>Åbn Claude</b> med knappen nedenfor (åbner i en ny fane).</li>
+              <li><b>Kopiér prompten</b> herunder og indsæt den i Claude.</li>
+              <li><b>Skriv dine tal ind</b> — indtægter og dine faste + variable udgifter.</li>
+              <li><b>Bed om et budget</b> med rådighedsbeløb og en 50/30/20-fordeling.</li>
+              <li><b>Tjek regnestykket selv</b> til sidst — det er din opgave, ikke AI'ens.</li>
+            </ol>
+
+            <div class="cx-prompt">
+              <div class="cx-prompt-h">📋 Prompt du kan kopiere</div>
+              <div class="cx-prompt-t" id="cxPromptText">Hej Claude. Hjælp mig med at lave et månedsbudget. Her er mine tal:
+- Indtægter: (skriv din løn / SU / ydelser)
+- Faste udgifter: (husleje, forsikring, abonnementer …)
+- Variable udgifter: (mad, transport, fornøjelser …)
+Vil du:
+1) stille det pænt op i indtægter, faste udgifter og variable udgifter,
+2) regne mit rådighedsbeløb ud (indtægter minus alle udgifter),
+3) vise en 50/30/20-fordeling og sige, om jeg rammer den.
+Stil gerne spørgsmål, hvis noget mangler. Jeg tjekker selv alle tal bagefter.</div>
+              <button class="cx-copy" id="cxCopy">📋 Kopiér prompt</button>
+            </div>
+
+            <div class="cx-actions">
+              <a class="cx-open" href="https://claude.ai" target="_blank" rel="noopener">Åbn Claude ↗</a>
+              <button class="cx-confirm" id="cxConfirm">Jeg har prøvet det ✓</button>
+            </div>
+            <div class="lab-coach" id="cxCoach"><span>🌿</span><span id="cxCoachTx"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tasklist" id="taskList">
+        <div class="tl-h">Modul 2 — dine trin</div>
+        <div class="tl-item" id="tlFV"><span class="tl-box">○</span> Spillet "Fast eller variabel?"</div>
+        <div class="tl-item" id="tlAL"><span class="tl-box">○</span> Fordel din løn (50/30/20)</div>
+        <div class="tl-item" id="tlTJ"><span class="tl-box">○</span> Tjek AI's budget</div>
+        <div class="tl-item" id="tlCx"><span class="tl-box">○</span> Prøv det med Claude</div>
+      </div>
+
+      <div class="cta">
+        <span class="cta-tag">Modul 2 gennemført</span>
+        <h2>Godt gået — videre til quizzen</h2>
+        <p>Test lige budget-reglerne med en kort quiz. Så låser du op for Modul 3, hvor vi gør dit budget klar til fremvisning — for banken, revisor eller bare dig selv.</p>
+        <a href="quiz-oekonomi-2.html" class="cta-btn locked" id="ctaBtn">Gå til quiz
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <p class="cta-meta" id="ctaMeta">Gennemfør øvelserne ovenfor for at låse op</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- højre sidebar -->
+  <aside class="sidebar sidebar-right">
+    <div class="sb-head">🌿 Kom godt i gang</div>
+
+    <div class="rt-rule">
+      <div class="rt-rule-h">⚠️ Den gyldne regel</div>
+      <p><strong>Tjek altid tallene selv.</strong> AI hjælper dig med overblik — men du har ansvaret for, at tallene er rigtige.</p>
+    </div>
+
+    <div class="rt-tip">
+      <div class="rt-tip-h">💬 Prøv at skrive</div>
+      <ul class="rt-tip-list">
+        <li><span>•</span>"Sortér disse udgifter i kategorier."</li>
+        <li><span>•</span>"Læg alle mine abonnementer sammen."</li>
+        <li><span>•</span>"Forklar hvad et budget er — helt enkelt."</li>
+      </ul>
+    </div>
+
+    <a class="rt-card" href="https://claude.ai" target="_blank" rel="noopener">
+      <span class="rt-logo">C</span>
+      <div><div class="rt-name">Claude</div><div class="rt-tag">Åbn og prøv det selv</div></div>
+      <span class="rt-arrow">↗</span>
+    </a>
+  </aside>
+
+</div>
+
+<script>
+
+  // ── kursus-fremdrift: 3 moduler + 2 quizzer = 5 trin (hvert trin = 20%) ──
+  // Modul 2 er trin 3 → Modul 1 + Quiz 1 er gennemført → 40%.
+  (function(){
+    var STEP=3, TOTAL=5;
+    var pct=Math.round(((STEP-1)/TOTAL)*100);            // = 40%
+    var fill=document.getElementById('cprogFill');
+    var pctEl=document.getElementById('cprogPct');
+    var lbl=document.getElementById('cprogLabel');
+    if(lbl) lbl.textContent='Trin '+STEP+' af '+TOTAL+' · Modul 2';
+    if(pctEl) pctEl.textContent=pct+'%';
+    requestAnimationFrame(function(){ if(fill) fill.style.width=pct+'%'; });
+  })();
+
+  // scroll-progress
+  var bar=document.getElementById('scrollBar');
+  addEventListener('scroll',function(){var h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+  // ── kursusoversigt (de tre streger) ──
+  var bd=document.getElementById('backdrop'),tg=document.getElementById('sbToggle');
+  var cov=document.getElementById('courseOverview'),covClose=document.getElementById('covClose');
+  function openCov(){ if(!cov)return; cov.classList.add('open'); bd.classList.add('show'); cov.setAttribute('aria-hidden','false'); document.body.classList.add('noscroll'); }
+  function closeCov(){ if(!cov)return; cov.classList.remove('open'); bd.classList.remove('show'); cov.setAttribute('aria-hidden','true'); document.body.classList.remove('noscroll'); }
+  if(tg) tg.addEventListener('click',openCov);
+  if(covClose) covClose.addEventListener('click',closeCov);
+  if(bd) bd.addEventListener('click',closeCov);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCov(); });
+  if(cov){ [].slice.call(cov.querySelectorAll('a[href^="#"]')).forEach(function(a){ a.addEventListener('click',closeCov); }); }
+
+  // aktivt sub-nav (venstre)
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  addEventListener('scroll',function(){var idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<170)idx=i;});links.forEach(function(a,i){a.classList.toggle('active',i===idx);});},{passive:true});
+
+  // ── fælles oplåsning: alle fire trin skal klares ──
+  var fvdone=false, allocdone=false, tjekdone=false, cxdone=false;
+  var tlFV=document.getElementById('tlFV'),tlAL=document.getElementById('tlAL'),tlTJ=document.getElementById('tlTJ'),tlCx=document.getElementById('tlCx');
+  var ctaBtn=document.getElementById('ctaBtn'),ctaMeta=document.getElementById('ctaMeta');
+  function setTask(el,done){ if(!el)return; el.classList.toggle('done',done); var b=el.querySelector('.tl-box'); if(b) b.textContent=done?'✓':'○'; }
+  function checkUnlock(){
+    setTask(tlFV,fvdone); setTask(tlAL,allocdone); setTask(tlTJ,tjekdone); setTask(tlCx,cxdone);
+    var n=(fvdone?1:0)+(allocdone?1:0)+(tjekdone?1:0)+(cxdone?1:0);
+    if(n===4){ ctaBtn.classList.remove('locked'); ctaMeta.textContent='Alle trin klaret — du er klar til quizzen 🌿'; }
+    else { ctaBtn.classList.add('locked'); ctaMeta.textContent='Klar '+n+' af 4 trin for at låse op'; }
+  }
+  checkUnlock();
+
+  // ── SPIL 1: fast eller variabel ──
+  var FV=[
+    {l:'Husleje',a:'6.800 kr',t:'fast',w:'samme beløb hver måned'},
+    {l:'Dagligvarer',a:'3.200 kr',t:'var',w:'svinger med, hvad du køber'},
+    {l:'Netflix',a:'129 kr',t:'fast',w:'fast abonnement'},
+    {l:'Restaurant & takeaway',a:'850 kr',t:'var',w:'afhænger af måneden'},
+    {l:'Forsikring',a:'420 kr',t:'fast',w:'fast regning'},
+    {l:'Tøj & sko',a:'600 kr',t:'var',w:'nogle måneder mere, andre mindre'},
+    {l:'Mobilabonnement',a:'149 kr',t:'fast',w:'samme hver måned'},
+    {l:'Benzin',a:'900 kr',t:'var',w:'afhænger af, hvor meget du kører'}
+  ];
+  var fi=0,fRight=0,fStreakN=0;
+  var fvCard=document.getElementById('fvCard'),fvLabel=document.getElementById('fvLabel'),fvAmt=document.getElementById('fvAmt');
+  var fvCur=document.getElementById('fvCur'),fvTot=document.getElementById('fvTot'),fvStreak=document.getElementById('fvStreak');
+  var fvCoach=document.getElementById('fvCoach'),fvCoachIc=document.getElementById('fvCoachIc'),fvCoachTx=document.getElementById('fvCoachTx');
+  var fvDone=document.getElementById('fvDone'),fvDoneTxt=document.getElementById('fvDoneTxt');
+  var fvFast=document.getElementById('fvFast'),fvVar=document.getElementById('fvVar');
+  if(fvTot) fvTot.textContent=FV.length;
+  function fvPaint(){ if(!fvCard)return; var it=FV[fi]; fvLabel.textContent=it.l; fvAmt.textContent=it.a; fvCur.textContent=(fi+1); fvCard.className='game-card in'; setTimeout(function(){fvCard.classList.remove('in');},360); }
+  function fvChoose(choice){
+    if(fi>=FV.length) return;
+    var it=FV[fi]; var ok=(choice===it.t);
+    var word=(it.t==='fast'?'fast udgift':'variabel udgift');
+    if(ok){ fRight++; fStreakN++; fvCard.classList.remove('no'); fvCard.classList.add('ok');
+      fvCoachIc.textContent='✅'; fvCoachTx.textContent='Rigtigt! '+it.l+' er en '+word+' — '+it.w+'.'; }
+    else { fStreakN=0; fvCard.classList.remove('ok'); fvCard.classList.add('no');
+      fvCoachIc.textContent='🌿'; fvCoachTx.textContent='Ikke helt — '+it.l+' er faktisk en '+word+' ('+it.w+').'; }
+    fvCoach.classList.add('show'); fvCoach.classList.toggle('warn-tone',!ok);
+    fvStreak.textContent=fStreakN>=2?('🔥 '+fStreakN+' i træk'):'';
+    var dir=(choice==='fast'?'left':'right');
+    setTimeout(function(){
+      fvCard.classList.add(dir);
+      setTimeout(function(){ fi++; if(fi>=FV.length){ fvFinish(); } else { fvPaint(); } },300);
+    },560);
+  }
+  function fvFinish(){
+    fvdone=true;
+    if(fvCard) fvCard.style.display='none';
+    var b=document.querySelector('#s-fastvar .game-btns'); if(b) b.style.display='none';
+    var f=document.querySelector('#s-fastvar .game-foot'); if(f) f.style.display='none';
+    if(fvCoach) fvCoach.classList.remove('show');
+    fvDoneTxt.textContent='Du fik '+fRight+' ud af '+FV.length+' rigtige. Faste udgifter er svære at røre — de variable er der, du selv kan finde luft i budgettet.';
+    fvDone.classList.add('show');
+    checkUnlock();
+  }
+  if(fvFast) fvFast.addEventListener('click',function(){fvChoose('fast');});
+  if(fvVar) fvVar.addEventListener('click',function(){fvChoose('var');});
+
+  // ── SPIL 2: 50/30/20-fordeler ──
+  var INCOME=20000, ASTEP=500;
+  var BUCK=[
+    {key:'need', name:'Fornødenheder',     ic:'🧺', target:10000, tp:50},
+    {key:'want', name:'Ønsker',            ic:'🎈', target:6000,  tp:30},
+    {key:'save', name:'Opsparing & gæld',  ic:'🏦', target:4000,  tp:20}
+  ];
+  var alloc={need:0,want:0,save:0};
+  var allocRows=document.getElementById('allocRows');
+  var allocRestEl=document.getElementById('allocRest');
+  var allocBank=document.querySelector('#alloc .alloc-bank');
+  var allocCoach=document.getElementById('allocCoach'),allocCoachIc=document.getElementById('allocCoachIc'),allocCoachTx=document.getElementById('allocCoachTx');
+  var allocDone=document.getElementById('allocDone'),allocDoneTxt=document.getElementById('allocDoneTxt');
+  var allocAuto=document.getElementById('allocAuto');
+  function kr(n){ return n.toLocaleString('da-DK')+' kr'; }
+  function allocSum(){ return alloc.need+alloc.want+alloc.save; }
+  function restAmt(){ return INCOME-allocSum(); }
+  function allocRender(){
+    var html='';
+    BUCK.forEach(function(bk){
+      var v=alloc[bk.key];
+      var pctInc=Math.round(v/INCOME*100);
+      var hit=(v>0 && Math.abs(v-bk.target)<=ASTEP);
+      html+='<div class="alloc-row'+(hit?' hit':'')+'">'
+        +'<div class="alloc-row-top">'
+          +'<span class="alloc-ic">'+bk.ic+'</span>'
+          +'<div class="alloc-meta"><div class="alloc-name">'+bk.name+'</div><div class="alloc-target">Mål: '+bk.tp+'% · '+kr(bk.target)+'</div></div>'
+          +'<div class="alloc-amt"><b>'+kr(v)+'</b><span>'+pctInc+'%</span></div>'
+        +'</div>'
+        +'<div class="alloc-bar"><div class="alloc-fill" style="width:'+(v/INCOME*100)+'%"></div><div class="alloc-mark" style="left:'+bk.tp+'%"></div></div>'
+        +'<div class="alloc-ctrl">'
+          +'<button class="alloc-btn" data-key="'+bk.key+'" data-dir="-1"'+(v<ASTEP?' disabled':'')+'>−</button>'
+          +'<button class="alloc-btn" data-key="'+bk.key+'" data-dir="1"'+(restAmt()<ASTEP?' disabled':'')+'>+</button>'
+        +'</div>'
+      +'</div>';
+    });
+    allocRows.innerHTML=html;
+    allocRestEl.textContent=kr(restAmt());
+    if(allocBank) allocBank.classList.toggle('empty',restAmt()===0);
+  }
+  function allocCheck(){
+    if(allocdone) return;
+    if(restAmt()!==0){ if(allocCoach) allocCoach.classList.remove('show'); return; }
+    var allHit=BUCK.every(function(bk){ return Math.abs(alloc[bk.key]-bk.target)<=ASTEP; });
+    if(allHit){
+      allocdone=true;
+      allocCoachIc.textContent='🎯';
+      allocCoachTx.textContent='Perfekt — fordelt efter 50/30/20.';
+      allocCoach.classList.remove('warn-tone'); allocCoach.classList.add('show');
+      allocDoneTxt.textContent='Du fordelte 20.000 kr som ca. 50/30/20. Husk: reglen er en rettesnor — ikke en lov. Har du fx høj husleje, fylder fornødenheder mere, og så tilpasser du.';
+      allocDone.classList.add('show');
+      if(allocAuto) allocAuto.disabled=true;
+      checkUnlock();
+    } else {
+      allocCoachIc.textContent='🌿';
+      allocCoachTx.textContent='Alle penge er fordelt — men ikke helt efter 50/30/20 endnu. Sigt efter 10.000 / 6.000 / 4.000. Tryk "Vis forslaget", hvis du vil se det.';
+      allocCoach.classList.remove('warn-tone'); allocCoach.classList.add('show','warn-tone');
+    }
+  }
+  if(allocRows){
+    allocRows.addEventListener('click',function(e){
+      var btn=e.target.closest('.alloc-btn'); if(!btn||allocdone) return;
+      var key=btn.getAttribute('data-key'), dir=parseInt(btn.getAttribute('data-dir'),10);
+      if(dir>0){ if(restAmt()>=ASTEP) alloc[key]+=ASTEP; }
+      else { if(alloc[key]>=ASTEP) alloc[key]-=ASTEP; }
+      allocRender(); allocCheck();
+    });
+  }
+  if(allocAuto){
+    allocAuto.addEventListener('click',function(){
+      if(allocdone) return;
+      alloc.need=10000; alloc.want=6000; alloc.save=4000;
+      allocRender(); allocCheck();
+    });
+  }
+  allocRender();
+
+  // ── SPIL 3: tjek AI's budget (fang regnefejlen) ──
+  var tjekLedger=document.getElementById('tjekLedger');
+  var tjekCoach=document.getElementById('tjekCoach'),tjekCoachIc=document.getElementById('tjekCoachIc'),tjekCoachTx=document.getElementById('tjekCoachTx');
+  var tjekDoneBox=document.getElementById('tjekDone');
+  var TJEK_WRONG='raad';
+  if(tjekLedger){
+    tjekLedger.addEventListener('click',function(e){
+      if(tjekdone) return;
+      var row=e.target.closest('.ledger-row.clickable'); if(!row) return;
+      var id=row.getAttribute('data-id');
+      if(id===TJEK_WRONG){
+        tjekdone=true;
+        row.classList.add('fixed');
+        var amt=row.querySelector('.amt'); if(amt) amt.textContent='5.000 kr';
+        tjekCoachIc.textContent='🎯';
+        tjekCoachTx.textContent='Sådan! 22.000 − 12.400 − 4.600 = 5.000 kr, ikke 6.000. AI regnede 1.000 kr forkert — og fordi du tjekkede efter, fangede du det.';
+        tjekCoach.classList.remove('warn-tone'); tjekCoach.classList.add('show');
+        if(tjekDoneBox) tjekDoneBox.classList.add('show');
+        checkUnlock();
+      } else {
+        row.classList.add('shake');
+        setTimeout(function(){row.classList.remove('shake');},450);
+        tjekCoachIc.textContent='🔎';
+        tjekCoachTx.textContent='Den linje passer. Regn selv efter: 22.000 − 12.400 − 4.600 … hvilken linje stemmer så ikke?';
+        tjekCoach.classList.remove('warn-tone'); tjekCoach.classList.add('show');
+      }
+    });
+  }
+
+  // ── praktisk øvelse: Claude ──
+  var cxCopy=document.getElementById('cxCopy'),cxConfirm=document.getElementById('cxConfirm');
+  var cxCoach=document.getElementById('cxCoach'),cxCoachTx=document.getElementById('cxCoachTx'),cxPromptText=document.getElementById('cxPromptText');
+  function fallbackCopy(t){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+  if(cxCopy){
+    cxCopy.addEventListener('click',function(){
+      var txt=cxPromptText?cxPromptText.textContent:'';
+      function ok(){ cxCopy.textContent='✓ Kopieret!'; cxCopy.classList.add('done'); setTimeout(function(){cxCopy.textContent='📋 Kopiér prompt';cxCopy.classList.remove('done');},2200); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();}); }
+      else { fallbackCopy(txt); ok(); }
+    });
+  }
+  if(cxConfirm){
+    cxConfirm.addEventListener('click',function(){
+      cxdone=true; cxConfirm.textContent='Prøvet ✓'; cxConfirm.classList.add('done');
+      if(cxCoach){ cxCoachTx.textContent='Flot — nu har du et budget, du selv har bygget. Husk at tjekke rådighedsbeløbet efter, hver gang tallene ændrer sig.'; cxCoach.classList.add('show'); }
+      checkUnlock();
+    });
+  }
+
+</script>
+
+<!-- FIREBASE login-gate (login + Kursus D bestået) — med fallback til forhåndsvisning -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const PLATFORM = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+
+function showGate(mode){
+  const g = document.getElementById('gate');
+  if (mode === false) { g.classList.remove('show'); return; }
+  const t = document.getElementById('gateTitle');
+  const x = document.getElementById('gateText');
+  const b = document.getElementById('gateBtn');
+  if (mode === 'course') {
+    t.textContent = 'Færdiggør Kursus D først';
+    x.textContent = 'Dette sidekursus åbner, når du har gennemført hele Kursus D. Tag Kursus D først — så er du klar til at give AI styr på din økonomi.';
+    b.textContent = 'Gå til Kursus D';
+    b.setAttribute('href', PLATFORM);
+  } else {
+    t.textContent = 'Hov — du er ikke logget ind';
+    x.textContent = 'Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.';
+    b.textContent = 'Tryk her for at logge ind';
+    b.setAttribute('href', PLATFORM);
+  }
+  g.classList.add('show');
+}
+
+// Vis gaten indtil auth er afklaret
+showGate('login');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch (e) {
+    // Forhåndsvisning uden net (fx byggemiljø): vis modulet
+    console.warn('Firebase utilgængelig — viser modulet som forhåndsvisning.', e);
+    showGate(false);
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate('login'); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch (e) { console.error(e); }
+
+    // Kræver at hele Kursus D er gennemført (completedCourses indeholder 'D'),
+    // med D-badge som fallback. August: bekræft feltnavnet.
+    const dDone =
+      (Array.isArray(data.completedCourses) && data.completedCourses.includes('D')) ||
+      (Array.isArray(data.badges) && data.badges.some(b => b && b.level === 'D' && b.type !== 'side'));
+
+    if (!dDone) { showGate('course'); return; }
+    showGate(false);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  var targets=[];
+  var hero=document.querySelector('.main .hero'); if(hero) targets.push(hero);
+  var lesson=document.querySelector('.main .lesson');
+  if(lesson){ Array.prototype.forEach.call(lesson.children,function(c){targets.push(c);}); }
+  targets.forEach(function(el,i){ el.classList.add('anim'); el.style.animationDelay=(0.05+i*0.075)+'s'; });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    if(a.classList.contains('locked')) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
+</script>
+</body>
+</html>
