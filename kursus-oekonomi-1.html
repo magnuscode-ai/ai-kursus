@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — AI til Økonomi &amp; Overblik · Modul 1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --amber:#b0842a; --amber-soft:#f6ecd0;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--green),var(--brass));transition:width .1s linear}
+
+  /* ── LOGIN-GATE ── */
+  .gate{position:fixed;inset:0;z-index:4000;display:none;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%)}
+  .gate.show{display:flex}
+  .gate-card{max-width:452px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+  .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--brass))}
+  .gate-ic{width:66px;height:66px;border-radius:19px;margin:6px auto 20px;display:grid;place-items:center;
+    background:var(--green-soft);border:1px solid #c6d8c9;color:var(--green)}
+  .gate-card h1{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin-bottom:11px;line-height:1.2}
+  .gate-card p{font-size:15px;color:var(--ink-soft);line-height:1.62;margin:0 auto 24px;max-width:360px}
+  .gate-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#fff;font-weight:700;font-size:16px;padding:14px 28px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .gate-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+
+  /* topbar — logo til HØJRE (efter ønske), kursus-tag til venstre */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .sb-toggle{display:inline-flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;height:40px;padding:0 14px;align-items:center;justify-content:center;color:var(--green);cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+  .sb-toggle:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .sb-toggle-txt{display:inline}
+
+  /* ── kursus-fremdrift (procent gennem hele sidekurset) ── */
+  .cprog-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;position:relative;z-index:6}
+  .cprog{max-width:1520px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cprog-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .cprog-label b{color:var(--green-700)}
+  .cprog-track{flex:1;min-width:160px;height:9px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .cprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .8s cubic-bezier(.22,.61,.36,1)}
+  .cprog-pct{font-size:12.5px;font-weight:800;color:var(--green-700);white-space:nowrap;min-width:34px;text-align:right}
+
+  /* forløbsbjælke (folded, centreret) */
+  .journey-wrap{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* layout */
+  .layout{position:relative;z-index:1;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr) 312px;align-items:start}
+  .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;background:var(--panel);padding:26px 20px}
+  .sidebar-left{border-right:1px solid var(--line)}
+  .sidebar-right{border-left:1px solid var(--line)}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .main{padding:44px 56px 90px;min-width:0}
+
+  .sb-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);margin-bottom:6px}
+  .sb-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:20px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:11px 13px}
+  .sb-note strong{color:var(--green-700)}
+  .sb-item{display:flex;gap:13px;align-items:flex-start;padding:11px 12px;border-radius:13px}
+  .sb-item + .sb-item{margin-top:2px}
+  .sb-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--green-mid)}
+  .sb-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .sb-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .sb-item.done .sb-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .sb-item.done .sb-check{margin-left:auto;color:var(--green);font-weight:800;font-size:15px}
+  .sb-item.current{background:#fff;border:1px solid #cfe0d1;box-shadow:var(--shadow-sm)}
+  .sb-item.current .sb-ic{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 4px rgba(27,70,54,.10)}
+  .sb-item.current .sb-sub{color:var(--green-mid);font-weight:700}
+  .sb-item.locked{opacity:.72}
+  .sb-item.locked .sb-label{color:var(--ink-soft)}
+  .sb-subnav{margin:6px 0 6px 46px;display:flex;flex-direction:column;gap:2px}
+  .sb-subnav a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;transition:.2s}
+  .sb-subnav a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .sb-subnav a:hover{background:var(--green-soft);color:var(--green-deep)}
+  .sb-subnav a.active{color:var(--green-deep);font-weight:700}
+  .sb-subnav a.active::before{opacity:1;background:var(--green)}
+  .sb-line{width:1px;height:16px;background:var(--line);margin:2px 0 2px 28px}
+
+  .rt-tip{background:var(--green-tint);border:1px solid #cfe0d1;border-radius:13px;padding:15px 16px;margin-bottom:14px}
+  .rt-tip-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green-700);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .rt-tip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .rt-tip-list li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .rt-tip-list li span{color:var(--green);flex:0 0 auto}
+  .rt-rule{background:var(--amber-soft);border:1px solid #e6d3a6;border-radius:13px;padding:15px 16px}
+  .rt-rule-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rt-rule p{font-size:12.5px;color:#5c4a1e;line-height:1.55}
+  .rt-rule p strong{color:var(--brass-deep)}
+  .rt-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:14px;transition:.22s}
+  .rt-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfc4a6}
+  .rt-logo{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#c1783f,#d99a5b)}
+  .rt-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .rt-tag{font-size:11.5px;color:var(--ink-faint)}
+  .rt-arrow{margin-left:auto;color:var(--ink-faint);font-size:15px}
+
+  /* hero */
+  .hero{max-width:800px;margin:0 auto;text-align:center;padding:24px 0 6px}
+  .hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);background:var(--green-tint);border:1px solid #cfe0d1;padding:8px 16px;border-radius:var(--r-pill)}
+  .hero-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,70,54,.4)}50%{box-shadow:0 0 0 6px rgba(27,70,54,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,62px);line-height:1.08;letter-spacing:-.02em;margin:20px 0 18px;color:var(--ink)}
+  .hero h1 em{font-style:italic;background:linear-gradient(120deg,var(--green-mid),var(--brass) 82%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);line-height:1.65;max-width:600px;margin:0 auto}
+  .hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero-stat{font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm)}
+
+  /* lesson */
+  .lesson{max-width:760px;margin:0 auto}
+  .sec{margin-top:60px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-700);margin-bottom:14px}
+  .sec-eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--green-light),transparent);border-radius:2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:clamp(25px,3.2vw,32px);color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sec h2 em{font-style:italic;color:var(--brass-deep)}
+  .sec p.lead{font-size:16.5px;color:var(--ink-soft);line-height:1.72;margin-top:14px}
+  .sec p.lead + p.lead{margin-top:14px}
+  .sec p.lead strong{color:var(--green-700)}
+
+  .pull{background:var(--green-tint);border:1px solid #cfe0d1;border-left:4px solid var(--green);border-radius:var(--r);padding:20px 24px;margin-top:24px}
+  .pull p{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--green-deep);line-height:1.5}
+
+  /* magic cards */
+  .magic{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px}
+  .magic-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:.22s}
+  .magic-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfe0d1}
+  .magic-ic{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--green-soft);border:1px solid #c6d8c9;display:grid;place-items:center;font-size:19px}
+  .magic-t{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+  .magic-d{font-size:13px;color:var(--ink-faint);line-height:1.5}
+
+  /* advarsel / gylden regel-boks */
+  .warn{margin-top:24px;background:var(--amber-soft);border:1px solid #e6d3a6;border-left:4px solid var(--brass);border-radius:var(--r);padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
+  .warn .warn-ic{font-size:22px;flex:0 0 auto}
+  .warn p{font-size:14.5px;color:#5c4a1e;line-height:1.6}
+  .warn p strong{color:var(--brass-deep)}
+
+  /* ── interaktiv: kategoriserings-værksted ── */
+  .lab{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .lab-head{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;padding:20px 24px}
+  .lab-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#bfe0cd;margin-bottom:5px}
+  .lab-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .lab-head p{font-size:13.5px;color:#d7e7dd;margin-top:5px;line-height:1.5}
+  .lab-body{padding:22px 24px}
+  .lab-scenario{font-size:13.5px;color:var(--ink-soft);background:var(--green-tint);border:1px solid #cfe0d1;border-radius:11px;padding:12px 15px;margin-bottom:18px;line-height:1.5}
+  .lab-scenario strong{color:var(--green-700)}
+
+  /* kontoudtog (før sortering) */
+  .ledger{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .ledger-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;background:var(--cream);border-bottom:1px solid var(--line-soft)}
+  .ledger-row{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line-soft)}
+  .ledger-row:last-child{border-bottom:none}
+  .ledger-row .amt{font-weight:700;color:var(--green-700);font-variant-numeric:tabular-nums}
+
+  .lab-sort-btn{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .lab-sort-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,.3)}
+  .lab-sort-btn:disabled{opacity:.5;pointer-events:none}
+
+  /* buckets (efter sortering) */
+  .buckets{display:none;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:6px}
+  .buckets.show{display:grid;animation:pop .45s ease}
+  .bucket{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+  .bucket-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--green-700);margin-bottom:9px}
+  .bucket-h .b-ic{font-size:16px}
+  .chip{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.18s;margin-top:7px}
+  .chip:first-of-type{margin-top:0}
+  .chip:hover{border-color:var(--green-light);transform:translateY(-1px)}
+  .chip .c-amt{font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .chip.shake{animation:shake .4s ease}
+  .chip.correct{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);cursor:default}
+  .chip.correct .c-amt{color:var(--green)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes pop{0%{transform:scale(.97);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .lab-coach{margin-top:16px;font-size:13.5px;color:var(--green-700);background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:11px;padding:12px 15px;display:none;align-items:center;gap:9px;line-height:1.45}
+  .lab-coach.show{display:flex;animation:pop .4s ease}
+  .lab-coach.warn-tone{color:#5c4a1e;background:var(--amber-soft);border-color:#dcc38a}
+
+  /* completion */
+  .done-box{margin-top:24px;text-align:center;background:linear-gradient(160deg,var(--green-tint),#fff);border:1px solid #cfe0d1;border-radius:var(--r-lg);padding:30px 26px;display:none}
+  .done-box.show{display:block;animation:pop .5s ease}
+  .done-emoji{font-size:34px}
+  .done-box h4{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green-deep);margin:6px 0 6px}
+  .done-box p{font-size:14.5px;color:var(--ink-soft);max-width:440px;margin:0 auto;line-height:1.6}
+
+  .cta{max-width:760px;margin:56px auto 0;text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:42px 30px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(47,106,74,.09),transparent 70%);pointer-events:none}
+  .cta-tag{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+  .cta h2{position:relative;font-family:var(--serif);font-weight:700;font-size:29px;color:var(--ink);margin:10px 0 8px}
+  .cta p{position:relative;font-size:15px;color:var(--ink-soft);max-width:440px;margin:0 auto 22px;line-height:1.6}
+  .cta-btn{position:relative;display:inline-flex;align-items:center;gap:11px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:17px;font-weight:700;padding:16px 34px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+  .cta-btn.locked{opacity:.55;pointer-events:none;filter:grayscale(.3)}
+  .cta-meta{position:relative;font-size:12.5px;color:var(--ink-faint);margin-top:16px}
+
+  .backdrop{display:none}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(20,30,25,.42);z-index:1500;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.noscroll{overflow:hidden}
+  @media(max-width:1180px){.layout{grid-template-columns:260px minmax(0,1fr)}.sidebar-right{display:none}.main{padding:38px 40px 80px}}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .sidebar-left{display:none}
+    .main{padding:30px 20px 70px}
+    .magic,.buckets.show{grid-template-columns:1fr}
+    .brand span{display:none}
+  }
+  @media(max-width:560px){
+    .sb-toggle-txt{display:none}
+    .sb-toggle{padding:0;width:40px}
+    .cx-actions{flex-direction:column;align-items:stretch}
+  }
+
+  /* ── kursusoversigt (åbnes med de tre streger) ── */
+  .cov{position:fixed;top:0;right:0;height:100%;width:376px;max-width:90vw;z-index:1600;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .cov.open{transform:translateX(0)}
+  .cov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+  .cov-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .cov-head h3{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep);line-height:1.2}
+  .cov-close{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:15px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .cov-close:hover{background:var(--green-soft);color:var(--green)}
+  .cov-note{font-size:12.5px;color:var(--ink-soft);padding:12px 22px;background:var(--green-tint);border-bottom:1px solid var(--line-soft);line-height:1.5}
+  .cov-body{flex:1;overflow-y:auto;padding:16px 18px 40px}
+  .cov-step{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid var(--line-soft);margin-bottom:8px}
+  .cov-step .cs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--cream);border:1px solid var(--line);color:var(--green-mid)}
+  .cov-step .cs-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .cov-step .cs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cov-step .cs-pct{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--green-700);white-space:nowrap}
+  .cov-step.done .cs-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .cov-step.current{background:linear-gradient(135deg,#fff,var(--green-tint));border-color:#cfe0d1;box-shadow:var(--shadow-sm)}
+  .cov-step.current .cs-ic{background:var(--green);border-color:var(--green);color:#fff}
+  .cov-step.locked{opacity:.7}
+  .cov-sub{margin:2px 0 10px 46px;display:flex;flex-direction:column;gap:2px}
+  .cov-sub a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px}
+  .cov-sub a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .cov-sub a:hover{background:var(--green-soft);color:var(--green-deep)}
+
+  /* ── spil 2: indtægt eller udgift ── */
+  .game{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .game-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .game-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .game-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .game-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .game-body{padding:22px 24px}
+  .game-stage{display:flex;justify-content:center;padding:14px 0 6px;min-height:150px}
+  .game-card{width:262px;max-width:100%;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);padding:26px 22px;text-align:center;transition:transform .3s ease,opacity .3s ease}
+  .game-card.left{transform:translateX(-120%) rotate(-8deg);opacity:0}
+  .game-card.right{transform:translateX(120%) rotate(8deg);opacity:0}
+  .game-card.in{animation:pop .35s ease}
+  .game-card.ok{border-color:var(--green);box-shadow:0 0 0 3px rgba(27,70,54,.15)}
+  .game-card.no{border-color:#c98a3a;animation:shake .4s ease}
+  .gc-label{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink)}
+  .gc-amt{font-size:15px;font-weight:700;color:var(--ink-faint);margin-top:6px;font-variant-numeric:tabular-nums}
+  .game-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+  .game-btn{font-size:15px;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);border:1.5px solid var(--line);cursor:pointer;transition:.2s;background:#fff}
+  .game-btn.income{color:var(--green-deep);border-color:#a9c9b5}
+  .game-btn.income:hover{background:var(--green-soft);transform:translateY(-2px)}
+  .game-btn.expense{color:var(--brass-deep);border-color:#e6d3a6}
+  .game-btn.expense:hover{background:var(--brass-soft);transform:translateY(-2px)}
+  .game-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-soft);font-weight:600}
+  .game-streak{color:var(--brass-deep);font-weight:800}
+  .game-done{display:none;text-align:center;padding:22px 20px 4px}
+  .game-done.show{display:block;animation:pop .5s ease}
+  .game-done h4{font-family:var(--serif);font-weight:700;font-size:20px;color:var(--green-deep);margin:6px 0 6px}
+  .game-done p{font-size:14px;color:var(--ink-soft);max-width:400px;margin:0 auto;line-height:1.55}
+
+  /* ── praktisk øvelse med Claude ── */
+  .cx{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .cx-head{background:linear-gradient(135deg,#c1783f,#a5602c);color:#fff;padding:20px 24px}
+  .cx-head .kick{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f3ddc9;margin-bottom:5px}
+  .cx-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .cx-body{padding:22px 24px}
+  .cx-steps{margin:0 0 18px;padding-left:22px;display:flex;flex-direction:column;gap:9px}
+  .cx-steps li{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+  .cx-steps li b{color:var(--green-700)}
+  .cx-prompt{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .cx-prompt-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+  .cx-prompt-t{padding:15px;font-size:13.5px;color:var(--ink);line-height:1.62;white-space:pre-line}
+  .cx-copy{margin:0 15px 15px;font-size:13.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .cx-copy:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .cx-copy.done{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+  .cx-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  .cx-open{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c1783f,#a5602c);border-radius:var(--r-pill);padding:13px 24px;box-shadow:0 6px 18px rgba(193,120,63,.28);transition:.22s}
+  .cx-open:hover{transform:translateY(-2px)}
+  .cx-confirm{font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border:none;border-radius:var(--r-pill);padding:13px 24px;cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .cx-confirm:hover{transform:translateY(-2px)}
+  .cx-confirm.done{background:var(--green-soft);color:var(--green);box-shadow:none;pointer-events:none}
+
+  /* ── trin-tjekliste før quiz ── */
+  .tasklist{max-width:760px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--shadow-sm)}
+  .tl-h{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green-700);margin-bottom:12px}
+  .tl-item{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--ink-soft);padding:9px 0}
+  .tl-item + .tl-item{border-top:1px solid var(--line-soft)}
+  .tl-box{flex:0 0 24px;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--ink-faint);font-size:13px}
+  .tl-item.done{color:var(--ink)}
+  .tl-item.done .tl-box{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+
+  /* side-overgange & entre-animationer */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);
+    transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .anim{opacity:0;animation:aiRise .62s cubic-bezier(.22,.61,.36,1) both}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.anim{opacity:1!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="page-veil" id="pageVeil"></div>
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- LOGIN-GATE (vises indtil login + Kursus D er afklaret) -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-ic">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gateTitle">Hov — du er ikke logget ind</h1>
+    <p id="gateText">Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.</p>
+    <a class="gate-btn" id="gateBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tryk her for at logge ind
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="sb-toggle" id="sbToggle" aria-label="Vis kursusoversigt">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span class="sb-toggle-txt">Oversigt</span>
+    </button>
+    <span class="topbar-badge">Økonomi &amp; Overblik · Modul 1</span>
+  </div>
+  <!-- Logo øverst til HØJRE — klik fører tilbage til platformen -->
+  <a class="brand" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" title="Tilbage til Akademiet AI">
+    <span>Akademiet AI</span>
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+  </a>
+</header>
+
+<!-- kursus-fremdrift i procent (regnes i JS) -->
+<div class="cprog-wrap">
+  <div class="cprog">
+    <div class="cprog-label" id="cprogLabel">Trin 1 af 5 · Modul 1</div>
+    <div class="cprog-track"><div class="cprog-fill" id="cprogFill"></div></div>
+    <div class="cprog-pct" id="cprogPct">0%</div>
+  </div>
+</div>
+
+<!-- forløbsbjælke -->
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Kursus D</span><span class="j-sep">›</span>
+    <span class="j-step current">Modul 1 · Overblik</span><span class="j-sep">›</span>
+    <span class="j-step">Quiz 1</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 2 · Budget</span><span class="j-sep">›</span>
+    <span class="j-step">Quiz 2</span><span class="j-sep">›</span>
+    <span class="j-step">Modul 3 · Klar til fremvisning</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Kursusoversigt (åbnes af de tre streger — scroller uafhængigt af modulet) -->
+<aside class="cov" id="courseOverview" aria-hidden="true">
+  <div class="cov-head">
+    <div><div class="cov-kick">Sidekursus</div><h3>AI til Økonomi &amp; Overblik</h3></div>
+    <button class="cov-close" id="covClose" aria-label="Luk oversigt">✕</button>
+  </div>
+  <div class="cov-note">3 moduler + 2 quizzer. Hvert trin tæller <strong>20%</strong> af dit bevis.</div>
+  <div class="cov-body">
+    <div class="cov-step done"><span class="cs-ic">🎓</span><div><div class="cs-label">Kursus D</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step current"><span class="cs-ic">💰</span><div><div class="cs-label">Modul 1 · Få overblik</div><div class="cs-sub">Du er her nu</div></div><span class="cs-pct">20%</span></div>
+    <div class="cov-sub">
+      <a href="#s-regel">Den gyldne regel</a>
+      <a href="#s-kan">Hvad AI kan hjælpe med</a>
+      <a href="#s-lab">Kategoriserings-værkstedet</a>
+      <a href="#s-spil2">Indtægt eller udgift?</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="cov-step locked"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 1</div><div class="cs-sub">Låst</div></div><span class="cs-pct">40%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📊</span><div><div class="cs-label">Modul 2 · Månedsbudget</div><div class="cs-sub">Låst</div></div><span class="cs-pct">60%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 2</div><div class="cs-sub">Låst</div></div><span class="cs-pct">80%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">🧾</span><div><div class="cs-label">Modul 3 · Klar til fremvisning</div><div class="cs-sub">Låst</div></div><span class="cs-pct">100%</span></div>
+    <div class="cov-step locked"><span class="cs-ic">📜</span><div><div class="cs-label">Bevis &amp; coins</div><div class="cs-sub">Kursusbevis · coins</div></div><span class="cs-pct"></span></div>
+  </div>
+</aside>
+
+<div class="layout">
+
+  <!-- venstre sidebar -->
+  <aside class="sidebar sidebar-left" id="sidebarLeft">
+    <div class="sb-head">📋 Dit forløb</div>
+    <div class="sb-note">Du er i gang med <strong>Modul 1</strong>. Læs roligt igennem og prøv øvelsen — så er du klar til den første quiz.</div>
+
+    <div class="sb-item done"><div class="sb-ic">🎓</div><div><div class="sb-label">Kursus D</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-line"></div>
+    <div class="sb-item current"><div class="sb-ic">💰</div><div><div class="sb-label">Modul 1 · Få overblik</div><div class="sb-sub">Du er her nu</div></div></div>
+    <div class="sb-subnav" id="subnav">
+      <a href="#s-regel" class="active">Den gyldne regel</a>
+      <a href="#s-kan">Hvad AI kan hjælpe med</a>
+      <a href="#s-lab">Kategoriserings-værkstedet</a>
+      <a href="#s-spil2">Indtægt eller udgift?</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="sb-line"></div>
+    <div class="sb-item locked"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 1</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">📊</div><div><div class="sb-label">Modul 2 · Månedsbudget</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 2</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">🧾</div><div><div class="sb-label">Modul 3 · Klar til fremvisning</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">📜</div><div><div class="sb-label">Bevis &amp; coins</div><div class="sb-sub">Kursusbevis · coins</div></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+    <section class="hero">
+      <div class="hero-tag"><span class="pulse"></span>Sidekursus · Modul 1 af 3</div>
+      <h1>Få styr på dine <em>penge</em> — med AI ved din side</h1>
+      <p class="hero-sub">AI kan ikke se din bankkonto. Men giver du den tallene, hjælper den dig med at få overblik, sortere og forstå — så du selv styrer din økonomi.</p>
+      <div class="hero-stats">
+        <span class="hero-stat">⏱ Ca. 20–25 min</span>
+        <span class="hero-stat">💰 1 stor vane</span>
+        <span class="hero-stat">🌿 Roligt tempo</span>
+        <span class="hero-stat">🖐️ + 15–20 min med Claude</span>
+      </div>
+    </section>
+
+    <div class="lesson">
+
+      <section class="sec" id="s-regel">
+        <div class="sec-eyebrow">Den gyldne regel</div>
+        <h2>AI er en dygtig <em>medhjælper</em> — ikke din revisor</h2>
+        <p class="lead">AI er rigtig god til at skabe overblik: den kan sortere dine udgifter, regne dem sammen og forklare svære ord i et sprog, du forstår. Det gør den på sekunder med de tal, <strong>du</strong> giver den.</p>
+        <p class="lead">Men den kan også tage fejl — og nogle gange <strong>finder den bare på et tal</strong>, der ser rigtigt ud. Derfor er reglen i hele dette kursus enkel: <strong>du tjekker altid tallene selv</strong>, før du bruger dem til noget vigtigt.</p>
+        <div class="pull"><p>"AI hjælper dig med overblikket. Ansvaret for tallene er dit — altid."</p></div>
+        <div class="warn">
+          <div class="warn-ic">⚠️</div>
+          <p><strong>Vigtigt om SKAT og officielle tal:</strong> AI kan hjælpe dig med at ordne og forstå din økonomi, så du er godt forberedt. Men et regnskab til Skattestyrelsen skal være korrekt og kunne dokumenteres. AI er ikke et gyldigt bilag, og ved skat, moms og fradrag bør du støtte dig til de officielle tal — og en revisor, hvis det er vigtigt. Det ser vi nærmere på i Modul 3.</p>
+        </div>
+      </section>
+
+      <section class="sec" id="s-kan">
+        <div class="sec-eyebrow">Værktøjskassen</div>
+        <h2>Fire ting AI kan gøre for din <em>økonomi</em></h2>
+        <p class="lead">Du behøver ikke kunne noget teknisk. Du fortæller AI'en, hvad du har brugt penge på — og den hjælper dig videre på disse fire måder:</p>
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">🛒</div><div><div class="magic-t">Sortere udgifter</div><div class="magic-d">Deler dine posteringer op i mad, bolig, transport, abonnementer …</div></div></div>
+          <div class="magic-card"><div class="magic-ic">➕</div><div><div class="magic-t">Regne sammen</div><div class="magic-d">"Hvor meget bruger jeg på abonnementer om måneden?"</div></div></div>
+          <div class="magic-card"><div class="magic-ic">💡</div><div><div class="magic-t">Forklare svære ord</div><div class="magic-d">Moms, fradrag, budget — forklaret helt enkelt.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">📋</div><div><div class="magic-t">Lave et overblik</div><div class="magic-d">Et ryddeligt regneark eller en liste, du selv kan tjekke.</div></div></div>
+        </div>
+      </section>
+
+      <section class="sec" id="s-lab">
+        <div class="sec-eyebrow">Prøv det selv</div>
+        <h2>Kategoriserings-<em>værkstedet</em></h2>
+        <p class="lead">Her er et lille udpluk fra et kontoudtog. Lad AI'en sortere posteringerne i kasser — og øv dig så i den vigtigste vane: <strong>at tjekke efter, om den fik det rigtigt.</strong></p>
+
+        <div class="lab">
+          <div class="lab-head">
+            <div class="kick">Interaktiv øvelse</div>
+            <h3>Lad AI sortere — og tjek selv efter</h3>
+            <p>Sortér posteringerne, og find den, der er havnet forkert.</p>
+          </div>
+          <div class="lab-body">
+            <div class="lab-scenario">🧾 <strong>Situationen:</strong> Du har givet AI'en seks posteringer fra din konto og bedt den sortere dem i kategorier.</div>
+
+            <!-- før sortering: kontoudtog -->
+            <div id="ledgerWrap">
+              <div class="ledger">
+                <div class="ledger-h">Dit kontoudtog — 6 posteringer</div>
+                <div class="ledger-row"><span>Netto</span><span class="amt">342,50 kr</span></div>
+                <div class="ledger-row"><span>Husleje</span><span class="amt">6.800 kr</span></div>
+                <div class="ledger-row"><span>Rejsekort (DSB)</span><span class="amt">240 kr</span></div>
+                <div class="ledger-row"><span>Netflix</span><span class="amt">129 kr</span></div>
+                <div class="ledger-row"><span>Fitness World</span><span class="amt">199 kr</span></div>
+                <div class="ledger-row"><span>Fakta</span><span class="amt">188,75 kr</span></div>
+              </div>
+              <button class="lab-sort-btn" id="sortBtn">🤖 Lad AI sortere</button>
+            </div>
+
+            <!-- efter sortering: kasser -->
+            <div class="buckets" id="buckets"></div>
+
+            <div class="lab-coach" id="labCoach"><span id="labCoachIcon">🌿</span><span id="labCoachText"></span></div>
+          </div>
+        </div>
+
+        <div class="done-box" id="doneBox">
+          <div class="done-emoji">🎉</div>
+          <h4>Sådan! Du fangede fejlen</h4>
+          <p>Du lod AI'en gøre det hurtige arbejde — og tjekkede så selv efter. Det er præcis den vane, der giver dig ægte styr på din økonomi. Godt gået!</p>
+        </div>
+
+      </section>
+
+      <section class="sec" id="s-spil2">
+        <div class="sec-eyebrow">Lille spil</div>
+        <h2>Indtægt eller <em>udgift?</em></h2>
+        <p class="lead">Overblik starter med at kende forskel på penge, der kommer <strong>ind</strong>, og penge, der går <strong>ud</strong>. Kortene kommer ét ad gangen — sæt hvert i den rigtige bunke.</p>
+
+        <div class="game">
+          <div class="game-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Sortér kortene</h3>
+            <p>6 poster — læg hver i Indtægt eller Udgift.</p>
+          </div>
+          <div class="game-body">
+            <div class="game-stage">
+              <div class="game-card" id="gameCard">
+                <div class="gc-label" id="gcLabel">Løn</div>
+                <div class="gc-amt" id="gcAmt">24.000 kr</div>
+              </div>
+            </div>
+            <div class="game-btns">
+              <button class="game-btn income" id="btnInd">⬅ Indtægt</button>
+              <button class="game-btn expense" id="btnUd">Udgift ➡</button>
+            </div>
+            <div class="game-foot">
+              <div class="game-prog">Kort <b id="gCur">1</b>/<span id="gTot">6</span></div>
+              <div class="game-streak" id="gStreak"></div>
+            </div>
+            <div class="lab-coach" id="gCoach"><span id="gCoachIc">🌿</span><span id="gCoachTx"></span></div>
+          </div>
+          <div class="game-done" id="gameDone">
+            <div class="done-emoji">✅</div>
+            <h4>Flot! Du kender forskellen</h4>
+            <p id="gameDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="s-claude">
+        <div class="sec-eyebrow">Praktisk øvelse</div>
+        <h2>Prøv det med <em>Claude</em></h2>
+        <p class="lead">Nu prøver du det på rigtigt — på din egen økonomi. Åbn Claude og bed den hjælpe dig med et overblik. <strong>Tag den tid, du har brug for</strong>; denne øvelse tæller ikke med i modulets tid.</p>
+
+        <div class="cx">
+          <div class="cx-head">
+            <div class="kick">🖐️ Hands-on · ekstra 15–20 min</div>
+            <h3>Din egen økonomi + Claude</h3>
+          </div>
+          <div class="cx-body">
+            <ol class="cx-steps">
+              <li><b>Åbn Claude</b> med knappen nedenfor (åbner i en ny fane).</li>
+              <li><b>Kopiér prompten</b> herunder og indsæt den i Claude.</li>
+              <li><b>Indsæt dine tal</b> — et udklip fra dit Excel-ark, eller bare en liste med dine indtægter og udgifter.</li>
+              <li><b>Svar på Claudes spørgsmål</b>, og bed om et pænt overblik i kategorier.</li>
+              <li><b>Tjek tallene selv</b> til sidst — det er din opgave, ikke AI'ens.</li>
+            </ol>
+
+            <div class="cx-prompt">
+              <div class="cx-prompt-h">📋 Prompt du kan kopiere</div>
+              <div class="cx-prompt-t" id="cxPromptText">Hej Claude. Jeg vil gerne have bedre overblik over min økonomi. Jeg giver dig et udklip af mit Excel-ark (eller bare en liste) med mine indtægter og udgifter. Vil du hjælpe mig med at:
+1) rydde op og sætte det pænt op i kategorier,
+2) regne ud, hvad jeg har tilbage hver måned,
+3) pege på, hvor jeg måske kan spare.
+Stil mig gerne spørgsmål, hvis noget er uklart. Jeg tjekker selv alle tal bagefter.</div>
+              <button class="cx-copy" id="cxCopy">📋 Kopiér prompt</button>
+            </div>
+
+            <div class="cx-actions">
+              <a class="cx-open" href="https://claude.ai" target="_blank" rel="noopener">Åbn Claude ↗</a>
+              <button class="cx-confirm" id="cxConfirm">Jeg har prøvet det ✓</button>
+            </div>
+            <div class="lab-coach" id="cxCoach"><span>🌿</span><span id="cxCoachTx"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tasklist" id="taskList">
+        <div class="tl-h">Modul 1 — dine trin</div>
+        <div class="tl-item" id="tlG1"><span class="tl-box">○</span> Kategoriserings-værkstedet</div>
+        <div class="tl-item" id="tlG2"><span class="tl-box">○</span> Spillet "Indtægt eller udgift?"</div>
+        <div class="tl-item" id="tlCx"><span class="tl-box">○</span> Prøv det med Claude</div>
+      </div>
+
+      <div class="cta">
+        <span class="cta-tag">Modul 1 gennemført</span>
+        <h2>Godt gået — videre til quizzen</h2>
+        <p>Test lige, om det sad fast, med en kort quiz. Så låser du op for Modul 2, hvor vi bygger et rigtigt månedsbudget med AI.</p>
+        <a href="quiz-oekonomi-1.html" class="cta-btn locked" id="ctaBtn">Gå til quiz
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <p class="cta-meta" id="ctaMeta">Gennemfør øvelsen ovenfor for at låse op</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- højre sidebar -->
+  <aside class="sidebar sidebar-right">
+    <div class="sb-head">🌿 Kom godt i gang</div>
+
+    <div class="rt-rule">
+      <div class="rt-rule-h">⚠️ Den gyldne regel</div>
+      <p><strong>Tjek altid tallene selv.</strong> AI hjælper dig med overblik — men du har ansvaret for, at tallene er rigtige.</p>
+    </div>
+
+    <div class="rt-tip">
+      <div class="rt-tip-h">💬 Prøv at skrive</div>
+      <ul class="rt-tip-list">
+        <li><span>•</span>"Sortér disse udgifter i kategorier."</li>
+        <li><span>•</span>"Læg alle mine abonnementer sammen."</li>
+        <li><span>•</span>"Forklar hvad et budget er — helt enkelt."</li>
+      </ul>
+    </div>
+
+    <a class="rt-card" href="https://claude.ai" target="_blank" rel="noopener">
+      <span class="rt-logo">C</span>
+      <div><div class="rt-name">Claude</div><div class="rt-tag">Åbn og prøv det selv</div></div>
+      <span class="rt-arrow">↗</span>
+    </a>
+  </aside>
+
+</div>
+
+<script>
+  // ── kursus-fremdrift: 3 moduler + 2 quizzer = 5 trin (hvert trin = 20%) ──
+  // Fremdrift = gennemført arbejde. Modul 1 er trin 1 → intet gennemført endnu → 0%.
+  (function(){
+    var STEP=1, TOTAL=5;                                  // dette er trin 1 af 5
+    var pct=Math.round(((STEP-1)/TOTAL)*100);             // = 0% på Modul 1
+    var fill=document.getElementById('cprogFill');
+    var pctEl=document.getElementById('cprogPct');
+    var lbl=document.getElementById('cprogLabel');
+    if(lbl) lbl.textContent='Trin '+STEP+' af '+TOTAL+' · Modul 1';
+    if(pctEl) pctEl.textContent=pct+'%';
+    requestAnimationFrame(function(){ if(fill) fill.style.width=pct+'%'; });
+  })();
+
+  // scroll-progress
+  var bar=document.getElementById('scrollBar');
+  addEventListener('scroll',function(){var h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+  // oversigts-drawer (åbnes af de tre streger)
+  var sb=document.getElementById('sidebarLeft'),bd=document.getElementById('backdrop'),tg=document.getElementById('sbToggle');
+  bd.addEventListener('click',function(){ if(typeof closeCov==='function') closeCov(); });
+
+  // aktivt sub-nav
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  addEventListener('scroll',function(){var idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<170)idx=i;});links.forEach(function(a,i){a.classList.toggle('active',i===idx);});},{passive:true});
+  links.forEach(function(a){a.addEventListener('click',function(){sb.classList.remove('open');bd.classList.remove('show');});});
+
+  // ── Kategoriserings-værkstedet ──
+  // Hver postering har en RIGTIG kategori (cat). AI'en placerer efter (ai||cat) —
+  // så én postering (Fitness World) havner bevidst forkert, og brugeren skal finde den.
+  var ITEMS=[
+    {id:'netto',   label:'Netto',            amt:'342,50 kr', cat:'mad'},
+    {id:'husleje', label:'Husleje',          amt:'6.800 kr',  cat:'bolig'},
+    {id:'dsb',     label:'Rejsekort (DSB)',  amt:'240 kr',    cat:'transport'},
+    {id:'netflix', label:'Netflix',          amt:'129 kr',    cat:'abon'},
+    {id:'fitness', label:'Fitness World',    amt:'199 kr',    cat:'abon', ai:'transport'}, // AI's fejl
+    {id:'fakta',   label:'Fakta',            amt:'188,75 kr', cat:'mad'}
+  ];
+  var CATS=[
+    {key:'mad',       name:'Mad & dagligvarer', ic:'🛒'},
+    {key:'bolig',     name:'Bolig',             ic:'🏠'},
+    {key:'transport', name:'Transport',         ic:'🚆'},
+    {key:'abon',      name:'Abonnementer',      ic:'🔁'}
+  ];
+  var WRONG_ID='fitness';       // posteringen AI placerede forkert
+  var WRONG_CORRECT='abon';     // dens rigtige kasse
+
+  var sortBtn=document.getElementById('sortBtn');
+  var ledgerWrap=document.getElementById('ledgerWrap');
+  var buckets=document.getElementById('buckets');
+  var coach=document.getElementById('labCoach');
+  var coachIcon=document.getElementById('labCoachIcon');
+  var coachText=document.getElementById('labCoachText');
+  var doneBox=document.getElementById('doneBox');
+  var ctaBtn=document.getElementById('ctaBtn');
+  var ctaMeta=document.getElementById('ctaMeta');
+  var solved=false;
+
+  function showCoach(text,icon,warnTone){
+    coachText.textContent=text;
+    coachIcon.textContent=icon||'🌿';
+    coach.classList.toggle('warn-tone',!!warnTone);
+    coach.classList.add('show');
+  }
+
+  function renderBuckets(){
+    var html='';
+    CATS.forEach(function(c){
+      html+='<div class="bucket"><div class="bucket-h"><span class="b-ic">'+c.ic+'</span>'+c.name+'</div>';
+      ITEMS.forEach(function(it){
+        var placedIn=it.ai||it.cat;
+        if(placedIn===c.key){
+          html+='<div class="chip" data-id="'+it.id+'"><span>'+it.label+'</span><span class="c-amt">'+it.amt+'</span></div>';
+        }
+      });
+      html+='</div>';
+    });
+    buckets.innerHTML=html;
+    buckets.classList.add('show');
+  }
+
+  function moveWrongChip(){
+    // flyt den forkerte chip til den rigtige kasse og markér grøn
+    var chip=buckets.querySelector('.chip[data-id="'+WRONG_ID+'"]');
+    var targetBucket=null;
+    var bEls=buckets.querySelectorAll('.bucket');
+    CATS.forEach(function(c,i){ if(c.key===WRONG_CORRECT) targetBucket=bEls[i]; });
+    if(chip && targetBucket){
+      chip.classList.add('correct');
+      chip.removeAttribute('data-id');
+      targetBucket.appendChild(chip);
+    }
+  }
+
+  if(sortBtn){
+    sortBtn.addEventListener('click',function(){
+      renderBuckets();
+      if(ledgerWrap) ledgerWrap.style.display='none';
+      showCoach('AI sorterede på et øjeblik ⚡ Men tjek selv efter — én postering er havnet i den forkerte kasse. Klik på den, du mener er forkert.','🔎',true);
+    });
+  }
+
+  if(buckets){
+    buckets.addEventListener('click',function(e){
+      if(solved) return;
+      var chip=e.target.closest('.chip');
+      if(!chip) return;
+      var id=chip.getAttribute('data-id');
+      if(id===WRONG_ID){
+        solved=true;
+        moveWrongChip();
+        showCoach('Sådan! 🎯 "Fitness World" er et abonnement — ikke transport. Du tjekkede selv efter, og det er præcis den vane, der holder styr på din økonomi.','🎯',false);
+        doneBox.classList.add('show');
+        checkUnlock();
+      } else {
+        chip.classList.add('shake');
+        setTimeout(function(){chip.classList.remove('shake');},450);
+        showCoach('Den her sidder faktisk rigtigt 🙂 Kig videre — der er én postering, der ikke passer til sin kasse.','🌿',false);
+      }
+    });
+  }
+
+  // ── fælles oplåsning: alle tre trin skal være klaret ──
+  var g2done=false, cxdone=false;
+  var tlG1=document.getElementById('tlG1'),tlG2=document.getElementById('tlG2'),tlCx=document.getElementById('tlCx');
+  function setTask(el,done){ if(!el)return; el.classList.toggle('done',done); var b=el.querySelector('.tl-box'); if(b) b.textContent=done?'✓':'○'; }
+  function checkUnlock(){
+    setTask(tlG1,solved); setTask(tlG2,g2done); setTask(tlCx,cxdone);
+    if(solved&&g2done&&cxdone){ ctaBtn.classList.remove('locked'); ctaMeta.textContent='Alle trin klaret — du er klar til quizzen 🌿'; }
+    else { var n=(solved?1:0)+(g2done?1:0)+(cxdone?1:0); ctaBtn.classList.add('locked'); ctaMeta.textContent='Klar '+n+' af 3 trin for at låse op'; }
+  }
+  checkUnlock();
+
+  // ── spil 2: indtægt eller udgift ──
+  var GITEMS=[
+    {l:'Løn',a:'24.000 kr',t:'ind'},
+    {l:'Husleje',a:'6.800 kr',t:'ud'},
+    {l:'Børne- og ungeydelse',a:'1.100 kr',t:'ind'},
+    {l:'Netflix',a:'129 kr',t:'ud'},
+    {l:'SU',a:'6.500 kr',t:'ind'},
+    {l:'Forsikring',a:'420 kr',t:'ud'}
+  ];
+  var gi=0,gRight=0,gStreakN=0;
+  var gCard=document.getElementById('gameCard'),gcLabel=document.getElementById('gcLabel'),gcAmt=document.getElementById('gcAmt');
+  var gCur=document.getElementById('gCur'),gTot=document.getElementById('gTot'),gStreak=document.getElementById('gStreak');
+  var gCoach=document.getElementById('gCoach'),gCoachIc=document.getElementById('gCoachIc'),gCoachTx=document.getElementById('gCoachTx');
+  var gameDone=document.getElementById('gameDone'),gameDoneTxt=document.getElementById('gameDoneTxt');
+  var btnInd=document.getElementById('btnInd'),btnUd=document.getElementById('btnUd');
+  if(gTot) gTot.textContent=GITEMS.length;
+  function paintCard(){ if(!gCard)return; var it=GITEMS[gi]; gcLabel.textContent=it.l; gcAmt.textContent=it.a; gCur.textContent=(gi+1); gCard.className='game-card in'; setTimeout(function(){gCard.classList.remove('in');},360); }
+  function gChoose(choice){
+    if(gi>=GITEMS.length) return;
+    var it=GITEMS[gi]; var ok=(choice===it.t);
+    if(ok){ gRight++; gStreakN++; gCard.classList.remove('no'); gCard.classList.add('ok');
+      gCoachIc.textContent='✅'; gCoachTx.textContent='Rigtigt! '+it.l+' er en '+(it.t==='ind'?'indtægt — penge ind.':'udgift — penge ud.'); }
+    else { gStreakN=0; gCard.classList.remove('ok'); gCard.classList.add('no');
+      gCoachIc.textContent='🌿'; gCoachTx.textContent='Ikke helt — '+it.l+' er faktisk en '+(it.t==='ind'?'indtægt (penge ind).':'udgift (penge ud).'); }
+    gCoach.classList.add('show'); gCoach.classList.toggle('warn-tone',!ok);
+    gStreak.textContent=gStreakN>=2?('🔥 '+gStreakN+' i træk'):'';
+    var dir=(choice==='ind'?'left':'right');
+    setTimeout(function(){
+      gCard.classList.add(dir);
+      setTimeout(function(){
+        gi++;
+        if(gi>=GITEMS.length){ finishGame(); } else { paintCard(); }
+      },300);
+    },560);
+  }
+  function finishGame(){
+    g2done=true;
+    if(gCard) gCard.style.display='none';
+    var gb=document.querySelector('.game-btns'); if(gb) gb.style.display='none';
+    var gf=document.querySelector('.game-foot'); if(gf) gf.style.display='none';
+    if(gCoach) gCoach.classList.remove('show');
+    gameDoneTxt.textContent='Du fik '+gRight+' ud af '+GITEMS.length+' rigtige. At kende forskel på penge ind og penge ud er selve fundamentet for overblik.';
+    gameDone.classList.add('show');
+    checkUnlock();
+  }
+  if(btnInd) btnInd.addEventListener('click',function(){gChoose('ind');});
+  if(btnUd) btnUd.addEventListener('click',function(){gChoose('ud');});
+
+  // ── praktisk øvelse: Claude ──
+  var cxCopy=document.getElementById('cxCopy'),cxConfirm=document.getElementById('cxConfirm');
+  var cxCoach=document.getElementById('cxCoach'),cxCoachTx=document.getElementById('cxCoachTx'),cxPromptText=document.getElementById('cxPromptText');
+  function fallbackCopy(t){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.focus(); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+  if(cxCopy){
+    cxCopy.addEventListener('click',function(){
+      var txt=cxPromptText?cxPromptText.textContent:'';
+      function ok(){ cxCopy.textContent='✓ Kopieret!'; cxCopy.classList.add('done'); setTimeout(function(){cxCopy.textContent='📋 Kopiér prompt';cxCopy.classList.remove('done');},2200); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();}); }
+      else { fallbackCopy(txt); ok(); }
+    });
+  }
+  if(cxConfirm){
+    cxConfirm.addEventListener('click',function(){
+      cxdone=true; cxConfirm.textContent='Prøvet ✓'; cxConfirm.classList.add('done');
+      if(cxCoach){ cxCoachTx.textContent='Flot — det er sådan du bruger AI i hverdagen. Husk: du tjekker altid tallene selv til sidst.'; cxCoach.classList.add('show'); }
+      checkUnlock();
+    });
+  }
+
+  // ── kursusoversigt (de tre streger) ──
+  var cov=document.getElementById('courseOverview'),covClose=document.getElementById('covClose');
+  function openCov(){ if(!cov)return; cov.classList.add('open'); bd.classList.add('show'); cov.setAttribute('aria-hidden','false'); document.body.classList.add('noscroll'); }
+  function closeCov(){ if(!cov)return; cov.classList.remove('open'); bd.classList.remove('show'); cov.setAttribute('aria-hidden','true'); document.body.classList.remove('noscroll'); }
+  if(tg) tg.addEventListener('click',openCov);
+  if(covClose) covClose.addEventListener('click',closeCov);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCov(); });
+  if(cov){ [].slice.call(cov.querySelectorAll('a[href^="#"]')).forEach(function(a){ a.addEventListener('click',closeCov); }); }
+</script>
+
+<!-- FIREBASE login-gate (login + Kursus D bestået) — med fallback til forhåndsvisning -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const PLATFORM = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+
+function showGate(mode){
+  const g = document.getElementById('gate');
+  if (mode === false) { g.classList.remove('show'); return; }
+  const t = document.getElementById('gateTitle');
+  const x = document.getElementById('gateText');
+  const b = document.getElementById('gateBtn');
+  if (mode === 'course') {
+    t.textContent = 'Færdiggør Kursus D først';
+    x.textContent = 'Dette sidekursus åbner, når du har gennemført hele Kursus D. Tag Kursus D først — så er du klar til at give AI styr på din økonomi.';
+    b.textContent = 'Gå til Kursus D';
+    b.setAttribute('href', PLATFORM);
+  } else {
+    t.textContent = 'Hov — du er ikke logget ind';
+    x.textContent = 'Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.';
+    b.textContent = 'Tryk her for at logge ind';
+    b.setAttribute('href', PLATFORM);
+  }
+  g.classList.add('show');
+}
+
+// Vis gaten indtil auth er afklaret
+showGate('login');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch (e) {
+    // Forhåndsvisning uden net (fx byggemiljø): vis modulet
+    console.warn('Firebase utilgængelig — viser modulet som forhåndsvisning.', e);
+    showGate(false);
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate('login'); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch (e) { console.error(e); }
+
+    // Kræver at hele Kursus D er gennemført (completedCourses indeholder 'D'),
+    // med D-badge som fallback. August: bekræft feltnavnet.
+    const dDone =
+      (Array.isArray(data.completedCourses) && data.completedCourses.includes('D')) ||
+      (Array.isArray(data.badges) && data.badges.some(b => b && b.level === 'D' && b.type !== 'side'));
+
+    if (!dDone) { showGate('course'); return; }
+    showGate(false);
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  var targets=[];
+  var hero=document.querySelector('.main .hero'); if(hero) targets.push(hero);
+  var lesson=document.querySelector('.main .lesson');
+  if(lesson){ Array.prototype.forEach.call(lesson.children,function(c){targets.push(c);}); }
+  targets.forEach(function(el,i){ el.classList.add('anim'); el.style.animationDelay=(0.05+i*0.075)+'s'; });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    if(a.classList.contains('locked')) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
+</script>
+</body>
+</html>
