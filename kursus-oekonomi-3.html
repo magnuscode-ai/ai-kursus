@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — AI til Økonomi &amp; Overblik · Modul 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+    --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140; --green-mid:#2f6a4a;
+    --green-light:#6fa083; --green-soft:#dee8de; --green-tint:#eef4ec;
+    --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc; --gold:#e0b33d;
+    --cream:#fbf7ee; --parch:#e8e2d3;
+    --bg:#e8e2d3; --panel:#fbf7ee; --card:#fffdf8;
+    --ink:#20312a; --ink-soft:#4c5a52; --ink-faint:#7c8880; --line:#dcd2bc; --line-soft:#e6ddc9;
+    --amber:#b0842a; --amber-soft:#f6ecd0;
+    --shadow-sm:0 1px 3px rgba(26,40,33,.05),0 1px 2px rgba(26,40,33,.06);
+    --shadow-md:0 6px 18px rgba(26,40,33,.07),0 2px 6px rgba(26,40,33,.04);
+    --shadow-lg:0 18px 44px rgba(26,40,33,.11),0 6px 16px rgba(26,40,33,.05);
+    --r:14px; --r-lg:20px; --r-pill:50px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);background:var(--bg);color:var(--ink);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;position:relative}
+  body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(1100px 640px at 50% -12%, rgba(27,70,54,.10), transparent 60%),
+      radial-gradient(820px 560px at 100% 104%, rgba(169,136,65,.07), transparent 60%),
+      radial-gradient(720px 540px at 0% 58%, rgba(27,70,54,.05), transparent 60%);}
+  a{color:inherit;text-decoration:none}
+  ::selection{background:var(--brass-soft);color:var(--green-deep)}
+
+  .scroll-bar{position:fixed;top:0;left:0;height:3px;width:0%;z-index:1200;background:linear-gradient(90deg,var(--green),var(--brass));transition:width .1s linear}
+
+  /* ── LOGIN-GATE ── */
+  .gate{position:fixed;inset:0;z-index:4000;display:none;align-items:center;justify-content:center;padding:24px;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%)}
+  .gate.show{display:flex}
+  .gate-card{max-width:452px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:var(--shadow-lg);padding:40px 34px;text-align:center;position:relative;overflow:hidden}
+  .gate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,var(--green),var(--brass))}
+  .gate-ic{width:66px;height:66px;border-radius:19px;margin:6px auto 20px;display:grid;place-items:center;
+    background:var(--green-soft);border:1px solid #c6d8c9;color:var(--green)}
+  .gate-card h1{font-family:var(--serif);font-weight:700;font-size:25px;color:var(--ink);margin-bottom:11px;line-height:1.2}
+  .gate-card p{font-size:15px;color:var(--ink-soft);line-height:1.62;margin:0 auto 24px;max-width:360px}
+  .gate-btn{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#fff;font-weight:700;font-size:16px;padding:14px 28px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .gate-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+
+  /* topbar — logo til HØJRE (efter ønske), kursus-tag til venstre */
+  .topbar{position:fixed;top:0;left:0;right:0;height:64px;z-index:1000;
+    background:rgba(251,247,238,.86);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+  .topbar-left{display:flex;align-items:center;gap:14px}
+  .topbar-badge{font-size:12.5px;font-weight:700;letter-spacing:.02em;color:var(--brass-deep);
+    background:var(--brass-soft);border:1px solid #e6d3a6;padding:7px 15px;border-radius:var(--r-pill)}
+  .brand{display:flex;align-items:center;gap:11px;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep)}
+  .sb-toggle{display:inline-flex;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;height:40px;padding:0 14px;align-items:center;justify-content:center;color:var(--green);cursor:pointer;font-weight:700;font-size:13px;transition:.2s}
+  .sb-toggle:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .sb-toggle-txt{display:inline}
+
+  /* ── kursus-fremdrift (procent gennem hele sidekurset) ── */
+  .cprog-wrap{margin-top:64px;background:var(--panel);border-bottom:1px solid var(--line);padding:12px 20px;position:relative;z-index:6}
+  .cprog{max-width:1520px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  .cprog-label{font-size:12.5px;font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .cprog-label b{color:var(--green-700)}
+  .cprog-track{flex:1;min-width:160px;height:9px;background:var(--green-soft);border-radius:var(--r-pill);overflow:hidden;border:1px solid #cfe0d1}
+  .cprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .8s cubic-bezier(.22,.61,.36,1)}
+  .cprog-pct{font-size:12.5px;font-weight:800;color:var(--green-700);white-space:nowrap;min-width:34px;text-align:right}
+
+  /* forløbsbjælke (folded, centreret) */
+  .journey-wrap{background:var(--panel);border-bottom:1px solid var(--line);padding:11px 20px;position:relative;z-index:5}
+  .journey{display:flex;gap:7px;align-items:center;justify-content:center;flex-wrap:nowrap;overflow-x:auto;max-width:1520px;margin:0 auto;scrollbar-width:none}
+  .journey::-webkit-scrollbar{display:none}
+  .j-step{font-size:12.5px;font-weight:700;color:var(--ink-faint);white-space:nowrap;padding:6px 13px;border-radius:var(--r-pill);background:#fff;border:1px solid var(--line-soft)}
+  .j-step.done{color:var(--green);background:var(--green-soft);border-color:#c6d8c9}
+  .j-step.current{color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border-color:var(--green);box-shadow:0 3px 10px rgba(27,70,54,.22)}
+  .j-sep{color:var(--ink-faint);opacity:.45;font-size:13px}
+
+  /* layout */
+  .layout{position:relative;z-index:1;max-width:1520px;margin:0 auto;display:grid;grid-template-columns:288px minmax(0,1fr) 312px;align-items:start}
+  .sidebar{position:sticky;top:64px;height:calc(100vh - 64px);overflow-y:auto;background:var(--panel);padding:26px 20px}
+  .sidebar-left{border-right:1px solid var(--line)}
+  .sidebar-right{border-left:1px solid var(--line)}
+  .sidebar::-webkit-scrollbar{width:8px}
+  .sidebar::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .main{padding:44px 56px 90px;min-width:0}
+
+  .sb-head{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);margin-bottom:6px}
+  .sb-note{font-size:12.5px;color:var(--ink-soft);line-height:1.55;margin-bottom:20px;background:#fff;border:1px solid var(--line-soft);border-radius:12px;padding:11px 13px}
+  .sb-note strong{color:var(--green-700)}
+  .sb-item{display:flex;gap:13px;align-items:flex-start;padding:11px 12px;border-radius:13px}
+  .sb-item + .sb-item{margin-top:2px}
+  .sb-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:#fff;border:1px solid var(--line);color:var(--green-mid)}
+  .sb-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .sb-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .sb-item.done .sb-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .sb-item.done .sb-check{margin-left:auto;color:var(--green);font-weight:800;font-size:15px}
+  .sb-item.current{background:#fff;border:1px solid #cfe0d1;box-shadow:var(--shadow-sm)}
+  .sb-item.current .sb-ic{background:var(--green);border-color:var(--green);color:#fff;box-shadow:0 0 0 4px rgba(27,70,54,.10)}
+  .sb-item.current .sb-sub{color:var(--green-mid);font-weight:700}
+  .sb-item.locked{opacity:.72}
+  .sb-item.locked .sb-label{color:var(--ink-soft)}
+  .sb-subnav{margin:6px 0 6px 46px;display:flex;flex-direction:column;gap:2px}
+  .sb-subnav a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px;transition:.2s}
+  .sb-subnav a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .sb-subnav a:hover{background:var(--green-soft);color:var(--green-deep)}
+  .sb-subnav a.active{color:var(--green-deep);font-weight:700}
+  .sb-subnav a.active::before{opacity:1;background:var(--green)}
+  .sb-line{width:1px;height:16px;background:var(--line);margin:2px 0 2px 28px}
+
+  .rt-tip{background:var(--green-tint);border:1px solid #cfe0d1;border-radius:13px;padding:15px 16px;margin-bottom:14px}
+  .rt-tip-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--green-700);margin-bottom:9px;display:flex;align-items:center;gap:7px}
+  .rt-tip-list{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .rt-tip-list li{font-size:12.5px;color:var(--ink-soft);display:flex;gap:8px;align-items:flex-start;line-height:1.5}
+  .rt-tip-list li span{color:var(--green);flex:0 0 auto}
+  .rt-rule{background:var(--amber-soft);border:1px solid #e6d3a6;border-radius:13px;padding:15px 16px}
+  .rt-rule-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rt-rule p{font-size:12.5px;color:#5c4a1e;line-height:1.55}
+  .rt-rule p strong{color:var(--brass-deep)}
+  .rt-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 13px;margin-top:14px;transition:.22s}
+  .rt-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfc4a6}
+  .rt-logo{flex:0 0 38px;width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:15px;background:linear-gradient(135deg,#c1783f,#d99a5b)}
+  .rt-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .rt-tag{font-size:11.5px;color:var(--ink-faint)}
+  .rt-arrow{margin-left:auto;color:var(--ink-faint);font-size:15px}
+
+  /* hero */
+  .hero{max-width:800px;margin:0 auto;text-align:center;padding:24px 0 6px}
+  .hero-tag{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--green-700);background:var(--green-tint);border:1px solid #cfe0d1;padding:8px 16px;border-radius:var(--r-pill)}
+  .hero-tag .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(27,70,54,.4)}50%{box-shadow:0 0 0 6px rgba(27,70,54,0)}}
+  .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(38px,5.4vw,62px);line-height:1.08;letter-spacing:-.02em;margin:20px 0 18px;color:var(--ink)}
+  .hero h1 em{font-style:italic;background:linear-gradient(120deg,var(--green-mid),var(--brass) 82%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero-sub{font-size:18.5px;color:var(--ink-soft);line-height:1.65;max-width:600px;margin:0 auto}
+  .hero-stats{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:26px}
+  .hero-stat{font-size:13px;font-weight:600;color:var(--ink-soft);background:#fff;border:1px solid var(--line);padding:8px 15px;border-radius:var(--r-pill);box-shadow:var(--shadow-sm)}
+
+  /* lesson */
+  .lesson{max-width:760px;margin:0 auto}
+  .sec{margin-top:60px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--green-700);margin-bottom:14px}
+  .sec-eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--green-light),transparent);border-radius:2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:clamp(25px,3.2vw,32px);color:var(--ink);letter-spacing:-.01em;line-height:1.2}
+  .sec h2 em{font-style:italic;color:var(--brass-deep)}
+  .sec p.lead{font-size:16.5px;color:var(--ink-soft);line-height:1.72;margin-top:14px}
+  .sec p.lead + p.lead{margin-top:14px}
+  .sec p.lead strong{color:var(--green-700)}
+
+  .pull{background:var(--green-tint);border:1px solid #cfe0d1;border-left:4px solid var(--green);border-radius:var(--r);padding:20px 24px;margin-top:24px}
+  .pull p{font-family:var(--serif);font-size:19px;font-style:italic;color:var(--green-deep);line-height:1.5}
+
+  /* magic cards */
+  .magic{display:grid;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:26px}
+  .magic-card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;gap:13px;align-items:flex-start;transition:.22s}
+  .magic-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:#cfe0d1}
+  .magic-ic{flex:0 0 40px;width:40px;height:40px;border-radius:11px;background:var(--green-soft);border:1px solid #c6d8c9;display:grid;place-items:center;font-size:19px}
+  .magic-t{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:2px}
+  .magic-d{font-size:13px;color:var(--ink-faint);line-height:1.5}
+
+  /* advarsel / gylden regel-boks */
+  /* ── MODUL 3: læringsspil (nye klasser — rører ikke eksisterende) ── */
+  .m3-bar{height:8px;background:var(--green-soft);border-radius:50px;overflow:hidden;margin-bottom:18px}
+  .m3-bar-fill{height:100%;width:0;border-radius:50px;background:linear-gradient(90deg,var(--green-mid),var(--brass));transition:width .55s cubic-bezier(.4,0,.2,1)}
+  .m3-bro{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .m3-col{display:flex;flex-direction:column;gap:9px}
+  .m3-col-h{font-size:11.5px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:2px}
+  .m3-tile{text-align:left;font-family:var(--sans);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px;line-height:1.45;color:var(--ink);cursor:pointer;transition:.18s;width:100%}
+  .m3-tile:hover:not(:disabled){border-color:var(--brass);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+  .m3-tile.sel{border-color:var(--brass);background:var(--brass-soft);box-shadow:0 0 0 3px rgba(169,136,65,.16)}
+  .m3-tile.linked{border-color:#a9c9b5;background:var(--green-tint);color:var(--green-700);cursor:default;opacity:.85}
+  .m3-tile.linked::after{content:'✓';float:right;font-weight:800;color:var(--green-mid)}
+  .m3-tile.miss,.m3-block.miss{animation:m3shake .4s ease;border-color:#d9a5a5;background:#fbeeee}
+  .m3-tile:disabled{cursor:default}
+  @keyframes m3shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+  .m3-scen{background:var(--green-tint);border:1px solid #cfe0d3;border-left:4px solid var(--green-mid);border-radius:var(--r);padding:16px 19px;font-size:14.5px;line-height:1.6;color:var(--ink);margin-bottom:16px}
+  .m3-scen b{display:block;font-size:11.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--green-700);margin-bottom:7px}
+  .m3-opts{display:flex;flex-direction:column;gap:10px}
+  .m3-opt{text-align:left;font-family:var(--sans);background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:13px 16px;font-size:14px;line-height:1.5;color:var(--ink);cursor:pointer;transition:.18s;width:100%}
+  .m3-opt:hover:not(:disabled){border-color:var(--brass);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+  .m3-opt.right{border-color:#8fb79c;background:var(--green-tint);color:var(--green-700);font-weight:600}
+  .m3-opt.wrong{border-color:#d9a5a5;background:#fbeeee;color:#8a3a3a}
+  .m3-opt:disabled{cursor:default}
+  .m3-next{margin-top:15px;font-family:var(--sans);font-weight:700;font-size:14px;background:var(--green);color:#fff;border:none;border-radius:var(--r-pill);padding:11px 24px;cursor:pointer;transition:.2s;display:none}
+  .m3-next.show{display:inline-block;animation:pop .4s ease}
+  .m3-next:hover{background:var(--green-deep)}
+  .m3-slots{display:flex;flex-direction:column;gap:9px;margin-bottom:18px}
+  .m3-slot{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px dashed var(--line);border-radius:12px;padding:12px 15px;min-height:52px;font-size:13.5px;color:var(--ink-faint);transition:.25s}
+  .m3-slot.filled{border-style:solid;border-color:#a9c9b5;background:var(--green-tint);color:var(--green-700);font-weight:600}
+  .m3-slot-n{flex:0 0 26px;height:26px;border-radius:50%;background:var(--parch);color:var(--ink-soft);display:flex;align-items:center;justify-content:center;font-size:12.5px;font-weight:800}
+  .m3-slot.filled .m3-slot-n{background:var(--green-mid);color:#fff}
+  .m3-blocks{display:flex;flex-wrap:wrap;gap:9px}
+  .m3-block{font-family:var(--sans);background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:10px 14px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.18s}
+  .m3-block:hover:not(:disabled){border-color:var(--brass);transform:translateY(-1px);box-shadow:var(--shadow-sm)}
+  .m3-block.used{display:none}
+  .m3-block.trap{border-color:#d9a5a5;background:#fbeeee;color:#8a3a3a;text-decoration:line-through;cursor:default;opacity:.75}
+  .m3-block:disabled{cursor:default}
+  .m3-saved{margin-top:14px;font-size:12.5px;color:var(--ink-faint);display:flex;align-items:center;gap:7px}
+  .m3-saved b{color:var(--green-700);font-weight:700}
+  @media(max-width:720px){ .m3-bro{grid-template-columns:1fr} }
+  .warn{margin-top:24px;background:var(--amber-soft);border:1px solid #e6d3a6;border-left:4px solid var(--brass);border-radius:var(--r);padding:18px 22px;display:flex;gap:14px;align-items:flex-start}
+  .warn .warn-ic{font-size:22px;flex:0 0 auto}
+  .warn p{font-size:14.5px;color:#5c4a1e;line-height:1.6}
+  .warn p strong{color:var(--brass-deep)}
+
+  /* ── interaktiv: kategoriserings-værksted ── */
+  .lab{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .lab-head{background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;padding:20px 24px}
+  .lab-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#bfe0cd;margin-bottom:5px}
+  .lab-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .lab-head p{font-size:13.5px;color:#d7e7dd;margin-top:5px;line-height:1.5}
+  .lab-body{padding:22px 24px}
+  .lab-scenario{font-size:13.5px;color:var(--ink-soft);background:var(--green-tint);border:1px solid #cfe0d1;border-radius:11px;padding:12px 15px;margin-bottom:18px;line-height:1.5}
+  .lab-scenario strong{color:var(--green-700)}
+
+  /* kontoudtog (før sortering) */
+  .ledger{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}
+  .ledger-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;background:var(--cream);border-bottom:1px solid var(--line-soft)}
+  .ledger-row{display:flex;justify-content:space-between;align-items:center;padding:12px 15px;font-size:14px;color:var(--ink);border-bottom:1px solid var(--line-soft)}
+  .ledger-row:last-child{border-bottom:none}
+  .ledger-row .amt{font-weight:700;color:var(--green-700);font-variant-numeric:tabular-nums}
+
+  .lab-sort-btn{display:inline-flex;align-items:center;gap:10px;margin-top:18px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:15px;font-weight:700;padding:13px 24px;border:none;border-radius:var(--r-pill);cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .lab-sort-btn:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,.3)}
+  .lab-sort-btn:disabled{opacity:.5;pointer-events:none}
+
+  /* buckets (efter sortering) */
+  .buckets{display:none;grid-template-columns:repeat(2,1fr);gap:13px;margin-top:6px}
+  .buckets.show{display:grid;animation:pop .45s ease}
+  .bucket{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);padding:13px 14px}
+  .bucket-h{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:800;color:var(--green-700);margin-bottom:9px}
+  .bucket-h .b-ic{font-size:16px}
+  .chip{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#fff;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink);cursor:pointer;transition:.18s;margin-top:7px}
+  .chip:first-of-type{margin-top:0}
+  .chip:hover{border-color:var(--green-light);transform:translateY(-1px)}
+  .chip .c-amt{font-weight:700;color:var(--ink-faint);font-variant-numeric:tabular-nums;font-size:12.5px}
+  .chip.shake{animation:shake .4s ease}
+  .chip.correct{border-color:var(--green);background:var(--green-soft);color:var(--green-deep);cursor:default}
+  .chip.correct .c-amt{color:var(--green)}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  @keyframes pop{0%{transform:scale(.97);opacity:0}100%{transform:scale(1);opacity:1}}
+
+  .lab-coach{margin-top:16px;font-size:13.5px;color:var(--green-700);background:var(--green-tint);border:1px dashed #a9c9b5;border-radius:11px;padding:12px 15px;display:none;align-items:center;gap:9px;line-height:1.45}
+  .lab-coach.show{display:flex;animation:pop .4s ease}
+  .lab-coach.warn-tone{color:#5c4a1e;background:var(--amber-soft);border-color:#dcc38a}
+
+  /* completion */
+  .done-box{margin-top:24px;text-align:center;background:linear-gradient(160deg,var(--green-tint),#fff);border:1px solid #cfe0d1;border-radius:var(--r-lg);padding:30px 26px;display:none}
+  .done-box.show{display:block;animation:pop .5s ease}
+  .done-emoji{font-size:34px}
+  .done-box h4{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green-deep);margin:6px 0 6px}
+  .done-box p{font-size:14.5px;color:var(--ink-soft);max-width:440px;margin:0 auto;line-height:1.6}
+
+  .cta{max-width:760px;margin:56px auto 0;text-align:center;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r-lg);padding:42px 30px;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
+  .cta::before{content:'';position:absolute;inset:0;background:radial-gradient(600px 200px at 50% 0%,rgba(47,106,74,.09),transparent 70%);pointer-events:none}
+  .cta-tag{position:relative;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep)}
+  .cta h2{position:relative;font-family:var(--serif);font-weight:700;font-size:29px;color:var(--ink);margin:10px 0 8px}
+  .cta p{position:relative;font-size:15px;color:var(--ink-soft);max-width:440px;margin:0 auto 22px;line-height:1.6}
+  .cta-btn{position:relative;display:inline-flex;align-items:center;gap:11px;background:linear-gradient(135deg,var(--green),var(--green-deep));color:#fff;font-size:17px;font-weight:700;padding:16px 34px;border-radius:var(--r-pill);box-shadow:0 8px 22px rgba(27,70,54,.28);transition:.25s}
+  .cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(27,70,54,.34)}
+  .cta-btn.locked{opacity:.55;pointer-events:none;filter:grayscale(.3)}
+  .cta-meta{position:relative;font-size:12.5px;color:var(--ink-faint);margin-top:16px}
+
+  .backdrop{display:none}
+  .backdrop.show{display:block;position:fixed;inset:0;background:rgba(20,30,25,.42);z-index:1500;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
+  body.noscroll{overflow:hidden}
+  @media(max-width:1180px){.layout{grid-template-columns:260px minmax(0,1fr)}.sidebar-right{display:none}.main{padding:38px 40px 80px}}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    .sidebar-left{display:none}
+    .main{padding:30px 20px 70px}
+    .magic,.buckets.show{grid-template-columns:1fr}
+    .brand span{display:none}
+  }
+  @media(max-width:560px){
+    .sb-toggle-txt{display:none}
+    .sb-toggle{padding:0;width:40px}
+    .cx-actions{flex-direction:column;align-items:stretch}
+  }
+
+  /* ── kursusoversigt (åbnes med de tre streger) ── */
+  .cov{position:fixed;top:0;right:0;height:100%;width:376px;max-width:90vw;z-index:1600;background:var(--panel);
+    border-left:1px solid var(--line);box-shadow:var(--shadow-lg);transform:translateX(105%);
+    transition:transform .3s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+  .cov.open{transform:translateX(0)}
+  .cov-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:20px 22px 14px;border-bottom:1px solid var(--line)}
+  .cov-kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brass-deep);margin-bottom:3px}
+  .cov-head h3{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--green-deep);line-height:1.2}
+  .cov-close{flex:0 0 auto;width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--ink-soft);font-size:15px;cursor:pointer;display:grid;place-items:center;transition:.2s}
+  .cov-close:hover{background:var(--green-soft);color:var(--green)}
+  .cov-note{font-size:12.5px;color:var(--ink-soft);padding:12px 22px;background:var(--green-tint);border-bottom:1px solid var(--line-soft);line-height:1.5}
+  .cov-body{flex:1;overflow-y:auto;padding:16px 18px 40px}
+  .cov-step{display:flex;gap:12px;align-items:flex-start;padding:12px 13px;border-radius:13px;background:#fff;border:1px solid var(--line-soft);margin-bottom:8px}
+  .cov-step .cs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:15px;background:var(--cream);border:1px solid var(--line);color:var(--green-mid)}
+  .cov-step .cs-label{font-size:14px;font-weight:700;color:var(--ink);line-height:1.25}
+  .cov-step .cs-sub{font-size:11.5px;color:var(--ink-faint);margin-top:2px}
+  .cov-step .cs-pct{margin-left:auto;font-size:11.5px;font-weight:800;color:var(--green-700);white-space:nowrap}
+  .cov-step.done .cs-ic{background:var(--green-soft);border-color:#c6d8c9;color:var(--green)}
+  .cov-step.current{background:linear-gradient(135deg,#fff,var(--green-tint));border-color:#cfe0d1;box-shadow:var(--shadow-sm)}
+  .cov-step.current .cs-ic{background:var(--green);border-color:var(--green);color:#fff}
+  .cov-step.locked{opacity:.7}
+  .cov-sub{margin:2px 0 10px 46px;display:flex;flex-direction:column;gap:2px}
+  .cov-sub a{font-size:13px;color:var(--ink-soft);padding:6px 10px;border-radius:8px;display:flex;align-items:center;gap:9px}
+  .cov-sub a::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green-light);opacity:.6}
+  .cov-sub a:hover{background:var(--green-soft);color:var(--green-deep)}
+
+  /* ── spil 2: indtægt eller udgift ── */
+  .game{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .game-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .game-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .game-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .game-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .game-body{padding:22px 24px}
+  .game-stage{display:flex;justify-content:center;padding:14px 0 6px;min-height:150px}
+  .game-card{width:262px;max-width:100%;background:linear-gradient(160deg,#fff,var(--cream));border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-md);padding:26px 22px;text-align:center;transition:transform .3s ease,opacity .3s ease}
+  .game-card.left{transform:translateX(-120%) rotate(-8deg);opacity:0}
+  .game-card.right{transform:translateX(120%) rotate(8deg);opacity:0}
+  .game-card.in{animation:pop .35s ease}
+  .game-card.ok{border-color:var(--green);box-shadow:0 0 0 3px rgba(27,70,54,.15)}
+  .game-card.no{border-color:#c98a3a;animation:shake .4s ease}
+  .gc-label{font-family:var(--serif);font-size:24px;font-weight:600;color:var(--ink)}
+  .gc-amt{font-size:15px;font-weight:700;color:var(--ink-faint);margin-top:6px;font-variant-numeric:tabular-nums}
+  .game-btns{display:flex;gap:12px;justify-content:center;margin-top:16px}
+  .game-btn{font-size:15px;font-weight:700;padding:13px 22px;border-radius:var(--r-pill);border:1.5px solid var(--line);cursor:pointer;transition:.2s;background:#fff}
+  .game-btn.income{color:var(--green-deep);border-color:#a9c9b5}
+  .game-btn.income:hover{background:var(--green-soft);transform:translateY(-2px)}
+  .game-btn.expense{color:var(--brass-deep);border-color:#e6d3a6}
+  .game-btn.expense:hover{background:var(--brass-soft);transform:translateY(-2px)}
+  .game-foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-soft);font-weight:600}
+  .game-streak{color:var(--brass-deep);font-weight:800}
+  .game-done{display:none;text-align:center;padding:22px 20px 4px}
+  .game-done.show{display:block;animation:pop .5s ease}
+  .game-done h4{font-family:var(--serif);font-weight:700;font-size:20px;color:var(--green-deep);margin:6px 0 6px}
+  .game-done p{font-size:14px;color:var(--ink-soft);max-width:400px;margin:0 auto;line-height:1.55}
+
+  /* ── praktisk øvelse med Claude ── */
+  .cx{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .cx-head{background:linear-gradient(135deg,#c1783f,#a5602c);color:#fff;padding:20px 24px}
+  .cx-head .kick{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#f3ddc9;margin-bottom:5px}
+  .cx-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .cx-body{padding:22px 24px}
+  .cx-steps{margin:0 0 18px;padding-left:22px;display:flex;flex-direction:column;gap:9px}
+  .cx-steps li{font-size:14.5px;color:var(--ink-soft);line-height:1.55}
+  .cx-steps li b{color:var(--green-700)}
+  .cx-prompt{background:var(--cream);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+  .cx-prompt-h{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-faint);padding:11px 15px;border-bottom:1px solid var(--line-soft)}
+  .cx-prompt-t{padding:15px;font-size:13.5px;color:var(--ink);line-height:1.62;white-space:pre-line}
+  .cx-copy{margin:0 15px 15px;font-size:13.5px;font-weight:700;color:var(--green-deep);background:#fff;border:1.5px solid var(--line);border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .cx-copy:hover{border-color:var(--green-light);background:var(--green-soft)}
+  .cx-copy.done{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+  .cx-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:18px}
+  .cx-open{display:inline-flex;align-items:center;gap:9px;font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,#c1783f,#a5602c);border-radius:var(--r-pill);padding:13px 24px;box-shadow:0 6px 18px rgba(193,120,63,.28);transition:.22s}
+  .cx-open:hover{transform:translateY(-2px)}
+  .cx-confirm{font-size:15px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--green),var(--green-deep));border:none;border-radius:var(--r-pill);padding:13px 24px;cursor:pointer;box-shadow:0 6px 18px rgba(27,70,54,.24);transition:.22s}
+  .cx-confirm:hover{transform:translateY(-2px)}
+  .cx-confirm.done{background:var(--green-soft);color:var(--green);box-shadow:none;pointer-events:none}
+
+  /* ── trin-tjekliste før quiz ── */
+  .tasklist{max-width:760px;margin:44px auto 0;background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:20px 24px;box-shadow:var(--shadow-sm)}
+  .tl-h{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--green-700);margin-bottom:12px}
+  .tl-item{display:flex;align-items:center;gap:11px;font-size:14.5px;color:var(--ink-soft);padding:9px 0}
+  .tl-item + .tl-item{border-top:1px solid var(--line-soft)}
+  .tl-box{flex:0 0 24px;width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);display:grid;place-items:center;font-weight:800;color:var(--ink-faint);font-size:13px}
+  .tl-item.done{color:var(--ink)}
+  .tl-item.done .tl-box{background:var(--green-soft);border-color:#a9c9b5;color:var(--green)}
+
+  /* side-overgange & entre-animationer */
+  .page-veil{position:fixed;inset:0;z-index:3000;pointer-events:none;opacity:1;
+    background:radial-gradient(130% 100% at 50% 0%,#fbf7ee 0%,#efe8d8 55%,#e8e2d3 100%);
+    transition:opacity .5s ease}
+  .page-veil.out{opacity:0}
+  .page-veil.cover{opacity:1;pointer-events:all;transition:opacity .4s ease}
+  @keyframes aiRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+  .anim{opacity:0;animation:aiRise .62s cubic-bezier(.22,.61,.36,1) both}
+  @media(prefers-reduced-motion:reduce){.page-veil{display:none!important}.anim{opacity:1!important;animation:none!important}}
+
+  /* ── MODUL 2: 3-kort række ── */
+  .magic.three{grid-template-columns:repeat(3,1fr)}
+  @media(max-width:900px){.magic.three{grid-template-columns:1fr}}
+
+  /* ── SPIL: 50/30/20-fordeler ── */
+  .alloc{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-md);overflow:hidden}
+  .alloc-head{background:linear-gradient(135deg,var(--brass-deep),#6f5320);color:#fff;padding:20px 24px}
+  .alloc-head .kick{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#f1e3c0;margin-bottom:5px}
+  .alloc-head h3{font-family:var(--serif);font-weight:600;font-size:21px}
+  .alloc-head p{font-size:13.5px;color:#efe2c4;margin-top:5px}
+  .alloc-body{padding:22px 24px}
+  .alloc-bank{display:flex;align-items:center;justify-content:space-between;background:var(--green-tint);border:1px solid #cfe0d1;border-radius:12px;padding:12px 16px;margin-bottom:18px;transition:.25s}
+  .alloc-bank.empty{background:var(--brass-soft);border-color:#e6d3a6}
+  .alloc-bank-l{font-size:13px;font-weight:700;color:var(--green-700)}
+  .alloc-bank.empty .alloc-bank-l{color:var(--brass-deep)}
+  .alloc-bank-v{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--green-deep);font-variant-numeric:tabular-nums}
+  .alloc-bank.empty .alloc-bank-v{color:var(--brass-deep)}
+  .alloc-row{background:var(--cream);border:1px solid var(--line);border-radius:13px;padding:13px 15px;margin-bottom:11px;transition:.2s}
+  .alloc-row.hit{border-color:#a9c9b5;background:var(--green-soft)}
+  .alloc-row-top{display:flex;align-items:center;gap:12px}
+  .alloc-ic{flex:0 0 36px;width:36px;height:36px;border-radius:10px;background:#fff;border:1px solid var(--line);display:grid;place-items:center;font-size:17px}
+  .alloc-meta{flex:1;min-width:0}
+  .alloc-name{font-size:14.5px;font-weight:700;color:var(--ink)}
+  .alloc-target{font-size:11.5px;color:var(--ink-faint);margin-top:1px}
+  .alloc-row.hit .alloc-target{color:var(--green);font-weight:700}
+  .alloc-amt{text-align:right;white-space:nowrap}
+  .alloc-amt b{display:block;font-size:15.5px;color:var(--green-700);font-variant-numeric:tabular-nums}
+  .alloc-amt span{font-size:11.5px;color:var(--ink-faint)}
+  .alloc-bar{position:relative;height:9px;background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);margin:11px 0}
+  .alloc-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--green),var(--brass));border-radius:var(--r-pill);transition:width .3s ease}
+  .alloc-mark{position:absolute;top:-3px;width:2px;height:15px;background:var(--green-deep);opacity:.55;border-radius:2px;transform:translateX(-1px)}
+  .alloc-ctrl{display:flex;gap:10px;justify-content:flex-end;margin-top:2px}
+  .alloc-btn{width:40px;height:40px;border-radius:11px;border:1.5px solid var(--line);background:#fff;color:var(--green-deep);font-size:22px;font-weight:700;cursor:pointer;transition:.15s;display:grid;place-items:center;line-height:1}
+  .alloc-btn:hover{background:var(--green-soft);border-color:var(--green-light)}
+  .alloc-btn:disabled{opacity:.4;pointer-events:none}
+  .alloc-auto{margin-top:6px;font-size:13.5px;font-weight:700;color:var(--brass-deep);background:#fff;border:1.5px solid #e6d3a6;border-radius:var(--r-pill);padding:10px 18px;cursor:pointer;transition:.2s}
+  .alloc-auto:hover{background:var(--brass-soft)}
+  .alloc-auto:disabled{opacity:.5;pointer-events:none}
+
+  /* ── SPIL: klikbart budget (tjek tallet) ── */
+  .ledger-row.clickable{cursor:pointer;transition:background .15s}
+  .ledger-row.clickable:hover{background:var(--green-tint)}
+  .ledger-row.total{border-top:1px solid var(--line);font-weight:800}
+  .ledger-row .amt.neg{color:#a5602c}
+  .ledger-row.shake{animation:shake .4s ease}
+  .ledger-row.fixed{background:var(--green-soft)}
+  .ledger-row.fixed .amt{color:var(--green)}
+
+</style>
+</head>
+<body>
+<div class="page-veil" id="pageVeil"></div>
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- LOGIN-GATE (vises indtil login + Kursus D er afklaret) -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="gate-ic">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1 id="gateTitle">Hov — du er ikke logget ind</h1>
+    <p id="gateText">Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.</p>
+    <a class="gate-btn" id="gateBtn" href="https://magnuscode-ai.github.io/ai-kursus/platform.html">Tryk her for at logge ind
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </a>
+  </div>
+</div>
+
+<header class="topbar">
+  <div class="topbar-left">
+    <button class="sb-toggle" id="sbToggle" aria-label="Vis kursusoversigt">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <span class="sb-toggle-txt">Oversigt</span>
+    </button>
+    <span class="topbar-badge">Økonomi &amp; Overblik · Modul 3</span>
+  </div>
+  <!-- Logo øverst til HØJRE — klik fører tilbage til platformen -->
+  <a class="brand" href="https://magnuscode-ai.github.io/ai-kursus/platform.html" title="Tilbage til Akademiet AI">
+    <span>Akademiet AI</span>
+    <svg width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+  </a>
+</header>
+
+<!-- kursus-fremdrift i procent (regnes i JS) -->
+<div class="cprog-wrap">
+  <div class="cprog">
+    <div class="cprog-label" id="cprogLabel">Trin 5 af 5 · Modul 3</div>
+    <div class="cprog-track"><div class="cprog-fill" id="cprogFill"></div></div>
+    <div class="cprog-pct" id="cprogPct">0%</div>
+  </div>
+</div>
+
+<!-- forløbsbjælke -->
+<div class="journey-wrap">
+  <div class="journey">
+    <span class="j-step done">✓ Kursus D</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 1</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Quiz 1</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Modul 2</span><span class="j-sep">›</span>
+    <span class="j-step done">✓ Quiz 2</span><span class="j-sep">›</span>
+    <span class="j-step current">Modul 3 · Klar til fremvisning</span><span class="j-sep">›</span>
+    <span class="j-step">Eksamen</span><span class="j-sep">›</span>
+    <span class="j-step">📜 Bevis &amp; coins</span>
+  </div>
+</div>
+
+<div class="backdrop" id="backdrop"></div>
+
+<!-- Kursusoversigt (åbnes af de tre streger — scroller uafhængigt af modulet) -->
+<aside class="cov" id="courseOverview" aria-hidden="true">
+  <div class="cov-head">
+    <div><div class="cov-kick">Sidekursus</div><h3>AI til Økonomi &amp; Overblik</h3></div>
+    <button class="cov-close" id="covClose" aria-label="Luk oversigt">✕</button>
+  </div>
+  <div class="cov-note">3 moduler + 2 quizzer. Hvert trin tæller <strong>20%</strong> af dit bevis. Til sidst venter eksamen.</div>
+  <div class="cov-body">
+    <div class="cov-step done"><span class="cs-ic">🎓</span><div><div class="cs-label">Kursus D</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">💰</span><div><div class="cs-label">Modul 1 · Få overblik</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 1</div><div class="cs-sub">Bestået</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">📊</span><div><div class="cs-label">Modul 2 · Månedsbudget</div><div class="cs-sub">Gennemført</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step done"><span class="cs-ic">⭐</span><div><div class="cs-label">Quiz 2</div><div class="cs-sub">Bestået</div></div><span class="cs-pct">✓</span></div>
+    <div class="cov-step current"><span class="cs-ic">🧾</span><div><div class="cs-label">Modul 3 · Klar til fremvisning</div><div class="cs-sub">Du er her nu</div></div><span class="cs-pct">100%</span></div>
+    <div class="cov-sub">
+      <a href="#s-genkald">Det du allerede kan</a>
+      <a href="#s-bro">Spil 1 · Begrebsbroen</a>
+      <a href="#s-raadgiver">Spil 2 · Rådgiverstolen</a>
+      <a href="#s-fortaelling">Fra tal til fortælling</a>
+      <a href="#s-modtager">Hvem skal se det?</a>
+      <a href="#s-bilag">AI er ikke et bilag</a>
+      <a href="#s-prompt">Bed om et overblik der holder</a>
+      <a href="#s-bord">Spil 3 · Fremvisningsbordet</a>
+      <a href="#s-ansvar">Du skriver under</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="cov-step locked"><span class="cs-ic">📝</span><div><div class="cs-label">Eksamen</div><div class="cs-sub">Låst</div></div><span class="cs-pct"></span></div>
+    <div class="cov-step locked"><span class="cs-ic">📜</span><div><div class="cs-label">Bevis &amp; coins</div><div class="cs-sub">Kursusbevis · coins</div></div><span class="cs-pct"></span></div>
+  </div>
+</aside>
+
+<div class="layout">
+
+  <!-- venstre sidebar -->
+  <aside class="sidebar sidebar-left" id="sidebarLeft">
+    <div class="sb-head">📋 Dit forløb</div>
+    <div class="sb-note">Sidste modul. Første halvdel er <strong>repetition</strong> af alt det, du skal kunne til eksamen. Anden halvdel er det <strong>nye</strong> — og det vigtigste kommer til allersidst.</div>
+
+    <div class="sb-item done"><div class="sb-ic">🎓</div><div><div class="sb-label">Kursus D</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">💰</div><div><div class="sb-label">Modul 1 · Få overblik</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 1</div><div class="sb-sub">Bestået</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">📊</div><div><div class="sb-label">Modul 2 · Månedsbudget</div><div class="sb-sub">Gennemført</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-item done"><div class="sb-ic">⭐</div><div><div class="sb-label">Quiz 2</div><div class="sb-sub">Bestået</div></div><span class="sb-check">✓</span></div>
+    <div class="sb-line"></div>
+    <div class="sb-item current"><div class="sb-ic">🧾</div><div><div class="sb-label">Modul 3 · Klar til fremvisning</div><div class="sb-sub">Du er her nu</div></div></div>
+    <div class="sb-subnav" id="subnav">
+      <a href="#s-genkald" class="active">Det du allerede kan</a>
+      <a href="#s-bro">Spil 1 · Begrebsbroen</a>
+      <a href="#s-raadgiver">Spil 2 · Rådgiverstolen</a>
+      <a href="#s-fortaelling">Fra tal til fortælling</a>
+      <a href="#s-modtager">Hvem skal se det?</a>
+      <a href="#s-bilag">AI er ikke et bilag</a>
+      <a href="#s-prompt">Bed om et overblik der holder</a>
+      <a href="#s-bord">Spil 3 · Fremvisningsbordet</a>
+      <a href="#s-ansvar">Du skriver under</a>
+      <a href="#s-claude">Prøv det med Claude</a>
+    </div>
+    <div class="sb-line"></div>
+    <div class="sb-item locked"><div class="sb-ic">📝</div><div><div class="sb-label">Eksamen</div><div class="sb-sub">Låst</div></div></div>
+    <div class="sb-item locked"><div class="sb-ic">📜</div><div><div class="sb-label">Bevis &amp; coins</div><div class="sb-sub">Kursusbevis · coins</div></div></div>
+  </aside>
+
+  <!-- main -->
+  <main class="main">
+
+    <section class="hero">
+      <div class="hero-tag"><span class="pulse"></span>Sidekursus · Modul 3 af 3</div>
+      <h1>Gør dit overblik <em>klar til fremvisning</em></h1>
+      <p class="hero-sub">Du har tallene. Nu samler vi dem, så de holder — over for banken, revisoren eller dig selv om et halvt år. Vi starter med at repetere alt det, du har lært. Derefter kommer det sidste, du mangler.</p>
+      <div class="hero-stats">
+        <span class="hero-stat">⏱ Ca. 35–40 min</span>
+        <span class="hero-stat">🎮 3 læringsspil</span>
+        <span class="hero-stat">🌿 Roligt tempo</span>
+        <span class="hero-stat">🖐️ + 20 min med Claude</span>
+      </div>
+    </section>
+
+    <div class="lesson">
+
+      <!-- ══════════ DEL 1 — OPSUMMERING ══════════ -->
+
+      <!-- SEC 1: repetition -->
+      <section class="sec" id="s-genkald">
+        <div class="sec-eyebrow">Del 1 · Repetition</div>
+        <h2>Alt det du <em>allerede</em> kan</h2>
+        <p class="lead">Før vi går videre, samler vi op. Alt herunder har du mødt i Modul 1 og 2 — og alt herunder kan komme til eksamen. Læs det roligt igennem; hvis noget føles uklart, er det nu, du skal fange det.</p>
+
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">🤝</div><div><div class="magic-t">AI er medhjælper — ikke revisor</div><div class="magic-d">AI er lynhurtig til at sortere, sammenligne og forklare. Men den kender ikke din virkelighed, og den kan tage fejl med fuld overbevisning.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🧰</div><div><div class="magic-t">De fire ting AI kan for din økonomi</div><div class="magic-d">Sortere og kategorisere · regne og opsummere · forklare svære ord i almindeligt sprog · stille de spørgsmål, du ikke selv havde tænkt på.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">💰</div><div><div class="magic-t">Indtægt eller udgift</div><div class="magic-d">Penge ind eller penge ud. Det lyder banalt — men det er grundlaget for, at alt andet kommer til at passe.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🔒</div><div><div class="magic-t">Fast eller variabel udgift</div><div class="magic-d">Fast = samme beløb hver måned. Variabel = svinger. De variable er dem, du selv kan skrue på.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🟰</div><div><div class="magic-t">Rådighedsbeløb</div><div class="magic-d">Indtægter − faste udgifter − variable udgifter. Det tal, der afgør, om måneden hænger sammen.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">📊</div><div><div class="magic-t">50 / 30 / 20</div><div class="magic-d">50% til nødvendigt, 30% til det, du gerne vil, 20% til opsparing og gæld. En pejling — ikke en lov.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🔍</div><div><div class="magic-t">Tjek tallene selv</div><div class="magic-d">Læg sammen. Se om summerne stemmer. Find den post, der ikke giver mening. Hver gang.</div></div></div>
+        </div>
+
+        <div class="pull"><p>"Du har lært at få overblik og bygge et budget. Nu skal du lære at stå inde for det."</p></div>
+      </section>
+
+      <!-- SEC 2: SPIL 1 — begrebsbroen -->
+      <section class="sec" id="s-bro">
+        <div class="sec-eyebrow">Læringsspil 1 · Repetition</div>
+        <h2>Begrebs<em>broen</em></h2>
+        <p class="lead">Byg bro mellem begrebet og betydningen. Vælg et ord i venstre side og den forklaring, der hører til, i højre. Rammer du rigtigt, bygges en bro — og du får en kombo for hver, du tager i træk.</p>
+        <div class="game">
+          <div class="game-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Forbind begreb og betydning</h3>
+            <p>8 par fra Modul 1 og 2 — byg alle broerne.</p>
+          </div>
+          <div class="game-body">
+            <div class="m3-bar"><div class="m3-bar-fill" id="broBar"></div></div>
+            <div class="m3-bro">
+              <div class="m3-col">
+                <div class="m3-col-h">Begreb</div>
+                <div id="broL"></div>
+              </div>
+              <div class="m3-col">
+                <div class="m3-col-h">Betydning</div>
+                <div id="broR"></div>
+              </div>
+            </div>
+            <div class="game-foot">
+              <div class="game-prog">Broer <b id="broCur">0</b>/<span id="broTot">8</span></div>
+              <div class="game-streak" id="broStreak"></div>
+            </div>
+            <div class="lab-coach" id="broCoach"><span id="broCoachIc">🌿</span><span id="broCoachTx"></span></div>
+            <div class="m3-saved" id="broSaved"></div>
+          </div>
+          <div class="game-done" id="broDone">
+            <div class="done-emoji">🌉</div>
+            <h4>Alle broer bygget</h4>
+            <p id="broDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEC 3: SPIL 2 — rådgiverstolen -->
+      <section class="sec" id="s-raadgiver">
+        <div class="sec-eyebrow">Læringsspil 2 · Repetition</div>
+        <h2>Rådgiver<em>stolen</em></h2>
+        <p class="lead">Nu sætter vi dig i stolen. Du får seks situationer fra en helt almindelig økonomi — og skal vælge det rigtige næste skridt. Der er ingen straf for at vælge forkert: du får en forklaring uanset hvad, for det er der, læringen ligger.</p>
+        <div class="game">
+          <div class="game-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Vælg det rigtige næste skridt</h3>
+            <p>6 situationer — med forklaring på både rigtigt og forkert valg.</p>
+          </div>
+          <div class="game-body">
+            <div class="m3-bar"><div class="m3-bar-fill" id="raadBar"></div></div>
+            <div class="m3-scen" id="raadScen"><b>Situation</b><span id="raadScenTx"></span></div>
+            <div class="m3-opts" id="raadOpts"></div>
+            <div class="lab-coach" id="raadCoach"><span id="raadCoachIc">🌿</span><span id="raadCoachTx"></span></div>
+            <button class="m3-next" id="raadNext">Næste situation →</button>
+            <div class="game-foot">
+              <div class="game-prog">Situation <b id="raadCur">1</b>/<span id="raadTot">6</span></div>
+              <div class="game-streak" id="raadStreak"></div>
+            </div>
+            <div class="m3-saved" id="raadSaved"></div>
+          </div>
+          <div class="game-done" id="raadDone">
+            <div class="done-emoji">🪑</div>
+            <h4>Du klarede stolen</h4>
+            <p id="raadDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════ DEL 2 — NYT STOF ══════════ -->
+
+      <!-- SEC 4: fra tal til fortælling -->
+      <section class="sec" id="s-fortaelling">
+        <div class="sec-eyebrow">Del 2 · Nyt stof</div>
+        <h2>Fra tal til <em>fortælling</em></h2>
+        <p class="lead">Et budget i dit hoved og et budget, du kan vise frem, er ikke det samme. Det, du har bygget indtil nu, er tal. Det, du skal bygge nu, er noget, en anden kan forstå på to minutter — uden at du står ved siden af og forklarer.</p>
+        <p class="lead">Forskellen er ikke pynt. Det er <strong>rækkefølge og udvælgelse</strong>. Et overblik, der kan vises frem, svarer på fire spørgsmål, og gør det i denne rækkefølge:</p>
+
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">1️⃣</div><div><div class="magic-t">Hvad er situationen?</div><div class="magic-d">Én linje. "Jeg er lønmodtager, bor alene, har 24.000 kr ind om måneden." Ikke mere.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">2️⃣</div><div><div class="magic-t">Hvad viser tallene?</div><div class="magic-d">Indtægter, faste udgifter, variable udgifter, rådighedsbeløb. Rene tal, ingen forklaringer endnu.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">3️⃣</div><div><div class="magic-t">Hvad springer i øjnene?</div><div class="magic-d">To-tre ting. Den største post. Det der ændrer sig. Det du selv undrer dig over.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">4️⃣</div><div><div class="magic-t">Hvad vil du gøre?</div><div class="magic-d">Ét konkret skridt. Ikke fem. Det er det, en modtager husker.</div></div></div>
+        </div>
+
+        <p class="lead">Lægger du de fire ting i den rækkefølge, har du et overblik. Springer du nummer 1 over, aner modtageren ikke, hvad de kigger på. Springer du nummer 4 over, virker det som en samling tal uden formål.</p>
+      </section>
+
+      <!-- SEC 5: modtageren -->
+      <section class="sec" id="s-modtager">
+        <div class="sec-eyebrow">Del 2 · Nyt stof</div>
+        <h2>Hvem skal <em>se det?</em></h2>
+        <p class="lead">Samme tal — tre forskellige modtagere. Det er ikke tallene, der ændrer sig. Det er, hvad du fremhæver, og hvor detaljeret du bliver.</p>
+
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">🏦</div><div><div class="magic-t">Banken</div><div class="magic-d">Vil vide, om du kan betale. Fremhæv rådighedsbeløb, faste forpligtelser og stabilitet over tid. Vær konservativ: hellere sætte dine variable udgifter lidt for højt end lidt for lavt.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🧾</div><div><div class="magic-t">Revisoren</div><div class="magic-d">Vil vide, hvor tallene kommer fra. Her tæller kilden mere end overblikket: kontoudtog, fakturaer, kvitteringer. Din opstilling er en hjælp — dokumentationen er det, der gælder.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🪞</div><div><div class="magic-t">Dig selv om et halvt år</div><div class="magic-d">Den mest oversete modtager. Skriv datoen på, skriv hvilke måneder tallene dækker, og skriv én linje om, hvad du tænkte. Ellers står du med tal, du ikke kan genkende.</div></div></div>
+        </div>
+
+        <div class="pull"><p>"Skriv altid perioden på. Et budget uden en dato er et gæt."</p></div>
+      </section>
+
+      <!-- SEC 6: AI er ikke et bilag -->
+      <section class="sec" id="s-bilag">
+        <div class="sec-eyebrow">Del 2 · Nyt stof</div>
+        <h2>AI er ikke et <em>bilag</em></h2>
+        <p class="lead">I Modul 1 lovede vi at vende tilbage til SKAT og officielle tal. Her er det. Det er den vigtigste grænse i hele kurset, så læs den langsomt.</p>
+        <p class="lead">AI kan hjælpe dig med at <strong>forstå, sortere og forberede</strong>. AI kan ikke <strong>dokumentere</strong>. Et beløb, som AI har regnet ud, er ikke bevis for noget som helst — heller ikke selvom det er rigtigt. Beviset er kontoudtoget, fakturaen, kvitteringen, årsopgørelsen.</p>
+
+        <div class="ledger">
+          <div class="ledger-h">Hvad AI må bruges til — og hvad den ikke må</div>
+          <div class="ledger-row"><span>✅ Sortere dine posteringer i kategorier, så du får overblik</span></div>
+          <div class="ledger-row"><span>✅ Forklare, hvad et fradrag, en moms eller en restskat overhovedet er</span></div>
+          <div class="ledger-row"><span>✅ Hjælpe dig med at forberede spørgsmål til din revisor eller bankrådgiver</span></div>
+          <div class="ledger-row"><span>✅ Stille opstillingen pænt op, så andre kan læse den</span></div>
+          <div class="ledger-row"><span>❌ Være kilde til et tal, du indberetter til Skattestyrelsen</span></div>
+          <div class="ledger-row"><span>❌ Afgøre om noget er fradragsberettiget i din konkrete situation</span></div>
+          <div class="ledger-row"><span>❌ Erstatte et bilag, et kontoudtog eller en faktura</span></div>
+          <div class="ledger-row"><span>❌ Give dig et endeligt svar på skat, moms eller gæld</span></div>
+        </div>
+
+        <div class="warn">
+          <div class="warn-ic">⚠️</div>
+          <p><strong>Den hårde regel:</strong> Skal et tal indberettes til det offentlige, eller skal nogen træffe en økonomisk beslutning på baggrund af det, skal tallet kunne spores til et rigtigt dokument. AI hjælper dig med at organisere — du verificerer. Er det vigtigt, eller er du i tvivl, så spørg en revisor eller din bank. Det er ikke et nederlag; det er sådan, folk med styr på økonomien gør.</p>
+        </div>
+      </section>
+
+      <!-- SEC 7: prompten -->
+      <section class="sec" id="s-prompt">
+        <div class="sec-eyebrow">Del 2 · Nyt stof</div>
+        <h2>Bed om et overblik <em>der holder</em></h2>
+        <p class="lead">Nu ved du, hvad et fremvisningsklart overblik indeholder, hvem det er til, og hvad AI ikke må bruges til. Tilbage er selve bestillingen. Tre ting gør forskellen mellem et svar, du kan bruge, og et svar, du skal lave om:</p>
+
+        <div class="magic">
+          <div class="magic-card"><div class="magic-ic">🎯</div><div><div class="magic-t">Sig hvem det er til</div><div class="magic-d">"Det skal vises til min bankrådgiver" giver et helt andet svar end "det er til mig selv". Modtageren styrer detaljeniveauet.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">📐</div><div><div class="magic-t">Bed om formen, ikke kun indholdet</div><div class="magic-d">"Stil det op i fire dele: situation, tal, hvad der springer i øjnene, ét næste skridt." Så får du en struktur — ikke en mur af tekst.</div></div></div>
+          <div class="magic-card"><div class="magic-ic">🚩</div><div><div class="magic-t">Bed den om at markere det usikre</div><div class="magic-d">"Sæt et spørgsmålstegn ved hvert tal, du har gættet eller udledt." Så ved du præcis, hvad du selv skal tjekke bagefter.</div></div></div>
+        </div>
+
+        <p class="lead">Den sidste er den, folk glemmer — og den, der redder dig. Når AI selv peger på sine svage tal, har du en tjekliste i stedet for en fornemmelse.</p>
+      </section>
+
+      <!-- SEC 8: SPIL 3 — fremvisningsbordet -->
+      <section class="sec" id="s-bord">
+        <div class="sec-eyebrow">Læringsspil 3 · Nyt stof</div>
+        <h2>Fremvisnings<em>bordet</em></h2>
+        <p class="lead">Du står med et bord fuldt af byggeklodser. Nogle hører til i et overblik, der kan vises frem — andre er fælder, der ødelægger troværdigheden. Byg overblikket i den rigtige rækkefølge, og sortér fælderne fra.</p>
+        <div class="game">
+          <div class="game-head">
+            <div class="kick">Interaktivt spil</div>
+            <h3>Byg et overblik der holder</h3>
+            <p>Sæt de fire dele i rækkefølge — og lad fælderne blive på bordet.</p>
+          </div>
+          <div class="game-body">
+            <div class="m3-bar"><div class="m3-bar-fill" id="bordBar"></div></div>
+            <div class="m3-slots" id="bordSlots">
+              <div class="m3-slot" id="bordSlot0"><span class="m3-slot-n">1</span><span>Tom plads</span></div>
+              <div class="m3-slot" id="bordSlot1"><span class="m3-slot-n">2</span><span>Tom plads</span></div>
+              <div class="m3-slot" id="bordSlot2"><span class="m3-slot-n">3</span><span>Tom plads</span></div>
+              <div class="m3-slot" id="bordSlot3"><span class="m3-slot-n">4</span><span>Tom plads</span></div>
+            </div>
+            <div class="m3-col-h">Klodser på bordet</div>
+            <div class="m3-blocks" id="bordBlocks"></div>
+            <div class="game-foot">
+              <div class="game-prog">Plads <b id="bordCur">1</b>/<span id="bordTot">4</span></div>
+              <div class="game-streak" id="bordStreak"></div>
+            </div>
+            <div class="lab-coach" id="bordCoach"><span id="bordCoachIc">🌿</span><span id="bordCoachTx"></span></div>
+            <div class="m3-saved" id="bordSaved"></div>
+          </div>
+          <div class="game-done" id="bordDone">
+            <div class="done-emoji">🧾</div>
+            <h4>Overblikket står</h4>
+            <p id="bordDoneTxt"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SEC 9: ansvar — det vigtigste, til sidst -->
+      <section class="sec" id="s-ansvar">
+        <div class="sec-eyebrow">Det vigtigste til sidst</div>
+        <h2>Du skriver under — <em>ikke AI</em></h2>
+        <p class="lead">Hvis du kun husker én ting fra hele dette kursus, så lad det være denne.</p>
+        <p class="lead">Når du sender et budget til banken, afleverer tal til din revisor eller træffer en beslutning om din egen økonomi, står der ét navn på. Dit. AI har ingen konsekvenser. Den mister ikke penge, den bliver ikke ringet op, og den kan ikke stilles til ansvar. Det kan du.</p>
+
+        <div class="pull"><p>"AI hjælper dig med at organisere. Du verificerer. Og du skriver under."</p></div>
+
+        <p class="lead">Det lyder som en advarsel, men det er faktisk en frisættelse. I det øjeblik du holder op med at lede efter et facit hos AI og i stedet bruger den som en hurtig, tålmodig medhjælper, du selv kontrollerer — så er den pludselig utrolig værdifuld. Du bliver ikke styret af værktøjet. Du styrer det.</p>
+
+        <div class="ledger">
+          <div class="ledger-h">Din sidste kontrol — hver eneste gang, før du viser noget frem</div>
+          <div class="ledger-row"><span>1 · Stemmer summerne? Læg selv sammen. Én gang.</span></div>
+          <div class="ledger-row"><span>2 · Kan hvert tal spores til et kontoudtog, en faktura eller en kvittering?</span></div>
+          <div class="ledger-row"><span>3 · Står perioden og datoen på?</span></div>
+          <div class="ledger-row"><span>4 · Er der noget, AI har gættet, som jeg ikke har tjekket?</span></div>
+          <div class="ledger-row"><span>5 · Ville jeg turde forklare hver linje højt til en, der spørger?</span></div>
+        </div>
+
+        <p class="lead">Kan du svare ja til alle fem, er dit overblik klar til fremvisning. Og du er klar til eksamen.</p>
+      </section>
+
+      <!-- SEC 10: praktisk øvelse med Claude -->
+      <section class="sec" id="s-claude">
+        <div class="sec-eyebrow">Praktisk øvelse</div>
+        <h2>Byg dit fremvisnings-overblik med <em>Claude</em></h2>
+        <p class="lead">Sidste øvelse i kurset. Tag budgettet fra Modul 2 og gør det klar til at blive vist frem. <strong>Tag den tid, du har brug for</strong>; øvelsen tæller ikke med i modulets tid.</p>
+
+        <div class="cx">
+          <div class="cx-head">
+            <div class="kick">🖐️ Hands-on · ekstra ca. 20 min</div>
+            <h3>Dit overblik + Claude</h3>
+          </div>
+          <div class="cx-body">
+            <ol class="cx-steps">
+              <li><b>Åbn Claude</b> med knappen nedenfor (åbner i en ny fane).</li>
+              <li><b>Kopiér prompten</b> herunder og indsæt den i Claude.</li>
+              <li><b>Skriv dine tal ind</b> — og sig, hvem overblikket skal vises til.</li>
+              <li><b>Bed om de fire dele</b> i rækkefølge: situation, tal, hvad der springer i øjnene, ét næste skridt.</li>
+              <li><b>Kør din sidste kontrol</b> — de fem punkter ovenfor. Det er din opgave, ikke AI'ens.</li>
+            </ol>
+
+            <div class="cx-prompt">
+              <div class="cx-prompt-h">📋 Prompt du kan kopiere</div>
+              <div class="cx-prompt-t" id="cxPromptText">Hej Claude. Jeg vil gøre mit månedsbudget klar til at blive vist frem.
+
+Modtager: (skriv fx min bankrådgiver / min revisor / mig selv)
+Periode: (skriv hvilke måneder tallene dækker)
+Mine tal:
+- Indtægter: (løn / SU / ydelser)
+- Faste udgifter: (husleje, forsikring, abonnementer …)
+- Variable udgifter: (mad, transport, fornøjelser …)
+
+Vil du stille det op i fire dele, i denne rækkefølge:
+1) Situationen i én linje
+2) Tallene: indtægter, faste udgifter, variable udgifter, rådighedsbeløb
+3) To-tre ting der springer i øjnene
+4) Ét konkret næste skridt
+
+Og til sidst: sæt et spørgsmålstegn ved hvert tal, du har gættet eller udledt, så jeg ved præcis hvad jeg selv skal tjekke. Jeg verificerer alle tal bagefter — du skal ikke konkludere noget om skat, moms eller fradrag.</div>
+              <button class="cx-copy" id="cxCopy">📋 Kopiér prompt</button>
+            </div>
+
+            <div class="cx-actions">
+              <a class="cx-open" href="https://claude.ai" target="_blank" rel="noopener">Åbn Claude ↗</a>
+              <button class="cx-confirm" id="cxConfirm">Jeg har prøvet det ✓</button>
+            </div>
+            <div class="lab-coach" id="cxCoach"><span>🌿</span><span id="cxCoachTx"></span></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="tasklist" id="taskList">
+        <div class="tl-h">Modul 3 — dine trin</div>
+        <div class="tl-item" id="tlBro"><span class="tl-box">○</span> Spillet "Begrebsbroen"</div>
+        <div class="tl-item" id="tlRaad"><span class="tl-box">○</span> Spillet "Rådgiverstolen"</div>
+        <div class="tl-item" id="tlBord"><span class="tl-box">○</span> Spillet "Fremvisningsbordet"</div>
+        <div class="tl-item" id="tlCx"><span class="tl-box">○</span> Prøv det med Claude</div>
+      </div>
+
+      <div class="cta">
+        <span class="cta-tag">Modul 3 gennemført</span>
+        <h2>Du er klar til eksamen</h2>
+        <p>Du har fået overblik, bygget et budget og gjort det klar til fremvisning. Nu mangler kun ét: at vise, at det sidder fast. Eksamen dækker alt fra Modul 1, 2 og 3 — og bagefter venter dit kursusbevis og dine coins.</p>
+        <a href="eksamen-oekonomi.html" class="cta-btn locked" id="ctaBtn">Gå til eksamen
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+        <p class="cta-meta" id="ctaMeta">Gennemfør trinnene ovenfor for at låse op</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- højre sidebar -->
+  <aside class="sidebar sidebar-right">
+    <div class="sb-head">🌿 Kom godt i gang</div>
+
+    <div class="rt-rule">
+      <div class="rt-rule-h">⚠️ Den gyldne regel</div>
+      <p><strong>Du skriver under, ikke AI.</strong> AI hjælper dig med at organisere — du verificerer hvert tal, før nogen ser det.</p>
+    </div>
+
+    <div class="rt-tip">
+      <div class="rt-tip-h">💬 Prøv at skrive</div>
+      <ul class="rt-tip-list">
+        <li><span>•</span>"Stil det op, så min bankrådgiver kan læse det."</li>
+        <li><span>•</span>"Marker de tal, du har gættet."</li>
+        <li><span>•</span>"Hvad ville en revisor spørge om her?"</li>
+      </ul>
+    </div>
+
+    <a class="rt-card" href="https://claude.ai" target="_blank" rel="noopener">
+      <span class="rt-logo">C</span>
+      <div><div class="rt-name">Claude</div><div class="rt-tag">Åbn og prøv det selv</div></div>
+      <span class="rt-arrow">↗</span>
+    </a>
+  </aside>
+
+</div>
+
+<script>
+
+  // ── kursus-fremdrift: 3 moduler + 2 quizzer = 5 trin (hvert trin = 20%) ──
+  // Modul 3 er trin 5 → Modul 1 + Quiz 1 + Modul 2 + Quiz 2 er gennemført → 80%.
+  (function(){
+    var STEP=5, TOTAL=5;
+    var pct=Math.round(((STEP-1)/TOTAL)*100);            // = 80%
+    var fill=document.getElementById('cprogFill');
+    var pctEl=document.getElementById('cprogPct');
+    var lbl=document.getElementById('cprogLabel');
+    if(lbl) lbl.textContent='Trin '+STEP+' af '+TOTAL+' · Modul 3';
+    if(pctEl) pctEl.textContent=pct+'%';
+    requestAnimationFrame(function(){ if(fill) fill.style.width=pct+'%'; });
+  })();
+
+  // scroll-progress
+  var bar=document.getElementById('scrollBar');
+  addEventListener('scroll',function(){var h=document.documentElement;bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+  // ── kursusoversigt (de tre streger) ──
+  var bd=document.getElementById('backdrop'),tg=document.getElementById('sbToggle');
+  var cov=document.getElementById('courseOverview'),covClose=document.getElementById('covClose');
+  function openCov(){ if(!cov)return; cov.classList.add('open'); bd.classList.add('show'); cov.setAttribute('aria-hidden','false'); document.body.classList.add('noscroll'); }
+  function closeCov(){ if(!cov)return; cov.classList.remove('open'); bd.classList.remove('show'); cov.setAttribute('aria-hidden','true'); document.body.classList.remove('noscroll'); }
+  if(tg) tg.addEventListener('click',openCov);
+  if(covClose) covClose.addEventListener('click',closeCov);
+  if(bd) bd.addEventListener('click',closeCov);
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeCov(); });
+  if(cov){ [].slice.call(cov.querySelectorAll('a[href^="#"]')).forEach(function(a){ a.addEventListener('click',closeCov); }); }
+
+  // aktivt sub-nav (venstre)
+  var links=[].slice.call(document.querySelectorAll('#subnav a'));
+  var secs=links.map(function(a){return document.querySelector(a.getAttribute('href'));});
+  addEventListener('scroll',function(){var idx=0;secs.forEach(function(s,i){if(s&&s.getBoundingClientRect().top<170)idx=i;});links.forEach(function(a,i){a.classList.toggle('active',i===idx);});},{passive:true});
+
+  // ── fælles oplåsning: alle fire trin skal klares ──
+  // NB: brodone / raaddone / borddone sættes af de tre læringsspil (leverance 2).
+  var brodone=false, raaddone=false, borddone=false, cxdone=false;
+  var tlBro=document.getElementById('tlBro'),tlRaad=document.getElementById('tlRaad'),tlBord=document.getElementById('tlBord'),tlCx=document.getElementById('tlCx');
+  var ctaBtn=document.getElementById('ctaBtn'),ctaMeta=document.getElementById('ctaMeta');
+  function setTask(el,done){ if(!el)return; el.classList.toggle('done',done); var b=el.querySelector('.tl-box'); if(b) b.textContent=done?'✓':'○'; }
+  function checkUnlock(){
+    setTask(tlBro,brodone); setTask(tlRaad,raaddone); setTask(tlBord,borddone); setTask(tlCx,cxdone);
+    var n=(brodone?1:0)+(raaddone?1:0)+(borddone?1:0)+(cxdone?1:0);
+    if(n===4){ ctaBtn.classList.remove('locked'); ctaMeta.textContent='Alle trin klaret — du er klar til eksamen 🌿'; }
+    else { ctaBtn.classList.add('locked'); ctaMeta.textContent='Klar '+n+' af 4 trin for at låse op'; }
+  }
+  checkUnlock();
+
+  // ══════════════════════════════════════════════════════════
+  //  FREMDRIFT — gemmes på brugerens konto (Firestore)
+  //  Gate-scriptet nedenfor sætter window.__akaiSave når brugeren er kendt,
+  //  og kalder window.__akaiRestore med den gemte tilstand.
+  //  Uden net/login kører spillene videre i sessionen — de går aldrig i stå.
+  // ══════════════════════════════════════════════════════════
+  var M3 = { bro:{pairs:[]}, raad:{i:0,right:0}, bord:{placed:[],traps:[]}, cx:false };
+  var saveTimer=null, saveReady=false;
+  function savedNote(el,txt,ok){ if(!el)return; el.innerHTML = ok ? '<b>✓ '+txt+'</b>' : txt; }
+  function m3Save(){
+    if(saveTimer) clearTimeout(saveTimer);
+    saveTimer=setTimeout(function(){
+      if(typeof window.__akaiSave==='function'){
+        window.__akaiSave(JSON.parse(JSON.stringify(M3)));
+      }
+    },700);
+  }
+  window.__akaiSavedOk=function(){
+    ['broSaved','raadSaved','bordSaved'].forEach(function(id){
+      savedNote(document.getElementById(id),'Gemt på din konto',true);
+    });
+  };
+  window.__akaiSaveFailed=function(){
+    ['broSaved','raadSaved','bordSaved'].forEach(function(id){
+      savedNote(document.getElementById(id),'Kunne ikke gemme lige nu — din fremdrift gælder i denne session.',false);
+    });
+  };
+  window.__akaiRestore=function(state){
+    saveReady=true;
+    if(state && typeof state==='object'){
+      if(state.bro && Array.isArray(state.bro.pairs)) M3.bro.pairs=state.bro.pairs.slice();
+      if(state.raad){ M3.raad.i=state.raad.i||0; M3.raad.right=state.raad.right||0; }
+      if(state.bord){ M3.bord.placed=(state.bord.placed||[]).slice(); M3.bord.traps=(state.bord.traps||[]).slice(); }
+      M3.cx=!!state.cx;
+    }
+    broPaint(); raadPaint(); bordPaint();
+    if(M3.cx && cxConfirm){ cxdone=true; cxConfirm.textContent='Prøvet ✓'; cxConfirm.classList.add('done'); }
+    checkUnlock();
+    var any = M3.bro.pairs.length || M3.raad.i || M3.bord.placed.length || M3.cx;
+    ['broSaved','raadSaved','bordSaved'].forEach(function(id){
+      savedNote(document.getElementById(id), any ? 'Fortsat hvor du slap' : 'Din fremdrift gemmes på din konto', !!any);
+    });
+  };
+
+  // ══════════════════ SPIL 1: BEGREBSBROEN ══════════════════
+  var BRO=[
+    {k:'Rådighedsbeløb', v:'Det, der er tilbage, når alle udgifter er trukket fra indtægterne'},
+    {k:'Fast udgift', v:'Samme beløb hver måned — svær at lave om på her og nu'},
+    {k:'Variabel udgift', v:'Svinger fra måned til måned — det er her, du selv kan skrue'},
+    {k:'50 / 30 / 20', v:'En pejling: nødvendigt, det du gerne vil, opsparing og gæld'},
+    {k:'Indtægt', v:'Penge ind: løn, SU, ydelser, pension'},
+    {k:'Kategorisering', v:'At sortere posteringer i grupper, så mønstrene bliver synlige'},
+    {k:'Verificering', v:'Når du selv tjekker, at tallene stemmer, før nogen ser dem'},
+    {k:'AI som medhjælper', v:'Hurtig til at sortere og forklare — men uden ansvar for tallene'}
+  ];
+  var BRO_R=[5,2,7,0,3,6,1,4];          // fast rækkefølge i højre kolonne
+  var broSel=-1, broStreakN=0;
+  var broL=document.getElementById('broL'), broR=document.getElementById('broR');
+  var broBar=document.getElementById('broBar'), broCur=document.getElementById('broCur'), broTot=document.getElementById('broTot');
+  var broStreak=document.getElementById('broStreak'), broCoach=document.getElementById('broCoach');
+  var broCoachIc=document.getElementById('broCoachIc'), broCoachTx=document.getElementById('broCoachTx');
+  var broDoneEl=document.getElementById('broDone'), broDoneTxt=document.getElementById('broDoneTxt');
+  if(broTot) broTot.textContent=BRO.length;
+
+  function broCoachSay(txt,warn){
+    if(!broCoach)return;
+    broCoachIc.textContent = warn ? '💡' : '🌿';
+    broCoachTx.textContent = txt;
+    broCoach.classList.toggle('warn-tone',!!warn);
+    broCoach.classList.add('show');
+  }
+  function broPaint(){
+    if(!broL||!broR)return;
+    broL.innerHTML=''; broR.innerHTML='';
+    BRO.forEach(function(p,i){
+      var b=document.createElement('button');
+      b.type='button'; b.className='m3-tile'; b.textContent=p.k;
+      b.setAttribute('data-i',i);
+      if(M3.bro.pairs.indexOf(i)>=0){ b.classList.add('linked'); b.disabled=true; }
+      else if(broSel===i){ b.classList.add('sel'); }
+      broL.appendChild(b);
+    });
+    BRO_R.forEach(function(i){
+      var b=document.createElement('button');
+      b.type='button'; b.className='m3-tile'; b.textContent=BRO[i].v;
+      b.setAttribute('data-i',i);
+      if(M3.bro.pairs.indexOf(i)>=0){ b.classList.add('linked'); b.disabled=true; }
+      broR.appendChild(b);
+    });
+    var n=M3.bro.pairs.length;
+    if(broCur) broCur.textContent=n;
+    if(broBar) broBar.style.width=Math.round(n/BRO.length*100)+'%';
+    if(broStreak) broStreak.textContent = broStreakN>1 ? ('🔥 '+broStreakN+' i træk') : '';
+    if(n===BRO.length){
+      brodone=true;
+      if(broDoneEl) broDoneEl.classList.add('show');
+      if(broDoneTxt) broDoneTxt.textContent='Alle otte begreber sidder fast. Det er fundamentet under hele kurset — og under eksamen.';
+      checkUnlock();
+    }
+  }
+  function broPick(side,i){
+    if(M3.bro.pairs.indexOf(i)>=0) return;
+    if(side==='L'){ broSel=(broSel===i?-1:i); broPaint(); return; }
+    if(broSel<0){ broCoachSay('Vælg først et begreb i venstre side — så bygger vi broen derfra.',true); return; }
+    if(broSel===i){
+      M3.bro.pairs.push(i); broStreakN++; broSel=-1;
+      broCoachSay('Rigtigt — '+BRO[i].k.toLowerCase()+' hører sammen med den forklaring.');
+      broPaint(); m3Save();
+    } else {
+      var wrong=broR.querySelector('[data-i="'+i+'"]');
+      if(wrong){ wrong.classList.add('miss'); setTimeout(function(){wrong.classList.remove('miss');},420); }
+      broStreakN=0;
+      broCoachSay('Ikke helt. "'+BRO[broSel].k+'" betyder noget andet — læs forklaringerne igen, og prøv en ny.',true);
+      broSel=-1; broPaint();
+    }
+  }
+  if(broL) broL.addEventListener('click',function(e){ var b=e.target.closest('button[data-i]'); if(b) broPick('L',parseInt(b.getAttribute('data-i'),10)); });
+  if(broR) broR.addEventListener('click',function(e){ var b=e.target.closest('button[data-i]'); if(b) broPick('R',parseInt(b.getAttribute('data-i'),10)); });
+  broPaint();
+
+  // ══════════════════ SPIL 2: RÅDGIVERSTOLEN ══════════════════
+  var RAAD=[
+    { s:'Din husleje stiger 500 kr om måneden. Hvor leder du efter pengene først?',
+      o:[{t:'I de faste udgifter — jeg opsiger en forsikring',ok:false,w:'De faste er netop dem, du ikke bare kan skrue på her og nu — og forsikringer er sjældent stedet at starte.'},
+         {t:'I de variable udgifter — det er dem, jeg selv kan skrue på',ok:true,w:'Præcis. Mad, tøj, restaurant og transport er der, hvor du reelt har et håndtag.'},
+         {t:'Jeg dropper opsparingen helt',ok:false,w:'Det virker på papiret, men opsparingen er din stødpude. Kig i de variable udgifter først.'}] },
+    { s:'AI har stillet dit budget pænt op, og summen ser rigtig ud. Hvad gør du nu?',
+      o:[{t:'Sender det videre — det ser fint ud',ok:false,w:'"Det ser rigtigt ud" er ikke det samme som "det er rigtigt". AI kan tage fejl med fuld overbevisning.'},
+         {t:'Lægger selv sammen én gang og tjekker de største poster',ok:true,w:'Ja. Én egen kontrol af summen og de tunge poster fanger næsten alle fejl.'},
+         {t:'Beder AI om at tjekke sig selv',ok:false,w:'AI kan godt regne igen — men den kan ikke garantere sit eget resultat. Kontrollen skal være din.'}] },
+    { s:'Du har 20.000 kr til rådighed efter skat. Hvad siger 50/30/20 om opsparing og gæld?',
+      o:[{t:'2.000 kr',ok:false,w:'Det er 10%. De 20% af 20.000 kr er 4.000 kr.'},
+         {t:'4.000 kr',ok:true,w:'Rigtigt — 20% af 20.000 kr. Husk at det er en pejling, ikke en lov.'},
+         {t:'6.000 kr',ok:false,w:'Det er 30% — den andel hører til "det du gerne vil". Opsparing og gæld er de 20%, altså 4.000 kr.'}] },
+    { s:'Du vil have AI til at sortere dine posteringer, men listen indeholder navne og kontonumre. Hvad gør du?',
+      o:[{t:'Sender listen som den er — det går hurtigst',ok:false,w:'Personlige oplysninger skal ikke længere ud end nødvendigt. AI har ikke brug for dem.'},
+         {t:'Fjerner navne og kontonumre først — AI skal kun bruge beløb og kategori',ok:true,w:'Godt. Del kun det, opgaven kræver. Beløb og tekst er nok til at sortere.'},
+         {t:'Dropper det helt — det er for risikabelt',ok:false,w:'Det er unødvendigt forsigtigt. Fjern de følsomme felter, og brug så hjælpen.'}] },
+    { s:'Du har 3.000 kr tilbage hver måned, men aner ikke, hvor pengene bliver af. Hvad er første skridt?',
+      o:[{t:'Lave et stramt budget med det samme',ok:false,w:'Et budget uden overblik bliver et gæt. Find først ud af, hvad der faktisk sker.'},
+         {t:'Få overblik: sortér de sidste tre måneders posteringer i kategorier',ok:true,w:'Ja. Overblik før beslutning — det er hele rækkefølgen i dette kursus.'},
+         {t:'Skære alle abonnementer væk',ok:false,w:'Måske ender du der. Men du ved det først, når du har set kategorierne.'}] },
+    { s:'AI foreslår, at du sparer 4.000 kr op hver måned. Du ved, at der kommer en tandlægeregning.',
+      o:[{t:'Følger forslaget — den har jo regnet på det',ok:false,w:'AI kender kun de tal, du har givet den. Den ved intet om tandlægen.'},
+         {t:'Justerer selv — AI kender ikke min virkelighed, det gør jeg',ok:true,w:'Nemlig. Det er dig, der har konteksten. AI regner; du beslutter.'},
+         {t:'Beder AI om at regne igen',ok:false,w:'Samme tal ind giver samme svar ud. Det er oplysningen om tandlægen, der mangler.'}] }
+  ];
+  var raadStreakN=0, raadLocked=false;
+  var raadScenTx=document.getElementById('raadScenTx'), raadOpts=document.getElementById('raadOpts');
+  var raadBar=document.getElementById('raadBar'), raadCur=document.getElementById('raadCur'), raadTot=document.getElementById('raadTot');
+  var raadStreak=document.getElementById('raadStreak'), raadNext=document.getElementById('raadNext');
+  var raadCoach=document.getElementById('raadCoach'), raadCoachIc=document.getElementById('raadCoachIc'), raadCoachTx=document.getElementById('raadCoachTx');
+  var raadDoneEl=document.getElementById('raadDone'), raadDoneTxt=document.getElementById('raadDoneTxt');
+  if(raadTot) raadTot.textContent=RAAD.length;
+
+  function raadPaint(){
+    if(!raadOpts)return;
+    raadLocked=false;
+    if(raadCoach) raadCoach.classList.remove('show');
+    if(raadNext) raadNext.classList.remove('show');
+    var i=M3.raad.i;
+    if(raadBar) raadBar.style.width=Math.round(i/RAAD.length*100)+'%';
+    if(raadStreak) raadStreak.textContent = raadStreakN>1 ? ('🔥 '+raadStreakN+' i træk') : '';
+    if(i>=RAAD.length){
+      raaddone=true;
+      raadScenTx.textContent='Du har været igennem alle seks situationer.';
+      raadOpts.innerHTML='';
+      if(raadCur) raadCur.textContent=RAAD.length;
+      if(raadDoneEl) raadDoneEl.classList.add('show');
+      if(raadDoneTxt) raadDoneTxt.textContent='Du ramte rigtigt i '+M3.raad.right+' ud af '+RAAD.length+' situationer. Det vigtigste er ikke tallet — det er, at du kender begrundelsen bag hvert svar.';
+      checkUnlock();
+      return;
+    }
+    if(raadCur) raadCur.textContent=(i+1);
+    raadScenTx.textContent=RAAD[i].s;
+    raadOpts.innerHTML='';
+    RAAD[i].o.forEach(function(o,k){
+      var b=document.createElement('button');
+      b.type='button'; b.className='m3-opt'; b.textContent=o.t; b.setAttribute('data-k',k);
+      raadOpts.appendChild(b);
+    });
+  }
+  if(raadOpts) raadOpts.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-k]'); if(!b||raadLocked)return;
+    raadLocked=true;
+    var i=M3.raad.i, k=parseInt(b.getAttribute('data-k'),10), o=RAAD[i].o[k];
+    [].slice.call(raadOpts.querySelectorAll('button')).forEach(function(x,xi){
+      x.disabled=true;
+      if(RAAD[i].o[xi].ok) x.classList.add('right');
+      else if(xi===k) x.classList.add('wrong');
+    });
+    if(o.ok){ M3.raad.right++; raadStreakN++; } else { raadStreakN=0; }
+    raadCoachIc.textContent = o.ok ? '🌿' : '💡';
+    raadCoachTx.textContent = o.w;
+    raadCoach.classList.toggle('warn-tone',!o.ok);
+    raadCoach.classList.add('show');
+    if(raadStreak) raadStreak.textContent = raadStreakN>1 ? ('🔥 '+raadStreakN+' i træk') : '';
+    if(raadNext){ raadNext.textContent = (i===RAAD.length-1) ? 'Afslut spillet →' : 'Næste situation →'; raadNext.classList.add('show'); }
+  });
+  if(raadNext) raadNext.addEventListener('click',function(){ M3.raad.i++; raadPaint(); m3Save(); });
+  raadPaint();
+
+  // ══════════════════ SPIL 3: FREMVISNINGSBORDET ══════════════════
+  var BORD_OK=[
+    {t:'Situationen i én linje', w:'Uden den aner modtageren ikke, hvad de kigger på.'},
+    {t:'Tallene: indtægter, faste, variable, rådighedsbeløb', w:'Rene tal — forklaringerne kommer bagefter.'},
+    {t:'To-tre ting der springer i øjnene', w:'Udvælgelse er det, der gør tal til overblik.'},
+    {t:'Ét konkret næste skridt', w:'Det er den del, modtageren husker.'}
+  ];
+  var BORD_TRAP=[
+    {t:'Et budget uden periode og dato', w:'Et budget uden dato er et gæt. Perioden skal altid stå på.'},
+    {t:'AI\u2019s udregning som dokumentation', w:'AI er ikke et bilag. Beviset er kontoudtoget eller fakturaen.'},
+    {t:'Alle 300 posteringer i én lang liste', w:'Det er data, ikke overblik. Modtageren skal ikke selv sortere.'},
+    {t:'En konklusion om dit fradrag', w:'Fradrag afgøres ikke af AI. Det hører til hos SKAT eller din revisor.'},
+    {t:'Fem forskellige næste skridt', w:'Fem skridt er nul skridt. Vælg ét.'}
+  ];
+  var BORD_ORDER=[3,0,4,1,7,2,5,8,6];   // fast blanding: 0-3 = rigtige, 4-8 = fælder
+  function bordItem(i){ return i<4 ? BORD_OK[i] : BORD_TRAP[i-4]; }
+  var bordStreakN=0;
+  var bordBlocks=document.getElementById('bordBlocks'), bordBar=document.getElementById('bordBar');
+  var bordCur=document.getElementById('bordCur'), bordTot=document.getElementById('bordTot'), bordStreak=document.getElementById('bordStreak');
+  var bordCoach=document.getElementById('bordCoach'), bordCoachIc=document.getElementById('bordCoachIc'), bordCoachTx=document.getElementById('bordCoachTx');
+  var bordDoneEl=document.getElementById('bordDone'), bordDoneTxt=document.getElementById('bordDoneTxt');
+  if(bordTot) bordTot.textContent=BORD_OK.length;
+
+  function bordPaint(){
+    if(!bordBlocks)return;
+    for(var s=0;s<4;s++){
+      var slot=document.getElementById('bordSlot'+s);
+      if(!slot)continue;
+      var txt = (s<M3.bord.placed.length) ? BORD_OK[M3.bord.placed[s]].t : 'Tom plads';
+      slot.classList.toggle('filled', s<M3.bord.placed.length);
+      slot.innerHTML='<span class="m3-slot-n">'+(s+1)+'</span><span>'+txt+'</span>';
+    }
+    bordBlocks.innerHTML='';
+    BORD_ORDER.forEach(function(i){
+      var b=document.createElement('button');
+      b.type='button'; b.className='m3-block'; b.textContent=bordItem(i).t; b.setAttribute('data-i',i);
+      if(i<4 && M3.bord.placed.indexOf(i)>=0) b.classList.add('used');
+      if(i>=4 && M3.bord.traps.indexOf(i)>=0){ b.classList.add('trap'); b.disabled=true; }
+      bordBlocks.appendChild(b);
+    });
+    var n=M3.bord.placed.length;
+    if(bordCur) bordCur.textContent=Math.min(n+1,4);
+    if(bordBar) bordBar.style.width=Math.round(n/4*100)+'%';
+    if(bordStreak) bordStreak.textContent = bordStreakN>1 ? ('🔥 '+bordStreakN+' i træk') : '';
+    if(n===4){
+      borddone=true;
+      if(bordDoneEl) bordDoneEl.classList.add('show');
+      if(bordDoneTxt) bordDoneTxt.textContent='Fire dele i rigtig rækkefølge — og fælderne blev på bordet. Sådan ser et overblik ud, du kan stå inde for.';
+      checkUnlock();
+    }
+  }
+  function bordSay(txt,warn){
+    if(!bordCoach)return;
+    bordCoachIc.textContent = warn ? '💡' : '🌿';
+    bordCoachTx.textContent = txt;
+    bordCoach.classList.toggle('warn-tone',!!warn);
+    bordCoach.classList.add('show');
+  }
+  if(bordBlocks) bordBlocks.addEventListener('click',function(e){
+    var b=e.target.closest('button[data-i]'); if(!b)return;
+    var i=parseInt(b.getAttribute('data-i'),10);
+    var next=M3.bord.placed.length;
+    if(next>=4) return;
+    if(i>=4){
+      if(M3.bord.traps.indexOf(i)<0) M3.bord.traps.push(i);
+      bordStreakN=0;
+      bordSay('Fælde: '+bordItem(i).w,true);
+      bordPaint(); m3Save(); return;
+    }
+    if(i===next){
+      M3.bord.placed.push(i); bordStreakN++;
+      bordSay('Plads '+(next+1)+' på plads. '+BORD_OK[i].w);
+      bordPaint(); m3Save();
+    } else {
+      b.classList.add('miss'); setTimeout(function(){b.classList.remove('miss');},420);
+      bordStreakN=0;
+      bordSay('Rigtig klods — men ikke på plads '+(next+1)+' endnu. Rækkefølgen er: situation, tal, det der springer i øjnene, ét næste skridt.',true);
+    }
+  });
+  bordPaint();
+
+  // ── Claude-øvelsen ──
+  function fallbackCopy(t){ var ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.position='absolute'; ta.style.left='-9999px'; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy');}catch(e){} document.body.removeChild(ta); }
+  var cxCopy=document.getElementById('cxCopy'),cxPromptText=document.getElementById('cxPromptText');
+  var cxConfirm=document.getElementById('cxConfirm'),cxCoach=document.getElementById('cxCoach'),cxCoachTx=document.getElementById('cxCoachTx');
+  if(cxCopy){
+    cxCopy.addEventListener('click',function(){
+      var txt=cxPromptText?cxPromptText.textContent:'';
+      function ok(){ cxCopy.textContent='✓ Kopieret!'; cxCopy.classList.add('done'); setTimeout(function(){cxCopy.textContent='📋 Kopiér prompt';cxCopy.classList.remove('done');},2200); }
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok,function(){fallbackCopy(txt);ok();}); }
+      else { fallbackCopy(txt); ok(); }
+    });
+  }
+  if(cxConfirm){
+    cxConfirm.addEventListener('click',function(){
+      cxdone=true; M3.cx=true; cxConfirm.textContent='Prøvet ✓'; cxConfirm.classList.add('done');
+      if(cxCoach){ cxCoachTx.textContent='Flot — nu har du et overblik, du selv kan stå inde for. Husk den sidste kontrol, hver gang tallene ændrer sig.'; cxCoach.classList.add('show'); }
+      checkUnlock(); m3Save();
+    });
+  }
+
+</script>
+
+<!-- FIREBASE login-gate (login + Kursus D bestået) — med fallback til forhåndsvisning -->
+<script type="module">
+const firebaseConfig = {
+  apiKey: "AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",
+  authDomain: "learnai-dk.firebaseapp.com",
+  projectId: "learnai-dk",
+  storageBucket: "learnai-dk.firebasestorage.app",
+  messagingSenderId: "3073076360",
+  appId: "1:3073076360:web:b853d118e943395de4833d",
+  measurementId: "G-58EB4Z5KK3"
+};
+const PLATFORM = 'https://magnuscode-ai.github.io/ai-kursus/platform.html';
+
+function showGate(mode){
+  const g = document.getElementById('gate');
+  if (mode === false) { g.classList.remove('show'); return; }
+  const t = document.getElementById('gateTitle');
+  const x = document.getElementById('gateText');
+  const b = document.getElementById('gateBtn');
+  if (mode === 'course') {
+    t.textContent = 'Færdiggør Kursus D først';
+    x.textContent = 'Dette sidekursus åbner, når du har gennemført hele Kursus D. Tag Kursus D først — så er du klar til at give AI styr på din økonomi.';
+    b.textContent = 'Gå til Kursus D';
+    b.setAttribute('href', PLATFORM);
+  } else {
+    t.textContent = 'Hov — du er ikke logget ind';
+    x.textContent = 'Du skal være logget ind for at tage kurset. Tryk her, så sender vi dig til Akademiet AI, hvor du kan logge ind.';
+    b.textContent = 'Tryk her for at logge ind';
+    b.setAttribute('href', PLATFORM);
+  }
+  g.classList.add('show');
+}
+
+// Vis gaten indtil auth er afklaret
+showGate('login');
+
+(async () => {
+  let initializeApp, getAuth, onAuthStateChanged, getFirestore, doc, getDoc, setDoc;
+  try {
+    [{ initializeApp }, { getAuth, onAuthStateChanged }, { getFirestore, doc, getDoc, setDoc }] = await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js')
+    ]);
+  } catch (e) {
+    // Forhåndsvisning uden net (fx byggemiljø): vis modulet
+    console.warn('Firebase utilgængelig — viser modulet som forhåndsvisning.', e);
+    showGate(false);
+    return;
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) { showGate('login'); return; }
+    let data = {};
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) data = snap.data();
+    } catch (e) { console.error(e); }
+
+    // Kræver at hele Kursus D er gennemført (completedCourses indeholder 'D'),
+    // med D-badge som fallback. August: bekræft feltnavnet.
+    const dDone =
+      (Array.isArray(data.completedCourses) && data.completedCourses.includes('D')) ||
+      (Array.isArray(data.badges) && data.badges.some(b => b && b.level === 'D' && b.type !== 'side'));
+
+    if (!dDone) { showGate('course'); return; }
+    showGate(false);
+
+    // ── FREMDRIFT: gemmes i brugerens eget dokument, users/{uid}.sidekurser.oekonomi.modul3
+    //    merge:true betyder at intet andet i dokumentet røres (coins, badges, completedCourses).
+    //    Ingen nye Firestore-regler nødvendige — brugeren skriver til sit eget dokument.
+    const saved = (data.sidekurser && data.sidekurser.oekonomi && data.sidekurser.oekonomi.modul3) || null;
+    if (typeof window.__akaiRestore === 'function') window.__akaiRestore(saved);
+
+    window.__akaiSave = async (state) => {
+      try {
+        await setDoc(doc(db, 'users', user.uid), {
+          sidekurser: { oekonomi: { modul3: state } }
+        }, { merge: true });
+        if (typeof window.__akaiSavedOk === 'function') window.__akaiSavedOk();
+      } catch (e) {
+        console.error('Kunne ikke gemme fremdrift:', e);
+        if (typeof window.__akaiSaveFailed === 'function') window.__akaiSaveFailed();
+      }
+    };
+  });
+})();
+</script>
+
+<script>
+(function(){
+  var v=document.getElementById('pageVeil');
+  requestAnimationFrame(function(){ if(v) v.classList.add('out'); });
+  setTimeout(function(){ if(v) v.style.pointerEvents='none'; },560);
+  var targets=[];
+  var hero=document.querySelector('.main .hero'); if(hero) targets.push(hero);
+  var lesson=document.querySelector('.main .lesson');
+  if(lesson){ Array.prototype.forEach.call(lesson.children,function(c){targets.push(c);}); }
+  targets.forEach(function(el,i){ el.classList.add('anim'); el.style.animationDelay=(0.05+i*0.075)+'s'; });
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href]'); if(!a) return;
+    var href=a.getAttribute('href');
+    if(!href||href.charAt(0)=='#'||a.getAttribute('target')=='_blank'||/^(https?:|mailto:|tel:)/.test(href)) return;
+    if(a.classList.contains('locked')) return;
+    e.preventDefault();
+    if(v){ v.classList.remove('out'); v.classList.add('cover'); v.style.pointerEvents='all'; }
+    setTimeout(function(){ location.href=href; },390);
+  });
+})();
+</script>
+</body>
+</html>
