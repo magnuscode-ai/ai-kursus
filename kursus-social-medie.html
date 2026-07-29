@@ -2,1071 +2,2125 @@
 <html lang="da">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>akademiet-ai.dk — AI til Sociale Medier</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Akademiet AI — Byggeplan: Sidekursus AI til Sociale Medier</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-
-/* ════════════════════ TOKENS ════════════════════ */
 :root{
-  --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
-  --serif:'Lora',Georgia,'Times New Roman',serif;
+  /* ══════════════════════════════════════════════════════════
+     SIDEKURSUS-ACCENT: BLOMME  (AI til Sociale Medier)
+     ──────────────────────────────────────────────────────────
+     Sidekurser deler Honning & Skov-rygraden, men har egen
+     accentfamilie, så de aldrig forveksles med D/C/B/A.
+     Progression: lys blomme -> dyb aubergine (finalen).
+     ══════════════════════════════════════════════════════════ */
+  --pl-deep:#3e1d33;
+  --pl:#5e3550;
+  --pl-mid:#7a4568;
+  --pl-warm:#a87496;
+  --pl-ink:#41213a;
+  --pl-tint:#efe4ec;
+  --pl-faint:#faf4f8;
+  --pl-glow:rgba(94,53,80,.14);
+  --pl-ring:rgba(94,53,80,.22);
 
-  /* Rustik base (uændret fra Skovkammer) */
-  --green-deep:#0f2a20; --green:#1b4636; --green-700:#235140;
-  --green-mid:#2f6a4a; --green-light:#6fa083; --green-soft:#dee8de;
-  --brass:#a98841; --brass-deep:#8a6a2a; --brass-soft:#f1e7cc;
-  --gold:#e0b33d; --cream:#fbf7ee; --parch:#e8e2d3;
-  --ink:#23332b; --ink-soft:#43544a; --muted:#7b8a80;
-  --line:#ded6c4;
-
-  /* NYT primært accent-tema: Koral */
-  --koral:#E25A5E; --koral-deep:#C4444B; --koral-press:#A8353C;
-  --koral-tint:#FBE4E3; --koral-soft:rgba(226,90,94,.10);
-  --koral-ring:rgba(226,90,94,.22);
-
-  /* status */
-  --ok:#2f6a4a; --ok-bg:#e7f1e9; --warn:#b07d27; --warn-bg:#fbf2dc;
-  --err:#c0473e; --err-bg:#fae7e4;
-
-  --r-sm:9px; --r:13px; --r-lg:18px; --r-xl:24px;
-  --shadow-sm:0 1px 2px rgba(26,40,33,.05),0 1px 3px rgba(26,40,33,.06);
-  --shadow-md:0 6px 22px rgba(26,40,33,.08),0 2px 6px rgba(26,40,33,.05);
-  --shadow-koral:0 10px 30px rgba(226,90,94,.28);
+  /* ── Honning & Skov basis (identisk med C-serien) ── */
+  --ink:#20312a;--ink-2:#2f4338;--muted:#5a7060;--muted-2:#8aa090;
+  --bg:#e8e2d3;--card:#fbf7ee;--card-2:#f5f0e5;
+  --border:#cfc6b0;--border-strong:#bbb0a0;
+  --green:#2f6a4a;--green-bg:#dee8de;
+  --amber:#a98841;--amber-bg:#f6edce;
+  --red:#c0392b;--red-bg:#fdecea;
+  --gold:#c2a038;--gold-soft:#e6c79a;
+  --sb-bg:#ddd3ba;--sb-line:#c8bb9c;--sb-ink:#3d4a3a;
+  --shadow-sm:0 1px 2px rgba(32,49,42,.04),0 1px 3px rgba(32,49,42,.06);
+  --shadow-md:0 4px 16px rgba(32,49,42,.06),0 2px 4px rgba(32,49,42,.04);
+  --shadow-lg:0 12px 40px rgba(62,29,51,.16);
+  --r-sm:10px;--r:16px;--r-lg:22px;--r-xl:28px;
+  --ease-lux:cubic-bezier(.25,.10,.25,1.0);
+  --ease-reveal:cubic-bezier(.16,1,.30,1);
 }
 
-html{scroll-behavior:smooth}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{
-  font-family:var(--sans); color:var(--ink); line-height:1.6;
-  background:var(--parch); -webkit-font-smoothing:antialiased;
-  min-height:100vh;
+  font-family:'Outfit',system-ui,sans-serif;
+  background:var(--bg);color:var(--ink);
+  font-size:15px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
 }
-body::before{
-  content:''; position:fixed; inset:0; z-index:-2; pointer-events:none;
-  background:
-    radial-gradient(1100px 640px at 50% -10%, rgba(27,70,54,.11), transparent 60%),
-    radial-gradient(820px 560px at 100% 102%, rgba(226,90,94,.07), transparent 60%),
-    radial-gradient(700px 520px at 0% 60%, rgba(169,136,65,.06), transparent 60%),
-    linear-gradient(180deg,#ece6d8 0%, #e8e2d3 40%, #e3dcc9 100%);
-}
-.serif{font-family:var(--serif)}
 
-/* ════════════════════ TOPBAR ════════════════════ */
+/* ─────────── TOPBAR ─────────── */
 .topbar{
-  position:sticky; top:0; z-index:60;
-  background:rgba(20,52,40,.94); backdrop-filter:blur(10px);
-  border-bottom:1px solid rgba(169,136,65,.32);
+  position:sticky;top:0;z-index:60;
+  background:rgba(232,226,211,.97);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--border);
 }
-.topbar-inner{max-width:1180px; margin:0 auto; padding:13px 26px; display:flex; align-items:center; justify-content:space-between; gap:16px}
-.brand{display:flex; align-items:center; gap:11px; text-decoration:none; color:var(--cream); font-weight:700; font-size:15.5px; letter-spacing:-.01em}
-.brand-mark{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#b89653,#8a6a2a); display:grid; place-items:center; color:#fff; font-weight:800; font-size:13px; box-shadow:0 4px 14px rgba(15,42,32,.45)}
-.crumb{display:flex; align-items:center; gap:10px; font-size:13px; color:rgba(247,242,232,.74)}
-.crumb a{color:rgba(247,242,232,.74); text-decoration:none; transition:color .18s}
-.crumb a:hover{color:#fff}
-.crumb .here{color:var(--cream); font-weight:600}
-.crumb .dot{width:4px; height:4px; border-radius:50%; background:rgba(247,242,232,.4)}
-@media(max-width:620px){.crumb a:not(.here){display:none} .crumb .dot{display:none}}
-
-/* ════════════════════ JOURNEY (altid centreret) ════════════════════ */
-.journey-wrap{max-width:1180px; margin:24px auto 0; padding:0 26px; display:flex; justify-content:center}
-.journey-pill{
-  display:inline-flex; align-items:center; gap:4px; padding:9px 15px;
-  background:rgba(251,247,238,.82); backdrop-filter:blur(10px);
-  border:1px solid var(--brass-soft); border-radius:999px;
-  box-shadow:var(--shadow-md); flex-wrap:nowrap; overflow-x:auto; max-width:100%; scrollbar-width:none;
+.topbar-inner{
+  max-width:1080px;margin:0 auto;padding:12px 24px;
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
 }
-.journey-pill::-webkit-scrollbar{display:none}
-.journey-step{display:inline-flex; align-items:center; gap:5px; padding:6px 12px; font-size:12px; font-weight:700; color:var(--muted); border-radius:999px; white-space:nowrap; transition:all .2s}
-.journey-step.current{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; box-shadow:0 4px 14px rgba(226,90,94,.35)}
-.journey-step.done{color:var(--ok)}
-.journey-step.done::before{content:'✓'; font-size:11px; margin-right:-1px}
-.journey-sep{color:var(--brass); font-size:11px; user-select:none; opacity:.6}
-
-/* ════════════════════ HERO ════════════════════ */
-.hero{max-width:1180px; margin:30px auto 8px; padding:0 26px; text-align:center}
-.hero-tag{display:inline-flex; align-items:center; gap:8px; padding:6px 15px; border-radius:999px; background:var(--koral-tint); border:1px solid var(--koral-ring); color:var(--koral-deep); font-size:12px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; margin-bottom:18px}
-.hero-tag .pulse{width:8px; height:8px; border-radius:50%; background:var(--koral); box-shadow:0 0 0 0 var(--koral-ring); animation:pulse 2s infinite}
-@keyframes pulse{0%{box-shadow:0 0 0 0 var(--koral-ring)}70%{box-shadow:0 0 0 9px rgba(226,90,94,0)}100%{box-shadow:0 0 0 0 rgba(226,90,94,0)}}
-.hero h1{font-family:var(--serif); font-weight:600; font-size:clamp(30px,5vw,46px); color:var(--green); line-height:1.12; letter-spacing:-.01em; margin-bottom:14px}
-.hero h1 em{font-style:italic; color:var(--koral-deep)}
-.hero-sub{font-size:clamp(15px,2.4vw,18px); color:var(--ink-soft); max-width:640px; margin:0 auto 22px; line-height:1.6}
-.hero-stats{display:flex; flex-wrap:wrap; gap:10px; justify-content:center}
-.hero-stat{display:inline-flex; align-items:center; gap:7px; padding:8px 15px; background:var(--cream); border:1px solid var(--brass-soft); border-radius:999px; font-size:13px; font-weight:600; color:var(--green-700); box-shadow:var(--shadow-sm)}
-
-/* ════════════════════ LAYOUT ════════════════════ */
-.layout{max-width:1180px; margin:30px auto 80px; padding:0 26px; display:grid; grid-template-columns:268px 1fr; gap:30px; align-items:start}
-@media(max-width:980px){.layout{grid-template-columns:1fr; gap:20px}}
-
-/* ── Sidebar (forløb + låste moduler) ── */
-.sidebar{position:sticky; top:84px}
-@media(max-width:980px){.sidebar{position:static; top:auto}}
-.sb-card{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-lg); box-shadow:var(--shadow-md); overflow:hidden}
-.sb-head{padding:16px 18px 12px; border-bottom:1px solid var(--line)}
-.sb-head-label{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--brass-deep)}
-.sb-progress{margin-top:12px}
-.sb-progress-top{display:flex; align-items:center; justify-content:space-between; margin-bottom:7px}
-.sb-progress-top span:first-child{font-size:12px; color:var(--muted); font-weight:600}
-.sb-progress-pct{font-size:12px; font-weight:800; color:var(--koral-deep)}
-.sb-bar{height:7px; border-radius:999px; background:var(--parch); overflow:hidden}
-.sb-fill{height:100%; width:0%; border-radius:999px; background:linear-gradient(90deg,var(--koral),var(--koral-deep)); transition:width .5s cubic-bezier(.16,1,.3,1)}
-.sb-list{padding:10px 10px 14px}
-.sb-item{display:flex; align-items:center; gap:11px; padding:10px 11px; border-radius:11px; text-decoration:none; color:inherit; cursor:pointer; transition:background .15s; border:1px solid transparent}
-.sb-item:hover{background:rgba(226,90,94,.06)}
-.sb-item.is-locked{cursor:not-allowed; opacity:.62}
-.sb-item.is-locked:hover{background:rgba(123,138,128,.07)}
-.sb-ic{width:34px; height:34px; border-radius:10px; display:grid; place-items:center; font-size:15px; flex-shrink:0; background:var(--green-soft); color:var(--green-700)}
-.sb-item.is-active .sb-ic{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; box-shadow:0 4px 12px rgba(226,90,94,.3)}
-.sb-item.is-done .sb-ic{background:var(--ok-bg); color:var(--ok)}
-.sb-item.is-locked .sb-ic{background:#e6e0d2; color:var(--muted)}
-.sb-txt{flex:1; min-width:0}
-.sb-txt b{display:block; font-size:13.5px; font-weight:700; color:var(--ink); line-height:1.25}
-.sb-item.is-active .sb-txt b{color:var(--koral-deep)}
-.sb-txt small{font-size:11.5px; color:var(--muted)}
-.sb-flag{flex-shrink:0; font-size:13px; color:var(--muted)}
-.sb-item.is-done .sb-flag{color:var(--ok)}
-.sb-divider{height:1px; background:var(--line); margin:8px 12px}
-
-/* ════════════════════ MODULE CARDS ════════════════════ */
-.main{min-width:0}
-.sect-label{display:flex; align-items:center; gap:12px; margin:6px 0 16px}
-.sect-label hr{flex:1; border:none; border-top:1px solid var(--line)}
-.sect-label span{font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--brass-deep); white-space:nowrap}
-
-.mod{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-xl); box-shadow:var(--shadow-sm); margin-bottom:22px; overflow:hidden; position:relative; transition:box-shadow .3s, transform .3s, opacity .4s, filter .4s}
-.mod::before{content:''; position:absolute; left:0; top:0; bottom:0; width:4px; background:linear-gradient(180deg,var(--koral),var(--koral-deep)); z-index:1}
-.mod.is-done::before{background:linear-gradient(180deg,var(--ok),var(--green-mid))}
-.mod.is-locked{opacity:.55; filter:grayscale(.35); pointer-events:none}
-.mod.is-locked::before{background:linear-gradient(180deg,#cfc7b6,#e0d8c6)}
-.mod:not(.is-locked):hover{box-shadow:0 8px 30px rgba(226,90,94,.12); transform:translateY(-2px)}
-.mod-header{padding:20px 24px; display:flex; align-items:center; gap:15px}
-.mod-num{width:46px; height:46px; border-radius:13px; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; font-size:18px; font-weight:800; display:grid; place-items:center; flex-shrink:0; box-shadow:0 4px 12px rgba(226,90,94,.28)}
-.mod.is-locked .mod-num{background:linear-gradient(135deg,#cfc7b6,#e0d8c6); color:#fff; box-shadow:none}
-.mod.is-done .mod-num{background:linear-gradient(135deg,var(--ok),var(--green-mid))}
-.mod-text{flex:1; min-width:0}
-.mod-title{font-family:var(--serif); font-size:19px; font-weight:600; color:var(--green); line-height:1.25}
-.mod-sub{font-size:13px; color:var(--muted); margin-top:3px}
-.mod-time{background:var(--koral-soft); color:var(--koral-deep); border-radius:999px; font-size:12px; font-weight:700; padding:5px 13px; white-space:nowrap; flex-shrink:0}
-.mod-badge{display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:800; padding:5px 11px; border-radius:999px; flex-shrink:0}
-.mod-badge.locked{color:var(--muted); background:#ece6d6}
-.mod-badge.done{color:var(--ok); background:var(--ok-bg)}
-.mod-body{padding:6px 26px 28px; border-top:1px solid var(--line)}
-.mod-body.collapsed{display:none}
-
-/* prose */
-.prose{font-size:15px; color:var(--ink-soft); line-height:1.72; margin:16px 0}
-.prose strong{color:var(--green); font-weight:700}
-.prose em{font-style:italic; color:var(--koral-deep)}
-.lead{font-size:16px; color:var(--ink); font-weight:500; line-height:1.65; margin:18px 0}
-.bullets{list-style:none; margin:14px 0 18px; display:grid; gap:9px}
-.bullets li{position:relative; padding-left:26px; font-size:14.5px; color:var(--ink-soft); line-height:1.6}
-.bullets li::before{content:'›'; position:absolute; left:6px; top:-1px; color:var(--koral); font-weight:800; font-size:17px}
-.callout{display:flex; gap:13px; padding:15px 17px; border-radius:var(--r); background:var(--koral-tint); border:1px solid var(--koral-ring); margin:18px 0}
-.callout .ic{font-size:20px; flex-shrink:0; line-height:1.3}
-.callout h4{font-size:13.5px; font-weight:800; color:var(--koral-press); margin-bottom:3px}
-.callout p{font-size:13.5px; color:var(--ink-soft); line-height:1.55}
-
-/* ── øvelse-ramme ── */
-.exercise{border:1px solid var(--brass-soft); border-radius:var(--r-lg); background:#fffdf8; box-shadow:var(--shadow-sm); margin:22px 0; overflow:hidden}
-.ex-head{display:flex; align-items:center; gap:11px; padding:15px 18px; background:linear-gradient(135deg,rgba(226,90,94,.08),rgba(226,90,94,.03)); border-bottom:1px solid var(--brass-soft)}
-.ex-tag{font-size:10.5px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:#fff; background:var(--koral); padding:4px 9px; border-radius:6px; flex-shrink:0}
-.ex-title{font-size:15px; font-weight:700; color:var(--green); flex:1}
-.ex-state{font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; background:#ece6d6; color:var(--muted); flex-shrink:0; transition:all .3s}
-.ex-state.done{background:var(--ok-bg); color:var(--ok)}
-.ex-body{padding:20px 18px}
-.ex-hint{font-size:12.5px; color:var(--muted); margin-top:12px; line-height:1.55}
-
-/* — Øvelse 1: tonefald-slider — */
-.tone-stage{background:var(--cream); border:1px solid var(--line); border-radius:var(--r); padding:18px; margin-bottom:18px; min-height:118px; display:flex; flex-direction:column; justify-content:center}
-.tone-caption{font-size:15.5px; color:var(--ink); line-height:1.6; transition:opacity .2s}
-.tone-best{margin-top:12px; font-size:12.5px; font-weight:700; color:var(--koral-deep); display:inline-flex; align-items:center; gap:6px}
-.tone-best .chip{background:var(--koral-tint); border:1px solid var(--koral-ring); padding:3px 10px; border-radius:999px}
-.tone-control{padding:4px 4px 0}
-.tone-range{-webkit-appearance:none; appearance:none; display:block; width:calc(75% + 26px); margin:0 calc(12.5% - 13px); height:8px; border-radius:999px; background:linear-gradient(90deg,var(--koral),var(--koral-deep)); outline:none; cursor:pointer}
-.tone-range::-webkit-slider-thumb{-webkit-appearance:none; appearance:none; box-sizing:border-box; width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid var(--koral); box-shadow:0 3px 10px rgba(226,90,94,.35); cursor:pointer; transition:transform .15s}
-.tone-range::-webkit-slider-thumb:active{transform:scale(1.12)}
-.tone-range::-moz-range-thumb{box-sizing:border-box; width:26px; height:26px; border-radius:50%; background:#fff; border:3px solid var(--koral); box-shadow:0 3px 10px rgba(226,90,94,.35); cursor:pointer}
-.tone-ticks{display:flex; justify-content:space-between; margin-top:10px}
-.tone-tick{font-size:11.5px; font-weight:700; color:var(--muted); transition:color .2s; cursor:pointer; flex:1; text-align:center}
-.tone-tick.active{color:var(--koral-deep)}
-
-/* — Øvelse 2: prompt-lab — */
-.lab-blocks{display:flex; flex-wrap:wrap; gap:7px; margin-bottom:14px}
-.lab-block{font-size:11.5px; font-weight:700; padding:5px 11px; border-radius:999px; background:#ece6d6; color:var(--muted); border:1px solid transparent; transition:all .25s}
-.lab-block.hit{background:var(--ok-bg); color:var(--ok); border-color:rgba(47,106,74,.25)}
-.lab-block.hit::before{content:'✓ '; font-weight:800}
-.lab-input{width:100%; min-height:96px; resize:vertical; border:1.5px solid var(--line); border-radius:var(--r); padding:13px 15px; font-family:var(--sans); font-size:14.5px; color:var(--ink); background:var(--cream); line-height:1.55; transition:border-color .2s, box-shadow .2s}
-.lab-input:focus{outline:none; border-color:var(--koral); box-shadow:0 0 0 4px var(--koral-ring)}
-.lab-bar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; flex-wrap:wrap}
-.lab-count{font-size:12px; color:var(--muted)}
-.lab-chat{margin-top:18px; display:none; flex-direction:column; gap:12px}
-.lab-chat.show{display:flex}
-.bubble{border-radius:14px; padding:13px 16px; font-size:14px; line-height:1.6; max-width:88%; box-shadow:var(--shadow-sm)}
-.bubble-row{display:flex; gap:10px; align-items:flex-start}
-.bubble-row.user{justify-content:flex-end}
-.bubble-av{width:30px; height:30px; border-radius:9px; display:grid; place-items:center; font-size:13px; flex-shrink:0; font-weight:800}
-.bubble-av.ai{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff}
-.bubble-av.me{background:var(--green-soft); color:var(--green-700)}
-.bubble.user{background:#fff; border:1px solid var(--line); color:var(--ink)}
-.bubble.ai{background:#fff; border:1px solid var(--line); color:var(--ink)}
-.bubble .who{font-size:10.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; display:block}
-#labAnswer,#labEcho{white-space:pre-wrap}
-.bubble.ai .who{color:var(--koral-deep)}
-.lab-verdict{margin-top:4px; border-radius:var(--r); padding:13px 15px; font-size:13.5px; line-height:1.6}
-.lab-verdict.weak{background:var(--warn-bg); border:1px solid #ecd9a6; color:#7a5a17}
-.lab-verdict.strong{background:var(--ok-bg); border:1px solid rgba(47,106,74,.25); color:var(--green-700)}
-.lab-verdict b{font-weight:800}
-.lab-sim-note{font-size:11px; color:var(--muted); font-style:italic; margin-top:10px}
-
-/* — Øvelse 3: match-spil — */
-.match-grid{display:grid; grid-template-columns:1fr 1fr; gap:24px}
-@media(max-width:560px){.match-grid{grid-template-columns:1fr; gap:14px}}
-.match-col h5{font-size:11px; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--brass-deep); margin-bottom:11px}
-.match-item{display:flex; align-items:center; gap:10px; padding:13px 14px; border:1.5px solid var(--line); border-radius:var(--r); background:var(--cream); font-size:13.5px; font-weight:600; color:var(--ink); cursor:pointer; margin-bottom:10px; transition:all .18s; user-select:none}
-.match-item:hover:not(.matched){border-color:var(--koral); background:#fff}
-.match-item.selected{border-color:var(--koral); background:var(--koral-tint); box-shadow:0 0 0 3px var(--koral-ring)}
-.match-item.matched{border-color:rgba(47,106,74,.4); background:var(--ok-bg); color:var(--green-700); cursor:default; pointer-events:none}
-.match-item.matched::after{content:'✓'; margin-left:auto; color:var(--ok); font-weight:800}
-.match-item .m-ic{width:26px; height:26px; border-radius:7px; display:grid; place-items:center; font-size:13px; background:var(--green-soft); flex-shrink:0}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.match-item.wrong{animation:shake .32s; border-color:var(--err)}
-
-/* ── complete-zone + quiz-gate ── */
-.complete-zone{margin-top:22px; padding:16px 18px; background:linear-gradient(135deg,rgba(226,90,94,.06),rgba(226,90,94,.02)); border:1px solid var(--koral-ring); border-radius:var(--r); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
-.cz-text{display:flex; align-items:center; gap:11px; font-size:13.5px; font-weight:600; color:var(--ink-soft)}
-.cz-ic{width:34px; height:34px; border-radius:9px; background:var(--koral-soft); color:var(--koral-deep); display:grid; place-items:center; font-size:16px; flex-shrink:0}
-
-/* ── CTA: Gå til Modul 2 (vises efter bestået Q1) ── */
-.next-cta{display:flex; justify-content:center; margin:6px 0 26px; animation:ctaIn .5s cubic-bezier(.16,1,.3,1)}
-@keyframes ctaIn{from{opacity:0; transform:translateY(14px)}to{opacity:1; transform:none}}
-.btn-next{display:inline-flex; align-items:center; gap:10px; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:16px; color:#fff; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); padding:16px 40px; border-radius:999px; box-shadow:var(--shadow-koral); transition:transform .18s, box-shadow .18s}
-.btn-next:hover{transform:translateY(-2px); box-shadow:0 16px 40px rgba(226,90,94,.42)}
-.btn-next:active{transform:translateY(0)}
-
-/* ── knapper ── */
-.btn{display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:var(--sans); font-weight:700; font-size:14px; border-radius:999px; transition:transform .18s, box-shadow .18s, background .18s; text-decoration:none}
-.btn-koral{background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; padding:12px 26px; box-shadow:var(--shadow-koral)}
-.btn-koral:hover{transform:translateY(-2px); box-shadow:0 14px 38px rgba(226,90,94,.4)}
-.btn-koral:active{transform:translateY(0)}
-.btn-koral:disabled,.btn-koral.disabled{background:#d9d1c0; color:#fff; box-shadow:none; cursor:not-allowed; transform:none}
-.btn-koral.done-state{background:linear-gradient(135deg,var(--ok),var(--green-mid)); box-shadow:0 6px 18px rgba(47,106,74,.28); pointer-events:none}
-.btn-ghost{background:var(--cream); border:1.5px solid var(--brass-soft); color:var(--green-700); padding:10px 20px}
-.btn-ghost:hover{border-color:var(--koral); color:var(--koral-deep)}
-.btn-sm{padding:9px 18px; font-size:13px}
-
-/* ── mini-quiz ── */
-.quiz{border:1px solid var(--koral-ring); border-radius:var(--r-lg); background:#fffdf8; margin-top:22px; overflow:hidden}
-.quiz.is-locked{opacity:.5; filter:grayscale(.4); pointer-events:none}
-.quiz-head{padding:18px 20px; background:linear-gradient(135deg,rgba(226,90,94,.1),rgba(226,90,94,.03)); border-bottom:1px solid var(--koral-ring); display:flex; align-items:center; gap:12px}
-.quiz-head .q-ic{width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg,var(--koral),var(--koral-deep)); color:#fff; display:grid; place-items:center; font-size:17px; flex-shrink:0}
-.quiz-head h3{font-family:var(--serif); font-size:18px; font-weight:600; color:var(--green)}
-.quiz-head p{font-size:12.5px; color:var(--muted); margin-top:2px}
-.quiz-body{padding:20px}
-.q-block{margin-bottom:22px}
-.q-block:last-of-type{margin-bottom:0}
-.q-num{display:inline-block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--koral-deep); margin-bottom:8px}
-.q-text{font-size:15px; font-weight:600; color:var(--ink); margin-bottom:13px; line-height:1.45}
-.q-opts{display:grid; gap:9px}
-.q-opt{display:flex; align-items:flex-start; gap:11px; padding:12px 15px; border:1.5px solid var(--line); border-radius:var(--r); background:var(--cream); cursor:pointer; font-size:14px; color:var(--ink); line-height:1.45; transition:all .16s}
-.q-opt:hover{border-color:var(--koral); background:#fff}
-.q-opt .q-mark{width:21px; height:21px; border-radius:50%; border:2px solid var(--brass); flex-shrink:0; margin-top:1px; display:grid; place-items:center; transition:all .16s}
-.q-opt.selected{border-color:var(--koral); background:var(--koral-tint)}
-.q-opt.selected .q-mark{border-color:var(--koral); background:var(--koral)}
-.q-opt.selected .q-mark::after{content:''; width:8px; height:8px; border-radius:50%; background:#fff}
-.q-opt.correct{border-color:rgba(47,106,74,.5); background:var(--ok-bg)}
-.q-opt.correct .q-mark{border-color:var(--ok); background:var(--ok)}
-.q-opt.correct .q-mark::after{content:'✓'; color:#fff; font-size:11px; font-weight:800}
-.q-opt.incorrect{border-color:rgba(192,71,62,.5); background:var(--err-bg)}
-.q-opt.incorrect .q-mark{border-color:var(--err); background:var(--err)}
-.q-opt.incorrect .q-mark::after{content:'✕'; color:#fff; font-size:10px; font-weight:800}
-.q-opt.locked-pick{pointer-events:none}
-.quiz-footer{margin-top:6px; padding-top:18px; border-top:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:14px; flex-wrap:wrap}
-.quiz-result{font-size:14px; font-weight:700}
-.quiz-result.pass{color:var(--ok)}
-.quiz-result.fail{color:var(--err)}
-
-/* ── eksamen (låst) ── */
-.exam-cta{position:relative; background:linear-gradient(135deg,rgba(27,70,54,.06),rgba(226,90,94,.05)); border:1px solid var(--brass-soft); border-radius:var(--r-xl); padding:34px; text-align:center; overflow:hidden; margin-top:30px}
-.exam-cta .exam-tag{display:inline-flex; align-items:center; gap:8px; padding:6px 16px; border-radius:999px; background:var(--koral-soft); border:1px solid var(--koral-ring); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; color:var(--koral-deep); margin-bottom:14px}
-.exam-cta h3{font-family:var(--serif); font-weight:600; font-size:26px; color:var(--green); margin-bottom:10px}
-.exam-cta p{font-size:14.5px; color:var(--ink-soft); max-width:520px; margin:0 auto 18px; line-height:1.6}
-.exam-parts{display:flex; gap:14px; justify-content:center; flex-wrap:wrap; margin-bottom:22px}
-.exam-part{background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r); padding:14px 18px; min-width:200px; text-align:left}
-.exam-part b{font-size:13.5px; color:var(--green); display:block; margin-bottom:3px}
-.exam-part small{font-size:12px; color:var(--muted)}
-.exam-locked-btn{display:inline-flex; align-items:center; gap:10px; background:#d9d1c0; color:#fff; font-family:var(--sans); font-size:15px; font-weight:700; padding:14px 36px; border-radius:999px; cursor:not-allowed}
-.exam-reward{margin-top:14px; font-size:13px; color:var(--brass-deep); font-weight:600}
-
-/* ════════════════════ TOASTS ════════════════════ */
-#toast{position:fixed; bottom:30px; left:50%; transform:translateX(-50%) translateY(12px); z-index:9990; padding:12px 24px; background:#14201a; color:#fff; border-radius:999px; font-size:13.5px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(15,42,32,.4)}
-#toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
-#locked-toast{position:fixed; top:50%; left:50%; transform:translate(-50%,-50%) scale(.96); z-index:9991; padding:14px 26px; background:#14201a; color:#fff; border-radius:999px; font-size:14px; font-weight:600; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; white-space:nowrap; box-shadow:0 14px 40px rgba(15,42,32,.5)}
-#locked-toast.show{opacity:1; transform:translate(-50%,-50%) scale(1)}
-
-/* ════════════════════ LOGIN WALL ════════════════════ */
-/* Kan ikke lukkes: ingen luk-knap, ingen klik-væk, og baggrunds-scroll låses i JS.
-   Mål: ca. 37 cm bred × 17 cm høj (begrænset responsivt, så den aldrig flyder ud). */
-#login-wall{position:fixed; inset:0; z-index:10000; display:none; align-items:center; justify-content:center; padding:20px; background:radial-gradient(ellipse at 50% 28%, rgba(20,52,40,.80), rgba(15,42,32,.94)); backdrop-filter:blur(11px); -webkit-backdrop-filter:blur(11px)}
-#login-wall.show{display:flex}
-.wall-card{
-  width:min(38cm,95vw); min-height:17cm; max-height:94vh;
-  display:flex; overflow:hidden;
-  background:var(--cream); border:1px solid var(--brass-soft); border-radius:var(--r-xl);
-  box-shadow:0 44px 110px rgba(15,42,32,.58);
-  animation:wallIn .42s cubic-bezier(.16,1,.3,1);
+.logo-mark{
+  width:34px;height:34px;border-radius:9px;background:#2F5D45;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(47,93,69,.28);
 }
-@keyframes wallIn{from{opacity:0; transform:translateY(20px) scale(.97)}to{opacity:1; transform:none}}
-.wall-side{flex:0 0 38%; background:linear-gradient(150deg,var(--koral),var(--koral-deep)); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:20px; padding:32px; text-align:center}
-.wall-mark{width:96px; height:96px; border-radius:28px; background:rgba(255,255,255,.16); display:grid; place-items:center; font-size:46px; box-shadow:0 16px 44px rgba(0,0,0,.25)}
-.wall-brand{color:#fff; font-weight:800; font-size:19px; letter-spacing:.005em}
-.wall-brand small{display:block; font-weight:500; font-size:13px; opacity:.85; margin-top:5px}
-.wall-main{flex:1; min-width:0; display:flex; flex-direction:column; justify-content:center; padding:46px 52px}
-.wall-main h2{font-family:var(--serif); font-weight:600; font-size:clamp(27px,3.3vw,40px); color:var(--green); line-height:1.14; margin-bottom:16px}
-.wall-main p{font-size:clamp(15px,1.6vw,18px); color:var(--ink-soft); line-height:1.62; margin-bottom:30px; max-width:580px}
-.wall-cta{align-self:flex-start; font-size:17px; padding:17px 36px}
-.wall-meta{margin-top:30px; padding-top:24px; border-top:1px solid var(--line); display:flex; gap:9px; flex-wrap:wrap}
-.wall-chip{font-size:12.5px; font-weight:600; color:var(--green-700); background:#fff; border:1px solid var(--brass-soft); padding:6px 13px; border-radius:999px}
-@media(max-width:780px){
-  .wall-card{flex-direction:column; min-height:0; width:min(38cm,94vw); max-height:92vh; overflow:auto}
-  .wall-side{flex:0 0 auto; padding:28px 24px; gap:12px}
-  .wall-mark{width:70px; height:70px; font-size:34px; border-radius:20px}
-  .wall-main{padding:30px 24px; text-align:center; align-items:center}
-  .wall-cta{align-self:center; width:100%; justify-content:center}
-  .wall-main p{margin-bottom:22px}
-  .wall-meta{justify-content:center}
+.logo-mark svg{width:19px;height:19px}
+.brand-name{font-size:16px;font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.brand-name b{font-weight:700}
+.topbar-tag{
+  font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--pl);background:var(--pl-tint);
+  border:1px solid var(--pl-ring);
+  padding:4px 11px;border-radius:999px;
+}
+.topbar-prog{margin-left:auto;display:flex;align-items:center;gap:11px}
+.topbar-prog-txt{font-size:12.5px;font-weight:600;color:var(--muted);white-space:nowrap}
+.topbar-prog-bar{width:130px;height:6px;background:var(--border);border-radius:999px;overflow:hidden}
+.topbar-prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--pl-mid),var(--pl));border-radius:999px;transition:width .7s var(--ease-reveal)}
+
+/* ─────────── LAYOUT ─────────── */
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px 90px}
+
+/* ─────────── HERO ─────────── */
+.hero{
+  background:linear-gradient(150deg,var(--pl-deep) 0%,var(--pl) 62%,var(--pl-mid) 100%);
+  border-radius:var(--r-xl);padding:44px 40px;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+  margin-bottom:34px;
+}
+.hero::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 82% 12%,rgba(230,199,154,.16),transparent 55%);
+  pointer-events:none;
+}
+.hero-label{
+  font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--gold-soft);margin-bottom:14px;
+}
+.hero h1{
+  font-family:'Lora',serif;font-weight:600;font-size:36px;line-height:1.18;
+  color:#fdfaf5;letter-spacing:-.02em;margin-bottom:14px;max-width:22ch;
+}
+.hero p{font-size:15.5px;color:rgba(253,250,245,.80);max-width:60ch;line-height:1.7}
+.hero-stats{display:flex;gap:34px;margin-top:28px;flex-wrap:wrap;position:relative;z-index:2}
+.hstat-n{font-family:'Lora',serif;font-size:27px;font-weight:600;color:var(--gold-soft);line-height:1}
+.hstat-l{font-size:11.5px;color:rgba(253,250,245,.62);margin-top:5px;letter-spacing:.03em}
+
+/* ─────────── SEKTIONER ─────────── */
+.sec-head{margin:44px 0 18px}
+.sec-label{
+  font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--pl-mid);margin-bottom:7px;
+}
+.sec-title{font-family:'Lora',serif;font-size:25px;font-weight:600;letter-spacing:-.015em}
+.sec-sub{font-size:14.5px;color:var(--muted);margin-top:6px;max-width:70ch}
+
+/* ─────────── RAMMEBOKS ─────────── */
+.frame{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r-lg);padding:26px 28px;box-shadow:var(--shadow-sm);
+  margin-bottom:18px;
+}
+.frame h3{font-family:'Lora',serif;font-size:18px;font-weight:600;margin-bottom:12px}
+.frame p{font-size:14.5px;color:var(--ink-2);margin-bottom:11px}
+.frame p:last-child{margin-bottom:0}
+.kv{display:grid;grid-template-columns:190px 1fr;gap:9px 20px;font-size:14px}
+.kv dt{font-weight:600;color:var(--muted)}
+.kv dd{color:var(--ink-2)}
+code{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12.5px;
+  background:var(--card-2);border:1px solid var(--border);
+  padding:1.5px 6px;border-radius:5px;color:var(--pl-ink);
 }
 
-/* små helpers */
-.center{text-align:center}
-.mt-sm{margin-top:10px}
-[hidden]{display:none !important}
+/* ─────────── ADVARSELSBOKSE ─────────── */
+.note{border-radius:var(--r);padding:15px 18px;margin:14px 0;font-size:14px;line-height:1.65}
+.note-t{font-weight:700;font-size:13px;margin-bottom:5px;display:flex;align-items:center;gap:7px}
+.note-red{background:var(--red-bg);border-left:3px solid var(--red)}
+.note-red .note-t{color:var(--red)}
+.note-amber{background:var(--amber-bg);border-left:3px solid var(--amber)}
+.note-amber .note-t{color:#7d6320}
+.note-green{background:var(--green-bg);border-left:3px solid var(--green)}
+.note-green .note-t{color:var(--green)}
+.note-plum{background:var(--pl-tint);border-left:3px solid var(--pl)}
+.note-plum .note-t{color:var(--pl)}
+.note ul{margin:7px 0 0 17px}
+.note li{margin-bottom:4px}
+
+/* ─────────── REJSEBÅND ─────────── */
+.journey{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);
+  padding:20px 22px;margin-bottom:18px;overflow-x:auto;
+}
+.journey-track{display:flex;align-items:center;gap:5px;min-width:max-content;margin:0 auto;justify-content:center}
+.j-node{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  min-width:52px;
+}
+.j-dot{
+  width:29px;height:29px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11.5px;font-weight:700;
+  background:var(--pl-tint);color:var(--pl);border:1px solid var(--pl-ring);
+}
+.j-dot.exam{background:var(--pl);color:#fdfaf5;border-color:var(--pl)}
+.j-dot.quiz{background:var(--card-2);color:var(--muted);border-color:var(--border);font-size:10.5px}
+.j-dot.dip{background:var(--gold);color:#3a2f0c;border-color:var(--gold)}
+.j-lbl{font-size:9.5px;color:var(--muted);text-align:center;line-height:1.3;max-width:58px}
+.j-line{width:14px;height:1.5px;background:var(--border);flex-shrink:0;margin-bottom:16px}
+
+/* ─────────── FILKORT ─────────── */
+.build{
+  background:var(--card);border:1px solid var(--border);
+  border-left:3px solid var(--pl-mid);
+  border-radius:var(--r-lg);margin-bottom:14px;
+  box-shadow:var(--shadow-sm);overflow:hidden;
+  transition:box-shadow .28s var(--ease-lux),border-color .28s var(--ease-lux);
+}
+.build.done{border-left-color:var(--green);background:#f6f8f2}
+.build:hover{box-shadow:var(--shadow-md)}
+.build-head{
+  display:flex;align-items:flex-start;gap:15px;
+  padding:19px 22px;cursor:pointer;user-select:none;
+}
+.build-num{
+  width:38px;height:38px;border-radius:11px;flex-shrink:0;
+  background:var(--pl);color:#fdfaf5;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13.5px;font-weight:700;font-family:'Lora',serif;
+  transition:background .28s var(--ease-lux);
+}
+.build.done .build-num{background:var(--green)}
+.build-txt{flex:1;min-width:0}
+.build-title{font-size:15.5px;font-weight:600;letter-spacing:-.01em;margin-bottom:3px}
+.build-file{
+  font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:12px;
+  color:var(--pl-mid);word-break:break-all;
+}
+.build-meta{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin-top:8px}
+.chip{
+  font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:999px;
+  background:var(--card-2);color:var(--muted);border:1px solid var(--border);
+  letter-spacing:.02em;
+}
+.chip-acc{background:var(--pl-tint);color:var(--pl);border-color:var(--pl-ring)}
+.chip-time{background:var(--amber-bg);color:#7d6320;border-color:#e3d2a0}
+.build-arrow{
+  font-size:15px;color:var(--muted-2);flex-shrink:0;margin-top:9px;
+  transition:transform .3s var(--ease-lux);
+}
+.build.open .build-arrow{transform:rotate(180deg)}
+.build-body{display:none;padding:0 22px 22px;border-top:1px solid var(--border);padding-top:19px}
+.build.open .build-body{display:block}
+
+.tick{
+  width:24px;height:24px;border-radius:7px;flex-shrink:0;margin-top:7px;
+  border:1.5px solid var(--border-strong);background:var(--card-2);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:12px;color:transparent;
+  transition:background .2s var(--ease-lux),border-color .2s var(--ease-lux),color .2s;
+}
+.tick:hover{border-color:var(--pl-mid)}
+.tick:focus-visible{outline:2px solid var(--pl-mid);outline-offset:2px}
+.build.done .tick{background:var(--green);border-color:var(--green);color:#fff}
+
+/* ─────────── INDHOLD I KORT ─────────── */
+.b-sub{
+  font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--pl-mid);margin:17px 0 8px;
+}
+.b-sub:first-child{margin-top:0}
+.b-txt{font-size:14.5px;color:var(--ink-2);line-height:1.7;margin-bottom:10px}
+.b-list{margin:0 0 10px 18px;font-size:14px;color:var(--ink-2)}
+.b-list li{margin-bottom:5px;line-height:1.6}
+.b-list strong{color:var(--ink);font-weight:600}
+
+/* ─────────── PROMPTKORT ─────────── */
+.pbox{
+  background:#2b1626;border-radius:var(--r);overflow:hidden;
+  margin-top:14px;box-shadow:0 6px 22px rgba(43,22,38,.22);
+}
+.pbox-head{
+  display:flex;align-items:center;gap:11px;
+  padding:11px 16px;background:rgba(255,255,255,.055);
+  border-bottom:1px solid rgba(255,255,255,.09);
+}
+.pbox-t{
+  font-size:11.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--gold-soft);flex:1;
+}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.10);color:#f5ece6;
+  border:1px solid rgba(255,255,255,.16);
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:8px;cursor:pointer;
+  transition:background .2s var(--ease-lux),transform .12s;
+}
+.copy-btn:hover{background:rgba(255,255,255,.19)}
+.copy-btn:active{transform:scale(.96)}
+.copy-btn:focus-visible{outline:2px solid var(--gold-soft);outline-offset:2px}
+.copy-btn.ok{background:var(--green);border-color:var(--green);color:#fff}
+.pbox-body{
+  padding:17px 19px;font-family:ui-monospace,'SF Mono',Menlo,monospace;
+  font-size:12.3px;line-height:1.72;color:#e4d9e0;
+  white-space:pre-wrap;word-wrap:break-word;
+  max-height:330px;overflow-y:auto;
+}
+.pbox-body::-webkit-scrollbar{width:8px}
+.pbox-body::-webkit-scrollbar-thumb{background:rgba(255,255,255,.15);border-radius:8px}
+
+/* ─────────── STATUSTABEL ─────────── */
+.tbl-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:6px}
+.tbl{width:100%;min-width:520px;border-collapse:collapse;font-size:13.5px}
+.tbl th{
+  text-align:left;font-size:10.5px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted);
+  padding:9px 11px;border-bottom:1.5px solid var(--border);
+}
+.tbl td{padding:9px 11px;border-bottom:1px solid var(--border);color:var(--ink-2);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.tbl code{font-size:11.5px}
+
+/* ─────────── SWATCHES ─────────── */
+.sw-row{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.sw{width:82px;text-align:center}
+.sw-c{height:44px;border-radius:9px;border:1px solid rgba(0,0,0,.09);margin-bottom:5px}
+.sw-n{font-size:10px;color:var(--muted);font-family:ui-monospace,monospace;line-height:1.35}
+
+/* ─────────── FOD ─────────── */
+.foot{
+  margin-top:52px;padding-top:24px;border-top:1px solid var(--border);
+  font-size:12.5px;color:var(--muted-2);text-align:center;line-height:1.8;
+}
+
+/* ─────────── TOAST ─────────── */
+#toast{
+  position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(18px);
+  background:var(--ink);color:#fdfaf5;
+  font-size:13px;font-weight:600;padding:11px 22px;border-radius:999px;
+  box-shadow:0 8px 30px rgba(32,49,42,.26);
+  opacity:0;transition:opacity .24s,transform .24s var(--ease-reveal);
+  pointer-events:none;z-index:200;
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:720px){
+  .wrap{padding:28px 16px 70px}
+  .hero{padding:30px 22px}
+  .hero h1{font-size:27px}
+  .hero-stats{gap:22px}
+  .kv{grid-template-columns:1fr;gap:3px 0}
+  .kv dt{margin-top:8px}
+  .topbar-prog-bar{width:80px}
+  .build-head{padding:16px 15px;gap:11px}
+  .build-body{padding:17px 15px 18px}
+  .frame{padding:20px 18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+  html{scroll-behavior:auto}
+}
 </style>
 </head>
 <body>
 
-<!-- ════════════ LOGIN WALL (kan ikke lukkes uden login / tilbage til platform) ════════════ -->
-<div id="login-wall" role="dialog" aria-modal="true" aria-labelledby="wallTitle">
-  <div class="wall-card">
-    <div class="wall-side">
-      <div class="wall-mark">🔒</div>
-      <div class="wall-brand">akademiet-ai.dk<small>AI til Sociale Medier</small></div>
-    </div>
-    <div class="wall-main">
-      <h2 id="wallTitle">Hov — du er ikke logget ind!</h2>
-      <p>Du skal være logget ind for at tage kurset. Når du er logget ind, gemmer vi dine fremskridt, og dit bevis bliver personligt med dit navn. Log ind eller opret en konto for at fortsætte.</p>
-      <a href="platform.html" class="btn btn-koral wall-cta">👉 Tryk her for at logge ind</a>
-      <div class="wall-meta">
-        <span class="wall-chip">⏱ 1,5 time</span>
-        <span class="wall-chip">📋 3 moduler</span>
-        <span class="wall-chip">🏅 Badge + bevis</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════ TOPBAR ════════════ -->
-<header class="topbar">
+<div class="topbar">
   <div class="topbar-inner">
-    <a class="brand" href="platform.html"><svg class="ai-logo-mark" width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg><span>akademiet-ai.dk</span></a>
-    <nav class="crumb"><a href="platform.html">Platform</a><span class="dot"></span><span class="here">AI til Sociale Medier</span></nav>
-  </div>
-</header>
-
-<!-- ════════════ JOURNEY ════════════ -->
-<div class="journey-wrap">
-  <div class="journey-pill">
-    <span class="journey-step current">Modul 1 · Stemme &amp; strategi</span><span class="journey-sep">›</span>
-    <span class="journey-step">Q1 · Mini-quiz</span><span class="journey-sep">›</span>
-    <span class="journey-step">Modul 2 · Indhold</span><span class="journey-sep">›</span>
-    <span class="journey-step">Q2 · Mini-quiz</span><span class="journey-sep">›</span>
-    <span class="journey-step">Modul 3 · Vækst</span><span class="journey-sep">›</span>
-    <span class="journey-step">Eksamen del 1</span><span class="journey-sep">›</span>
-    <span class="journey-step">Eksamen del 2</span><span class="journey-sep">›</span>
-    <span class="journey-step">🏅 Bevis</span>
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="#E6C79A"><path d="M12 1.6l2.5 7.4 7.4 2.5-7.4 2.5L12 21.4l-2.5-7.4L2.1 11.5l7.4-2.5z"/></svg>
+    </div>
+    <div class="brand-name">Akademiet <b>AI</b></div>
+    <div class="topbar-tag">Byggeplan</div>
+    <div class="topbar-prog">
+      <div class="topbar-prog-txt" id="progTxt">0 / 21 filer</div>
+      <div class="topbar-prog-bar"><div class="topbar-prog-fill" id="progFill"></div></div>
+    </div>
   </div>
 </div>
 
-<!-- ════════════ HERO ════════════ -->
-<section class="hero">
-  <span class="hero-tag"><span class="pulse"></span>Specialkursus · Sociale Medier</span>
-  <h1>AI til <em>sociale medier</em></h1>
-  <p class="hero-sub">Lær at bruge AI som din kreative makker — så du finder din stemme, skaber indhold der bliver set, og styrer dine kanaler i stedet for at jagte dem. På halvanden time.</p>
-  <div class="hero-stats">
-    <span class="hero-stat">⏱ 1,5 time</span>
-    <span class="hero-stat">📋 3 moduler</span>
-    <span class="hero-stat">🎮 Live øvelser i hvert modul</span>
-    <span class="hero-stat">🏅 Badge &amp; downloadbart bevis</span>
+<div class="wrap">
+
+  <!-- ══════════ HERO ══════════ -->
+  <div class="hero">
+    <div class="hero-label">Sidekursus · Blomme-linjen</div>
+    <h1>AI til Sociale Medier</h1>
+    <p>Fra råt klip til betalt kanal. Ni selvstændige moduler der lærer brugeren at bruge AI til at planlægge, filme, klippe, brande, publicere, overholde reglerne og tjene penge på indhold — på tværs af Instagram, TikTok, YouTube og Facebook.</p>
+    <div class="hero-stats">
+      <div><div class="hstat-n">21</div><div class="hstat-l">filer i alt</div></div>
+      <div><div class="hstat-n">9</div><div class="hstat-l">kursusmoduler</div></div>
+      <div><div class="hstat-n">8</div><div class="hstat-l">mini-quizzer</div></div>
+      <div><div class="hstat-n">~6t</div><div class="hstat-l">samlet indhold</div></div>
+    </div>
   </div>
-</section>
 
-<!-- ════════════ LAYOUT ════════════ -->
-<div class="layout">
+  <!-- ══════════ FASTLAGTE RAMMER ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Fundament</div>
+    <div class="sec-title">Fastlagte rammer</div>
+    <div class="sec-sub">Besluttet af Alexander, bekræftet af August. Ændres ikke undervejs uden at planen opdateres først.</div>
+  </div>
 
-  <!-- ── SIDEBAR ── -->
-  <aside class="sidebar">
-    <div class="sb-card">
-      <div class="sb-head">
-        <span class="sb-head-label">📚 Dit forløb</span>
-        <div class="sb-progress">
-          <div class="sb-progress-top"><span>Fremskridt</span><span class="sb-progress-pct" id="sbPct">0 %</span></div>
-          <div class="sb-bar"><div class="sb-fill" id="sbFill"></div></div>
-        </div>
-      </div>
-      <div class="sb-list">
-        <a class="sb-item is-active" data-jump="m1" id="sbM1">
-          <span class="sb-ic">1</span>
-          <span class="sb-txt"><b>Stemme &amp; strategi</b><small>Du er her nu</small></span>
-          <span class="sb-flag" id="sbFlagM1"></span>
-        </a>
-        <a class="sb-item is-locked" data-locked="1" id="sbM2">
-          <span class="sb-ic">2</span>
-          <span class="sb-txt"><b>Indhold der ses</b><small>Låst</small></span>
-          <span class="sb-flag">🔒</span>
-        </a>
-        <a class="sb-item is-locked" data-locked="1" id="sbM3">
-          <span class="sb-ic">3</span>
-          <span class="sb-txt"><b>Planlæg &amp; voks</b><small>Låst</small></span>
-          <span class="sb-flag">🔒</span>
-        </a>
-        <div class="sb-divider"></div>
-        <a class="sb-item is-locked" data-locked="exam" id="sbExam">
-          <span class="sb-ic">🎓</span>
-          <span class="sb-txt"><b>Afsluttende eksamen</b><small>Badge · bevis</small></span>
-          <span class="sb-flag">🔒</span>
-        </a>
-      </div>
-    </div>
-  </aside>
+  <div class="frame">
+    <dl class="kv">
+      <dt>Kursustype</dt><dd>Sidekursus — låses op med coins</dd>
+      <dt>Adgangskrav</dt><dd>Bestået <strong>Kursus D</strong> (<code>completedCourses</code> indeholder <code>'D'</code>)</dd>
+      <dt>Journey-bar</dt><dd>Kurset vises <strong>ikke</strong> i platformens hovedstepbar — det er et sideløb</dd>
+      <dt>Coins</dt><dd>Coin-sink. Hverken quizzer, eksamen eller diplom udbetaler coins</dd>
+      <dt>Belønning</dt><dd>Diplom + badge i blomme. Bygges <strong>allersidst</strong></dd>
+      <dt>Firestore-flag</dt><dd><code>sideCourses: arrayUnion('social-medie')</code> — feltnavn skal bekræftes af August</dd>
+      <dt>Accentfamilie</dt><dd>Blomme — egen familie, adskilt fra D-grøn, C-guld, B-rød, A-blå</dd>
+      <dt>Filnavnsmønster</dt><dd><code>kursus1-social-medie.html</code> … <code>kursus9-social-medie.html</code></dd>
+      <dt>Brandnavn</dt><dd>Altid <strong>Akademiet AI</strong> i alt synligt indhold</dd>
+      <dt>Pædagogik</dt><dd><strong>Gør, ikke læs.</strong> Højst <strong>5 linjer tekst i træk</strong> — så skal der komme en øvelse, et tal, en figur eller en visuel forklaring</dd>
+      <dt>Tekstbudget</dt><dd>Højst <strong>en tredjedel</strong> af et moduls tid må være læsning. Mindst <strong>to tredjedele</strong> skal være aktivitet</dd>
+      <dt>Øvelser pr. modul</dt><dd>Mindst <strong>6 aktiviteter</strong>, heraf mindst én leg, ét refleksionsspørgsmål og én visuel opgave</dd>
+      <dt>Quizformat</dt><dd>Situationer, ikke definitioner. Hvert spørgsmål beskriver et konkret tilfælde, brugeren skal handle på</dd>
+    </dl>
+  </div>
 
-  <!-- ── MAIN ── -->
-  <main class="main">
+  <div class="note note-amber">
+    <div class="note-t">Ændring — juli 2026: modulerne lægges om til øvelser</div>
+    Modul 1 blev først bygget som et læsemodul på knap 7.000 ord. Det er for tungt, og det er
+    ikke sådan folk lærer. <strong>Alle ni moduler bygges om eller bygges nyt efter reglen "gør, ikke læs".</strong>
+    Modul 1 er første fil der lægges om — se Prompt 1. Den nuværende version på GitHub bruges som
+    kilde til designsystem og <code>TOOLS</code>-data, ikke som skabelon for opbygningen.
+  </div>
 
-    <div class="sect-label"><hr><span>Modul 1 af 3</span><hr></div>
+  <div class="note note-red">
+    <div class="note-t">Åbne punkter — skal afklares før modul 1 uploades</div>
+    <ul>
+      <li><strong>Filnavn:</strong> <code>medie</code> (ental) er valgt. Korrekt dansk ville være <code>medier</code>. Navnet fryses i det øjeblik platformen linker til det — bekræft én sidste gang.</li>
+      <li><strong>Coin-pris:</strong> ikke fastsat. Bygges som <code>const COIN_PRICE = 0;</code> i toppen af hver fil — én linje at rette senere.</li>
+      <li><strong>Firestore-feltnavn</strong> for gennemførelse tilhører Augusts område og skal bekræftes, ellers risikerer platformen at opkræve coins to gange.</li>
+    </ul>
+  </div>
 
-    <!-- ════════ MODUL 1 (fuldt bygget) ════════ -->
-    <section class="mod" id="m1">
-      <div class="mod-header">
-        <div class="mod-num">1</div>
-        <div class="mod-text">
-          <div class="mod-title">Find din stemme &amp; strategi</div>
-          <div class="mod-sub">AI som din strategiske med-stifter</div>
-        </div>
-        <span class="mod-time">⏱ 30 min</span>
-      </div>
-      <div class="mod-body">
+  <div class="note note-amber">
+    <div class="note-t">Variabelnavne beholdes bevidst</div>
+    Referencefilen <code>kursus-c1.html</code> styrer hele accenten fra otte variabler ved navn <code>--c-gold-*</code>. Navnene er <strong>strukturelle, ikke semantiske</strong>. Vi skifter kun værdierne til blomme og lader navnene stå — at omdøbe dem ville kræve ændringer hundredvis af steder i hver fil uden nogen visuel gevinst. Det samme princip som de frosne kodenavne <code>learnai-dk</code> og <code>learnai-proxy</code>.
+  </div>
 
-        <p class="lead">Før du overhovedet rører et opslag, skal to ting på plads: <strong>en stemme</strong> folk kan genkende, og <strong>en strategi</strong> der passer til kanalen. AI kan hjælpe dig med begge dele — men kun hvis du styrer den.</p>
+  <!-- ══════════ PÆDAGOGIK ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Pædagogik</div>
+    <div class="sec-title">Gør, ikke læs</div>
+    <div class="sec-sub">Kursisten lærer mest af det, hun ser og prøver — ikke af det, hun læser. Hvert modul bygges som en række aktiviteter med korte forklaringer imellem, ikke som en artikel med øvelser til sidst. Denne regel går forud for alt andet indhold i planen.</div>
+  </div>
 
-        <p class="prose">De fleste oplever, at AI spytter <em>kedeligt, generisk indhold</em> ud. Problemet er sjældent AI'en — det er instruktionen. Når du fortæller AI'en <strong>hvem du taler til, hvad du vil opnå, og i hvilket tonefald</strong>, ændrer svaret sig fuldstændigt. Det øver vi i dette modul.</p>
-
-        <ul class="bullets">
-          <li>Hvad en stærk brand-stemme består af — og hvordan du holder den konsistent.</li>
-          <li>Hvorfor en præcis prompt giver brugbart indhold, og en løs prompt giver støj.</li>
-          <li>Hvilken strategi der virker hvor — for de fire store platforme.</li>
-        </ul>
-
-        <div class="callout">
-          <span class="ic">🎯</span>
-          <div><h4>Princippet for hele kurset</h4><p>Du lærer ved at <strong>gøre</strong>, ikke ved at læse lange lister. Hvert modul har små øvelser, hvor du prøver det med det samme.</p></div>
-        </div>
-
-        <!-- ─── ØVELSE 1: TONEFALD-SLIDER ─── -->
-        <div class="exercise" id="ex1">
-          <div class="ex-head">
-            <span class="ex-tag">Øvelse 1</span>
-            <span class="ex-title">Skru på tonefaldet</span>
-            <span class="ex-state" id="ex1State">Ikke prøvet</span>
-          </div>
-          <div class="ex-body">
-            <p class="prose" style="margin-top:0">Samme budskab kan lyde vidt forskelligt. Træk i skyderen og se, hvordan tonefaldet ændrer den <em>samme</em> annoncering — og hvilken platform hvert tonefald passer bedst til.</p>
-            <div class="tone-stage">
-              <div class="tone-caption" id="toneCaption">Vi annoncerer hermed lanceringen af vores nye kaffeblanding. Den er fra i dag tilgængelig i vores webshop.</div>
-              <div class="tone-best" id="toneBest">Bedst til: <span class="chip">LinkedIn · B2B</span></div>
-            </div>
-            <div class="tone-control">
-              <input type="range" class="tone-range" id="toneRange" min="0" max="3" step="1" value="0" aria-label="Tonefald">
-              <div class="tone-ticks" id="toneTicks">
-                <span class="tone-tick active" data-i="0">Formel</span>
-                <span class="tone-tick" data-i="1">Professionel</span>
-                <span class="tone-tick" data-i="2">Venlig</span>
-                <span class="tone-tick" data-i="3">Legende</span>
-              </div>
-            </div>
-            <p class="ex-hint">💡 Pointe: der findes ikke ét "rigtigt" tonefald — der findes det rigtige tonefald <strong>til kanalen og målgruppen</strong>. Prøv alle fire for at fuldføre øvelsen.</p>
-          </div>
-        </div>
-
-        <!-- ─── ØVELSE 2: PROMPT-LAB ─── -->
-        <div class="exercise" id="ex2">
-          <div class="ex-head">
-            <span class="ex-tag">Øvelse 2</span>
-            <span class="ex-title">Prompt-laboratoriet</span>
-            <span class="ex-state" id="ex2State">Ikke prøvet</span>
-          </div>
-          <div class="ex-body">
-            <p class="prose" style="margin-top:0">Skriv en prompt, der beder AI'en lave et <strong>Instagram-opslag</strong> for et lille dansk kafferisteri. Jo flere byggeklodser du får med, jo bedre bliver svaret. Klodserne lyser op, efterhånden som du rammer dem.</p>
-            <div class="lab-blocks" id="labBlocks">
-              <span class="lab-block" data-k="platform">Platform</span>
-              <span class="lab-block" data-k="maalgruppe">Målgruppe</span>
-              <span class="lab-block" data-k="maal">Mål</span>
-              <span class="lab-block" data-k="tone">Tonefald</span>
-              <span class="lab-block" data-k="format">Format / CTA</span>
-            </div>
-            <textarea class="lab-input" id="labInput" placeholder="Fx: Skriv et Instagram-opslag til unge kaffeelskere. Målet er at få dem til at besøge webshoppen. Tonefaldet skal være venligt og legende. Brug en fængende åbning, korte linjer, 3 emojis og afslut med en opfordring + relevante hashtags."></textarea>
-            <div class="lab-bar">
-              <span class="lab-count" id="labCount">0 af 5 byggeklodser fundet</span>
-              <button class="btn btn-koral btn-sm" id="labRun">Generér opslag ✨</button>
-            </div>
-
-            <div class="lab-chat" id="labChat">
-              <div class="bubble-row user">
-                <div class="bubble user"><span class="who">Din prompt</span><span id="labEcho"></span></div>
-                <div class="bubble-av me">DU</div>
-              </div>
-              <div class="bubble-row ai">
-                <div class="bubble-av ai">AI</div>
-                <div class="bubble ai"><span class="who">AI-assistent</span><span id="labAnswer"></span></div>
-              </div>
-            </div>
-            <div class="lab-verdict" id="labVerdict" hidden></div>
-            <p class="lab-sim-note">Simuleret svar — denne øvelse bruger ingen rigtig AI og koster intet. På de øvrige kurser kører live AI gennem jeres egen server.</p>
-          </div>
-        </div>
-
-        <!-- ─── ØVELSE 3: STRATEGI-MATCH ─── -->
-        <div class="exercise" id="ex3">
-          <div class="ex-head">
-            <span class="ex-tag">Øvelse 3</span>
-            <span class="ex-title">Match strategi til platform</span>
-            <span class="ex-state" id="ex3State">0 / 4 matchet</span>
-          </div>
-          <div class="ex-body">
-            <p class="prose" style="margin-top:0">Hver platform belønner sin egen slags indhold. Klik på en <strong>platform</strong> til venstre og dernæst den <strong>strategi</strong>, der passer bedst, til højre.</p>
-            <div class="match-grid">
-              <div class="match-col">
-                <h5>Platform</h5>
-                <div id="matchPlatforms"></div>
-              </div>
-              <div class="match-col">
-                <h5>Bedste strategi</h5>
-                <div id="matchStrategies"></div>
-              </div>
-            </div>
-            <p class="ex-hint">💡 Tip: tænk på, hvordan folk <em>bruger</em> hver platform — ikke kun hvad du selv vil sige.</p>
-          </div>
-        </div>
-
-        <!-- ─── COMPLETE ZONE ─── -->
-        <div class="complete-zone" id="cz-m1">
-          <div class="cz-text"><span class="cz-ic">📝</span><span id="czText">Fuldfør alle 3 øvelser for at låse mini-quizzen op.</span></div>
-          <button class="btn btn-koral disabled" id="quizUnlockBtn" disabled>Tag mini-quizzen 🔒</button>
-        </div>
-
-        <!-- ─── MINI-QUIZ 1 ─── -->
-        <div class="quiz is-locked" id="quiz1">
-          <div class="quiz-head">
-            <div class="q-ic">🧩</div>
-            <div><h3>Mini-quiz · Modul 1</h3><p>Bestå med mindst 3 ud af 4 for at låse Modul 2 op.</p></div>
-          </div>
-          <div class="quiz-body" id="quizBody"></div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ─── CTA: vises når Q1 (mini-quiz) er bestået ─── -->
-    <div class="next-cta" id="goNext" hidden>
-      <button class="btn-next" id="goNextBtn">Gå til Modul 2 →</button>
+  <div class="frame">
+    <div class="note note-plum">
+      <div class="note-t">Femlinjersreglen — ufravigelig</div>
+      Der må aldrig stå mere end <strong>fem linjer tekst i træk</strong>. Derefter skal der komme en øvelse, et tal, en figur, en visuel forklaring eller et refleksionsspørgsmål. Er en forklaring længere end fem linjer, er den enten for lang eller også skulle den have været en aktivitet.
     </div>
 
-    <div class="sect-label"><hr><span>Resten af kurset</span><hr></div>
+    <div class="b-sub" style="margin-top:22px">Aktivitetstyper — vælg mindst fire forskellige pr. modul</div>
+    <ul class="b-list">
+      <li><strong>Sortérleg</strong> — kort, opgaver eller udsagn skal placeres i den rigtige kasse. God til kategorier og begreber.</li>
+      <li><strong>Detektivopgave</strong> — brugeren får et spor (en pris, en svaghed, et symptom) og skal finde ud af hvad eller hvem det er.</li>
+      <li><strong>Byg-selv</strong> — tomme pladser brugeren skal fylde ud, med live feedback på huller og dubletter.</li>
+      <li><strong>Regnemaskine</strong> — brugeren taster sine egne tal ind og ser konsekvensen med det samme.</li>
+      <li><strong>Rækkefølgeleg</strong> — trin der skal sættes i rigtig orden.</li>
+      <li><strong>Før og efter</strong> — to versioner ved siden af hinanden; brugeren peger på forskellen, før forklaringen kommer.</li>
+      <li><strong>Refleksionsspørgsmål</strong> — brugeren svarer på noget om sig selv, og svaret bruges senere i modulet.</li>
+      <li><strong>Visuel statistik</strong> — søjler, skalaer eller diagrammer der viser et forhold, som ellers ville være en tekstlig forklaring.</li>
+      <li><strong>Hands-on-opgave</strong> — noget brugeren gør uden for skærmen og tager med videre i kurset.</li>
+    </ul>
 
-    <!-- ════════ MODUL 2 (låst, visuelt) ════════ -->
-    <section class="mod is-locked" id="m2">
-      <div class="mod-header">
-        <div class="mod-num">2</div>
-        <div class="mod-text">
-          <div class="mod-title">Indhold der stopper scrollet</div>
-          <div class="mod-sub">Hooks, billedtekster, hashtags &amp; visuel idé-generering</div>
-        </div>
-        <span class="mod-badge locked">🔒 Låst</span>
-      </div>
-      <div class="mod-body collapsed"></div>
-    </section>
+    <div class="b-sub" style="margin-top:22px">Sådan omskrives en forklaring til en aktivitet</div>
+    <ul class="b-list">
+      <li>"Her er de fem kategorier" → <strong>sortér tolv opgaver i fem kasser.</strong></li>
+      <li>"Dette værktøj har denne svaghed" → <strong>gæt hvilket værktøj svagheden hører til.</strong></li>
+      <li>"Sådan sammensætter du en stak" → <strong>byg din egen stak og få at vide hvad der mangler.</strong></li>
+      <li>"Regn med tre forsøg pr. brugbart klip" → <strong>tast dine egne tal og se prisen.</strong></li>
+      <li>"Dårlig lyd koster seere" → <strong>hør to klip og vælg hvilket du ville se færdigt.</strong></li>
+    </ul>
 
-    <!-- ════════ MODUL 3 (låst, visuelt) ════════ -->
-    <section class="mod is-locked" id="m3">
-      <div class="mod-header">
-        <div class="mod-num">3</div>
-        <div class="mod-text">
-          <div class="mod-title">Planlæg, analysér &amp; voks</div>
-          <div class="mod-sub">Indholdskalender, analyse af tal &amp; A/B-test med AI</div>
-        </div>
-        <span class="mod-badge locked">🔒 Låst</span>
-      </div>
-      <div class="mod-body collapsed"></div>
-    </section>
-
-    <!-- ════════ EKSAMEN (låst) ════════ -->
-    <div class="exam-cta">
-      <span class="exam-tag">🎓 Afsluttende eksamen</span>
-      <h3>Klar til beviset?</h3>
-      <p>Eksamenen består af to dele og afslutter kurset. Bestå begge, og du får dit badge og et personligt, downloadbart bevis.</p>
-      <div class="exam-parts">
-        <div class="exam-part"><b>Del 1 · Teori</b><small>Spørgsmål der tester kernekoncepterne fra alle 3 moduler.</small></div>
-        <div class="exam-part"><b>Del 2 · Praktisk</b><small>En håndgribelig opgave, hvor du bygger og forbedrer et rigtigt opslag.</small></div>
-      </div>
-      <div class="exam-locked-btn" id="examBtn">🔒 Eksamen åbner når Modul 3 er gennemført</div>
-      <div class="exam-reward">🏅 Belønning: badge til din profil + downloadbart bevis</div>
+    <div class="note note-red" style="margin-top:22px">
+      <div class="note-t">Forbudt i alle moduler</div>
+      <ul>
+        <li>Afsnit på over fem linjer uden noget at gøre bagefter.</li>
+        <li>Lister af værktøjer eller begreber, brugeren kun scroller forbi.</li>
+        <li>Aktiviteter der kun kræver et klik for at komme videre — de tæller ikke som øvelser.</li>
+        <li>Låse der åbnes af klik i stedet for af forståelse.</li>
+        <li>Forklaringer der kunne have været et tal, en søjle eller en figur.</li>
+      </ul>
     </div>
 
-  </main>
+    <div class="note note-green" style="margin-top:18px">
+      <div class="note-t">Tidsfordeling pr. modul (35–40 min)</div>
+      Højst <strong>10–12 minutters læsning</strong> (ca. 2.000–2.400 ord). Resten er aktivitet. Rammer et modul ikke den fordeling, skal teksten skæres — ikke tiden hæves.
+    </div>
+  </div>
+
+  <!-- ══════════ ACCENTPROGRESSION ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Designsystem</div>
+    <div class="sec-title">Blomme-progressionen</div>
+    <div class="sec-sub">Accenten bliver gradvist dybere gennem kurset — brugeren mærker at hun bevæger sig fremad, uden at nogen side føles fremmed. Honning &amp; Skov-basis, Lora + Outfit og sandfarvet sidebar er uændret på alle sider.</div>
+  </div>
+
+  <div class="frame">
+    <div class="sw-row">
+      <div class="sw"><div class="sw-c" style="background:#8a5077"></div><div class="sw-n">Forb.<br>#8a5077</div></div>
+      <div class="sw"><div class="sw-c" style="background:#83496f"></div><div class="sw-n">M1<br>#83496f</div></div>
+      <div class="sw"><div class="sw-c" style="background:#7c4468"></div><div class="sw-n">M2<br>#7c4468</div></div>
+      <div class="sw"><div class="sw-c" style="background:#754062"></div><div class="sw-n">M3<br>#754062</div></div>
+      <div class="sw"><div class="sw-c" style="background:#6e3b5c"></div><div class="sw-n">M4<br>#6e3b5c</div></div>
+      <div class="sw"><div class="sw-c" style="background:#673656"></div><div class="sw-n">M5<br>#673656</div></div>
+      <div class="sw"><div class="sw-c" style="background:#603250"></div><div class="sw-n">M6<br>#603250</div></div>
+      <div class="sw"><div class="sw-c" style="background:#592d4a"></div><div class="sw-n">M7<br>#592d4a</div></div>
+      <div class="sw"><div class="sw-c" style="background:#522944"></div><div class="sw-n">M8<br>#522944</div></div>
+      <div class="sw"><div class="sw-c" style="background:#4b243e"></div><div class="sw-n">M9<br>#4b243e</div></div>
+      <div class="sw"><div class="sw-c" style="background:#452139"></div><div class="sw-n">Eks. 1<br>#452139</div></div>
+      <div class="sw"><div class="sw-c" style="background:#3e1d33"></div><div class="sw-n">Eks. 2<br>#3e1d33</div></div>
+      <div class="sw"><div class="sw-c" style="background:linear-gradient(135deg,#5e3550,#c2a038)"></div><div class="sw-n">Diplom<br>blomme+guld</div></div>
+    </div>
+    <div class="note note-plum" style="margin-top:18px">
+      <div class="note-t">Regel</div>
+      Hver mini-quiz arver accentfarven fra sit eget modul. Accenten bruges til bånd, knapper, numre og fremhævninger — aldrig til flader. Ivory og skovgrøn forbliver rygraden.
+    </div>
+  </div>
+
+  <!-- ══════════ REJSEN ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Struktur</div>
+    <div class="sec-title">Brugerens rejse</div>
+    <div class="sec-sub">Modul 9 fører direkte til eksamen — derfor 8 quizzer og ikke 9. Eksamen del 1 trækker præcis 2 spørgsmål fra hvert modul.</div>
+  </div>
+
+  <div class="journey">
+    <div class="journey-track">
+      <div class="j-node"><div class="j-dot">F</div><div class="j-lbl">Forbered.</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">1</div><div class="j-lbl">Værktøjer</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q1</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">2</div><div class="j-lbl">Manus</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q2</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">3</div><div class="j-lbl">Redigering</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q3</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">4</div><div class="j-lbl">Branding</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q4</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">5</div><div class="j-lbl">Produkt&shy;video</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q5</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">6</div><div class="j-lbl">Trends</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q6</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">7</div><div class="j-lbl">Automa&shy;tisering</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q7</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">8</div><div class="j-lbl">Regler</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot quiz">Q8</div><div class="j-lbl">Quiz</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot">9</div><div class="j-lbl">Moneti&shy;sering</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot exam">E1</div><div class="j-lbl">Eksamen 1</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot exam">E2</div><div class="j-lbl">Eksamen 2</div></div>
+      <div class="j-line"></div>
+      <div class="j-node"><div class="j-dot dip">★</div><div class="j-lbl">Diplom</div></div>
+    </div>
+  </div>
+
+  <!-- ══════════ FILOVERSIGT ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Leverance</div>
+    <div class="sec-title">Alle 21 filer</div>
+  </div>
+
+  <div class="frame">
+    <div class="tbl-wrap">
+    <table class="tbl">
+      <thead><tr><th>#</th><th>Fil</th><th>Type</th><th>Accent</th><th>Varighed</th></tr></thead>
+      <tbody>
+        <tr><td>0</td><td><code>forberedelse-social-medie.html</code></td><td>Forberedelse</td><td>#8a5077</td><td>10 min</td></tr>
+        <tr><td>1</td><td><code>kursus1-social-medie.html</code></td><td>Modul</td><td>#83496f</td><td>35–40 min</td></tr>
+        <tr><td>1q</td><td><code>quiz1-social-medie.html</code></td><td>Mini-quiz</td><td>#83496f</td><td>5 min</td></tr>
+        <tr><td>2</td><td><code>kursus2-social-medie.html</code></td><td>Modul</td><td>#7c4468</td><td>35–40 min</td></tr>
+        <tr><td>2q</td><td><code>quiz2-social-medie.html</code></td><td>Mini-quiz</td><td>#7c4468</td><td>5 min</td></tr>
+        <tr><td>3</td><td><code>kursus3-social-medie.html</code></td><td>Modul</td><td>#754062</td><td>35–40 min</td></tr>
+        <tr><td>3q</td><td><code>quiz3-social-medie.html</code></td><td>Mini-quiz</td><td>#754062</td><td>5 min</td></tr>
+        <tr><td>4</td><td><code>kursus4-social-medie.html</code></td><td>Modul</td><td>#6e3b5c</td><td>35–40 min</td></tr>
+        <tr><td>4q</td><td><code>quiz4-social-medie.html</code></td><td>Mini-quiz</td><td>#6e3b5c</td><td>5 min</td></tr>
+        <tr><td>5</td><td><code>kursus5-social-medie.html</code></td><td>Modul</td><td>#673656</td><td>35–40 min</td></tr>
+        <tr><td>5q</td><td><code>quiz5-social-medie.html</code></td><td>Mini-quiz</td><td>#673656</td><td>5 min</td></tr>
+        <tr><td>6</td><td><code>kursus6-social-medie.html</code></td><td>Modul</td><td>#603250</td><td>35–40 min</td></tr>
+        <tr><td>6q</td><td><code>quiz6-social-medie.html</code></td><td>Mini-quiz</td><td>#603250</td><td>5 min</td></tr>
+        <tr><td>7</td><td><code>kursus7-social-medie.html</code></td><td>Modul</td><td>#592d4a</td><td>35–40 min</td></tr>
+        <tr><td>7q</td><td><code>quiz7-social-medie.html</code></td><td>Mini-quiz</td><td>#592d4a</td><td>5 min</td></tr>
+        <tr><td>8</td><td><code>kursus8-social-medie.html</code></td><td>Modul</td><td>#522944</td><td>35–40 min</td></tr>
+        <tr><td>8q</td><td><code>quiz8-social-medie.html</code></td><td>Mini-quiz</td><td>#522944</td><td>5 min</td></tr>
+        <tr><td>9</td><td><code>kursus9-social-medie.html</code></td><td>Modul</td><td>#4b243e</td><td>35–40 min</td></tr>
+        <tr><td>E1</td><td><code>eksamen-social-medie.html</code></td><td>Eksamen del 1</td><td>#452139</td><td>25 min</td></tr>
+        <tr><td>E2</td><td><code>eksamen-social-medie-del2.html</code></td><td>Eksamen del 2</td><td>#3e1d33</td><td>40 min</td></tr>
+        <tr><td>★</td><td><code>diplom-social-medie.html</code></td><td>Diplom + badge</td><td>blomme + guld</td><td>—</td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- ══════════ BYGGEKORT ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Eksekvering</div>
+    <div class="sec-title">Byggekort med prompts</div>
+    <div class="sec-sub"><strong>Alle moduler bygges efter reglen "gør, ikke læs" — se pædagogik-sektionen ovenfor.</strong> Klik et kort for at folde det ud. Kopiér prompten og send den i en frisk Claude-chat — ét kort pr. chat. Afkryds feltet når filen er bygget, valideret og uploadet til GitHub. Fremdriften gemmes lokalt i browseren.</div>
+  </div>
+
+  <!-- FORBEREDELSE -->
+  <div class="build" id="b-forb">
+    <div class="build-head" onclick="tog('b-forb')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b-forb')" onkeydown="tickKey(event,'b-forb')">✓</div>
+      <div class="build-num">F</div>
+      <div class="build-txt">
+        <div class="build-title">Forberedelsesside</div>
+        <div class="build-file">forberedelse-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#8a5077</span>
+          <span class="chip chip-time">10 min</span>
+          <span class="chip">Ingen quiz</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Formål</div>
+      <p class="b-txt">Kort, ærlig kontrakt med brugeren, før hun bruger coins. Hun skal på under ti minutter vide præcis hvad hun lærer, hvad hun kan bagefter, hvad det kræver af hende — og hvad kurset <em>ikke</em> er.</p>
+      <div class="b-sub">Indhold</div>
+      <ul class="b-list">
+        <li><strong>Det her lærer du</strong> — de ni moduler i én sætning hver</li>
+        <li><strong>Det her kan du bagefter</strong> — ni konkrete færdigheder formuleret som "du kan…"</li>
+        <li><strong>Sådan er kurset bygget</strong> — 9 moduler, 8 quizzer (4/5 for at bestå), eksamen i to dele, diplom</li>
+        <li><strong>Det kræver det af dig</strong> — ~6 timer, en telefon med kamera, en gratis AI-konto, tålmodighed til at øve</li>
+        <li><strong>Det her er kurset ikke</strong> — ingen garanti for følgere, ingen genvej til viral succes, ingen juridisk eller skattemæssig rådgivning</li>
+        <li>CTA til <code>kursus1-social-medie.html</code></li>
+      </ul>
+      <div class="note note-amber">
+        <div class="note-t">Adgangsgate</div>
+        Siden læser <code>completedCourses</code> fra Firestore. Indeholder den ikke <code>'D'</code>, vises en venlig låst tilstand med knap til <code>platform.html</code> — ikke en fejlbesked.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt F</div><button class="copy-btn" onclick="cp('pF',this)">Kopiér</button></div>
+        <div class="pbox-body" id="pF">Du bygger på Akademiet AI. Byg forberedelsessiden til sidekurset "AI til Sociale Medier".
+
+FØRST — hent den live reference og gæt aldrig på strukturen:
+curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/forberedelse-c.html"
+
+FILNAVN: forberedelse-social-medie.html
+
+DESIGN
+Genbrug hele Honning og Skov-strukturen fra referencen uændret: Lora til overskrifter, Outfit til brødtekst, baggrund #e8e2d3, kort #fbf7ee, blæk #20312a, sidebar-sand #ddd3ba.
+Behold variabelnavnene --c-gold-* (de er strukturelle, ikke semantiske). Skift KUN værdierne til blomme:
+  --c-gold-deep:#5c3350; --c-gold:#8a5077; --c-gold-rgb:138,80,119;
+  --c-gold-warm-rgb:200,150,182; --c-gold-mid-rgb:166,110,146;
+  --c-gold-mid:#a66e92; --c-gold-warm:#c896b6; --c-gold-ink:#41213a;
+  --c-gold-tint:#efe4ec; --c-gold-faint:#faf4f8;
+
+BRANDREGEL: synligt navn er ALTID "Akademiet AI" — tjek topbar .brand-name i referencen og ret Learn<b>AI</b> til Akademiet <b>AI</b> hvis den er forkert.
+
+INDHOLD (dansk, varmt og direkte, ingen salgssprog)
+1. Hero: "AI til Sociale Medier" + undertitel om at gå fra råt klip til betalt kanal.
+2. "Det her lærer du" — de 9 moduler i én sætning hver:
+   1 AI-værktøjskassen · 2 Idé, hook og manuskript · 3 Optagelse og AI-redigering ·
+   4 Visuel identitet og billedgenerering · 5 Produktvideo og reklame · 6 Trends og viralitet ·
+   7 Kanalstyring og automatisering · 8 Regler og ban-sikring · 9 Monetisering
+3. "Det her kan du bagefter" — 9 konkrete "du kan…"-sætninger.
+4. "Sådan er kurset bygget" — 9 moduler à 35-40 min, 8 mini-quizzer (5 spørgsmål, bestå med 4),
+   eksamen del 1 (18 spørgsmål, bestå med 15), eksamen del 2 (praktisk opsætning), diplom og badge.
+5. "Det kræver det af dig" — ca. 6 timer, telefon med kamera, gratis AI-konto, vilje til at øve.
+6. "Det her er kurset ikke" — ingen garanti for følgere, ingen viral-genvej,
+   ingen juridisk, skattemæssig eller økonomisk rådgivning.
+7. CTA-knap til kursus1-social-medie.html.
+
+ADGANGSGATE
+Læs completedCourses fra Firestore (samme mønster som eksisterende sider).
+Indeholder den ikke 'D': vis en venlig låst tilstand med knap til platform.html. Ikke en fejlbesked.
+Læg const COIN_PRICE = 0; øverst i scriptet, klar til senere prissætning.
+
+VALIDERING FØR LEVERING
+- node --check på al inline JS
+- DOM-balance med Python lxml
+- Playwright-screenshot af både låst og åben tilstand
+- Lever komplet upload-klar fil via present_files
+
+Byg ikke andre filer end denne.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 1 -->
+  <div class="build" id="b1">
+    <div class="build-head" onclick="tog('b1')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b1')" onkeydown="tickKey(event,'b1')">✓</div>
+      <div class="build-num">1</div>
+      <div class="build-txt">
+        <div class="build-title">AI-værktøjskassen</div>
+        <div class="build-file">kursus1-social-medie.html + quiz1-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#83496f</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">7 aktiviteter · maks 1.800 ord</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan placere enhver videoopgave i den rigtige af fem kategorier, finde det værktøj der løser den, og bygge sin egen stak — uden at have læst en eneste liste igennem.</p>
+      <div class="b-sub">Aktiviteter i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Sortérlegen</strong> — tolv opgavekort skal ned i de rigtige af fem kasser. Kategorierne læres ved at bruge dem, ikke ved at læse dem</li>
+        <li><strong>1b. Kæden</strong> — de fem led i én video sættes i rigtig rækkefølge. Visuel, ikke tekstlig</li>
+        <li><strong>1c. Refleksion</strong> — "hvilket led er du dårligst til?" Svaret bruges igen i afsnit 3</li>
+        <li><strong>2. Detektiven</strong> — en svaghed og en pris vises; brugeren gætter værktøjet. Fem runder, data fra <code>TOOLS</code></li>
+        <li><strong>2b. Prissøjlerne</strong> — månedsprisen for alle værktøjer som vandrette søjler, så niveauet ses i stedet for læses</li>
+        <li><strong>2c. Prisregneren</strong> — brugeren taster videoer pr. måned og forsøg pr. klip og ser prisen pr. brugbar video</li>
+        <li><strong>3. Byg din stak</strong> — fire tomme led fyldes ud. Live feedback på huller, dubletter, samlet pris og dansk-dækning. Derefter kan de tre profilstakke lægges ovenpå som visuel forskel</li>
+        <li><strong>4. Matcheren</strong> — fire spørgsmål; resultatet stilles op mod den stak brugeren selv byggede</li>
+      </ul>
+      <div class="note note-plum">
+        <div class="note-t">Tekstbudget for dette modul</div>
+        Højst <strong>1.800 ord</strong> i alt. Værktøjsdata i <code>TOOLS</code> tæller ikke med, fordi de kun møder brugeren gennem opgaver — aldrig som en liste der skal læses forfra.
+      </div>
+      <div class="note note-red">
+        <div class="note-t">Kritisk: forældelse</div>
+        Værktøjslisten er kursets korteste holdbarhedsvare. Den skal ligge som <strong>ét centralt dataobjekt</strong> øverst i scriptet (<code>const TOOLS = [...]</code>), så hele siden rendres derfra. Så opdateres kurset ét sted i stedet for tolv. Værktøjerne skal verificeres live før teksten skrives — ikke skrives fra hukommelsen.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 1</div><button class="copy-btn" onclick="cp('p1',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p1">Du er læringsdesigner og senior frontend-udvikler på Akademiet AI. Det er Alexander der skriver.
+
+OPGAVE: Byg modul 1 af sidekurset "AI til Sociale Medier" HELT OM — fra læsemodul til øvelsesmodul.
+KUN denne ene fil. FILNAVN: kursus1-social-medie.html
+
+HENT FØRST — gæt aldrig på strukturen
+curl -s -o gammel.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus1-social-medie.html"
+curl -s -o plan.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/byggeplan-social-medie.html"
+Den gamle fil er din KILDE, ikke din skabelon. Genbrug: designsystemet, accentvariablerne,
+låselogikken, sidebar-strukturen og hele TOOLS-dataobjektet med de elleve værktøjer.
+Smid væk: alle lange prosablokke. Læs pædagogik-sektionen i planen, før du begynder.
+
+DET DER ER GALT MED DEN NUVÆRENDE FIL
+Den er på knap 7.000 ord og læses på 35 minutter. Kursisten scroller mere end hun gør noget.
+Målet er det stik modsatte: hun skal gøre noget hele tiden, og teksten skal kun forklare
+det, hun lige har prøvet eller er ved at prøve.
+
+HÅRDE KRAV — måles i fase 5, ikke vurderes
+- Højst 1.800 ord synlig tekst i alt (TOOLS-felter tæller ikke med)
+- ALDRIG mere end 5 linjer tekst i træk uden en øvelse, et tal, en figur eller et spørgsmål
+- Mindst 7 aktiviteter, fordelt på mindst 4 forskellige typer
+- Mindst 1 refleksionsspørgsmål hvis svar bruges senere i modulet
+- Mindst 1 visuel statistik der erstatter en forklaring
+- Samlet tid 35-40 min, hvoraf HØJST 10 min er læsning
+- Nul coins. Brandnavn altid "Akademiet AI"
+
+ACCENT — behold variabelnavnene --c-gold-*, skift kun værdierne
+--c-gold-deep:#552e49; --c-gold:#83496f; --c-gold-rgb:131,73,111;
+--c-gold-warm-rgb:196,146,178; --c-gold-mid-rgb:160,105,140;
+--c-gold-mid:#a0698c; --c-gold-warm:#c492b2; --c-gold-ink:#3d1f36;
+--c-gold-tint:#eee3eb; --c-gold-faint:#faf3f7;
+
+AKTIVITETERNE — byg disse syv
+
+AFSNIT 1 — Kategorierne læres ved at bruge dem
+ 1. SORTÉRLEGEN. Tolv opgavekort ("42 minutters interview skal blive til fem klip",
+    "rumklang i køkkenet", "luftfoto uden drone" osv.) skal placeres i fem kasser.
+    Brugeren vælger et kort og klikker en kasse. Ved fejl: kort begrundelse for BÅDE
+    hvorfor hendes valg var forkert, OG hvad det rigtige er. Score vises til sidst.
+ 2. KÆDEN. Fem led i én video (materiale, klipning, lyd, tekst, format) vises i tilfældig
+    rækkefølge og skal sættes rigtigt. Ren visuel opgave, ingen forklarende tekst før.
+    Først NÅR den er løst, kommer tre linjer om hvorfor ét værktøj sjældent rækker.
+ 3. REFLEKSION. "Hvilket af de fem led er du dårligst til lige nu?" Fem knapper.
+    Svaret gemmes i tilstanden og bruges igen i afsnit 3, hvor det led fremhæves.
+
+AFSNIT 2 — Værktøjerne mødes som spor, ikke som liste
+ 4. DETEKTIVEN. Fem runder. Hver runde viser ÉN svaghed og ÉT prisniveau hentet fra TOOLS.
+    Brugeren gætter blandt tre værktøjer i samme kategori. Feedback bruger værktøjets
+    egne felter — ikke ny tekst. Det er sådan brugeren lærer værktøjerne at kende.
+ 5. PRISSØJLERNE. Vandrette søjler med månedspris for alle elleve værktøjer, gratis = 0.
+    Farve efter dansk-understøttelse (ja/delvist/nej). Erstatter hele prosaafsnittet om
+    prisniveauer. Højst to linjer tekst over grafen.
+ 6. PRISREGNEREN. Tre felter: videoer pr. måned, forsøg pr. brugbart klip, månedspris.
+    Viser live prisen pr. brugbar video. Ingen forklaring af regnestykket — tallet forklarer.
+ Værktøjsopslag: en KOMPAKT tabel (navn, kategori, pris, dansk-prik, svaghed i én linje),
+ der kan foldes ud pr. række. Ikke elleve store kort man scroller igennem.
+
+AFSNIT 3 — Stakken bygges, ikke læses
+ 7. BYG DIN STAK. Fire tomme led: klipning, undertekster, billedside, stemme. Brugeren
+    vælger et værktøj til hvert fra TOOLS. Live feedback mens hun bygger: samlet månedspris,
+    om dansk er dækket, om to led gør det samme, og om et led står tomt. Leddet hun valgte
+    i refleksionen (aktivitet 3) markeres som "det du selv sagde var din svaghed".
+    Tre knapper lægger profilstakkene (telefon / seriøs / virksomhed) ovenpå hendes egen
+    som VISUEL forskel — grønt for ens, blomme for anderledes. Ikke tre faner med prosa.
+
+AFSNIT 4 — Matcheren og prøven
+ Behold matcherens fire spørgsmål og regelsættet i byggStak() fra den gamle fil, uændret.
+ Nyt: resultatet stilles side om side med den stak brugeren selv byggede i afsnit 3, med
+ én linje om hvert sted de er uenige. Afslut med en hands-on-opgave: optag tredive sekunder,
+ klip, tekst på, se den uden lyd. Filen skal bruges igen i modul 3.
+
+LÅSELOGIK
+Som i den gamle fil, men hvert afsnit låses op af AKTIVITETEN — ikke af klik.
+Afsnit 1: alle tolv kort sorteret + kæden løst + refleksionen besvaret.
+Afsnit 2: fem detektivrunder gennemført + regneren brugt mindst én gang.
+Afsnit 3: alle fire led fyldt ud.
+Afsnit 4: matcheren kørt igennem.
+Synlig tæller ved hver lås, så brugeren kan se hvor langt der er igen.
+Quiz-knappen peger på quiz1-social-medie.html.
+
+BEHOLD FRA DEN GAMLE FIL — rør dem ikke
+- TOOLS-objektet med alle elleve værktøjer, url, ikon og alle tekstfelter
+- byggStak() og de fire matcher-spørgsmål
+- Lagring af fremskridt i localStorage
+- slaaOp() som sikkerhedsnet hvis et værktøj fjernes fra TOOLS
+- Højre sidebar rendret fra TOOLS
+
+ARBEJDSPROCES — fem faser med loop, ingen springes over
+
+FASE 1 — BYG
+Byg modulet efter beskrivelsen ovenfor.
+
+FASE 2 — SKÆR
+Gå filen igennem med saksen. For hvert tekstafsnit: kan det blive til en øvelse, et tal
+eller en figur? Så gør det. Kan det slettes uden at noget går tabt? Så slet det.
+Skriv listen over hvad du skar væk, og hvor mange ord det gav.
+
+FASE 3 — KRITIK
+Vær 100 % kritiker. Find PRÆCIS 10 forbedringer: hvad er galt, hvorfor det skader
+brugeren, hvad der konkret skal ændres. Mindst 5 skal handle om, om aktiviteten faktisk
+lærer noget fra sig — eller bare er noget at klikke på. Du må ikke forsvare dit eget arbejde.
+
+FASE 4 — RET
+Implementér alt fra fase 2 og alle 10 punkter fra fase 3. Afvis højst 2, og skriv hvorfor.
+
+FASE 5 — MASKINTJEK MED LOOP
+Kør hvert punkt og vis resultatet. FEJLER ÉT PUNKT: tilbage til FASE 2 og kør igen.
+Loop indtil alle er grønne. Rapportér hvor mange gennemløb det tog.
+[ ] Ordtælling af synlig tekst (uden TOOLS-felter) → HØJST 1.800
+[ ] Længste sammenhængende tekstblok målt i linjer ved 820px → HØJST 5
+[ ] Antal aktiviteter → MINDST 7, fordelt på mindst 4 typer (list dem)
+[ ] node --check på al inline JS → ingen fejl
+[ ] Python lxml → DOM balanceret
+[ ] grep: nul "LearnAI" i synlig tekst, nul coins, nul API-nøgler
+[ ] grep: nul hårdkodede værktøjsnavne i HTML-kroppen — alt rendres fra TOOLS
+[ ] Playwright 1240px: screenshot af hver enkelt aktivitet, både ubesvaret og besvaret
+[ ] Playwright 390px: scrollWidth minus clientWidth = 0
+[ ] Alle syv aktiviteter kan gennemføres med tastatur alene (Tab + Enter) — vis testen
+[ ] Hver aktivitet giver forskellig feedback ved mindst 2 forskellige svar — vis det
+
+FØRST når alle punkter er grønne: lever filen via present_files.
+Er noget større eller anderledes end forventet, så stop og sig det.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 1q — mini-quiz</div><button class="copy-btn" onclick="cp('p1q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p1q">Du bygger på Akademiet AI. Byg mini-quizzen til modul 1 af sidekurset "AI til Sociale Medier".
+
+FØRST — hent den live reference:
+curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+
+FILNAVN: quiz1-social-medie.html
+ACCENT: samme blomme som modul 1 — --c-gold:#83496f, --c-gold-deep:#552e49,
+--c-gold-mid:#a0698c, --c-gold-warm:#c492b2, --c-gold-ink:#3d1f36,
+--c-gold-tint:#eee3eb, --c-gold-faint:#faf3f7, --c-gold-rgb:131,73,111.
+
+FORMAT
+5 spørgsmål. Bestå med 4 rigtige. Ubegrænsede forsøg.
+INGEN COINS — dette er et sidekursus og en coin-sink. Fjern al coin-tekst fra referencen.
+Ved beståelse: knap videre til kursus2-social-medie.html.
+Ved dumpet: venlig besked, knap tilbage til kursus1-social-medie.html, knap til nyt forsøg.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+Mindst ét spørgsmål viser data fra TOOLS (en pris eller en svaghed) og beder brugeren
+udpege værktøjet — samme mekanik som detektivopgaven i modulet.
+
+EMNER — kun fra modul 1: at placere en opgave i den rigtige af de fem kategorier, at koble
+værktøj og opgave, at vælge stak efter budget og niveau, og at se hvornår ét værktøj ikke er nok.
+
+INTEGRITETSKRAV (ufravigeligt)
+- Svarlængder skal være balancerede. Hverken "vælg det længste" eller "vælg det korteste"
+  må score over ca. 25 %. Tjek det eksplicit ved at simulere begge strategier.
+- De rigtige svar skal fordeles på A/B/C/D uden noget mønster.
+- Hvert spørgsmål har en kort forklaring der vises efter svar — også ved rigtigt svar.
+
+VALIDERING: node --check, lxml DOM-balance, Playwright-screenshots af intro, spørgsmål,
+bestået og dumpet. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 2 -->
+  <div class="build" id="b2">
+    <div class="build-head" onclick="tog('b2')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b2')" onkeydown="tickKey(event,'b2')">✓</div>
+      <div class="build-num">2</div>
+      <div class="build-txt">
+        <div class="build-title">Idé, hook og manuskript</div>
+        <div class="build-file">kursus2-social-medie.html + quiz2-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#7c4468</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: hook-generator (AI)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan få AI til at fortælle hende præcis hvad hun skal filme — fra rå idé til hook, drejebog og shotlist hun kan holde i hånden mens hun optager.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. De første tre sekunder</strong> — hvorfor de fleste videoer taber seeren før indholdet begynder</li>
+        <li><strong>2. Syv hook-formler</strong> — med eksempler på dansk, og hvornår hver virker</li>
+        <li><strong>3. Fra idé til drejebog</strong> — prompten med rolle, kontekst og ønsket format</li>
+        <li><strong>4. Shotlisten</strong> — at oversætte manuskript til konkrete klip du faktisk kan filme</li>
+      </ul>
+      <div class="note note-plum">
+        <div class="note-t">AI-kald</div>
+        Første modul med live AI. Alt går gennem Cloudflare Worker'en — aldrig direkte til Anthropics API, aldrig en nøgle i HTML. Brug <code>claude-sonnet-4-6</code> med streaming, da output er kreativt og langt.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 2</div><button class="copy-btn" onclick="cp('p2',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p2">Du bygger på Akademiet AI. Byg modul 2 af sidekurset "AI til Sociale Medier".
+
+FØRST — hent den live reference:
+curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+
+FILNAVN: kursus2-social-medie.html
+
+DESIGN: Honning og Skov som referencen. Behold variabelnavnene --c-gold-*, skift kun værdierne:
+  --c-gold-deep:#4f2b45; --c-gold:#7c4468; --c-gold-rgb:124,68,104;
+  --c-gold-warm-rgb:192,142,174; --c-gold-mid-rgb:154,100,134;
+  --c-gold-mid:#9a6486; --c-gold-warm:#c08eae; --c-gold-ink:#391d33;
+  --c-gold-tint:#ede2ea; --c-gold-faint:#f9f2f6;
+BRANDREGEL: synligt navn er ALTID "Akademiet AI".
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: De første tre sekunder. Hvorfor de fleste videoer taber seeren før indholdet begynder.
+  Forklar retention-kurven i almindeligt sprog. Vis en simpel visualisering af hvor folk falder fra.
+Afsnit 2: Syv hook-formler med danske eksempler — f.eks. modsigelsen, det konkrete tal,
+  fejlen alle laver, før-og-efter, spørgsmålet der kræver svar, den korte historie, det uventede syn.
+  For hver formel: hvornår den virker, og hvornår den bliver klichéagtig.
+Afsnit 3: Fra idé til drejebog. Lær brugeren prompt-strukturen rolle + kontekst + specifikt +
+  ønsket format, anvendt på video. Vis en dårlig og en god prompt side om side med samme opgave.
+Afsnit 4: Shotlisten. Hvordan et manuskript bliver til konkrete klip: hvad kameraet ser,
+  hvor længe, hvad der siges, hvad der vises på skærmen.
+
+INTERAKTIV: HOOK-GENERATOR (live AI)
+Brugeren skriver sin niche og sin videoidé i to felter. Ved klik kaldes AI'en og streamer:
+  - 10 hook-forslag i forskellige formler
+  - et kort manuskript på 30-40 sekunder
+  - en shotlist med 4-6 klip
+AI-KALD: udelukkende gennem Cloudflare Worker'en learnai-proxy. ALDRIG direkte til
+api.anthropic.com fra HTML, ALDRIG en API-nøgle i filen. Model: claude-sonnet-4-6, stream: true.
+Læs SSE-strømmen og render content_block_delta-events løbende. Håndter [DONE] og fejl pænt
+med en venlig fejlbesked, ikke en tom skærm.
+Tilføj en kopiér-knap til det genererede manuskript.
+
+LÅSELOGIK: som referencen. Quiz-knap nederst peger på quiz2-social-medie.html, låst indtil
+alle fire afsnit er åbnet OG hook-generatoren er brugt mindst én gang.
+INGEN COINS nogen steder.
+
+VALIDERING: node --check, lxml DOM-balance, Playwright-screenshots af alle tilstande
+inkl. generator før og efter kørsel. Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 2q — mini-quiz</div><button class="copy-btn" onclick="cp('p2q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p2q">Byg quiz2-social-medie.html — mini-quiz til modul 2 af sidekurset "AI til Sociale Medier".
+
+Hent reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#7c4468, --c-gold-deep:#4f2b45, --c-gold-mid:#9a6486, --c-gold-warm:#c08eae,
+--c-gold-ink:#391d33, --c-gold-tint:#ede2ea, --c-gold-faint:#f9f2f6, --c-gold-rgb:124,68,104.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus3-social-medie.html. Dumpet → tilbage til modul 2 eller nyt forsøg.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 2: hvorfor de første tre sekunder afgør alt, hook-formlerne og hvornår
+de virker, prompt-strukturen rolle/kontekst/specifikt/format, og hvad en shotlist skal indeholde.
+
+INTEGRITETSKRAV: balancerede svarlængder (hverken længste eller korteste strategi må score
+over ca. 25 % — simulér begge og vis resultatet), rigtige svar spredt på A/B/C/D uden mønster,
+kort forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 3 -->
+  <div class="build" id="b3">
+    <div class="build-head" onclick="tog('b3')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b3')" onkeydown="tickKey(event,'b3')">✓</div>
+      <div class="build-num">3</div>
+      <div class="build-txt">
+        <div class="build-title">Optagelse og AI-redigering</div>
+        <div class="build-file">kursus3-social-medie.html + quiz3-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#754062</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: redigerings-simulator</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan optage materiale som AI kan arbejde med, og bruge AI til at klippe, tekste, lægge b-roll på, rydde op i lyden og styre tempoet — så en telefonoptagelse ender med at se dyr ud.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Optag råt materiale AI kan bruge</strong> — lys, lyd, framing, og hvorfor dårlig lyd ikke kan reddes</li>
+        <li><strong>2. Auto-klip og undertekster</strong> — fra 12 minutter råklip til 40 sekunder der holder</li>
+        <li><strong>3. B-roll, voiceover og lydoprydning</strong></li>
+        <li><strong>4. Tempo og retention</strong> — hvor klippet skal falde, og hvorfor</li>
+      </ul>
+      <div class="b-sub">Interaktivt element</div>
+      <p class="b-txt">Redigerings-simulator: brugeren får et beskrevet råklip på tidslinje og skal træffe fem redigeringsvalg (hvor der klippes, hvor undertekster sættes ind, hvor b-roll lægges). Efter hvert valg vises konsekvensen på en retention-kurve. Ren JS, intet AI-kald.</p>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 3</div><button class="copy-btn" onclick="cp('p3',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p3">Du bygger på Akademiet AI. Byg modul 3 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus3-social-medie.html
+
+DESIGN: Honning og Skov som referencen. Behold --c-gold-*-navnene, skift kun værdierne:
+  --c-gold-deep:#4a283f; --c-gold:#754062; --c-gold-rgb:117,64,98;
+  --c-gold-warm-rgb:188,138,170; --c-gold-mid-rgb:148,94,128;
+  --c-gold-mid:#945e80; --c-gold-warm:#bc8aaa; --c-gold-ink:#351a2f;
+  --c-gold-tint:#ece1e9; --c-gold-faint:#f9f2f6;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Optag materiale AI kan arbejde med. Lys (vindue foran, ikke bagved), lyd (afstand til
+  mikrofon betyder mere end mikrofonens pris), framing, og den hårde sandhed: dårlig lyd kan
+  ingen AI redde — dårligt lys kan den delvist. Giv en konkret tjekliste på fem punkter.
+Afsnit 2: Auto-klip og undertekster. Hvordan AI finder pauser, fyldord og døde sekunder,
+  og skærer 12 minutters råklip ned til 40 sekunder. Hvorfor undertekster ikke er valgfrit
+  når folk ser uden lyd. Vær konkret om hvad man selv skal rette bagefter — AI-undertekster
+  fejler ofte på danske navne og fagord.
+Afsnit 3: B-roll, voiceover og lydoprydning. Hvornår b-roll hjælper og hvornår det distraherer.
+  AI-stemmer: hvad de kan på dansk, og hvor de stadig lyder forkert. Støjfjernelse.
+Afsnit 4: Tempo og retention. Hvor klippet skal falde. Hvorfor et klip hvert 2.-3. sekund
+  virker på TikTok men trætter på YouTube. Formatets betydning for tempoet.
+
+INTERAKTIV: REDIGERINGS-SIMULATOR (ren JS, intet AI-kald)
+Brugeren ser et beskrevet råklip som en tidslinje med markerede segmenter (intro-småsnak,
+kernepointe, gentagelse, afbrydelse, afslutning). Hun træffer fem valg:
+hvor der skal klippes, hvor underteksterne sættes ind, hvor b-roll lægges,
+hvor voiceover hjælper, hvor videoen skal slutte.
+Efter hvert valg opdateres en retention-kurve visuelt (SVG eller canvas) og der gives
+konkret feedback: hvorfor valget hjalp eller skadede. Slutresultat: en score og en
+opsummering af de tre vigtigste principper hun ramte eller missede.
+Animationer: rolige og luksuriøse, aldrig hoppende.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz3-social-medie.html, låst indtil alle fire afsnit
+er åbnet og simulatoren er gennemført. INGEN COINS.
+
+VALIDERING: node --check, lxml DOM-balance, Playwright-screenshots af alle tilstande.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 3q — mini-quiz</div><button class="copy-btn" onclick="cp('p3q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p3q">Byg quiz3-social-medie.html — mini-quiz til modul 3 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#754062, --c-gold-deep:#4a283f, --c-gold-mid:#945e80, --c-gold-warm:#bc8aaa,
+--c-gold-ink:#351a2f, --c-gold-tint:#ece1e9, --c-gold-faint:#f9f2f6, --c-gold-rgb:117,64,98.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus4-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 3: hvad der skal være på plads under optagelsen, hvorfor dårlig lyd ikke
+kan reddes, hvad auto-klip og undertekster gør og hvor de fejler på dansk, hvornår b-roll hjælper,
+og hvordan tempo hænger sammen med platform.
+
+INTEGRITETSKRAV: balancerede svarlængder (simulér både længste- og korteste-strategi, ingen må
+score over ca. 25 %), rigtige svar spredt på A/B/C/D uden mønster, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 4 -->
+  <div class="build" id="b4">
+    <div class="build-head" onclick="tog('b4')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b4')" onkeydown="tickKey(event,'b4')">✓</div>
+      <div class="build-num">4</div>
+      <div class="build-txt">
+        <div class="build-title">Visuel identitet &amp; billedgenerering</div>
+        <div class="build-file">kursus4-social-medie.html + quiz4-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#6e3b5c</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: brand-kit-generator (AI)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan bruge AI til hele den visuelle identitet: farver, logo, bannere, reklamer, infografikker og produktbilleder — og kan se forskel på et billede der ser professionelt ud og et der ser AI-genereret ud.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Brandgrundlaget</strong> — farver, fonte, tone. Hvorfor genkendelighed slår variation</li>
+        <li><strong>2. Logo og bannere</strong> — hvad AI er god til, og hvornår man skal have en rigtig designer</li>
+        <li><strong>3. Reklamer og infografikker</strong> — struktur der læses på 1,5 sekund i et feed</li>
+        <li><strong>4. Produktbilleder</strong> — de fem detaljer der afslører AI-genererede billeder</li>
+      </ul>
+      <div class="note note-amber">
+        <div class="note-t">Ærlighedskrav</div>
+        Modulet må ikke sælge illusionen om at AI erstatter en designer. Det skal stå klart hvornår AI er nok (feed-indhold, hurtige bannere, idéoplæg) og hvornår det ikke er (endeligt logo, tryksager, alt der skal holde i årevis).
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 4</div><button class="copy-btn" onclick="cp('p4',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p4">Du bygger på Akademiet AI. Byg modul 4 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus4-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#452539; --c-gold:#6e3b5c; --c-gold-rgb:110,59,92;
+  --c-gold-warm-rgb:184,134,166; --c-gold-mid-rgb:142,90,122;
+  --c-gold-mid:#8e5a7a; --c-gold-warm:#b886a6; --c-gold-ink:#31182b;
+  --c-gold-tint:#ebe0e8; --c-gold-faint:#f8f1f5;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Brandgrundlaget. Farvepalette, fontvalg, tone of voice. Hvorfor genkendelighed slår
+  variation på sociale medier. Vis konkret hvordan man beder AI om en palette der faktisk
+  hænger sammen — og hvordan man tjekker kontrast så tekst kan læses.
+Afsnit 2: Logo og bannere. Hvad AI er god til (idéoplæg, varianter, bannere i mange formater)
+  og hvornår man har brug for en rigtig designer (endeligt logo, tryk, noget der skal holde i
+  årevis). Vær ærlig — sælg ikke illusionen om at AI erstatter en designer.
+Afsnit 3: Reklamer og infografikker. Struktur der læses på halvandet sekund i et feed:
+  ét budskab, ét blikfang, én handling. Hvordan man prompter en infografik der er
+  læsbar og ikke rodet. Almindelige fejl.
+Afsnit 4: Produktbilleder. De fem detaljer der afslører AI-genererede billeder
+  (hænder, tekst i billedet, refleksioner, skygger der ikke passer, gentagne mønstre)
+  og hvordan man undgår dem. Hvornår et rigtigt foto er hurtigere end ti forsøg med AI.
+
+INTERAKTIV: BRAND-KIT-GENERATOR (live AI)
+Brugeren indtaster: niche, tre ord der beskriver følelsen, og målgruppe.
+AI'en returnerer STRENGT JSON og intet andet:
+  {palette:[{hex,navn,brug}], fonte:{overskrift,broedtekst}, tone:"...",
+   logoBrief:"...", bannerBrief:"...", undgaa:["..."]}
+Frontend parser JSON'en robust (fjern eventuelle markdown-fences, find første { og sidste })
+og viser paletten som klikbare swatches med hex-koder der kan kopieres.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com,
+ALDRIG en nøgle i filen. Model: claude-sonnet-4-6.
+Fejlhåndtering: hvis JSON ikke kan parses, vis en venlig besked og en prøv-igen-knap —
+aldrig en tom skærm eller en rå fejl.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz4-social-medie.html, låst indtil alle afsnit er
+åbnet og brand-kit-generatoren er brugt. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots inkl. generator før/efter og fejltilstand.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 4q — mini-quiz</div><button class="copy-btn" onclick="cp('p4q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p4q">Byg quiz4-social-medie.html — mini-quiz til modul 4 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#6e3b5c, --c-gold-deep:#452539, --c-gold-mid:#8e5a7a, --c-gold-warm:#b886a6,
+--c-gold-ink:#31182b, --c-gold-tint:#ebe0e8, --c-gold-faint:#f8f1f5, --c-gold-rgb:110,59,92.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus5-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 4: hvorfor genkendelighed slår variation, hvad AI kan og ikke kan
+i logodesign, hvad en reklame i et feed skal kunne på halvandet sekund, og hvilke detaljer
+der afslører AI-genererede produktbilleder.
+
+INTEGRITETSKRAV: balancerede svarlængder (simulér begge exploit-strategier, ingen over ca. 25 %),
+rigtige svar spredt på A/B/C/D, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 5 -->
+  <div class="build" id="b5">
+    <div class="build-head" onclick="tog('b5')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b5')" onkeydown="tickKey(event,'b5')">✓</div>
+      <div class="build-num">5</div>
+      <div class="build-txt">
+        <div class="build-title">Produktvideo &amp; reklame</div>
+        <div class="build-file">kursus5-social-medie.html + quiz5-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#673656</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: reklamemanus-bygger (AI)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan producere en produktvideo eller reklame med AI — og kender strukturen der faktisk får folk til at handle, i stedet for bare at se pæn ud.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. UGC-stil mod studie-stil</strong> — hvorfor det uperfekte ofte sælger bedre</li>
+        <li><strong>2. AI-produktvideo trin for trin</strong> — fra produktfoto til færdigt klip</li>
+        <li><strong>3. Reklamestrukturen</strong> — problem, løsning, bevis, handling</li>
+        <li><strong>4. Æstetikken</strong> — de greb der får AI-video til at se dyr ud i stedet for billig</li>
+      </ul>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 5</div><button class="copy-btn" onclick="cp('p5',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p5">Du bygger på Akademiet AI. Byg modul 5 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus5-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#402234; --c-gold:#673656; --c-gold-rgb:103,54,86;
+  --c-gold-warm-rgb:180,130,162; --c-gold-mid-rgb:136,86,116;
+  --c-gold-mid:#885674; --c-gold-warm:#b482a2; --c-gold-ink:#2d1627;
+  --c-gold-tint:#eadfe7; --c-gold-faint:#f8f1f5;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: UGC-stil mod studie-stil. Hvorfor en video der ligner en almindelig person med en
+  telefon ofte sælger bedre end en poleret reklamefilm. Hvornår det modsatte gælder.
+Afsnit 2: AI-produktvideo trin for trin. Fra ét produktfoto til et færdigt klip:
+  billedforberedelse, bevægelse, baggrund, lys, tekst på skærmen, lyd. Hvad der typisk går galt.
+Afsnit 3: Reklamestrukturen problem → løsning → bevis → handling. Vis strukturen anvendt på
+  tre vidt forskellige produkter, så brugeren ser at det er en skabelon og ikke en tilfældighed.
+  Forklar hvorfor "bevis" er det led folk oftest springer over — og hvad det koster dem.
+Afsnit 4: Æstetikken. De konkrete greb der får AI-video til at se dyr ud: konsistent lyssætning,
+  rolige kamerabevægelser, farvegradering, tekst der matcher brandet, lyd der ikke er gratis-musik.
+
+INTERAKTIV: REKLAMEMANUS-BYGGER (live AI)
+Brugeren indtaster produkt, målgruppe og det ene problem produktet løser.
+AI'en genererer et fuldt reklamemanus i fire dele efter strukturen ovenfor, med:
+  hook, replikker, hvad kameraet viser i hver del, tekst på skærmen, og en tydelig CTA.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com,
+ALDRIG nøgle i HTML. Model: claude-sonnet-4-6, stream: true.
+Kopiér-knap til det færdige manus. Venlig fejlhåndtering, aldrig tom skærm.
+
+VIGTIGT INDHOLDSKRAV
+Modulet skal indeholde en kort, tydelig note om at reklamer på sociale medier skal mærkes
+som reklame efter dansk markedsføringslov, og at modul 8 går i dybden med det.
+Formulér det som praktisk information, ikke som juridisk rådgivning.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz5-social-medie.html. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af alle tilstande.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 5q — mini-quiz</div><button class="copy-btn" onclick="cp('p5q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p5q">Byg quiz5-social-medie.html — mini-quiz til modul 5 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#673656, --c-gold-deep:#402234, --c-gold-mid:#885674, --c-gold-warm:#b482a2,
+--c-gold-ink:#2d1627, --c-gold-tint:#eadfe7, --c-gold-faint:#f8f1f5, --c-gold-rgb:103,54,86.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus6-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 5: hvornår UGC-stil slår studie-stil, trinnene i en AI-produktvideo,
+reklamestrukturen problem/løsning/bevis/handling og hvorfor beviset ofte mangler,
+samt de æstetiske greb der adskiller dyr fra billig AI-video.
+
+INTEGRITETSKRAV: balancerede svarlængder (begge exploit-strategier under ca. 25 %),
+rigtige svar spredt på A/B/C/D, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 6 -->
+  <div class="build" id="b6">
+    <div class="build-head" onclick="tog('b6')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b6')" onkeydown="tickKey(event,'b6')">✓</div>
+      <div class="build-num">6</div>
+      <div class="build-txt">
+        <div class="build-title">Trends &amp; viralitet</div>
+        <div class="build-file">kursus6-social-medie.html + quiz6-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#603250</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: trend-rapport (AI + websøgning)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan sætte AI til at holde øje med hvad der virker på hendes felt — og ved præcis hvad AI kan og ikke kan hente fra platformene.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Hvad "viralt" faktisk betyder</strong> — pr. platform: watch time, gemte opslag, delinger, kommentarer</li>
+        <li><strong>2. Hvor trends findes</strong> — platformenes egne trendværktøjer og creative centers</li>
+        <li><strong>3. Hvad AI kan og ikke kan</strong> — ærlighedsafsnittet</li>
+        <li><strong>4. Din ugentlige trend-rapport</strong> — en fast rutine, ikke en tilfældig søgning</li>
+      </ul>
+      <div class="note note-red">
+        <div class="note-t">Dette modul er der hvor konkurrerende kurser lyver</div>
+        AI har ikke live-adgang til TikToks eller Instagrams interne data. Vi lærer folk det der faktisk virker — websøgning, platformenes egne offentlige trendværktøjer, og manuelt indsamlede input som AI derefter analyserer. Vi lover aldrig at en chatbot selv scroller TikTok. Bygger vi den løgn ind, gør vi brugerne dummere, og kurset falder fra hinanden første gang de prøver det.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 6</div><button class="copy-btn" onclick="cp('p6',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p6">Du bygger på Akademiet AI. Byg modul 6 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus6-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#3b1f30; --c-gold:#603250; --c-gold-rgb:96,50,80;
+  --c-gold-warm-rgb:176,126,158; --c-gold-mid-rgb:130,82,110;
+  --c-gold-mid:#82526e; --c-gold-warm:#b07e9e; --c-gold-ink:#2a1425;
+  --c-gold-tint:#e9dee6; --c-gold-faint:#f7f0f4;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ABSOLUT VIGTIGSTE KRAV TIL DETTE MODUL — ÆRLIGHED
+AI har IKKE live-adgang til TikToks, Instagrams eller Facebooks interne data.
+Modulet må under ingen omstændigheder antyde at en chatbot selv kan scrolle eller overvåge
+platformene. Lover vi det, opdager brugeren det inden for fem minutter, og kurset mister
+al troværdighed. Lær i stedet det der faktisk virker.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Hvad "viralt" faktisk betyder — og at det betyder noget forskelligt pr. platform.
+  Watch time og gennemførelsesprocent, gemte opslag, delinger, kommentarer.
+  Hvorfor gemte opslag ofte betyder mere end likes. Hvorfor visninger alene siger meget lidt.
+Afsnit 2: Hvor trends rent faktisk findes. Platformenes egne offentlige trendværktøjer og
+  creative centers, søgefunktioner, lydbiblioteker. Slå de aktuelle værktøjer op på nettet
+  før du skriver — skriv ikke navne eller funktioner fra hukommelsen.
+Afsnit 3: Hvad AI kan og ikke kan. Klar todeling:
+  KAN — analysere materiale du selv giver den, finde mønstre på tværs af 20 opslag du har
+  indsamlet, foreslå vinkler, oversætte en udenlandsk trend til dansk kontekst,
+  søge på nettet efter offentligt tilgængelige artikler og rapporter.
+  KAN IKKE — se dine konkurrenters tal, hente live-data fra platformene, forudsige hvad
+  der bliver viralt i morgen, garantere noget som helst.
+Afsnit 4: Din ugentlige trend-rapport som fast rutine: hvad du indsamler, hvordan du giver
+  det til AI'en, og hvilken prompt der giver en brugbar rapport i stedet for en generisk liste.
+
+INTERAKTIV: TREND-RAPPORT-BYGGER (live AI med websøgning)
+Brugeren vælger platform og niche. Systemet kalder AI'en MED web_search-værktøjet aktiveret,
+så rapporten bygger på faktiske offentligt tilgængelige kilder — ikke på modellens hukommelse.
+Output: 5 aktuelle vinkler i nichen, hvad de har til fælles, og tre konkrete videoidéer.
+Vis tydeligt i brugerfladen at rapporten bygger på websøgning og ikke på platform-data.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com.
+Model: claude-sonnet-4-6, stream: true.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz6-social-medie.html. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af alle tilstande.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 6q — mini-quiz</div><button class="copy-btn" onclick="cp('p6q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p6q">Byg quiz6-social-medie.html — mini-quiz til modul 6 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#603250, --c-gold-deep:#3b1f30, --c-gold-mid:#82526e, --c-gold-warm:#b07e9e,
+--c-gold-ink:#2a1425, --c-gold-tint:#e9dee6, --c-gold-faint:#f7f0f4, --c-gold-rgb:96,50,80.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus7-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 6: hvad viralitet måles på pr. platform, hvor trends findes,
+og især den ærlige skelnen mellem hvad AI KAN (analysere indsamlet materiale, finde mønstre,
+søge offentlige kilder) og hvad den IKKE KAN (live platform-data, forudsige viralitet).
+Mindst ét spørgsmål skal teste netop den skelnen — det er modulets vigtigste pointe.
+
+INTEGRITETSKRAV: balancerede svarlængder (begge exploit-strategier under ca. 25 %),
+rigtige svar spredt på A/B/C/D, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 7 -->
+  <div class="build" id="b7">
+    <div class="build-head" onclick="tog('b7')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b7')" onkeydown="tickKey(event,'b7')">✓</div>
+      <div class="build-num">7</div>
+      <div class="build-txt">
+        <div class="build-title">Kanalstyring &amp; automatisering</div>
+        <div class="build-file">kursus7-social-medie.html + quiz7-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#592d4a</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: 30-dages kalender (AI)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan få AI til at styre fire kanaler fra ét sted: omformatere én video til fire platforme, planlægge en måned frem, og håndtere kommentarer og beskeder — uden at gøre noget der får kontoen lukket.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Én video, fire platforme</strong> — format, længde, tone og tekst pr. kanal</li>
+        <li><strong>2. Indholdskalenderen</strong> — en måned planlagt på tyve minutter</li>
+        <li><strong>3. Kommentarer og beskeder</strong> — hvad AI må skrive, og hvad du selv skal skrive</li>
+        <li><strong>4. Værktøjer der faktisk kobler til</strong> — hvad der kræver API-adgang eller betalt tredjepart</li>
+      </ul>
+      <div class="note note-amber">
+        <div class="note-t">Bro til modul 8</div>
+        Automatiseret kommentar- og DM-håndtering er den hurtigste vej til en lukket konto, hvis det gøres forkert. Afsnit 3 skal slutte med en tydelig overlevering til modul 8 i stedet for at gennemgå reglerne to gange.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 7</div><button class="copy-btn" onclick="cp('p7',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p7">Du bygger på Akademiet AI. Byg modul 7 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus7-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#361c2c; --c-gold:#592d4a; --c-gold-rgb:89,45,74;
+  --c-gold-warm-rgb:172,122,154; --c-gold-mid-rgb:124,78,104;
+  --c-gold-mid:#7c4e68; --c-gold-warm:#ac7a9a; --c-gold-ink:#261221;
+  --c-gold-tint:#e8dde5; --c-gold-faint:#f7f0f4;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Én video, fire platforme. Hvordan samme optagelse bliver til fire forskellige opslag
+  til Instagram, TikTok, YouTube og Facebook: format, længde, tone, tekst, hashtags, thumbnail.
+  Vis en konkret prompt der laver alle fire versioner på én gang.
+Afsnit 2: Indholdskalenderen. Hvordan en måned planlægges på tyve minutter med AI:
+  temauger, faste formater, buffer til aktuelle trends. Hvorfor en kalender slår inspiration.
+Afsnit 3: Kommentarer og beskeder. Hvad AI må hjælpe med (udkast, oversættelse, sortering
+  efter hvad der kræver svar, tone-tjek på et vredt svar før du sender det) og hvad du
+  ALTID selv skal skrive (klager, følsomme emner, alt der kan citeres).
+  Afslut afsnittet med en tydelig overlevering: automatiseret kommentar- og DM-håndtering
+  er den hurtigste vej til en lukket konto hvis det gøres forkert — modul 8 gennemgår reglerne.
+  Gentag ikke reglerne her.
+Afsnit 4: Værktøjer der faktisk kobler til platformene. Vær konkret og ærlig om at ægte
+  automatisering kræver API-adgang eller betalte tredjepartsværktøjer — en chatbot alene
+  kan ikke poste for dig. Slå de aktuelle værktøjer op på nettet før du skriver.
+
+INTERAKTIV: 30-DAGES INDHOLDSKALENDER (live AI)
+Brugeren indtaster niche, hvor mange opslag om ugen hun kan holde til, og hvilke platforme.
+AI'en returnerer STRENGT JSON: [{dag, platform, format, emne, hook, noter}, ...]
+Frontend parser robust (fjern markdown-fences, find første [ og sidste ]) og viser en
+kalender-grid der kan filtreres pr. platform. Downloadknap til CSV.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com.
+Model: claude-sonnet-4-6. Venlig fejlhåndtering ved parse-fejl, aldrig tom skærm.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz7-social-medie.html. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af alle tilstande inkl. kalender.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 7q — mini-quiz</div><button class="copy-btn" onclick="cp('p7q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p7q">Byg quiz7-social-medie.html — mini-quiz til modul 7 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#592d4a, --c-gold-deep:#361c2c, --c-gold-mid:#7c4e68, --c-gold-warm:#ac7a9a,
+--c-gold-ink:#261221, --c-gold-tint:#e8dde5, --c-gold-faint:#f7f0f4, --c-gold-rgb:89,45,74.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus8-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 7: hvordan én video tilpasses fire platforme, hvad en indholdskalender
+løser, hvad AI må og ikke må håndtere i kommentarer og beskeder, og hvorfor ægte automatisering
+kræver API-adgang eller tredjepartsværktøjer.
+
+INTEGRITETSKRAV: balancerede svarlængder (begge exploit-strategier under ca. 25 %),
+rigtige svar spredt på A/B/C/D, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 8 -->
+  <div class="build" id="b8">
+    <div class="build-head" onclick="tog('b8')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b8')" onkeydown="tickKey(event,'b8')">✓</div>
+      <div class="build-num">8</div>
+      <div class="build-txt">
+        <div class="build-title">Regler &amp; ban-sikring</div>
+        <div class="build-file">kursus8-social-medie.html + quiz8-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#522944</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Interaktiv: compliance-tjek (AI)</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kan bruge AI til at gennemgå sit indhold, før det uploades, og kender de fejl der reelt lukker konti: skjult reklame, musikrettigheder, engagement bait, manglende AI-mærkning og aggressiv automatisering.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Hvad der faktisk lukker konti</strong> — de fem hyppigste årsager</li>
+        <li><strong>2. AI-mærkning</strong> — hvad de fire platforme kræver, når indholdet er AI-genereret</li>
+        <li><strong>3. Ophavsret</strong> — musik, billeder og andres ansigter</li>
+        <li><strong>4. Dansk reklamemærkning og persondata</strong> — kort, konkret, uden at foregive at være jura</li>
+      </ul>
+      <div class="note note-red">
+        <div class="note-t">Ufravigelig ramme</div>
+        Modulet må aldrig fremstille AI's svar som juridisk gyldige. Formuleringen er konsekvent: AI hjælper dig med at få overblik og stille de rigtige spørgsmål — du skal selv tjekke platformens aktuelle regler, og ved tvivl spørge en rigtig rådgiver. Reglerne ændrer sig ofte, så alle henvisninger skal pege på platformenes egne officielle sider frem for at gengive regelteksten.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 8</div><button class="copy-btn" onclick="cp('p8',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p8">Du bygger på Akademiet AI. Byg modul 8 af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus8-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#311928; --c-gold:#522944; --c-gold-rgb:82,41,68;
+  --c-gold-warm-rgb:166,116,148; --c-gold-mid-rgb:118,72,98;
+  --c-gold-mid:#764862; --c-gold-warm:#a67494; --c-gold-ink:#22101d;
+  --c-gold-tint:#e7dce4; --c-gold-faint:#f6eff3;
+BRANDREGEL: "Akademiet AI" overalt.
+
+UFRAVIGELIG RAMME FOR HELE MODULET
+Kurset må ALDRIG fremstille AI's svar som juridisk gyldige. Gennemgående formulering:
+AI hjælper dig med at få overblik og stille de rigtige spørgsmål — du tjekker selv platformens
+aktuelle regler, og ved tvivl spørger du en rigtig rådgiver.
+Reglerne ændrer sig ofte. Peg derfor på platformenes egne officielle hjælpesider frem for
+at gengive regeltekst der bliver forældet. Slå de aktuelle regler op på nettet før du skriver.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Hvad der faktisk lukker konti. De hyppigste årsager i praksis: skjult reklame,
+  musik uden rettigheder, engagement bait, genbrug af andres indhold uden bearbejdning,
+  og aggressiv automatisering af følg/like/kommentar. For hver: hvad der sker, og hvordan
+  man undgår det.
+Afsnit 2: AI-mærkning. Hvad Instagram, TikTok, YouTube og Facebook kræver når indhold er
+  helt eller delvist AI-genereret. Hvorfor mærkning sjældent skader rækkevidden så meget som
+  folk tror — og hvad manglende mærkning kan koste.
+Afsnit 3: Ophavsret. Musik (den vigtigste fælde), billeder, og andres ansigter i dine videoer.
+  Forskellen på platformens lydbibliotek og musik du selv lægger på. Hvad "fair brug"
+  IKKE dækker. Hold det på et generelt oplysende niveau.
+Afsnit 4: Dansk reklamemærkning og persondata. Hvornår et opslag skal mærkes som reklame,
+  og hvad man skal være opmærksom på når andre mennesker optræder i ens videoer.
+  Kort, konkret, og med tydelig afsluttende note om at dette er oplysning, ikke rådgivning.
+
+INTERAKTIV: COMPLIANCE-TJEK (live AI)
+Brugeren indsætter sit videomanus eller opslagstekst og vælger platform.
+AI'en gennemgår teksten og returnerer STRENGT JSON:
+  {risici:[{niveau:"høj|middel|lav", hvad, hvorfor, saadanRetterDu}], mangler:[...], ok:[...]}
+Frontend viser risici farvekodet: rød for høj, gul for middel, grøn for det der er i orden.
+Farvebrug: rød = fejl, gul = advarsel, grøn = i orden — ikke alt i accentfarven.
+Under resultatet SKAL der stå en fast, ikke-fjernbar note: dette er en hjælp til at få overblik,
+ikke en juridisk godkendelse — tjek altid platformens egne aktuelle regler.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com.
+Model: claude-sonnet-4-6.
+
+LÅSELOGIK: som referencen. Quiz-knap → quiz8-social-medie.html. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af alle tilstande inkl. compliance-resultat.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 8q — mini-quiz</div><button class="copy-btn" onclick="cp('p8q',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p8q">Byg quiz8-social-medie.html — mini-quiz til modul 8 af sidekurset "AI til Sociale Medier".
+
+Reference: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/quiz-c1.html"
+ACCENT: --c-gold:#522944, --c-gold-deep:#311928, --c-gold-mid:#764862, --c-gold-warm:#a67494,
+--c-gold-ink:#22101d, --c-gold-tint:#e7dce4, --c-gold-faint:#f6eff3, --c-gold-rgb:82,41,68.
+
+FORMAT: 5 spørgsmål, bestå med 4, ubegrænsede forsøg, INGEN COINS.
+Bestået → kursus9-social-medie.html.
+
+SPØRGSMÅLSFORMAT: hvert spørgsmål er en situation, brugeren skal handle på — ikke en
+definition, hun skal huske. Ikke "hvad er videogenerering?", men "du mangler et luftfoto og
+har hverken drone eller tilladelse — hvad gør du?".
+
+EMNER — kun fra modul 8: de hyppigste årsager til lukkede konti, AI-mærkning på de fire
+platforme, musikrettigheder som den største fælde, og hvornår et opslag skal mærkes som reklame.
+Mindst ét spørgsmål skal teste at brugeren har forstået at AI's compliance-tjek er en hjælp
+til overblik og ikke en juridisk godkendelse.
+
+INTEGRITETSKRAV: balancerede svarlængder (begge exploit-strategier under ca. 25 %),
+rigtige svar spredt på A/B/C/D, forklaring efter hvert svar.
+
+VALIDERING: node --check, lxml, Playwright-screenshots. Lever via present_files.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODUL 9 -->
+  <div class="build" id="b9">
+    <div class="build-head" onclick="tog('b9')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'b9')" onkeydown="tickKey(event,'b9')">✓</div>
+      <div class="build-num">9</div>
+      <div class="build-txt">
+        <div class="build-title">Monetisering</div>
+        <div class="build-file">kursus9-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#4b243e</span>
+          <span class="chip chip-time">35–40 min</span>
+          <span class="chip">Ingen quiz — fører til eksamen</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Læringsmål</div>
+      <p class="b-txt">Brugeren kender de reelle indtægtskilder på hver platform, adgangskravene til dem, og kan lægge en realistisk plan for sin egen kanal — uden falske forventninger om hvor hurtigt det går.</p>
+      <div class="b-sub">Afsnit i siden</div>
+      <ul class="b-list">
+        <li><strong>1. Indtægtskilderne pr. platform</strong> — og hvad de faktisk kræver for at åbne</li>
+        <li><strong>2. Sponsorater</strong> — hvad man tager i pris, og hvordan man pitcher</li>
+        <li><strong>3. Egne produkter og e-mail-listen</strong> — det der ikke forsvinder når en algoritme ændrer sig</li>
+        <li><strong>4. Realistiske tal og skat</strong> — ærlige forventninger, kort note om at indtægt skal beskattes</li>
+      </ul>
+      <div class="note note-amber">
+        <div class="note-t">Forældelse og forsigtighed</div>
+        Adgangskravene til platformenes partnerprogrammer ændres jævnligt. Tallene skal ligge i ét dataobjekt øverst i filen og verificeres live før teksten skrives. Skatteafsnittet holdes kort og henviser til Skattestyrelsen — vi giver ikke skatterådgivning.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt 9</div><button class="copy-btn" onclick="cp('p9',this)">Kopiér</button></div>
+        <div class="pbox-body" id="p9">Du bygger på Akademiet AI. Byg modul 9 — det sidste modul — af sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-c1.html"
+FILNAVN: kursus9-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#2c1624; --c-gold:#4b243e; --c-gold-rgb:75,36,62;
+  --c-gold-warm-rgb:160,110,142; --c-gold-mid-rgb:112,66,92;
+  --c-gold-mid:#70425c; --c-gold-warm:#a06e8e; --c-gold-ink:#1e0e19;
+  --c-gold-tint:#e6dbe3; --c-gold-faint:#f6eff3;
+BRANDREGEL: "Akademiet AI" overalt.
+
+VIGTIGT FØR DU SKRIVER
+Adgangskrav til platformenes partnerprogrammer ændres jævnligt. Slå de aktuelle krav op
+på nettet før du skriver — skriv aldrig tal fra hukommelsen. Læg alle tal og krav i ÉT
+dataobjekt øverst i scriptet (const INDTAEGT = [...]) så de kan opdateres ét sted.
+
+ØVELSESKRAV — gælder alle moduler (se pædagogik-sektionen i planen)
+Højst 5 linjer tekst i træk, så skal der komme en øvelse, et tal, en figur eller et spørgsmål.
+Mindst 6 aktiviteter i modulet, fordelt på mindst 4 typer: sortérleg, detektivopgave,
+byg-selv, regnemaskine, rækkefølgeleg, før-og-efter, refleksionsspørgsmål, visuel statistik.
+Højst 2.000 ord synlig tekst. Læsetid må højst være en tredjedel af modulets 35-40 minutter.
+Hvert afsnit låses op af en gennemført aktivitet — aldrig af klik alene.
+
+INDHOLD — fire afsnit
+Afsnit 1: Indtægtskilderne pr. platform — Instagram, TikTok, YouTube, Facebook.
+  For hver: hvilke programmer findes, hvad kræver de for at åbne, og hvor meget betyder de
+  reelt i forhold til de andre indtægtskilder. Vær ærlig om at platformbetaling sjældent
+  er den største indtægt for mindre kanaler.
+Afsnit 2: Sponsorater. Hvordan man sætter en pris (rækkevidde er ikke det eneste parameter),
+  hvordan man pitcher til et brand, og hvad man skal have skriftligt. Vis en konkret
+  pitch-skabelon brugeren kan tilpasse med AI.
+Afsnit 3: Egne produkter og e-mail-listen. Hvorfor det er den eneste kanal der ikke forsvinder
+  når en algoritme ændrer sig. Digitale produkter, tjenester, medlemskaber.
+Afsnit 4: Realistiske tal og skat. Ærlige forventninger til hvad de første 6-12 måneder
+  typisk giver. En kort, tydelig note om at indtægt fra sociale medier skal beskattes,
+  med henvisning til Skattestyrelsen. Dette er oplysning, ikke skatterådgivning —
+  formulér det sådan.
+
+INTERAKTIV: MONETISERINGSPLAN (live AI)
+Brugeren indtaster niche, nuværende følgertal, platform og hvor meget tid hun kan lægge om ugen.
+AI'en genererer en realistisk plan i tre faser (0-3 mdr., 3-6 mdr., 6-12 mdr.) med konkrete
+skridt og hvilke indtægtskilder der er realistiske hvornår.
+Planen skal være ÆRLIG — den må ikke love indtægter eller antyde garanti.
+Læg en fast note under resultatet: dette er et forslag til struktur, ikke et løfte om indtjening.
+AI-KALD: udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com.
+Model: claude-sonnet-4-6, stream: true.
+
+AFSLUTNING PÅ SIDEN
+Der er INGEN quiz efter modul 9. Nederst står i stedet eksamensknappen til
+eksamen-social-medie.html, låst indtil alle fire afsnit er åbnet.
+Teksten skal forklare at eksamen består af to dele: 18 spørgsmål (bestå med 15)
+og en praktisk opgave. INGEN COINS.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af alle tilstande.
+Lever via present_files. Byg kun denne fil.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EKSAMEN 1 -->
+  <div class="build" id="be1">
+    <div class="build-head" onclick="tog('be1')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'be1')" onkeydown="tickKey(event,'be1')">✓</div>
+      <div class="build-num">E1</div>
+      <div class="build-txt">
+        <div class="build-title">Eksamen del 1 — den store quiz</div>
+        <div class="build-file">eksamen-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#452139</span>
+          <span class="chip chip-time">25 min</span>
+          <span class="chip">18 spørgsmål · bestå 15</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Format</div>
+      <ul class="b-list">
+        <li>18 spørgsmål — præcis <strong>2 fra hvert af de 9 moduler</strong>, mærket med modulnavn</li>
+        <li>Bestå med <strong>15 af 18</strong> (83 %) — markant sværere end mini-quizzerne</li>
+        <li>Maks 3 forsøg. Efter dumpet forsøg vises hvilke moduler brugeren tabte point i</li>
+        <li>Ved beståelse skrives <code>socialMedieExamPassed: true</code> til Firestore. <strong>Ingen belønning udstedes her</strong></li>
+      </ul>
+      <div class="note note-plum">
+        <div class="note-t">Hvorfor belønningen ikke ligger her</div>
+        Samme mønster som Kursus D: eksamen sætter kun et flag, og diplomsiden udsteder badge og bevis i én handling med dedup-tjek. Det forhindrer dobbeltudstedelse hvis brugeren genindlæser siden.
+      </div>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt E1</div><button class="copy-btn" onclick="cp('pE1',this)">Kopiér</button></div>
+        <div class="pbox-body" id="pE1">Du bygger på Akademiet AI. Byg eksamen del 1 til sidekurset "AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/eksamen-d-average.html"
+FILNAVN: eksamen-social-medie.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#281320; --c-gold:#452139; --c-gold-rgb:69,33,57;
+  --c-gold-warm-rgb:154,104,136; --c-gold-mid-rgb:106,62,88;
+  --c-gold-mid:#6a3e58; --c-gold-warm:#9a6888; --c-gold-ink:#1a0c16;
+  --c-gold-tint:#e5dae2; --c-gold-faint:#f5eef2;
+BRANDREGEL: "Akademiet AI" overalt — tjek topbar .brand-name i referencen.
+
+FORMAT
+18 spørgsmål. PRÆCIS 2 fra hvert af de 9 moduler:
+  1 AI-værktøjskassen · 2 Idé, hook og manuskript · 3 Optagelse og AI-redigering ·
+  4 Visuel identitet og billedgenerering · 5 Produktvideo og reklame · 6 Trends og viralitet ·
+  7 Kanalstyring og automatisering · 8 Regler og ban-sikring · 9 Monetisering
+Hvert spørgsmål mærkes synligt med sit modul.
+BESTÅ MED 15 AF 18. Maks 3 forsøg.
+INGEN COINS — sidekursus, coin-sink.
+
+INTEGRITETSKRAV (ufravigeligt — dette er eksamen, ikke en quiz)
+- Svarlængder skal være balancerede. Simulér BEGGE exploit-strategier eksplicit:
+  "vælg altid det længste svar" og "vælg altid det korteste svar".
+  Ingen af dem må score over ca. 25 %. Vis simuleringens resultat i din leverance.
+- De rigtige svar fordeles på A/B/C/D uden nogen detekterbar cyklus.
+- Spørgsmålene skal teste forståelse, ikke genkaldelse af navne. Undgå spørgsmål der
+  bliver forkerte når et værktøj skifter navn eller pris.
+- Mindst ét spørgsmål skal teste den ærlige skelnen fra modul 6: hvad AI faktisk kan
+  hente fra platformene, og hvad den ikke kan.
+
+EFTER DUMPET FORSØG
+Vis hvilke moduler brugeren tabte point i, og link tilbage til netop de moduler.
+Vis antal resterende forsøg tydeligt.
+
+VED BESTÅELSE
+Skriv socialMedieExamPassed: true til Firestore på users/{uid}.
+UDSTED INGEN BELØNNING HER — hverken badge, diplom eller coins.
+Vis i stedet en knap videre til eksamen-social-medie-del2.html og forklar at
+den praktiske del mangler før kurset er bestået.
+
+VALIDERING: node --check, lxml DOM-balance, Playwright-screenshots af intro, spørgsmål,
+bestået, dumpet og sidste forsøg. Lever via present_files. Byg kun denne fil.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EKSAMEN 2 -->
+  <div class="build" id="be2">
+    <div class="build-head" onclick="tog('be2')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'be2')" onkeydown="tickKey(event,'be2')">✓</div>
+      <div class="build-num">E2</div>
+      <div class="build-txt">
+        <div class="build-title">Eksamen del 2 — den praktiske opsætning</div>
+        <div class="build-file">eksamen-social-medie-del2.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">#3e1d33</span>
+          <span class="chip chip-time">40 min</span>
+          <span class="chip">Holistisk AI-bedømmelse</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="b-sub">Opgaven</div>
+      <p class="b-txt">Brugeren sætter sit eget AI-system op til sin kanal og beviser at det virker. Hun afleverer fire ting i fire felter — det er hele kurset samlet i én opgave:</p>
+      <ul class="b-list">
+        <li><strong>1. Systemopsætningen</strong> — de instruktioner hun har givet sit AI-værktøj, så det kender hendes brand, niche og tone</li>
+        <li><strong>2. Ét fuldt videomanus</strong> — hook, replikker og shotlist til en konkret video hun kunne filme i morgen</li>
+        <li><strong>3. En uges indholdsplan</strong> — med platform og format pr. dag</li>
+        <li><strong>4. Hendes compliance-tjek</strong> — hvad hun selv fandt af risici i sit eget indhold, og hvordan hun retter dem</li>
+      </ul>
+      <div class="b-sub">Bedømmelse</div>
+      <p class="b-txt">Holistisk vurdering via <code>claude-sonnet-4-6</code> — aldrig Haiku, som består mekanisk vrøvl. To hårde gates: teksten skal bestå af meningsfulde sætninger, og den skal beskrive en reel kanal og et reelt produkt. Kriterierne (brandklarhed, konkret manus, realistisk plan, fanget mindst én reel risiko) giver pluspoint, aldrig hårde gates.</p>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt E2</div><button class="copy-btn" onclick="cp('pE2',this)">Kopiér</button></div>
+        <div class="pbox-body" id="pE2">Du bygger på Akademiet AI. Byg eksamen del 2 — den praktiske del — til sidekurset
+"AI til Sociale Medier".
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/eksamen-d-average-del2.html"
+FILNAVN: eksamen-social-medie-del2.html
+
+DESIGN: Honning og Skov. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#22101c; --c-gold:#3e1d33; --c-gold-rgb:62,29,51;
+  --c-gold-warm-rgb:148,98,130; --c-gold-mid-rgb:100,58,84;
+  --c-gold-mid:#643a54; --c-gold-warm:#946282; --c-gold-ink:#160a12;
+  --c-gold-tint:#e4d9e1; --c-gold-faint:#f5eef2;
+BRANDREGEL: "Akademiet AI" overalt.
+
+ADGANG
+Siden må kun kunne gennemføres hvis socialMedieExamPassed er true i Firestore.
+Ellers: venlig låst tilstand med knap til eksamen-social-medie.html.
+
+OPGAVEN — fire tekstfelter
+1. SYSTEMOPSÆTNING: de instruktioner brugeren har givet sit AI-værktøj, så det kender
+   hendes brand, niche, tone og målgruppe.
+2. VIDEOMANUS: ét fuldt manus — hook, replikker og shotlist — til en video hun kunne
+   filme i morgen.
+3. UGEPLAN: syv dage med platform og format pr. dag.
+4. COMPLIANCE-TJEK: hvilke risici hun selv fandt i sit indhold, og hvordan hun retter dem.
+
+Hvert felt: maxlength 1500 med synlig tegntæller. INGEN hård minimumsgrænse på tegn —
+bedømmelsen er holistisk, ikke mekanisk.
+
+BEDØMMELSE
+Model: claude-sonnet-4-6. ALDRIG haiku — haiku består mekanisk vrøvl.
+AI-KALD udelukkende via Cloudflare Worker'en learnai-proxy. ALDRIG direkte til api.anthropic.com.
+
+TO HÅRDE GATES (dumper uanset alt andet):
+  1. Teksten skal bestå af meningsfulde sætninger — ikke tastaturvrøvl, ikke gentaget tekst,
+     ikke kopieret opgavetekst.
+  2. Den skal beskrive en reel kanal og et reelt produkt eller emne — ikke pladsholdere.
+
+KRITERIER — giver PLUSPOINT, aldrig hårde gates:
+  brandklarhed · konkret og filmbart manus · realistisk ugeplan · mindst én reel risiko fanget
+  i compliance-tjekket · sammenhæng mellem de fire dele
+
+FEEDBACK
+Uanset score gives ALTID både ros og mindst én konkret forbedring — også ved topkarakter
+og ved bundkarakter. Byg en JS-fallback der garanterer at begge afsnit rendres,
+også hvis AI-svaret er ufuldstændigt. Score skal være ærlig og stigende, ikke inflateret.
+
+VED BESTÅELSE
+Skriv socialMediePraktiskPassed: true til Firestore.
+UDSTED INGEN BELØNNING HER. Knap videre til diplom-social-medie.html.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af låst, tom, udfyldt, bestået og
+dumpet tilstand. Lever via present_files. Byg kun denne fil.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIPLOM -->
+  <div class="build" id="bdip">
+    <div class="build-head" onclick="tog('bdip')">
+      <div class="tick" role="checkbox" aria-checked="false" tabindex="0" onclick="mark(event,'bdip')" onkeydown="tickKey(event,'bdip')">✓</div>
+      <div class="build-num">★</div>
+      <div class="build-txt">
+        <div class="build-title">Diplom &amp; badge</div>
+        <div class="build-file">diplom-social-medie.html</div>
+        <div class="build-meta">
+          <span class="chip chip-acc">blomme + guld</span>
+          <span class="chip">Bygges ALLERSIDST</span>
+        </div>
+      </div>
+      <div class="build-arrow">▾</div>
+    </div>
+    <div class="build-body">
+      <div class="note note-amber">
+        <div class="note-t">Rækkefølge</div>
+        Denne fil bygges til allersidst, når alle 20 øvrige filer er live. Badgens endelige udformning fastlægges sammen med platformens badge-visning, så den matcher de eksisterende D- og C-badges i form og placering.
+      </div>
+      <div class="b-sub">Hvad siden gør i én handling</div>
+      <ul class="b-list">
+        <li>Gater på <strong>både</strong> <code>socialMedieExamPassed</code> og <code>socialMediePraktiskPassed</code></li>
+        <li>Udsteder badge i blomme + skriver gennemførelsesflaget til Firestore</li>
+        <li>Genererer personligt diplom med navn, efternavn og e-mail hentet fra Firestore</li>
+        <li>Verifikationskode i samme mønster som AKAI-D, skrevet til <code>verifications/{code}</code></li>
+        <li><strong>Ingen coins</strong> — hverken ind eller ud</li>
+        <li>Dedup-tjek før udstedelse: findes badgen allerede, udstedes den ikke igen</li>
+        <li>PDF-download via jsPDF + html2canvas, A4, samme mønster som D-diplomerne</li>
+      </ul>
+      <div class="pbox">
+        <div class="pbox-head"><div class="pbox-t">Prompt ★</div><button class="copy-btn" onclick="cp('pDip',this)">Kopiér</button></div>
+        <div class="pbox-body" id="pDip">Du bygger på Akademiet AI. Byg diplomsiden til sidekurset "AI til Sociale Medier".
+Denne fil bygges ALLERSIDST — alle 20 øvrige filer skal være live først.
+
+FØRST: curl -s -o ref.html "https://raw.githubusercontent.com/magnuscode-ai/ai-kursus/main/kursus-d-average-diplom.html"
+FILNAVN: diplom-social-medie.html
+
+DESIGN
+Honning og Skov med blomme + reward-guld. Behold --c-gold-*-navnene, skift værdierne:
+  --c-gold-deep:#3e1d33; --c-gold:#5e3550; --c-gold-rgb:94,53,80;
+  --c-gold-warm-rgb:200,150,182; --c-gold-mid-rgb:150,96,128;
+  --c-gold-mid:#966080; --c-gold-warm:#c896b6; --c-gold-ink:#2a1425;
+  --c-gold-tint:#efe4ec; --c-gold-faint:#faf4f8;
+Guld til diplomets rammedetaljer: #c2a038 og #e6c79a.
+BRANDREGEL: "Akademiet AI" overalt — også på selve diplomet og i PDF-filnavnet.
+
+ADGANGSGATE
+Siden kræver BEGGE flag true i Firestore: socialMedieExamPassed OG socialMediePraktiskPassed.
+Mangler ét af dem: venlig låst tilstand med knap til den manglende del.
+
+ÉN HANDLING VED KLIK PÅ "HENT DIT DIPLOM"
+1. DEDUP-TJEK FØRST: findes badgen allerede, eller er socialMedieRewardClaimed true,
+   så udsted IKKE igen — vis blot diplomet.
+2. Udsted badge i blomme og skriv gennemførelsesflaget til Firestore.
+   FELTNAVN SKAL BEKRÆFTES AF AUGUST FØR BYG — forslag: sideCourses: arrayUnion('social-medie').
+   Byg ikke mod et gættet feltnavn.
+3. Generér verifikationskode i samme mønster som AKAI-D og skriv den til verifications/{code}.
+4. INGEN COINS — hverken ind eller ud. Dette er et sidekursus og en coin-sink.
+
+DIPLOMET
+Personligt: navn, efternavn og e-mail hentes fra Firestore, ikke fra et input-felt.
+A4-format, premium-udtryk som D-diplomerne. PDF-download med jsPDF + html2canvas.
+Konfetti ved udstedelse. Tjek at layoutet ikke kollapser på mobil — det var en fejl i D.
+
+EFTER DIPLOMET
+Knap tilbage til platform.html. Ingen upsell til andre kurser på denne side.
+
+VALIDERING: node --check, lxml, Playwright-screenshots af låst tilstand, udstedelse,
+allerede-udstedt tilstand og mobilvisning. Lever via present_files. Byg kun denne fil.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ LEVERANCESTANDARD ══════════ -->
+  <div class="sec-head">
+    <div class="sec-label">Kvalitet</div>
+    <div class="sec-title">Leverancestandard for hver fil</div>
+    <div class="sec-sub">Gælder uden undtagelse. En fil der ikke har været gennem alle fem trin, uploades ikke.</div>
+  </div>
+
+  <div class="frame">
+    <ul class="b-list" style="margin-left:18px">
+      <li><strong>1. Hent live-referencen fra GitHub</strong> før redigering — gæt aldrig på strukturen</li>
+      <li><strong>2. Kirurgiske <code>str_replace</code>-ændringer</strong> — aldrig fulde omskrivninger af en fil der allerede virker</li>
+      <li><strong>3. Validér</strong> — <code>node --check</code> på al inline JS, DOM-balance med Python lxml</li>
+      <li><strong>4. Verificér visuelt</strong> — Playwright-screenshot af hver tilstand: start, aktiv, bestået, dumpet, låst, mobil</li>
+      <li><strong>5. Lever komplet upload-klar fil</strong> via <code>present_files</code></li>
+    </ul>
+    <div class="note note-red" style="margin-top:16px">
+      <div class="note-t">Ufravigelige regler på tværs af alle 21 filer</div>
+      <ul>
+        <li>API-nøgler må aldrig ligge i HTML eller på GitHub. Alle AI-kald går gennem Cloudflare Worker'en <code>learnai-proxy</code>.</li>
+        <li>Frosne kodenavne ændres aldrig: <code>learnai-dk</code>, <code>learnai-proxy</code>, <code>learnai_api_base</code>, <code>LEARNAI_API</code>.</li>
+        <li>Synligt brandnavn er altid <strong>Akademiet AI</strong>. Tjek <code>.brand-name</code> i topbaren hver gang en fil genbruges.</li>
+        <li>Filnavne er ASCII — aldrig æ, ø eller å.</li>
+        <li>Aldrig SVG i CSS <code>content:''</code> — brug glyffer ✓ og ✕.</li>
+        <li>Ingen coins udbetales nogen steder i dette kursus.</li>
+        <li>AI-output må aldrig fremstilles som juridisk, skattemæssig eller økonomisk gyldigt.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="foot">
+    Akademiet AI · Byggeplan for sidekurset AI til Sociale Medier<br>
+    Fremdriften gemmes lokalt i denne browser. Rydder du browserdata, nulstilles afkrydsningerne.
+  </div>
+
 </div>
 
-<!-- toasts -->
-<div id="toast"></div>
-<div id="locked-toast">🔒 Gennemfør det forrige trin først</div>
+<div id="toast">Kopieret</div>
 
-<!-- ════════════════════════════════════════════════════════════
-     LOGIK: lås/quiz/øvelser  (almindelig, ikke-modul)
-════════════════════════════════════════════════════════════ -->
 <script>
-/* ── Konfiguration ──
-   COURSE_ID bruges som Firestore-feltnavn til at gemme fremskridt.
-   DEV_PREVIEW=true viser indholdet uden login (kun til lokal test).
-   SÆT DEV_PREVIEW=false FØR UPLOAD, så login-muren styrer adgang. */
-const COURSE_ID    = 'sociale-medier';
-const DEV_PREVIEW  = true;
+'use strict';
 
-/* ── State ── */
-const exDone = { ex1:false, ex2:false, ex3:false };
-let quizPassed = false;
-let m1Done = false;
-
-/* ── Login-mur: vis/skjul + lås baggrunds-scroll (kan ikke lukkes på anden vis) ── */
-function setWall(show){
-  const w=document.getElementById('login-wall');
-  if(!w) return;
-  if(show){ w.classList.add('show'); document.documentElement.style.overflow='hidden'; document.body.style.overflow='hidden'; }
-  else { w.classList.remove('show'); document.documentElement.style.overflow=''; document.body.style.overflow=''; }
-}
-window._setWall = setWall;
-
-/* ── Toasts ── */
-let _toastTimer, _lockTimer;
-function toast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(_toastTimer); _toastTimer=setTimeout(()=>t.classList.remove('show'),2400);
-}
-function lockedToast(msg){
-  const t=document.getElementById('locked-toast');
-  t.textContent='🔒 '+msg; t.classList.add('show');
-  clearTimeout(_lockTimer); _lockTimer=setTimeout(()=>t.classList.remove('show'),2400);
-}
-
-/* ── Sidebar-navigation ── */
-document.querySelectorAll('.sb-item').forEach(function(item){
-  item.addEventListener('click', function(){
-    const lk = item.getAttribute('data-locked');
-    if(lk==='exam'){ lockedToast('Eksamenen åbner, når du har gennemført alle 3 moduler'); return; }
-    if(lk==='1'){
-      const which = item.id==='sbM2' ? 'Bestå mini-quizzen i Modul 1 for at låse Modul 2 op'
-                                     : 'Modul 3 åbner, når Modul 2 er gennemført';
-      lockedToast(which); return;
-    }
-    const jump = item.getAttribute('data-jump');
-    if(jump){
-      const el=document.getElementById(jump);
-      if(el){ const top=el.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); }
-    }
-  });
-});
-
-/* ── Progress-beregning (4 trin: 3 øvelser + quiz = Modul 1) ── */
-function refreshProgress(){
-  let steps=0;
-  if(exDone.ex1) steps++;
-  if(exDone.ex2) steps++;
-  if(exDone.ex3) steps++;
-  if(quizPassed) steps++;
-  const pct=Math.round((steps/4)*100);
-  document.getElementById('sbFill').style.width=pct+'%';
-  document.getElementById('sbPct').textContent=pct+' %';
-}
-
-/* ── Øvelse-state opdatering + quiz-oplåsning ── */
-function setExState(id, label){
-  const el=document.getElementById(id+'State');
-  if(el){ el.textContent=label; el.classList.add('done'); }
-}
-function markExercise(key){
-  if(exDone[key]) return;
-  exDone[key]=true;
-  refreshProgress();
-  checkExercisesComplete();
-}
-function checkExercisesComplete(){
-  if(exDone.ex1 && exDone.ex2 && exDone.ex3){
-    const btn=document.getElementById('quizUnlockBtn');
-    const txt=document.getElementById('czText');
-    btn.disabled=false; btn.classList.remove('disabled');
-    btn.innerHTML='Tag mini-quizzen →';
-    txt.textContent='Flot! Alle 3 øvelser er gennemført. Tag mini-quizzen for at låse Modul 2 op.';
-    if(!btn.dataset.glow){ btn.dataset.glow='1'; toast('✅ Alle øvelser fuldført — mini-quizzen er åben!'); }
-  }
-}
-
-/* ════════ ØVELSE 1: tonefald-slider ════════ */
-(function(){
-  const variants=[
-    { text:'Vi annoncerer hermed lanceringen af vores nye kaffeblanding. Den er fra i dag tilgængelig i vores webshop.', best:'LinkedIn · B2B' },
-    { text:'Ny kaffeblanding på hylderne ☕ Vi har arbejdet længe på den helt rette balance — smag den i dag.', best:'Facebook · nyhedsbrev' },
-    { text:'Så er den her! 🎉 Vores nye blanding er rund, varm og lige til morgenkaffen. Hvad bliver din første kop?', best:'Instagram-opslag' },
-    { text:'POV: din morgenkaffe får endelig en opgradering ☕✨ Ny blanding, samme dårlige morgenhår. Smag den nuuu 👀', best:'TikTok · Reels · Stories' }
-  ];
-  const range=document.getElementById('toneRange');
-  const cap=document.getElementById('toneCaption');
-  const best=document.getElementById('toneBest');
-  const ticks=document.querySelectorAll('#toneTicks .tone-tick');
-  const seen={0:true};
-  function render(i){
-    cap.style.opacity='0';
-    setTimeout(function(){ cap.textContent=variants[i].text; cap.style.opacity='1'; },120);
-    best.innerHTML='Bedst til: <span class="chip">'+variants[i].best+'</span>';
-    ticks.forEach(function(t){ t.classList.toggle('active', Number(t.getAttribute('data-i'))===i); });
-    seen[i]=true;
-    if(Object.keys(seen).length>=4){ setExState('ex1','✓ Fuldført'); markExercise('ex1'); }
-  }
-  range.addEventListener('input', function(){ render(Number(range.value)); });
-  ticks.forEach(function(t){
-    t.addEventListener('click', function(){ const i=Number(t.getAttribute('data-i')); range.value=i; render(i); });
-  });
-})();
-
-/* ════════ ØVELSE 2: prompt-lab (simuleret) ════════ */
-(function(){
-  const input=document.getElementById('labInput');
-  const count=document.getElementById('labCount');
-  const blocks=document.querySelectorAll('#labBlocks .lab-block');
-  const runBtn=document.getElementById('labRun');
-  const chat=document.getElementById('labChat');
-  const echo=document.getElementById('labEcho');
-  const answer=document.getElementById('labAnswer');
-  const verdict=document.getElementById('labVerdict');
-
-  const KEYS={
-    platform:['instagram','tiktok','linkedin','facebook','reel','reels','story','stories','opslag','post','platform'],
-    maalgruppe:['målgruppe','kunder','unge','voksne','kaffeelsker','følgere','til folk','segment','publikum','seere'],
-    maal:['mål','salg','sælg','opmærksomhed','awareness','engagement','tilmeld','klik','konvert','besøg','branding','kendskab'],
-    tone:['tone','tonefald','sjov','legende','professionel','formel','venlig','afslappet','energisk','humor','seriøs','varm'],
-    format:['hashtag','emoji','cta','opfordring','længde','antal ord','punkt','billedtekst','caption','format','kort','linje','åbning','hook']
-  };
-  function detect(txt){
-    const t=txt.toLowerCase();
-    const hits={};
-    Object.keys(KEYS).forEach(function(k){ hits[k]=KEYS[k].some(function(w){ return t.indexOf(w)>=0; }); });
-    return hits;
-  }
-  function live(){
-    const hits=detect(input.value);
-    let n=0;
-    blocks.forEach(function(b){ const k=b.getAttribute('data-k'); const on=hits[k]; b.classList.toggle('hit',on); if(on)n++; });
-    count.textContent=n+' af 5 byggeklodser fundet';
-    return n;
-  }
-  input.addEventListener('input', live);
-
-  const WEAK='🌟 Ny kaffe! Kom og køb vores lækre kaffe i webshoppen i dag. Den smager super godt. #kaffe #lækkert #nyhed #shop';
-  const STRONG='☕ Din morgen fortjener bedre.\n\nVi har lige ristet en ny blanding — rund, nøddeagtig og lavet til den allerførste kop, før verden vågner.\n\n👉 Smag den i dag. Link i bio.\n\n#danskkaffe #specialkaffe #morgenrutine #kafferisteri #nyblanding';
-
-  runBtn.addEventListener('click', function(){
-    const txt=input.value.trim();
-    if(txt.length<8){ toast('Skriv en prompt først ✍️'); input.focus(); return; }
-    const n=live();
-    echo.textContent=txt;
-    chat.classList.add('show');
-    verdict.hidden=false;
-    if(n>=3){
-      answer.textContent=STRONG;
-      verdict.className='lab-verdict strong';
-      verdict.innerHTML='<b>Stærk prompt 👏</b> Du gav AI\'en '+n+' ud af 5 byggeklodser, og det kan ses: opslaget har en fængende åbning, en klar værdi, en tydelig opfordring og relevante hashtags. Sådan styrer du AI\'en i stedet for at tage til takke med det første, den finder på.';
-      setExState('ex2','✓ Fuldført'); markExercise('ex2');
-    } else {
-      answer.textContent=WEAK;
-      verdict.className='lab-verdict weak';
-      const missing=[]; const hits=detect(txt);
-      if(!hits.platform) missing.push('platform');
-      if(!hits.maalgruppe) missing.push('målgruppe');
-      if(!hits.maal) missing.push('et mål');
-      if(!hits.tone) missing.push('tonefald');
-      if(!hits.format) missing.push('format/CTA');
-      verdict.innerHTML='<b>Lidt for løst 🤔</b> Med kun '+n+' byggeklodser bliver svaret generisk. Prøv at tilføje: <b>'+missing.join(', ')+'</b>. Jo mere du fortæller AI\'en om kontekst og mål, jo mindre kedeligt bliver resultatet. Skriv om og generér igen.';
-    }
-    chat.scrollIntoView({behavior:'smooth',block:'nearest'});
-  });
-})();
-
-/* ════════ ØVELSE 3: strategi-match ════════ */
-(function(){
-  const platforms=[
-    { id:'linkedin', ic:'💼', label:'LinkedIn' },
-    { id:'instagram', ic:'📸', label:'Instagram' },
-    { id:'tiktok', ic:'🎬', label:'TikTok' },
-    { id:'facebook', ic:'👥', label:'Facebook' }
-  ];
-  const strategies=[
-    { id:'linkedin', label:'Faglige indlæg og personlige brancheindsigter' },
-    { id:'instagram', label:'Æstetiske billeder og korte Reels' },
-    { id:'tiktok', label:'Autentiske trend-videoer i højt tempo' },
-    { id:'facebook', label:'Fællesskab, grupper og længere opslag' }
-  ];
-  function shuffle(a){ const x=a.slice(); for(let i=x.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [x[i],x[j]]=[x[j],x[i]]; } return x; }
-
-  const pWrap=document.getElementById('matchPlatforms');
-  const sWrap=document.getElementById('matchStrategies');
-  shuffle(platforms).forEach(function(p){
-    const d=document.createElement('div'); d.className='match-item'; d.setAttribute('data-side','p'); d.setAttribute('data-id',p.id);
-    d.innerHTML='<span class="m-ic">'+p.ic+'</span>'+p.label; pWrap.appendChild(d);
-  });
-  shuffle(strategies).forEach(function(s){
-    const d=document.createElement('div'); d.className='match-item'; d.setAttribute('data-side','s'); d.setAttribute('data-id',s.id);
-    d.textContent=s.label; sWrap.appendChild(d);
-  });
-
-  let selected=null; let matched=0;
-  function clearSel(){ document.querySelectorAll('.match-item.selected').forEach(function(e){ e.classList.remove('selected'); }); }
-  function onPick(el){
-    if(el.classList.contains('matched')) return;
-    if(!selected){ clearSel(); el.classList.add('selected'); selected=el; return; }
-    if(selected===el){ el.classList.remove('selected'); selected=null; return; }
-    if(selected.getAttribute('data-side')===el.getAttribute('data-side')){
-      clearSel(); el.classList.add('selected'); selected=el; return;
-    }
-    // ét fra hver side valgt — tjek match
-    const a=selected, b=el;
-    if(a.getAttribute('data-id')===b.getAttribute('data-id')){
-      a.classList.remove('selected'); a.classList.add('matched'); b.classList.add('matched');
-      selected=null; matched++;
-      document.getElementById('ex3State').textContent=matched+' / 4 matchet';
-      if(matched>=4){ setExState('ex3','✓ Fuldført'); markExercise('ex3'); }
-    } else {
-      a.classList.add('wrong'); b.classList.add('wrong');
-      lockedToast('Ikke helt — prøv en anden kombination');
-      setTimeout(function(){ a.classList.remove('wrong','selected'); b.classList.remove('wrong'); selected=null; },340);
-    }
-  }
-  document.querySelectorAll('.match-item').forEach(function(el){ el.addEventListener('click', function(){ onPick(el); }); });
-})();
-
-/* ════════ MINI-QUIZ 1 ════════ */
-(function(){
-  // korrekt-index spredt over A/B/C/D (1,3,0,2)
-  const QUESTIONS=[
-    { q:'Et opslag fra AI’en føles fladt og generisk. Hvad løser oftest problemet bedst?', correct:1, opts:[
-      'Du beder den skrive teksten forfra og gør den markant længere end første udkast',
-      'Du giver den kontekst om målgruppe, mål og det tonefald den skal ramme',
-      'Du skifter til en anden AI-model og prøver lykken med præcis samme prompt igen',
-      'Du fylder opslaget med endnu flere emojis og hashtags, så det ser mere levende ud'
-    ]},
-    { q:'Hvorfor kan det samme velskrevne opslag ramme plet på TikTok og falde helt fladt på LinkedIn?', correct:2, opts:[
-      'Fordi LinkedIn rent teknisk ikke understøtter emojis og uformelt sprog i opslag',
-      'Fordi længere tekster altid præsterer dårligere end kortere tekster, uanset kanalen',
-      'Fordi hver platform har sin egen kultur, og publikum forventer et bestemt tonefald',
-      'Fordi AI-genereret indhold kun rigtig fungerer på visuelle platforme som TikTok'
-    ]},
-    { q:'En B2B-konsulent vil opbygge faglig troværdighed online. Hvilken tilgang passer bedst?', correct:0, opts:[
-      'Faglige indlæg og personlige brancheindsigter delt løbende på LinkedIn',
-      'Daglige trend-baserede danse-videoer postet på TikTok i højt tempo',
-      'Æstetiske produktbilleder helt uden tekst lagt op i et stort Instagram-galleri',
-      'Korte, sjove memes uden kontekst spredt bredt rundt i Facebook-grupper'
-    ]},
-    { q:'Hvorfor er en præcis målgruppe vigtigere for resultatet end at skrive til “alle”?', correct:3, opts:[
-      'Fordi svaret automatisk bliver længere, når AI’en får mere stof at skrive ud fra',
-      'Fordi AI’en så frit kan vælge en tilfældig vinkel og et tonefald helt selv',
-      'Fordi du derefter helt slipper for selv at angive et tonefald i din prompt',
-      'Fordi sproget, vinklen og eksemplerne rammer den rigtige målgruppes behov'
-    ]}
-  ];
-  const PASS=3;
-  const picks={};
-  const body=document.getElementById('quizBody');
-  const letters=['A','B','C','D'];
-
-  QUESTIONS.forEach(function(item, qi){
-    const block=document.createElement('div'); block.className='q-block';
-    const num=document.createElement('span'); num.className='q-num'; num.textContent='Spørgsmål '+(qi+1)+' af 4'; block.appendChild(num);
-    const qt=document.createElement('div'); qt.className='q-text'; qt.textContent=item.q; block.appendChild(qt);
-    const opts=document.createElement('div'); opts.className='q-opts';
-    item.opts.forEach(function(text, oi){
-      const o=document.createElement('div'); o.className='q-opt';
-      o.innerHTML='<span class="q-mark"></span><span>'+text+'</span>';
-      o.addEventListener('click', function(){
-        if(quizPassed) return;
-        opts.querySelectorAll('.q-opt').forEach(function(e){ e.classList.remove('selected'); });
-        o.classList.add('selected'); picks[qi]=oi;
-      });
-      opts.appendChild(o);
-    });
-    block.appendChild(opts);
-    body.appendChild(block);
-  });
-
-  const footer=document.createElement('div'); footer.className='quiz-footer';
-  footer.innerHTML='<span class="quiz-result" id="quizResult"></span>'+
-    '<button class="btn btn-koral btn-sm" id="quizSubmit">Aflevér svar</button>';
-  body.appendChild(footer);
-
-  document.getElementById('quizSubmit').addEventListener('click', function(){
-    if(Object.keys(picks).length<QUESTIONS.length){ toast('Besvar alle 4 spørgsmål først 🙂'); return; }
-    let score=0;
-    const blocks=body.querySelectorAll('.q-block');
-    QUESTIONS.forEach(function(item, qi){
-      const optEls=blocks[qi].querySelectorAll('.q-opt');
-      optEls.forEach(function(e){ e.classList.add('locked-pick'); });
-      const chosen=picks[qi];
-      if(chosen===item.correct){ score++; optEls[chosen].classList.add('correct'); }
-      else { optEls[chosen].classList.add('incorrect'); optEls[item.correct].classList.add('correct'); }
-    });
-    const res=document.getElementById('quizResult');
-    const submit=document.getElementById('quizSubmit');
-    if(score>=PASS){
-      quizPassed=true;
-      res.className='quiz-result pass'; res.textContent='✓ Bestået — '+score+'/4 rigtige!';
-      submit.style.display='none';
-      onQuizPassed();
-    } else {
-      res.className='quiz-result fail'; res.textContent='✗ '+score+'/4 — du mangler mindst '+PASS+'. Prøv igen.';
-      submit.textContent='Prøv igen';
-      submit.onclick=function(){ resetQuiz(); };
-    }
-  });
-
-  function resetQuiz(){
-    Object.keys(picks).forEach(function(k){ delete picks[k]; });
-    body.querySelectorAll('.q-opt').forEach(function(e){ e.classList.remove('selected','correct','incorrect','locked-pick'); });
-    const res=document.getElementById('quizResult'); res.textContent=''; res.className='quiz-result';
-    const submit=document.getElementById('quizSubmit'); submit.textContent='Aflevér svar';
-    submit.onclick=null;
-  }
-
-  window._unlockQuiz=function(){
-    const q=document.getElementById('quiz1');
-    q.classList.remove('is-locked');
-    const top=q.getBoundingClientRect().top+window.scrollY-90;
-    window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
-  };
-})();
-
-/* ── Quiz-unlock knap ── */
-document.getElementById('quizUnlockBtn').addEventListener('click', function(){
-  if(this.disabled) return;
-  window._unlockQuiz();
-});
-
-/* ── CTA "Gå til Modul 2": scroll til Modul 2 ── */
-document.getElementById('goNextBtn').addEventListener('click', function(){
-  const el=document.getElementById('m2');
-  if(el){ const top=el.getBoundingClientRect().top+window.scrollY-84; window.scrollTo({top:Math.max(0,top),behavior:'smooth'}); }
-});
-
-/* ── Når quizzen er bestået: marker Modul 1 done + lås Modul 2 op ── */
-function onQuizPassed(){
-  if(m1Done) return;
-  m1Done=true;
-  refreshProgress();
-
-  // Modul 1 -> done
-  const m1=document.getElementById('m1'); m1.classList.add('is-done');
-  m1.querySelector('.mod-time').outerHTML='<span class="mod-badge done">✓ Gennemført</span>';
-
-  // sidebar M1 -> done, M2 -> active/unlock
-  const sbM1=document.getElementById('sbM1');
-  sbM1.classList.remove('is-active'); sbM1.classList.add('is-done');
-  sbM1.querySelector('.sb-txt small').textContent='Gennemført';
-  document.getElementById('sbFlagM1').textContent='✓';
-
-  const sbM2=document.getElementById('sbM2');
-  sbM2.classList.remove('is-locked'); sbM2.classList.add('is-active');
-  sbM2.removeAttribute('data-locked');
-  sbM2.querySelector('.sb-txt small').textContent='Næste op';
-  sbM2.querySelector('.sb-flag').textContent='';
-
-  // Modul 2 kort -> låst op (visuelt klar til at blive bygget)
-  const m2=document.getElementById('m2');
-  m2.classList.remove('is-locked');
-  m2.querySelector('.mod-badge').outerHTML='<span class="mod-time">⏱ 30 min</span>';
-
-  // CTA "Gå til Modul 2" -> vis nu
-  document.getElementById('goNext').hidden=false;
-
-  // journey
-  const steps=document.querySelectorAll('.journey-step');
-  if(steps[0]){ steps[0].classList.remove('current'); steps[0].classList.add('done'); }
-  if(steps[1]){ steps[1].classList.add('done'); }
-  if(steps[2]){ steps[2].classList.add('current'); }
-
-  toast('🎉 Modul 1 gennemført — Modul 2 er låst op!');
-  if(window._saveProgress) window._saveProgress('m1');
-}
-
-/* ── Skift placeholder-tekst på de låste modul-kort, så de ikke er tomme ── */
-document.getElementById('m2').querySelector('.mod-body').innerHTML=
-  '<p class="prose" style="margin-top:14px">Dette modul åbnes, når du har bestået mini-quizzen i Modul 1. Her lærer du at skrive hooks der stopper scrollet, finde de rigtige hashtags og bruge AI til visuelle idéer.</p>';
-document.getElementById('m3').querySelector('.mod-body').innerHTML=
-  '<p class="prose" style="margin-top:14px">Det sidste modul åbnes efter Modul 2. Her bygger du en indholdskalender, lærer at læse dine tal og bruger AI til at A/B-teste dine opslag.</p>';
-</script>
-
-<!-- ════════════════════════════════════════════════════════════
-     FIREBASE: login-mur + gem fremskridt på brugerens profil
-════════════════════════════════════════════════════════════ -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig={apiKey:"AIzaSyAeJF_1DiT3E4pi2HhmwIq22P1ARPuJ5TA",authDomain:"learnai-dk.firebaseapp.com",projectId:"learnai-dk",storageBucket:"learnai-dk.firebasestorage.app",messagingSenderId:"3073076360",appId:"1:3073076360:web:b853d118e943395de4833d"};
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-
-const wall=document.getElementById('login-wall');
-let _user=null;
-
-if(window.DEV_PREVIEW===true){
-  // DEV: vis indholdet uden login (kun til lokal forhåndsvisning)
-  window._setWall(false);
-} else {
-  onAuthStateChanged(auth, async function(u){
-    if(!u){ window._setWall(true); return; }
-    _user=u; window._setWall(false);
-    try{
-      const snap=await getDoc(doc(db,'users',u.uid));
-      if(snap.exists()){
-        const d=snap.data();
-        const saved=(d.smProgress)||[];
-        // (gendannelse af tidligere fremskridt kan kobles på her, når flere moduler er bygget)
-        if(saved.indexOf('m1')>=0){ /* modul 1 allerede taget */ }
-      }
-    }catch(e){ console.error('Indlæsning fejlede:',e); }
-  });
-}
-
-// Gem fremskridt — kaldes fra onQuizPassed()
-window._saveProgress=async function(modId){
-  if(!_user) return;
-  try{ await updateDoc(doc(db,'users',_user.uid), { smProgress: arrayUnion(modId) }); }
-  catch(e){ console.error('Gem fejlede:',e); }
+var KEY = 'akai_byggeplan_social_medie_v1';
+var IDS = ['b-forb','b1','b2','b3','b4','b5','b6','b7','b8','b9','be1','be2','bdip'];
+var FILE_COUNT = 21;
+var FILES_PER = {
+  'b-forb':1,'b1':2,'b2':2,'b3':2,'b4':2,'b5':2,
+  'b6':2,'b7':2,'b8':2,'b9':1,'be1':1,'be2':1,'bdip':1
 };
-</script>
 
-<script>
-// Sørg for at DEV_PREVIEW også er synlig for module-scriptet ovenfor.
-// I produktion vises muren med det samme (intet "blink" af indhold), indtil Firebase bekræfter login.
-window.DEV_PREVIEW = DEV_PREVIEW;
-window._setWall(DEV_PREVIEW ? false : true);
+function load() {
+  try {
+    var raw = window.localStorage.getItem(KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (e) {
+    return {};
+  }
+}
+
+function save(state) {
+  try {
+    window.localStorage.setItem(KEY, JSON.stringify(state));
+  } catch (e) {
+    /* privat browsing eller blokeret storage — planen virker stadig, bare uden hukommelse */
+  }
+}
+
+var state = load();
+
+function tog(id) {
+  var el = document.getElementById(id);
+  if (el) el.classList.toggle('open');
+}
+
+function mark(ev, id) {
+  ev.stopPropagation();
+  setDone(id, !state[id]);
+}
+
+function tickKey(ev, id) {
+  if (ev.key === ' ' || ev.key === 'Enter') {
+    ev.preventDefault();
+    ev.stopPropagation();
+    setDone(id, !state[id]);
+  }
+}
+
+function setDone(id, done) {
+  state[id] = done;
+  save(state);
+  paint(id);
+  updateProgress();
+}
+
+function paint(id) {
+  var card = document.getElementById(id);
+  if (!card) return;
+  var done = !!state[id];
+  card.classList.toggle('done', done);
+  var tick = card.querySelector('.tick');
+  if (tick) tick.setAttribute('aria-checked', done ? 'true' : 'false');
+}
+
+function updateProgress() {
+  var built = 0;
+  for (var i = 0; i < IDS.length; i++) {
+    if (state[IDS[i]]) built += (FILES_PER[IDS[i]] || 1);
+  }
+  var pct = Math.round((built / FILE_COUNT) * 100);
+  var fill = document.getElementById('progFill');
+  var txt = document.getElementById('progTxt');
+  if (fill) fill.style.width = pct + '%';
+  if (txt) txt.textContent = built + ' / ' + FILE_COUNT + ' filer';
+}
+
+var toastTimer;
+function toast(msg) {
+  var t = document.getElementById('toast');
+  if (!t) return;
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { t.classList.remove('show'); }, 1900);
+}
+
+function cp(promptId, btn) {
+  var el = document.getElementById(promptId);
+  if (!el) return;
+  var text = el.textContent;
+  var done = function () {
+    btn.classList.add('ok');
+    btn.textContent = 'Kopieret';
+    toast('Prompt kopieret — send den i en frisk Claude-chat');
+    setTimeout(function () {
+      btn.classList.remove('ok');
+      btn.textContent = 'Kopiér';
+    }, 2200);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done, function () { fallbackCopy(text, done); });
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+
+function fallbackCopy(text, done) {
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'fixed';
+  ta.style.top = '-1000px';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) { toast('Kunne ikke kopiere'); }
+  document.body.removeChild(ta);
+}
+
+(function init() {
+  for (var i = 0; i < IDS.length; i++) paint(IDS[i]);
+  updateProgress();
+})();
 </script>
 
 </body>
