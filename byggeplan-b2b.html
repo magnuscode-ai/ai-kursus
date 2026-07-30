@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Akademiet AI — Byggeplan: B2B-omlægningen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,500&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Honning & Skov fundament */
+  --bg:#e8e2d3; --card:#fbf7ee; --card-2:#f5f0e5; --ink:#20312a; --ink-2:#2f4338;
+  --muted:#5a7060; --muted-2:#8aa090; --border:#cfc6b0; --border-strong:#bbb0a0;
+  --green:#2f6a4a; --green-bg:#dee8de; --amber:#a98841; --amber-bg:#f6edce;
+  --red:#a8402f; --red-bg:#f8e9e5;
+  /* Platform-accent: caramel/brass (ikke et kursusniveau — derfor ikke guld/rød/blå) */
+  --acc:#b9772b; --acc-deep:#7d4c16; --acc-ink:#5c3a12; --acc-warm:#e0b33d;
+  --acc-tint:#f6ebd9; --acc-faint:#fdf8f0; --acc-rgb:185,119,43;
+  --sb-bg:#ddd3ba; --sb-line:#c8bb9c;
+  --r-sm:10px; --r:16px; --r-lg:22px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:
+  radial-gradient(ellipse 55% 45% at 12% 8%,rgba(var(--acc-rgb),.07),transparent 60%),
+  radial-gradient(ellipse 50% 60% at 90% 90%,rgba(47,106,74,.05),transparent 60%),
+  linear-gradient(175deg,#ede7d5,#e8e2d3 50%,#e2dbc8);
+  color:var(--ink);font-family:'Outfit',sans-serif;line-height:1.7;min-height:100vh;padding:0 20px 90px}
+.wrap{max-width:900px;margin:0 auto}
+
+header{text-align:center;padding:64px 0 30px}
+.logo{display:inline-flex;align-items:center;gap:11px;margin-bottom:26px}
+.logo svg{width:38px;height:38px}
+.logo span{font-family:'Lora',serif;font-size:20px;font-weight:600;letter-spacing:-.01em}
+.overline{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--acc-deep);font-weight:700;margin-bottom:14px}
+h1{font-family:'Lora',serif;font-weight:600;font-size:clamp(32px,5vw,50px);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
+h1 em{font-style:italic;color:var(--acc)}
+.lede{font-size:16px;color:var(--muted);max-width:620px;margin:0 auto}
+.stamp{display:inline-block;margin-top:22px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  color:var(--acc-ink);background:var(--acc-tint);border:1px solid rgba(var(--acc-rgb),.35);border-radius:50px;padding:7px 18px}
+
+section{margin-top:44px}
+.sec-num{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;
+  background:linear-gradient(135deg,var(--acc-deep),var(--acc));color:#fff;font-weight:800;font-size:14px;margin-right:12px;flex-shrink:0}
+h2{font-family:'Lora',serif;font-weight:600;font-size:26px;letter-spacing:-.01em;display:flex;align-items:center;
+  margin-bottom:18px;padding-top:16px;border-top:1px solid var(--border)}
+h3{font-family:'Lora',serif;font-weight:600;font-size:19px;margin:26px 0 10px}
+p{margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px 24px;margin-bottom:16px;box-shadow:0 2px 12px rgba(32,49,42,.05)}
+ul{margin:8px 0 12px 4px;list-style:none}
+li{position:relative;padding-left:22px;margin-bottom:7px;font-size:14.5px}
+li::before{content:'';position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:2px;background:var(--acc)}
+li.g::before{background:var(--green)} li.a::before{background:var(--amber)} li.r::before{background:var(--red)}
+strong{color:var(--ink);font-weight:700}
+code{background:var(--acc-tint);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-family:'Outfit';font-size:13px;font-weight:600;color:var(--acc-ink)}
+
+.note{background:var(--green-bg);border-left:3px solid var(--green);border-radius:var(--r-sm);padding:13px 17px;margin:14px 0;font-size:14.5px}
+.warn{background:var(--amber-bg);border-left:3px solid var(--amber);border-radius:var(--r-sm);padding:13px 17px;margin:14px 0;font-size:14.5px}
+.stop{background:var(--red-bg);border-left:3px solid var(--red);border-radius:var(--r-sm);padding:13px 17px;margin:14px 0;font-size:14.5px}
+.note b,.warn b,.stop b{display:block;margin-bottom:4px;font-size:12px;letter-spacing:.13em;text-transform:uppercase}
+.note b{color:var(--green)} .warn b{color:var(--acc-deep)} .stop b{color:var(--red)}
+
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:14px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden}
+th{background:var(--acc-tint);color:var(--acc-ink);text-align:left;font-weight:700;font-size:12.5px;
+  letter-spacing:.06em;text-transform:uppercase;padding:11px 14px;border-bottom:1px solid var(--border)}
+td{padding:11px 14px;border-bottom:1px solid #e6dfcd;vertical-align:top}
+tr:last-child td{border-bottom:none}
+td.num{font-weight:700;color:var(--acc-deep);white-space:nowrap}
+
+.pill{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 10px;border-radius:50px;vertical-align:middle;margin-left:8px}
+.pill-done{background:var(--green-bg);color:#1f5238;border:1px solid #a9c9b4}
+.pill-now{background:var(--acc-tint);color:var(--acc-ink);border:1px solid rgba(var(--acc-rgb),.4)}
+.pill-todo{background:#eae3d2;color:#6b6250;border:1px solid var(--border)}
+.pill-aug{background:#e4e8f0;color:#3b4a63;border:1px solid #c2cbdc}
+.pill-open{background:var(--red-bg);color:#8c3323;border:1px solid #e0b7ac}
+
+.step{display:flex;gap:16px;align-items:flex-start;background:var(--card);border:1px solid var(--border);
+  border-radius:var(--r);padding:18px 20px;margin-bottom:12px;box-shadow:0 2px 10px rgba(32,49,42,.04)}
+.step-n{flex:none;width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:15px;color:#fff;background:linear-gradient(135deg,var(--acc-deep),var(--acc))}
+.step.gate .step-n{background:linear-gradient(135deg,#7a3323,var(--red))}
+.step-t{font-family:'Lora',serif;font-size:17px;font-weight:600;margin-bottom:3px}
+.step-d{font-size:14px;color:var(--muted)}
+
+.owner{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0 4px}
+.owner span{font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:5px 12px;border-radius:8px;background:var(--card-2);border:1px solid var(--border);color:var(--muted)}
+
+.foot{margin-top:56px;padding-top:22px;border-top:1px solid var(--border);text-align:center;font-size:13px;color:var(--muted-2)}
+@media(max-width:640px){
+  header{padding:44px 0 22px}
+  .card{padding:18px 16px}
+  table{font-size:13px} th,td{padding:9px 10px}
+  h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect x="2" y="2" width="40" height="40" rx="11" fill="#2F5D45"/>
+      <path d="M22 11.5l2.6 6.9 6.9 2.6-6.9 2.6-2.6 6.9-2.6-6.9-6.9-2.6 6.9-2.6z" fill="#E6C79A"/>
+    </svg>
+    <span>Akademiet <b>AI</b></span>
+  </div>
+  <div class="overline">Byggeplan · Strategi</div>
+  <h1>B2B-<em>omlægningen</em></h1>
+  <p class="lede">Fra kurser man køber selv, til kurser en virksomhed køber til sine medarbejdere. Dette dokument er den overordnede plan. <code>byggeplan.html</code> (D-systemet) og <code>byggeplan-kursus-c.html</code> gælder stadig for de sider de dækker.</p>
+  <div class="stamp">Juli 2026 · Besluttet af Alexander</div>
+</header>
+
+<!-- 1 -->
+<section>
+  <h2><span class="sec-num">1</span> Målgruppen</h2>
+
+  <div class="card">
+    <h3 style="margin-top:0">Køber ≠ bruger</h3>
+    <p>Det her er den vigtigste linje i hele dokumentet, fordi den styrer to forskellige ting på én gang.</p>
+    <table>
+      <tr><th>&nbsp;</th><th>Køberen</th><th>Brugeren</th></tr>
+      <tr><td class="num">Hvem</td><td>Ejer/leder, typisk 45–60</td><td>Medarbejderen, typisk 25–55</td></tr>
+      <tr><td class="num">Vil have</td><td>Sparet tid, færre fejl, dokumentation</td><td>Noget der virker i morgen, uden pinlighed</td></tr>
+      <tr><td class="num">Får</td><td>Salgsmateriale, admin-overblik, virksomhedsbevis</td><td>Selve kurset</td></tr>
+    </table>
+    <div class="stop"><b>Fast regel</b>Vi designer <strong>produktet til brugeren</strong> og <strong>salget til køberen</strong>. Bygger vi kurset til ejeren, hader medarbejderne det — og så ryger genkøb, anbefaling og hele casen.</div>
+  </div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Begrundelsen for pivoten</h3>
+    <p>Grunden til at vi går efter virksomheder er, at <strong>betalingsevne og beslutningsret sidder samme sted</strong>. En ejer kan sige ja på 20 minutter, betaler med firmapenge mod et målbart afkast, og ét ja giver mange sæder i stedet for ét.</p>
+    <div class="warn"><b>Argumenter vi ikke bruger</b>«Unge har ikke penge», «ældre gider ikke teknik», «30-årige er nærige». Det er stereotyper, ikke segmentering — og de vil sende produktdesignet galt afsted, fordi det netop <em>er</em> de mennesker der skal bruge kurset.</div>
+    <div class="stop"><b>Løfte-hygiejne</b>Vi lover <strong>aldrig</strong> lønstigninger til medarbejdere som effekt af kurset. Det kan vi ikke indfri. Løftet til ejeren er: <strong>sparet tid × timepris + færre fejl + dokumenteret AI-uddannelse</strong>.</div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section>
+  <h2><span class="sec-num">2</span> Kursustrappen og tidsbudgettet</h2>
+  <p>Firmatid er dyr. Tidsbudgettet er derfor ikke en vejledning — det er en <strong>hård ramme</strong>, og alt indhold skal skæres ind i den.</p>
+
+  <table>
+    <tr><th>Niveau</th><th>Løfte</th><th>Tid</th><th>Status</th></tr>
+    <tr>
+      <td class="num">D</td>
+      <td>Forstå hvad AI er, og tør bruge det<br><span style="color:var(--muted);font-size:13px">Gratis · lead-magnet</span></td>
+      <td class="num">45 min</td>
+      <td><span class="pill pill-done">Bygget</span></td>
+    </tr>
+    <tr>
+      <td class="num">C</td>
+      <td>Brug AI godt i din hverdag — prompts, mails, møder, research</td>
+      <td class="num">2 timer</td>
+      <td><span class="pill pill-now">Redesign i gang</span></td>
+    </tr>
+    <tr>
+      <td class="num">B</td>
+      <td><strong>Arbejdsgange.</strong> Byg AI ind i dine faste opgaver: tilbud, rapporter, referater, dataoprydning</td>
+      <td class="num">3 timer</td>
+      <td><span class="pill pill-todo">Bygges 100 % om</span></td>
+    </tr>
+    <tr>
+      <td class="num">A</td>
+      <td><strong>Agenter og automatisering.</strong> Sæt selv systemer op der kører uden at nogen skriver prompts hver gang</td>
+      <td class="num">4 timer</td>
+      <td><span class="pill pill-todo">Bygges 100 % om</span></td>
+    </tr>
+    <tr>
+      <td class="num">Spor</td>
+      <td>Rollespor efter B og A (se afsnit 3)</td>
+      <td class="num">2–4 timer</td>
+      <td><span class="pill pill-todo">Ikke bygget</span></td>
+    </tr>
+  </table>
+  <p style="text-align:right;font-weight:700;color:var(--acc-deep)">I alt pr. medarbejder: ca. 12–14 timer</p>
+
+  <div class="stop"><b>Regnestykket du skal kende før første salgsmøde</b>
+  14 medarbejdere × 12 timer = <strong>168 arbejdstimer</strong>. Til en intern kostpris på ca. 350 kr/time er det <strong>~59.000 kr i medarbejdertid</strong> — altså væsentligt mere end selve licensen.
+  <br><br>Konsekvens: <strong>tiden er den reelle pris, ikke kurset.</strong> Hvert eneste modul skal derfor kunne svare på «hvad sparer det her mig konkret?», og hele pakken skal kunne tages i bidder over uger, ikke som to hele arbejdsdage.</div>
+
+  <div class="warn"><b>Uenighed — afventer dit ja</b>
+  Du vil skære Kursus D ned til 30–45 min. D er allerede færdigbygget, testet og live på begge spor, og at skære det ned er reelt arbejde på noget der virker.
+  <br><br><strong>Min anbefaling: lad D ligge som det er indtil efter første pilot.</strong> Det er gratis, det er en lead-magnet, og en ejer klager ikke over at et gratis kursus tog 55 minutter i stedet for 45. Får vi feedback fra rigtige medarbejdere om at det er for langt, skærer vi målrettet — i stedet for at gætte nu. Sig til hvis du er uenig, så tager vi det.</div>
+</section>
+
+<!-- 3 -->
+<section>
+  <h2><span class="sec-num">3</span> Rollespor</h2>
+  <p>Efter hovedkurset vælger kursisten sin niche og lærer hvordan man sætter det op til <em>præcis</em> det. Samme idé som C+, men flere veje og mere professionelt.</p>
+
+  <div class="note"><b>Beslutning</b>Rollespor lægges <strong>kun efter B og A</strong> — ikke efter D og C. D og C er fundament, som alle skal have ens. Roller divergerer først når vi taler arbejdsgange og automatisering. Det halverer scope og giver et skarpere produkt.</div>
+
+  <div class="card">
+    <h3 style="margin-top:0">Sporene (udkast — skal godkendes)</h3>
+    <ul>
+      <li><strong>Overblik &amp; ledelse</strong> — beslutningsstøtte, opsummering, rapportlæsning</li>
+      <li><strong>Personlig assistent</strong> — kalender, mails, noter, opfølgning</li>
+      <li><strong>Salg &amp; kunder</strong> — tilbud, opfølgning, kundeanalyse</li>
+      <li><strong>Administration &amp; bogholderi</strong> — dokumenter, data, kontrol</li>
+      <li><strong>IT &amp; udvikling</strong> — det tekniske spor (her hører det gamle B/A-stof faktisk hjemme)</li>
+    </ul>
+    <div class="note"><b>Genbrug</b>Det eksisterende udvikler-tunge indhold (tool-loops, RAG, model-routing) smides ikke væk — det flyttes ned i <strong>IT &amp; udvikling</strong>-sporet, hvor det hører til. Det er derfor det ikke er spildt arbejde.</div>
+  </div>
+
+  <div class="warn"><b>Konsekvens for sidekurserne</b>
+  Rollesporene erstatter sidekursus-idéen. De tre eksisterende sidekurser (Iværksætteri, Dokumenter, Kreativ skrivning) fryses som <strong>legacy</strong>: de bliver liggende, men vi bygger ikke videre på dem og linker dem ikke ind i B2B-flowet.
+  <br><br>Dermed mister <strong>coins</strong> deres sidste formål. Coins fjernes ikke (de sidder i D-diplomet), men de er nu <strong>frosset</strong> — ingen nye funktioner bygges ovenpå dem.</div>
+</section>
+
+<!-- 4 -->
+<section>
+  <h2><span class="sec-num">4</span> Indholdsbeskyttelse <span class="pill pill-aug">August</span></h2>
+
+  <div class="stop"><b>Problemet, uden pynt</b>
+  Alt kursusindhold ligger i dag som ren tekst i statisk HTML i et <strong>offentligt</strong> GitHub-repo. Enhver kan læse hele Kursus C uden at logge ind og uden at betale. Det kræver ikke hacking — kun højreklik. Vores Firebase-login styrer badges og coins, <strong>ikke adgang til indholdet</strong>. For et produkt til 5.000 kr holder det ikke.</div>
+
+  <h3>Valgt løsning: B</h3>
+  <p>Du bad mig vælge. Jeg vælger <strong>B</strong> frem for C, fordi C (væk fra GitHub Pages) betyder migrering af hele platformen, ny hosting og et stort August-projekt — uden at give bedre beskyttelse end B. B rammer præcis det sted problemet er.</p>
+
+  <div class="card">
+    <h3 style="margin-top:0">Sådan virker B</h3>
+    <ul>
+      <li>Kursusindholdet flyttes ud af HTML og ind i et <strong>indholdslager</strong> (Firestore eller KV på Worker'en)</li>
+      <li>Siden er en tom skal: den henter indhold fra <code>learnai-proxy</code> ved indlæsning</li>
+      <li>Worker'en verificerer brugerens <strong>Firebase ID-token</strong> og tjekker at der er købt adgang til netop det niveau, før den sender noget</li>
+      <li>Ingen gyldig licens → intet indhold. Ikke en skjult div — der findes ingen tekst at afsløre</li>
+      <li><strong>Vandmærke pr. bruger</strong> på beviser og PDF'er (navn + mail), så deling kan spores tilbage</li>
+    </ul>
+    <div class="warn"><b>Ærlig begrænsning</b>Ingen beskyttelse er absolut. En betalende medarbejder kan altid markere tekst og kopiere den. B beskytter mod <strong>uautoriseret adgang</strong> — offentligheden, konkurrenter og ikke-betalere. Det er det realistiske og rigtige mål; alt andet ville være at love dig noget der ikke findes.</div>
+  </div>
+
+  <div class="note"><b>Undtagelse: Kursus D</b>Kursus D beskyttes <strong>ikke</strong>. Det er gratis og skal være så let som muligt at dele — det er hele pointen med en lead-magnet. Kun C, B og A gates.</div>
+
+  <div class="stop"><b>Rækkefølge-flag — jeg er uenig med din plan her</b>
+  Du placerer «styr på sikkerhed» til allersidst, lige før salg. Men hvis vi bygger B og A som almindelig HTML og <em>bagefter</em> indfører beskyttelsen, skal vi rive <strong>tre kurser</strong> op i stedet for ét.
+  <br><br><strong>Arkitekturen skal besluttes og bygges før Kursus B påbegyndes.</strong> Så bygges B og A rigtigt fra dag ét, og kun C skal eftermonteres. Det er den enkeltbeslutning der sparer mest arbejde i hele planen.</div>
+</section>
+
+<!-- 5 -->
+<section>
+  <h2><span class="sec-num">5</span> Værktøjspolitik</h2>
+  <p>Princippet: <strong>start med ét værktøj, udvid når fundamentet sidder.</strong> En nybegynder der får fire chatbots i hovedet på dag ét, bruger ingen af dem.</p>
+
+  <table>
+    <tr><th>Niveau</th><th>Værktøjer</th></tr>
+    <tr><td class="num">D + D+</td><td><strong>Kun Claude.</strong> Uændret — denne beslutning er allerede låst, og D+ er bygget om prompt-træner-projektet i Claude</td></tr>
+    <tr><td class="num">C</td><td>Claude som primær. <strong>ChatGPT introduceres</strong> som sammenligning, så kursisten kan vælge selv</td></tr>
+    <tr><td class="num">B</td><td>Begge chatbots + første automatisering</td></tr>
+    <tr><td class="num">A</td><td>Begge + automatiseringsværktøjer + hjælpeværktøjer (fx diktering som Wispr Flow)</td></tr>
+  </table>
+
+  <div class="warn"><b>Konstruktionskrav</b>Tredjepartsværktøjer ændrer sig konstant og kan blive dyre eller forsvinde. Alt værktøjsspecifikt indhold skal derfor ligge i <strong>separat vedligeholdte moduler</strong> — aldrig vævet ind i pensum. Så koster en værktøjsændring os én side, ikke et helt kursus.</div>
+</section>
+
+<!-- 6 -->
+<section>
+  <h2><span class="sec-num">6</span> Beviser, badges og dokumentation</h2>
+  <p>Gamification bliver <strong>vigtigere</strong> i B2B, ikke mindre vigtig — men af en anden grund end før. Ejeren skal kunne pege på noget.</p>
+  <ul>
+    <li class="g"><strong>Individuelle beviser</strong> — som i dag, med navn, mail og verifikationskode</li>
+    <li class="g"><strong>Virksomhedsbevis</strong> <span class="pill pill-todo">Nyt</span> — «Denne virksomhed har AI-uddannet 14 medarbejdere». Findes ikke endnu</li>
+    <li class="g"><strong>Admin-overblik til ejeren</strong> <span class="pill pill-aug">August</span> — hvem har gennemført hvad</li>
+    <li class="a"><strong>Coins</strong> — frosset. Ingen nye funktioner (se afsnit 3)</li>
+  </ul>
+  <div class="note"><b>Pilotfasen</b>Admin-overblikket <strong>håndholdes manuelt</strong> i starten: Alexander sender ejeren en statusmail. 10 minutter om ugen, og det sparer August for måneders arbejde på noget vi endnu ikke ved om nogen vil have.</div>
+</section>
+
+<!-- 7 -->
+<section>
+  <h2><span class="sec-num">7</span> Salg, penge og jura</h2>
+
+  <h3>Pris <span class="pill pill-open">Ikke låst</span></h3>
+  <ul>
+    <li>Enkeltperson, hele pakken: <strong>ca. 5.000 kr</strong> — <strong>Kursus D+ er inkluderet</strong></li>
+    <li>Firma, 10+ personer: forhandlet pakkepris, fx <strong>10 pladser for 30.000 kr</strong> — D+ inkluderet på alle pladser</li>
+    <li>Privat kunde uden pakke: <strong>D+ kan tilkøbes separat</strong> (~189 kr)</li>
+  </ul>
+  <p style="font-size:14px;color:var(--muted)">Tallene er retningsgivende og låses senere. De skal holdes op mod tidsregnestykket i afsnit 2.</p>
+
+  <h3>Salgsmodellen</h3>
+  <ul>
+    <li>Alexander mødes med <strong>ejeren før købet</strong> — ikke med de enkelte medarbejdere</li>
+    <li>Opsøgende salg og henvisninger, ikke annoncering</li>
+    <li>Pilot: Alexanders fars virksomhed <strong>+ mindst to kolde virksomheder</strong></li>
+  </ul>
+  <div class="warn"><b>Hvorfor to kolde kunder</b>Din fars firma siger ja fordi han er din far. Det er en fin generalprøve, men det beviser ingenting om produktet. Først når en fremmed betaler, ved vi at vi har noget.</div>
+
+  <h3>Pengestrøm og hæftelse <span class="pill pill-open">Skal afklares</span></h3>
+  <p>Betalingen lander på en konto hos Alexanders eller Augusts far. Det er en helt normal konstruktion — men den skal være rigtig fra start.</p>
+  <div class="stop"><b>Jeg er ikke jurist — men det her skal du have styr på</b>
+  Den der står på fakturaen, er også den der <strong>hæfter</strong>: for moms, for kundens reklamationer og for databehandleraftalen. Lander pengene hos din far, er det <strong>hans virksomhed der er sælger</strong> over for kunden — også selvom du og August laver alt arbejdet.
+  <br><br>Der skal være <strong>ét og samme CVR</strong> på faktura, salgsvilkår og GDPR-aftale. Få det bekræftet med din far og gerne hans revisor, <strong>før</strong> første salg.</div>
+
+  <h3>Tre ting der skal findes før første faktura</h3>
+  <ul>
+    <li class="r"><strong>CVR + momsforhold</strong> — danske firmaer betaler på faktura, offentlige kunder kræver EAN. Kreditkort er ikke en option</li>
+    <li class="r"><strong>Databehandleraftale</strong> — en ejer vil spørge hvor hans medarbejderes data ligger. Vores svar er godt (Firebase, EU/<code>europe-west1</code>), men <strong>dokumentet findes ikke</strong></li>
+    <li class="r"><strong>Salgs- og licensvilkår</strong> — hvor mange må bruge én plads, hvor længe gælder adgangen, hvad sker der når en medarbejder stopper</li>
+  </ul>
+</section>
+
+<!-- 8 -->
+<section>
+  <h2><span class="sec-num">8</span> Rækkefølgen</h2>
+  <p>Din rækkefølge med én ændring: sikkerhedsarkitekturen er flyttet frem foran Kursus B (se afsnit 4).</p>
+
+  <div class="step"><div class="step-n">1</div><div><div class="step-t">Gør Kursus D-systemet færdigt</div><div class="step-d">Resterende upload: D+ M3 og M4, eksamen-dplus, kursus-dplus-diplom. D-sporene selv er live.</div></div></div>
+  <div class="step"><div class="step-n">2</div><div><div class="step-t">Gør Kursus C-systemet færdigt</div><div class="step-d">quiz-c3–c5, kursus-c4, kursus-c5, eksamen-c + del 2, kursus-c-diplom, intro-cplus, kursus-cplus. Følger <code>byggeplan-kursus-c.html</code> uændret.</div></div></div>
+  <div class="step gate"><div class="step-n">3</div><div><div class="step-t">Beslut og byg beskyttelsesarkitekturen <span class="pill pill-aug">August</span></div><div class="step-d">Port. Alt efter dette punkt bygges oven på den nye arkitektur. Kursus C eftermonteres her.</div></div></div>
+  <div class="step"><div class="step-n">4</div><div><div class="step-t">Lær selv en masse om AI</div><div class="step-d">Research-fase før B og A skrives. Kan køre parallelt med punkt 3, da det ikke er kode.</div></div></div>
+  <div class="step"><div class="step-n">5</div><div><div class="step-t">Byg Kursus B + rollespor</div><div class="step-d">100 % nyt pensum. Løfte: arbejdsgange. 3 timer.</div></div></div>
+  <div class="step"><div class="step-n">6</div><div><div class="step-t">Byg Kursus A + rollespor + automatisering</div><div class="step-d">100 % nyt pensum. Løfte: agenter. 4 timer.</div></div></div>
+  <div class="step gate"><div class="step-n">7</div><div><div class="step-t">CVR, databehandleraftale, licensvilkår</div><div class="step-d">Port. Uden disse kan der ikke sendes en faktura til en virksomhed.</div></div></div>
+  <div class="step"><div class="step-n">8</div><div><div class="step-t">Salgshjemmeside + virksomhedsmateriale</div><div class="step-d">Rettet mod ejeren: tid, penge, dokumentation. Ikke mod medarbejderen.</div></div></div>
+  <div class="step"><div class="step-n">9</div><div><div class="step-t">Pilot: fars virksomhed + to kolde kunder</div><div class="step-d">Manuelt salg, manuelt admin-overblik. Først derefter bygges virksomhedskonti og sædelicenser.</div></div></div>
+</section>
+
+<!-- 9 -->
+<section>
+  <h2><span class="sec-num">9</span> Åbne punkter</h2>
+  <table>
+    <tr><th>Punkt</th><th>Ejer</th><th>Status</th></tr>
+    <tr><td>Skal Kursus D skæres til 45 min?</td><td>Alexander</td><td><span class="pill pill-open">Uenighed</span></td></tr>
+    <tr><td>Rollesporene — endelig liste og navne</td><td>Alexander</td><td><span class="pill pill-open">Udkast</span></td></tr>
+    <tr><td>Beskyttelsesarkitektur B — er den realistisk?</td><td>August</td><td><span class="pill pill-open">Skal bekræftes</span></td></tr>
+    <tr><td>Endelig prisstruktur</td><td>Alexander</td><td><span class="pill pill-todo">Udskudt</span></td></tr>
+    <tr><td>On-site workshop som tilkøb?</td><td>Alexander</td><td><span class="pill pill-open">Ikke besvaret</span></td></tr>
+    <tr><td>CVR, moms, hæftelse</td><td>Alexander + far</td><td><span class="pill pill-open">Ikke afklaret</span></td></tr>
+    <tr><td>Databehandleraftale (GDPR)</td><td>Alexander</td><td><span class="pill pill-todo">Ikke skrevet</span></td></tr>
+    <tr><td>Virksomhedskonti, sædelicenser, admin-dashboard</td><td>August</td><td><span class="pill pill-todo">Efter pilot</span></td></tr>
+    <tr><td>Faktura- og EAN-betaling</td><td>August</td><td><span class="pill pill-todo">Efter pilot</span></td></tr>
+    <tr><td>Serverside-sikring af belønninger (vej A)</td><td>August</td><td><span class="pill pill-todo">Kan slås sammen med punkt 3</span></td></tr>
+  </table>
+</section>
+
+<!-- 10 -->
+<section>
+  <h2><span class="sec-num">10</span> Hvad der <em style="font-style:italic;color:var(--acc)">ikke</em> ændrer sig</h2>
+  <div class="card">
+    <ul>
+      <li class="g">Honning &amp; Skov som designfundament — pergament, creme, skovgrøn, Lora + Outfit</li>
+      <li class="g">Accentfarve pr. niveau: D grøn, C guld, B rød, A blå</li>
+      <li class="g">Synligt brandnavn er altid <strong>Akademiet AI</strong> — aldrig LearnAI</li>
+      <li class="g">Frosne kodenavne: <code>learnai-dk</code>, <code>learnai-proxy</code>, <code>learnai_api_base</code>, <code>LEARNAI_API</code></li>
+      <li class="g">Alle AI-kald gennem Cloudflare Worker. Aldrig en nøgle i HTML</li>
+      <li class="g">Pædagogikken: «gør, ikke læs» — interaktive øvelser frem for tekst</li>
+      <li class="g">Byggeworkflow: hent live rå-fil → kirurgisk <code>str_replace</code> → <code>node --check</code> + lxml → Playwright → levering</li>
+      <li class="g">Filnavne kun i ASCII — aldrig æ, ø, å eller é</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 11 -->
+<section>
+  <h2><span class="sec-num">11</span> Migrering til nyt repo</h2>
+  <p>Nyt, tomt GitHub-projekt: <code>magnuscode-ai/akademiet-ai</code>. Det gamle repo <code>magnuscode-ai/ai-kursus</code> bliver liggende urørt som arkiv og behøver ikke længere at virke.</p>
+
+  <h3>Trin 1 — Opret det nye repo <span class="pill pill-aug">August</span></h3>
+  <ul>
+    <li>Nyt repo <code>akademiet-ai</code>, tomt, main branch</li>
+    <li><code>.nojekyll</code> i rod</li>
+    <li><code>CNAME</code> → <code>akademiet-ai.dk</code> — <strong>først når det nye repo er komplet</strong></li>
+    <li>Settings → Pages → Source: main</li>
+    <li>Indtil da køres det nye repo på sin <code>github.io</code>-adresse</li>
+    <li>DNS på one.com peges om i samme ombæring som CNAME</li>
+    <li>Firebase → authorized domains: både apex og <code>www</code></li>
+    <li>Worker <code>learnai-proxy</code> og alle frosne kodenavne: <strong>urørt</strong></li>
+  </ul>
+
+  <h3>Trin 2 — Flytter direkte (færdige sider, kun brand- og temategtjek)</h3>
+  <ul>
+    <li class="g"><code>platform.html</code></li>
+    <li class="g"><code>verificer.html</code></li>
+    <li class="g"><code>logo-vaeg.html</code></li>
+    <li class="g"><code>farver-kursus-c.html</code></li>
+    <li class="g"><code>kursus-d.html</code> (niveauvælger)</li>
+    <li class="g"><code>kursus-d-begynder.html</code></li>
+    <li class="g"><code>kursus-d-average.html</code></li>
+    <li class="g"><code>kursus-d-for-god.html</code></li>
+    <li class="g"><code>eksamen-d-begynder.html</code></li>
+    <li class="g"><code>eksamen-d-begynder-del2.html</code></li>
+    <li class="g"><code>eksamen-d-average.html</code></li>
+    <li class="g"><code>eksamen-d-average-del2.html</code></li>
+    <li class="g"><code>kursus-d-begynder-diplom.html</code></li>
+    <li class="g"><code>kursus-d-average-diplom.html</code></li>
+    <li class="g"><code>forberedelse-dplus.html</code></li>
+    <li class="g"><code>kursus-dplus-1.html</code></li>
+    <li class="g"><code>kursus-dplus-2.html</code></li>
+    <li class="g"><code>bibliotek.html</code></li>
+    <li class="g"><code>bibliotek-guide-c.html</code></li>
+    <li class="g"><code>mit-bibliotek.html</code></li>
+    <li class="g"><code>images/claude-privacy-settings.png</code></li>
+  </ul>
+
+  <h3>Trin 3 — Gøres færdige, derefter flyttes (D+)</h3>
+  <ul>
+    <li class="a"><code>kursus-dplus-3.html</code> — ligger lokalt, ikke uploadet</li>
+    <li class="a"><code>kursus-dplus-4.html</code> — ligger lokalt, ikke uploadet</li>
+    <li class="a"><code>eksamen-dplus.html</code> — ikke bygget</li>
+    <li class="a"><code>kursus-dplus-diplom.html</code> — ikke bygget</li>
+    <li class="a">Højre sidebar på alle D+-sider skæres til Claude only</li>
+  </ul>
+
+  <h3>Trin 4 — Flyttes når C-redesignet er færdigt</h3>
+  <ul>
+    <li class="a"><code>forberedelse-c.html</code> — reskinnet, afventer upload</li>
+    <li class="a"><code>kursus-c1.html</code> — live</li>
+    <li class="a"><code>kursus-c2.html</code> — live</li>
+    <li class="a"><code>kursus-c3.html</code> — reskinnet, afventer upload</li>
+    <li class="a"><code>quiz-c1.html</code> — reskinnet</li>
+    <li class="a"><code>quiz-c2.html</code> — reskinnet</li>
+    <li class="a"><code>intro-cplus.html</code> — reskin mangler</li>
+    <li class="a"><code>kursus-cplus.html</code> — reskin mangler</li>
+  </ul>
+
+  <h3>Trin 5 — Bygges nyt, direkte i det nye repo (C-systemet)</h3>
+  <ul>
+    <li class="r"><code>kursus-c4.html</code></li>
+    <li class="r"><code>kursus-c5.html</code></li>
+    <li class="r"><code>quiz-c3.html</code></li>
+    <li class="r"><code>quiz-c4.html</code></li>
+    <li class="r"><code>quiz-c5.html</code></li>
+    <li class="r"><code>eksamen-c.html</code></li>
+    <li class="r"><code>eksamen-c-del2.html</code></li>
+    <li class="r"><code>kursus-c-diplom.html</code></li>
+  </ul>
+
+  <h3>Trin 6 — Beskyttelsesarkitektur <span class="pill pill-aug">August</span></h3>
+  <ul>
+    <li class="r">Port. Bygges før Kursus B påbegyndes (afsnit 4)</li>
+    <li class="r">C-siderne eftermonteres her</li>
+  </ul>
+
+  <h3>Trin 7 — Bygges 100 % om, flyttes <em>ikke</em> med</h3>
+  <ul>
+    <li class="r"><code>kursus-b1.html</code> · <code>kursus-b2.html</code> · <code>kursus-b3.html</code> · <code>kursus-b4.html</code> · <code>kursus-b5.html</code></li>
+    <li class="r"><code>quiz-b1.html</code> · <code>quiz-b2.html</code> · <code>quiz-b3.html</code> · <code>quiz-b4.html</code></li>
+    <li class="r"><code>eksamen-b1.html</code> · <code>eksamen-b2.html</code> · <code>eksamen-b3.html</code></li>
+    <li class="r"><code>kursus-a1.html</code> · <code>kursus-a2.html</code> · <code>kursus-a3.html</code> · <code>kursus-a4.html</code></li>
+    <li class="r"><code>quiz-a1.html</code> · <code>quiz-a2.html</code> · <code>quiz-a3.html</code></li>
+    <li class="r">Nyt: rollespor efter B og A</li>
+  </ul>
+
+  <h3>Trin 8 — Legacy, flyttes ikke (fryses i det gamle repo)</h3>
+  <ul>
+    <li><code>kursus-ivaerksaetteri.html</code> · <code>startside-ivaerksaetteri.html</code> · <code>quiz1-ivaerksaetteri.html</code> · <code>eksamen-ivaerksaetteri.html</code></li>
+    <li><code>kursus-AI-til-kreativ-skrivning-og-ide-bygger.html</code> · <code>startside-AI-til-kreativ-skrivning-og-ide-bygger.html</code> · <code>eksamen-AI-til-kreativ-skrivning-og-ide-bygger.html</code></li>
+    <li><code>kursus-dokumenter.html</code></li>
+    <li><code>kursus-oekonomi-1.html</code> · <code>kursus-oekonomi-2.html</code> · <code>kursus-oekonomi-3.html</code> · <code>quiz-oekonomi-1.html</code> · <code>quiz-oekonomi-2.html</code></li>
+    <li><code>kursus-social-medie.html</code> · <code>kursus1-social-medie.html</code></li>
+    <li><code>gammel-platform.html</code> · <code>startside-test.html</code> · <code>handling.html</code></li>
+    <li><code>shot-p1-liste.png</code> · <code>shot-p2-udfyld.png</code> · <code>shot-p6-mobil.png</code> · <code>shot-p7-tom.png</code></li>
+  </ul>
+
+  <h3>Trin 9 — Dokumentation, flyttes med</h3>
+  <ul>
+    <li class="g"><code>byggeplan.html</code></li>
+    <li class="g"><code>byggeplan-kursus-c.html</code></li>
+    <li class="g"><code>byggeplan-b2b.html</code></li>
+    <li class="g"><code>byggeplan-social-medie.html</code></li>
+    <li class="g"><code>mit-bibliotek-byggeplan.html</code></li>
+    <li class="g"><code>PROJEKT_STATUS.md</code> — skal opdateres til B2B</li>
+    <li class="g"><code>README.md</code> — skal opdateres til B2B</li>
+  </ul>
+
+  <h3>Trin 10 — Afslutning</h3>
+  <ul>
+    <li>Alle interne links gennemgås mod det nye repos filliste</li>
+    <li>Døde links til legacy-sider fjernes</li>
+    <li>Domænet peges om til <code>akademiet-ai</code></li>
+    <li>GitHub Pages slås <strong>fra</strong> på <code>ai-kursus</code></li>
+    <li><code>ai-kursus</code> arkiveres og bliver liggende som kildemateriale — det behøver ikke længere at virke</li>
+  </ul>
+
+  <div class="warn"><b>Huskes ved repo-skiftet</b>
+  Domænet kan kun pege ét sted ad gangen, så <code>akademiet-ai</code> kører på sin <code>github.io</code>-adresse indtil det er komplet. Firebase authorized domains skal opdateres til begge adresser i overgangen. Worker-URL og de frosne kodenavne ændres <strong>ikke</strong> — repo-navnet er ikke en kode-identifikator.</div>
+</section>
+
+<div class="foot">
+  Akademiet AI · Byggeplan for B2B-omlægningen · juli 2026<br>
+  Gælder sammen med <code>byggeplan.html</code> og <code>byggeplan-kursus-c.html</code>
+</div>
+
+</div>
+</body>
+</html>
