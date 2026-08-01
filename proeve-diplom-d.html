@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prøv dit bevis · Kursus D | Akademiet AI</title>
+<meta name="description" content="Prøveversion. Tillykke med Kursus D! Se og gem dit personlige bevis.">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sans:'Outfit',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+    --serif:'Lora',Georgia,'Times New Roman',serif;
+
+    /* Træstamme-brun palet (diplom-identitet, distinkt fra kursus + eksamen) */
+    --bg-deep:#1a120b;
+    --bg:#271a10;
+    --bg-2:#382616;
+    --bg-glow:rgba(204,150,78,0.16);
+
+    --panel:#f4e7cd;
+    --panel-2:#ead9b8;
+    --ink:#2a2118;
+    --ink-soft:#5a4d3e;
+    --ink-mute:#8a7c6a;
+    --line:#d6bf95;
+    --line-soft:#e4d4b2;
+
+    --on-wood:#f1e7d6;
+    --on-wood-soft:rgba(241,231,214,0.74);
+    --on-wood-mute:rgba(241,231,214,0.48);
+
+    --brass:#c8a44e; --brass-bright:#dcb55f; --brass-deep:#a9772b; --gold:#e0b33d;
+    --brass-soft:rgba(200,164,78,0.16);
+    --bronze:#b5712f;
+
+    --green:#2f6a4a; --green-deep:#235140; --green-soft:#e3ece0;
+
+    --shadow-panel:0 26px 64px rgba(10,6,2,0.5), 0 6px 18px rgba(10,6,2,0.32);
+    --shadow-soft:0 8px 22px rgba(10,6,2,0.22);
+    --radius:18px; --radius-lg:24px; --radius-sm:12px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:var(--sans);color:var(--on-wood);background:#553820;min-height:100vh;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;position:relative;overflow-x:hidden}
+
+  /* Træ-baggrund: varm gradient + svag årering-tekstur + glød + vignet */
+  /* Lodret valnød-træpanel: varm, naturlig og blødt oplyst (ikke dim/3D) */
+  .backdrop{position:fixed;inset:0;z-index:0;background-color:#553820;
+    background-image:
+      radial-gradient(120% 70% at 50% -5%, rgba(236,194,120,0.12), rgba(236,194,120,0) 62%),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.018) 0 1px, transparent 1px 5px, rgba(0,0,0,0.028) 5px 6px, transparent 6px 11px),
+      repeating-linear-gradient(90deg, transparent 0 42px, rgba(28,16,8,0.42) 42px 47px, rgba(120,84,46,0.16) 47px 48px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.016) 0 48px, rgba(0,0,0,0.04) 48px 96px),
+      linear-gradient(180deg, #5e4023, #4c3318);}
+  .backdrop::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(140% 80% at 50% 0%, rgba(236,194,120,0.05), rgba(0,0,0,0) 55%)}
+
+  .wrap{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+
+  /* Topbar */
+  .topbar{position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;
+    padding:0.95rem 1.5rem;background:rgba(26,18,11,0.72);
+    backdrop-filter:saturate(140%) blur(10px);-webkit-backdrop-filter:saturate(140%) blur(10px);
+    border-bottom:1px solid rgba(200,164,78,0.2)}
+  .brand{display:flex;align-items:center;gap:0.65rem;text-decoration:none;color:var(--on-wood)}
+  .brand-mark{width:34px;height:34px;border-radius:10px;flex-shrink:0;background:linear-gradient(150deg,#b5712f,#7a4a1c);
+    border:1px solid rgba(220,181,95,0.6);display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.3)}
+  .brand-mark svg{width:18px;height:18px}
+  .brand-name{font-family:var(--serif);font-size:1.12rem;font-weight:600;letter-spacing:-0.01em}
+  .brand-name b{color:var(--brass-bright);font-weight:600}
+  .topbar-tag{font-size:0.8rem;color:var(--on-wood-soft);font-weight:500}
+  @media(max-width:560px){.topbar-tag{display:none}}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:0.6rem;font-family:var(--sans);font-size:1rem;font-weight:600;
+    cursor:pointer;border:none;border-radius:var(--radius-sm);padding:0.95rem 1.7rem;text-decoration:none;line-height:1;
+    transition:transform 0.18s ease,box-shadow 0.2s ease,background 0.2s ease,opacity 0.2s ease}
+  .btn svg{width:18px;height:18px}
+  .btn-gold{background:linear-gradient(165deg,var(--brass-bright),var(--brass-deep));color:#2a1c08;
+    box-shadow:0 6px 18px rgba(169,119,43,0.45),inset 0 1px 0 rgba(255,255,255,0.3)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(169,119,43,0.55)}
+  .btn-green{background:linear-gradient(165deg,#367954,#214d39);color:#fff;box-shadow:0 6px 18px rgba(27,70,54,0.4),inset 0 1px 0 rgba(255,255,255,0.12)}
+  .btn-green:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(27,70,54,0.48)}
+  .btn-wood{background:linear-gradient(165deg,#6a4a28,#48301a);color:#f4e7cf;box-shadow:0 6px 18px rgba(40,24,10,0.42),inset 0 1px 0 rgba(255,255,255,0.12)}
+  .btn-wood:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(40,24,10,0.5)}
+  .btn-ghost{background:rgba(246,239,225,0.06);color:var(--on-wood);border:1px solid rgba(220,181,95,0.4)}
+  .btn-ghost:hover{transform:translateY(-2px);background:rgba(246,239,225,0.1)}
+  .btn-cream{background:#fff;color:var(--ink);border:1px solid var(--line)}
+  .btn-cream:hover{transform:translateY(-2px);box-shadow:var(--shadow-soft)}
+  .btn[disabled]{opacity:0.6;cursor:default;transform:none}
+  @media(prefers-reduced-motion:reduce){.btn:hover{transform:none}}
+
+  /* Sektioner + scroll-reveal */
+  main{flex:1}
+  .section{max-width:780px;margin:0 auto;padding:3.4rem 1.4rem}
+  @media(max-width:560px){.section{padding:2.6rem 1.2rem}}
+  .reveal{opacity:0;transform:translateY(30px);transition:opacity 0.8s ease, transform 0.8s cubic-bezier(0.4,0,0.2,1)}
+  .reveal.in{opacity:1;transform:none}
+  .reveal.d1{transition-delay:0.08s}.reveal.d2{transition-delay:0.16s}.reveal.d3{transition-delay:0.24s}
+  @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+  .panel{background:linear-gradient(180deg,var(--panel) 0%,var(--panel-2) 100%);border-radius:var(--radius-lg);
+    box-shadow:var(--shadow-panel);color:var(--ink);overflow:hidden;border:1px solid rgba(255,255,255,0.5)}
+  .panel-accent{height:5px;width:100%;background:linear-gradient(90deg,var(--brass-deep),var(--gold),var(--bronze))}
+  .panel-body{padding:2.6rem 2.6rem 2.4rem}
+  @media(max-width:560px){.panel-body{padding:1.9rem 1.4rem 1.7rem}}
+
+  .eyebrow{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.76rem;font-weight:700;letter-spacing:0.1em;
+    text-transform:uppercase;color:var(--brass-deep);background:var(--brass-soft);padding:0.4rem 0.85rem;border-radius:99px;margin-bottom:1.2rem}
+  .eyebrow svg{width:14px;height:14px}
+  .sec-eyebrow{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.76rem;font-weight:700;letter-spacing:0.12em;
+    text-transform:uppercase;color:var(--brass-bright);margin-bottom:0.9rem;justify-content:center}
+  .sec-eyebrow svg{width:15px;height:15px}
+
+  /* ---------- DEL 1: Tillykke ---------- */
+  .hero{text-align:center}
+  .hero .hero-title{color:var(--on-wood);text-shadow:0 1px 3px rgba(0,0,0,0.45)}
+  .hero .hero-text{color:var(--on-wood-soft);text-shadow:0 1px 2px rgba(0,0,0,0.4)}
+  .hero .hero-text strong{color:var(--on-wood)}
+  .sec-eyebrow,.scroll-hint,.end p,.flow-cue{text-shadow:0 1px 2px rgba(0,0,0,0.4)}
+  .flow-cue{text-align:center;display:flex;flex-direction:column;align-items:center;gap:0.4rem;color:var(--on-wood-soft);font-size:0.92rem;font-weight:500;max-width:520px;margin:0 auto}
+  .flow-cue svg{width:22px;height:22px;animation:bob 1.8s ease-in-out infinite}
+  @media(prefers-reduced-motion:reduce){.flow-cue svg{animation:none}}
+  .hero-title{font-family:var(--serif);font-weight:700;font-size:2.6rem;line-height:1.12;color:var(--ink);letter-spacing:-0.015em;margin-bottom:1rem}
+  @media(max-width:560px){.hero-title{font-size:1.9rem}}
+  .hero-text{font-size:1.1rem;line-height:1.7;color:var(--ink-soft);max-width:56ch;margin:0 auto}
+  .hero-text strong{color:var(--ink);font-weight:600}
+  .coins-pill{display:none;align-items:center;gap:0.55rem;background:var(--brass-soft);border:1px solid rgba(200,164,78,0.4);
+    border-radius:99px;padding:0.6rem 1.2rem;font-size:1rem;font-weight:700;color:var(--brass-deep);margin-top:1.6rem}
+  .coins-pill.show{display:inline-flex;animation:pillPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both}
+  @keyframes pillPop{0%{opacity:0;transform:scale(0.8) translateY(6px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+  @media(prefers-reduced-motion:reduce){.coins-pill.show{animation:none}}
+  .coins-pill svg{width:20px;height:20px}
+  .scroll-hint{display:flex;flex-direction:column;align-items:center;gap:0.4rem;margin-top:2.4rem;color:var(--on-wood-soft);font-size:0.88rem;font-weight:500}
+  .scroll-hint svg{width:24px;height:24px;animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(6px)}}
+  @media(prefers-reduced-motion:reduce){.scroll-hint svg{animation:none}}
+
+  /* ---------- Medaljon-badge ---------- */
+  .medallion-wrap{display:flex;justify-content:center}
+  .medallion-shell{width:228px;height:228px;filter:drop-shadow(0 9px 16px rgba(20,12,6,0.40))}
+  .medallion{width:100%;height:100%;display:block}
+  .bdg-ai{font-family:var(--serif);font-size:44px;font-weight:700}
+  .bdg-lvl{font-family:var(--sans);font-size:9px;font-weight:700;letter-spacing:2px}
+  .bdg-name{font-family:var(--sans);font-size:9.5px;font-weight:600;letter-spacing:0.8px}
+
+  .badge-card{text-align:center}
+  .badge-meta{margin-top:1.4rem}
+  .badge-name{font-family:var(--serif);font-size:1.5rem;font-weight:600;color:var(--ink);margin-bottom:0.25rem}
+  .badge-sub{font-size:0.92rem;color:var(--ink-mute)}
+  .badge-actions{margin-top:1.8rem;display:flex;flex-direction:column;align-items:center;gap:0.7rem}
+  .badge-status{font-size:0.9rem;color:var(--brass-deep);font-weight:600;display:none;align-items:center;gap:0.45rem}
+  .badge-status.show{display:inline-flex}
+  .badge-status svg{width:17px;height:17px}
+
+  /* ---------- DEL 3: Bevis (fuldside A4, lodret) ---------- */
+  /* Mørke, print-sikre farver så sort-hvid ikke bliver grå-i-grå */
+  .certificate{position:relative;width:100%;max-width:600px;margin:0 auto;aspect-ratio:210/297;
+    background:linear-gradient(158deg,#fbf3e0 0%,#f1e2c3 100%);border-radius:14px;color:#2b2013;overflow:hidden;
+    filter:drop-shadow(0 15px 30px rgba(20,12,6,0.32));
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+  .cert-frame{position:absolute;inset:14px;border:2px solid #a9772b;border-radius:8px;
+    box-shadow:inset 0 0 0 1px rgba(169,119,43,0.35), inset 0 0 34px rgba(120,84,46,0.08)}
+  .cert-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:5.2% 7% 4.4%}
+
+  .cert-brand{display:flex;flex-direction:column;align-items:center;gap:0.35rem}
+  .cert-logo{width:58px;height:58px;filter:drop-shadow(0 2px 4px rgba(20,12,6,0.25))}
+  .cert-brand-name{font-family:var(--serif);font-weight:700;font-size:1.55rem;color:#233a2c;letter-spacing:0.01em;line-height:1}
+  .cert-brand-url{font-size:0.72rem;letter-spacing:0.22em;text-transform:uppercase;color:#8a6a34;font-weight:600}
+
+  .cert-rule{display:flex;align-items:center;justify-content:center;gap:0.6rem;width:62%;margin:0.85rem 0 0.4rem;color:#a9772b}
+  .cert-rule span{height:1.5px;flex:1;background:linear-gradient(90deg,transparent,#a9772b)}
+  .cert-rule span:last-child{background:linear-gradient(90deg,#a9772b,transparent)}
+  .cert-rule svg{width:17px;height:17px;fill:#c8a44e;stroke:#a9772b;flex-shrink:0}
+
+  .cert-kicker{font-size:0.7rem;letter-spacing:0.28em;text-transform:uppercase;color:#8a6a34;font-weight:600;margin-bottom:0.15rem}
+  .cert-headline{font-family:var(--serif);font-size:2.05rem;font-weight:700;color:#4a3115;line-height:1.1;margin:0}
+  .cert-track{font-size:0.82rem;letter-spacing:0.05em;color:#8a6a34;margin-top:0.15rem;font-weight:500}
+
+  .cert-medallion{display:flex;justify-content:center;margin:0.5rem 0}
+  .cert-medallion .medallion-shell{width:180px;height:180px}
+
+  .cert-presented{font-size:0.8rem;color:#6a5636;letter-spacing:0.05em;margin-bottom:0.15rem}
+  .cert-name{font-family:var(--serif);font-size:1.95rem;font-weight:600;color:#2b2013;line-height:1.12}
+  .cert-body{font-size:0.84rem;line-height:1.62;color:#4a3d29;max-width:42ch;margin:0.7rem auto 0}
+
+  .cert-spacer{flex:1 1 auto;min-height:0.6rem}
+
+  .cert-foot{display:flex;justify-content:space-between;align-items:center;gap:0.8rem;width:100%;
+    border-top:1.5px solid rgba(169,119,43,0.55);padding-top:0.9rem}
+  .cert-foot .left,.cert-foot .right{flex:1}
+  .cert-foot-label{font-size:0.62rem;letter-spacing:0.08em;text-transform:uppercase;color:#8a6a34;margin-bottom:0.15rem;font-weight:600}
+  .cert-foot-value{font-size:0.82rem;font-weight:600;color:#2b2013;word-break:break-word}
+  .cert-foot .left{text-align:left}
+  .cert-foot .right{text-align:right}
+  .cert-seal{flex:0 0 auto;width:66px;height:66px;color:#a9772b;opacity:0.9}
+  .cert-seal svg{width:100%;height:100%}
+  .seal-text{font-family:var(--sans);font-size:6px;font-weight:700;letter-spacing:0.12em;fill:#a9772b}
+
+  .cert-verify{margin-top:0.85rem;padding-top:0.7rem;border-top:1px dashed rgba(169,119,43,0.5);
+    display:flex;flex-direction:column;align-items:center;gap:0.14rem;text-align:center;width:100%}
+  .cv-label{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:#8a6a34;font-weight:600}
+  .cv-code{font-family:'Courier New',monospace;font-size:1.05rem;font-weight:700;letter-spacing:0.12em;color:#5a3d1a}
+  .cv-url{font-size:0.68rem;color:#8a6a34}
+
+  @media(max-width:620px){
+    .certificate{aspect-ratio:auto;max-width:100%}
+    .cert-inner{position:relative;inset:auto;padding:2rem 1.5rem}
+    .cert-headline{font-size:1.6rem}.cert-name{font-size:1.55rem}
+    .cert-spacer{display:none}
+  }
+  .verify-chip{display:none;flex-direction:column;align-items:center;gap:0.4rem;margin-top:0.5rem;padding:0.85rem 1.1rem;background:var(--brass-soft);border:1px solid rgba(200,164,78,0.4);border-radius:14px}
+  .verify-chip.show{display:flex}
+  .vc-label{font-size:0.64rem;letter-spacing:0.13em;text-transform:uppercase;color:var(--ink-mute)}
+  .vc-code{font-family:'Courier New',monospace;font-size:1.15rem;font-weight:700;letter-spacing:0.08em;color:var(--brass-deep)}
+  .vc-copy{font-family:inherit;font-size:0.72rem;font-weight:700;border:none;background:var(--brass-deep);color:#fff;padding:0.32rem 0.85rem;border-radius:8px;cursor:pointer}
+  .vc-copy:hover{filter:brightness(1.08)}
+  .cert-actions{margin-top:1.6rem;display:flex;gap:0.8rem;justify-content:center;flex-wrap:wrap}
+
+  /* ---------- Vej-strip (D→C→B→A) ---------- */
+  .path-strip{display:flex;align-items:flex-start;justify-content:center;gap:0.4rem;max-width:560px;margin:0 auto 1.8rem;padding:0 0.5rem}
+  .path-node{display:flex;flex-direction:column;align-items:center;gap:0.5rem;flex:0 0 auto;width:64px;text-align:center}
+  .path-dot{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+    font-family:var(--serif);font-size:1.2rem;font-weight:700;background:rgba(255,255,255,0.07);border:1.5px solid rgba(220,181,95,0.28);color:var(--on-wood-soft)}
+  .path-dot svg{width:22px;height:22px}
+  .path-node.done .path-dot{background:linear-gradient(150deg,#2f6a4a,#1b4636);border-color:rgba(220,181,95,0.6);color:#eaf2e8}
+  .path-node.next .path-dot{background:linear-gradient(150deg,var(--brass-bright),var(--brass-deep));border-color:var(--gold);color:#3a2a10;
+    box-shadow:0 0 0 0 rgba(224,179,61,0.55);animation:pathPulse 2.2s ease-in-out infinite}
+  @keyframes pathPulse{0%,100%{box-shadow:0 0 0 0 rgba(224,179,61,0.5)}50%{box-shadow:0 0 0 8px rgba(224,179,61,0)}}
+  .path-label{font-size:0.72rem;font-weight:600;color:var(--on-wood-soft);line-height:1.25}
+  .path-label small{font-size:0.66rem;font-weight:500;opacity:0.75}
+  .path-node.next .path-label{color:var(--brass-bright)}
+  .path-line{flex:1 1 auto;height:2px;background:linear-gradient(90deg,rgba(220,181,95,0.5),rgba(220,181,95,0.15));margin-top:22px;min-width:12px}
+  @media(prefers-reduced-motion:reduce){.path-node.next .path-dot{animation:none}}
+  @media(max-width:440px){.path-dot{width:40px;height:40px;font-size:1rem}.path-node{width:54px}}
+
+  .offer-note{font-size:0.9rem;font-style:italic;margin:0 0 1.2rem}
+  .offer-c .offer-note{color:var(--brass-bright)}
+
+  /* ---------- Konfetti (fejring ved modtag) ---------- */
+  .confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:60;overflow:hidden}
+  .confetti-layer i{position:absolute;top:-12px;width:9px;height:14px;border-radius:2px;opacity:0;will-change:transform,opacity;
+    animation:confettiFall linear forwards}
+  @keyframes confettiFall{0%{opacity:0;transform:translateY(-10px) rotate(0deg)}8%{opacity:1}100%{opacity:0.9;transform:translateY(105vh) rotate(680deg)}}
+  @media(prefers-reduced-motion:reduce){.confetti-layer{display:none}}
+
+  /* ---------- Opsalg-kort (C / D+) ---------- */
+  .offer{border-radius:var(--radius-lg);padding:2.2rem 2.2rem;box-shadow:var(--shadow-panel);position:relative;overflow:hidden}
+  @media(max-width:560px){.offer{padding:1.7rem 1.4rem}}
+  .offer-c{background:linear-gradient(160deg,#4c3420,#392510);border:1px solid rgba(220,181,95,0.5);color:var(--on-wood)}
+  .offer-d{background:linear-gradient(160deg,#f4e7cd,#e7d4af);border:1px solid var(--line);color:var(--ink)}
+  .offer-tag{display:inline-flex;align-items:center;gap:0.4rem;font-size:0.74rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;
+    padding:0.35rem 0.8rem;border-radius:99px;margin-bottom:0.9rem}
+  .offer-c .offer-tag{background:rgba(220,181,95,0.18);color:var(--brass-bright)}
+  .offer-d .offer-tag{background:var(--brass-soft);color:var(--brass-deep)}
+  .offer-title{font-family:var(--serif);font-size:1.7rem;font-weight:600;line-height:1.2;margin-bottom:0.5rem}
+  @media(max-width:560px){.offer-title{font-size:1.4rem}}
+  .offer-c .offer-title{color:#fff}.offer-d .offer-title{color:var(--ink)}
+  .offer-price{font-family:var(--serif);font-size:1.15rem;font-weight:600;margin-bottom:0.9rem}
+  .offer-c .offer-price{color:var(--brass-bright)}.offer-d .offer-price{color:var(--brass-deep)}
+  .offer-text{font-size:1rem;line-height:1.65;margin-bottom:0.5rem}
+  .offer-c .offer-text{color:var(--on-wood-soft)}.offer-d .offer-text{color:var(--ink-soft)}
+  .offer-list{list-style:none;margin:0.9rem 0 1.4rem;display:flex;flex-direction:column;gap:0.5rem}
+  .offer-list li{display:flex;align-items:flex-start;gap:0.6rem;font-size:0.94rem;line-height:1.5}
+  .offer-c .offer-list li{color:var(--on-wood-soft)}.offer-d .offer-list li{color:var(--ink-soft)}
+  .offer-list svg{width:17px;height:17px;flex-shrink:0;margin-top:2px}
+  .offer-c .offer-list svg{color:var(--brass-bright)}.offer-d .offer-list svg{color:var(--brass-deep)}
+
+  .video-box{margin-top:1.4rem;width:100%;aspect-ratio:16/9;background:#ece0c4;border:1px solid var(--line);border-radius:var(--radius);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.6rem;color:var(--ink-mute)}
+  .video-box svg{width:46px;height:46px;opacity:0.5}
+  .video-box span{font-size:0.88rem;font-weight:500}
+
+  /* ---------- DEL 6: Footer ---------- */
+  .end{text-align:center;padding:3rem 1.4rem 4rem;max-width:560px;margin:0 auto}
+  .end p{color:var(--on-wood-soft);font-size:0.98rem;line-height:1.6;margin-bottom:1.2rem}
+
+  /* ---------- Login-gate ---------- */
+  .gate{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:1.5rem;
+    background:radial-gradient(120% 90% at 50% 30%, var(--bg-2), var(--bg-deep))}
+  .gate.show{display:flex}
+  .gate-inner{max-width:460px;width:100%}
+  .gate-icon{width:64px;height:64px;border-radius:16px;margin:0 auto 1.4rem;display:flex;align-items:center;justify-content:center;
+    background:linear-gradient(150deg,#b5712f,#7a4a1c);border:1px solid rgba(220,181,95,0.6);box-shadow:var(--shadow-soft)}
+  .gate-icon svg{width:30px;height:30px;color:var(--brass-bright)}
+
+  /* Toast */
+  .toast-wrap{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%);z-index:400;display:flex;flex-direction:column;gap:0.5rem;align-items:center}
+  .toast{padding:0.8rem 1.3rem;border-radius:var(--radius-sm);font-size:0.9rem;font-weight:600;box-shadow:var(--shadow-soft);animation:toastIn 0.3s ease;max-width:90vw;color:#fff}
+  .toast.success{background:#7a5520}.toast.error{background:#9e4a3a}.toast.info{background:#7a4a1c}
+  .toast.out{opacity:0;transition:opacity 0.3s ease}
+  @keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+  /* Print: kun beviset — fylder ét helt A4-ark lodret */
+  @page{ size:A4 portrait; margin:0; }
+  @media print{
+    html,body{background:#fffdf7 !important;margin:0 !important;padding:0 !important}
+    .backdrop,.topbar,.toast-wrap,.confetti-layer,.gate{display:none !important}
+    /* Fjern alle wrapper-bokse fra flowet, så kun beviset bliver til en side */
+    .wrap,main{display:contents !important}
+    main>*{display:none !important}
+    #certSection{display:contents !important}
+    #certSection>*{display:none !important}
+    #certificate{display:block !important;position:fixed;inset:0;width:100%;height:100%;max-width:none;margin:0;
+      aspect-ratio:auto;background:#fffdf7 !important;border-radius:0;filter:none;box-shadow:none;
+      print-color-adjust:exact;-webkit-print-color-adjust:exact}
+    .cert-frame{inset:10mm;border-color:#8a5a1e;border-radius:4px}
+    .cert-inner{padding:14mm 16mm}
+    .cert-logo{width:66px;height:66px}
+    .cert-brand-name{font-size:1.9rem}
+    .cert-headline{font-size:2.5rem}
+    .cert-name{font-size:2.4rem}
+    .cert-body{font-size:0.98rem;max-width:54ch}
+    .cert-medallion .medallion-shell{width:214px;height:214px}
+    .cv-code{font-size:1.25rem}
+  }
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+
+<template id="gateIconExam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg></template>
+
+<div class="wrap" id="content">
+  <header class="topbar">
+    <a href="proeve.html" class="brand">
+      <svg class="ai-logo-mark" width="32" height="32" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+      <span class="brand-name">Akademiet <b>AI</b></span>
+    </a>
+    <span class="topbar-tag">Prøveversion · Dit bevis</span>
+  </header>
+
+  <main>
+
+    <!-- ===== DEL 1: TILLYKKE ===== -->
+    <section class="section hero">
+      <div class="reveal">
+        <span class="eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Kursus D gennemført</span>
+      </div>
+      <h1 class="hero-title reveal d1">Tillykke!</h1>
+      <p class="hero-text reveal d2">Du har nu lært <strong>hvordan en AI faktisk tænker</strong>, hvordan du <strong>opretter og indstiller din AI rigtigt</strong>, og hvordan du <strong>skriver prompts som en professionel</strong> — med rolle, kontekst og format, så du får skarpe, brugbare svar. Det er godt gået.</p>
+      <p class="hero-text reveal d3" style="margin-top:1.4rem;font-size:1rem">Rul ned og se dit personlige bevis, som du kan gemme eller printe.</p>
+      <div class="reveal d3"><div class="scroll-hint">
+        <span>Rul ned</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+      </div></div>
+    </section>
+
+    <!-- ===== DEL 3: BEVIS ===== -->
+    <section class="section" id="certSection">
+      <div class="reveal" style="text-align:center"><span class="sec-eyebrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Dit personlige bevis</span></div>
+
+      <div class="panel reveal d1" style="max-width:420px;margin:0 auto 2rem">
+        <div class="panel-accent"></div>
+        <div class="panel-body" style="text-align:center">
+          <label for="nameInput" style="display:block;font-size:0.9rem;font-weight:600;margin-bottom:0.6rem">Skriv dit navn, så det står på beviset</label>
+          <input type="text" id="nameInput" placeholder="Dit fulde navn" style="width:100%;padding:0.7rem 1rem;border-radius:10px;border:1px solid rgba(0,0,0,0.15);font-family:var(--sans);font-size:1rem;text-align:center">
+        </div>
+      </div>
+
+      <div class="certificate reveal d1" id="certificate">
+        <div class="cert-frame">
+          <div class="cert-inner">
+
+            <div class="cert-brand">
+              <svg class="cert-logo" viewBox="0 0 40 40" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><rect width="40" height="40" rx="11" fill="#2F5D45"/><path d="M20 8c1.1 5 3 6.9 8 8-5 1.1-6.9 3-8 8-1.1-5-3-6.9-8-8 5-1.1 6.9-3 8-8z" fill="#E6C79A"/></svg>
+              <div class="cert-brand-name">Akademiet AI</div>
+              <div class="cert-brand-url">akademiet-ai.dk</div>
+            </div>
+
+            <div class="cert-rule"><span></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3l2.2 5.6L20 9l-4.4 3.4L17 18l-5-3.2L7 18l1.4-5.6L4 9l5.8-.4z"/></svg><span></span></div>
+
+            <div class="cert-kicker">Officielt bevis</div>
+            <h2 class="cert-headline">Bestået Kursus D</h2>
+            <div class="cert-track">Lidt øvet-sporet</div>
+
+            <div class="cert-medallion"><div class="medallion-shell" id="certBadgeMount"></div></div>
+
+            <div class="cert-presented">Dette bevis tildeles</div>
+            <div class="cert-name" id="certName">—</div>
+            <div class="cert-body">Beviset bekræfter, at Kursus D er gennemført på Lidt øvet-sporet — og at indehaveren nu kan skrive gennemtænkte prompts og bruge AI trygt, sikkert og effektivt i hverdagen og på arbejdet.</div>
+
+            <div class="cert-spacer"></div>
+
+            <div class="cert-foot">
+              <div class="left">
+                <div class="cert-foot-label">Bestået</div>
+                <div class="cert-foot-value" id="certDateTime">—</div>
+              </div>
+              <div class="cert-seal" aria-hidden="true">
+                <svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="37" fill="none" stroke="currentColor" stroke-width="1.4"/><circle cx="40" cy="40" r="31" fill="none" stroke="currentColor" stroke-width="0.8" stroke-dasharray="2 3"/><path d="M40 22c1.6 7.3 4.4 10.1 11.7 11.7C44.4 35.3 41.6 38.1 40 45.4 38.4 38.1 35.6 35.3 28.3 33.7 35.6 32.1 38.4 29.3 40 22z" fill="currentColor"/><text x="40" y="60" text-anchor="middle" class="seal-text">AKADEMIET AI</text></svg>
+              </div>
+              <div class="right">
+                <div class="cert-foot-label">Kursus</div>
+                <div class="cert-foot-value">Kursus D</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions reveal d2">
+        <button class="btn btn-gold" onclick="savePDF()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+          Gem som PDF
+        </button>
+        <button class="btn btn-cream" onclick="printDiploma()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 14h12v8H6z"/></svg>
+          Print
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== DEL 4: KURSUS C ===== -->
+    <section class="section">
+      <div class="path-strip reveal">
+        <div class="path-node done"><span class="path-dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg></span><span class="path-label">Kursus D<br><small>Bestået</small></span></div>
+        <div class="path-line"></div>
+        <div class="path-node next"><span class="path-dot">C</span><span class="path-label">Kursus C<br><small>Dit næste skridt</small></span></div>
+        <div class="path-line"></div>
+        <div class="path-node"><span class="path-dot">B</span><span class="path-label">Kursus B<br><small>Senere</small></span></div>
+        <div class="path-line"></div>
+        <div class="path-node"><span class="path-dot">A</span><span class="path-label">Kursus A<br><small>Toppen</small></span></div>
+      </div>
+
+      <div class="offer offer-c reveal d1">
+        <span class="offer-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8Z"/></svg> Dit næste skridt</span>
+        <h2 class="offer-title">Kursus C er på vej</h2>
+        <p class="offer-text">Hvor Kursus D lærte dig at bruge AI trygt, tager Kursus C dig hele vejen til at <strong>mestre</strong> det professionelt — i dit arbejde og din hverdag. Kurset er under udvikling og lander snart på Akademiet AI.</p>
+        <ul class="offer-list">
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At skrive prompts professionelt — langt ud over det, D lærte dig</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At opbygge dit eget prompt‑bibliotek du kan bruge igen og igen</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> Meget mere om hallucinationer — og hvordan du undgår dem</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At øve dig i en realistisk møde‑simulator med live‑feedback</li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m20 6-11 11-5-5"/></svg> At få din helt egen personlige AI‑plan til arbejde og hverdag</li>
+        </ul>
+        <button type="button" class="btn btn-gold" id="readMoreCBtn" onclick="toggleCPreview()">Læs mere om Kursus C</button>
+        <div id="cPreviewPanel" style="display:none;margin-top:1.4rem;padding:1.4rem 1.6rem;background:rgba(0,0,0,0.16);border-radius:14px;text-align:left;line-height:1.65">
+          <p style="margin-bottom:0.9rem"><strong>Sådan forbereder du dig til Kursus C.</strong> Kursus C bygger direkte videre på det, du netop har lært i Kursus D. Hvor D handlede om at forstå og bruge AI trygt, handler C om at gøre det til et professionelt redskab, du kan læne dig op ad hver dag.</p>
+          <p style="margin-bottom:0.9rem">Du kommer til at arbejde med rigtige arbejdsopgaver — mails, referater, oplæg og research — og øve dig i at give AI'en præcis den kontekst, den skal bruge for at ramme plet første gang. Du bygger dit eget bibliotek af prompts, du kan genbruge igen og igen, i stedet for at starte forfra hver gang.</p>
+          <p style="margin-bottom:0.9rem">Vi kommer også dybere ned i hallucinationer: hvorfor de opstår, hvordan du opdager dem, og hvilke vaner der beskytter dig, når det virkelig gælder — i arbejdssammenhænge, hvor en fejl koster mere end i en tilfældig chat.</p>
+          <p style="margin-bottom:0.9rem">En stor del af kurset foregår i en realistisk møde-simulator, hvor du øver dig i at bruge AI'en live, med feedback undervejs — ikke bare teori, men træning du kan mærke.</p>
+          <p>Til sidst samler vi det hele i en personlig AI-plan, skræddersyet til dit arbejde og din hverdag, så du går derfra med et konkret redskab — ikke bare ny viden.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="end reveal">
+      <p>Tryk her for at komme tilbage til startsiden.</p>
+      <a href="proeve.html" class="btn btn-ghost">Tilbage til Akademiet AI</a>
+    </div>
+
+  </main>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- Prøveversion: ingen konti, intet login. Beviset vises altid direkte. -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+// ---------- Anvend navn på beviset ----------
+function applyName() {
+  const input = document.getElementById('nameInput');
+  const name = (input && input.value.trim()) || 'Dit navn';
+  document.getElementById('certName').textContent = name;
+  document.getElementById('certBadgeMount').innerHTML = badgeSVG('b', 'D', name);
+}
+window.applyName = applyName;
+
+function setCertDate() {
+  const when = new Date();
+  const dato = when.toLocaleDateString('da-DK', { day:'numeric', month:'long', year:'numeric' });
+  const klok = when.toLocaleTimeString('da-DK', { hour:'2-digit', minute:'2-digit' });
+  document.getElementById('certDateTime').textContent = `${dato} kl. ${klok}`;
+}
+
+applyName();
+setCertDate();
+document.getElementById('nameInput')?.addEventListener('input', applyName);
+
+// ---------- Medaljon (SVG) ----------
+function badgeSVG(uid, level, name) {
+  const nm = (name || '').toUpperCase().replace(/\s+/g, ' ').trim() || 'KURSIST';
+  const M = {
+    D:{k:'D',bodyHi:'#a86530',bodyMid:'#6f3d18',bodyLo:'#3d2110',border:['#ffe9c6','#d59250','#7d4318'],innerLine:'#ffe4bf',niveau:'#f3d8ad',bannerFill:'#bd7333',bannerTail:'#7d4a1e',bannerInk:'#34210f'},
+    C:{k:'C',bodyHi:'#a3aab0',bodyMid:'#646b70',bodyLo:'#3a4044',border:['#ffffff','#cfd3d6','#6f767c'],innerLine:'#ffffff',niveau:'#f1f4f6',bannerFill:'#b4babe',bannerTail:'#767c80',bannerInk:'#2a2e31'},
+    B:{k:'B',bodyHi:'#edcc52',bodyMid:'#a8851f',bodyLo:'#6f5810',border:['#fff6cf','#ecc857','#a8820f'],innerLine:'#fff6cf',niveau:'#fff6cf',bannerFill:'#ecc23a',bannerTail:'#a8820f',bannerInk:'#473709'},
+    A:{k:'A',bodyHi:'#74c0da',bodyMid:'#2f7d9e',bodyLo:'#194a5e',border:['#f0ffff','#a6e3f4','#2f86ab'],innerLine:'#f0ffff',niveau:'#e7f9fd',bannerFill:'#86c8e0',bannerTail:'#3f93b5',bannerInk:'#0c3646'}
+  };
+  const p = M[level] || M.D;
+  const sh = "M58,34 H182 a14,14 0 0 1 14,14 V118 C196,166 168,196 120,214 C72,196 44,166 44,118 V48 a14,14 0 0 1 14,-14 Z";
+  const inner = "M64,40 H176 a9,9 0 0 1 9,9 V116 C185,158 160,185 120,202 C80,185 55,158 55,116 V49 a9,9 0 0 1 9,-9 Z";
+  const longAttr = nm.length > 18 ? ' textLength="132" lengthAdjust="spacingAndGlyphs"' : '';
+  return `<svg viewBox="0 0 240 240" class="medallion" role="img" aria-label="Badge: Niveau ${p.k} bestået">
+    <defs>
+      <linearGradient id="bd-${uid}" x1="0" y1="0" x2="0.25" y2="1"><stop offset="0%" stop-color="${p.bodyHi}"/><stop offset="45%" stop-color="${p.bodyMid}"/><stop offset="100%" stop-color="${p.bodyLo}"/></linearGradient>
+      <linearGradient id="br-${uid}" x1="0" y1="0" x2="0.6" y2="1"><stop offset="0%" stop-color="${p.border[0]}"/><stop offset="45%" stop-color="${p.border[1]}"/><stop offset="100%" stop-color="${p.border[2]}"/></linearGradient>
+      <radialGradient id="gl-${uid}" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.42"/><stop offset="70%" stop-color="#ffffff" stop-opacity="0.08"/><stop offset="100%" stop-color="#ffffff" stop-opacity="0"/></radialGradient>
+      <clipPath id="cl-${uid}"><path d="${sh}"/></clipPath>
+    </defs>
+    <path d="${sh}" fill="url(#bd-${uid})" stroke="url(#br-${uid})" stroke-width="5"/>
+    <g clip-path="url(#cl-${uid})"><ellipse cx="116" cy="60" rx="82" ry="50" fill="url(#gl-${uid})"/></g>
+    <path d="${inner}" fill="none" stroke="${p.innerLine}" stroke-width="1.1" stroke-opacity="0.6"/>
+    <text x="120" y="99.6" text-anchor="middle" class="bdg-ai" fill="#000000" fill-opacity="0.3">AI</text>
+    <text x="120" y="98" text-anchor="middle" class="bdg-ai" fill="url(#br-${uid})">AI</text>
+    <text x="120" y="124" text-anchor="middle" class="bdg-lvl" fill="${p.niveau}">NIVEAU ${p.k}</text>
+    <rect x="48" y="150" width="144" height="30" rx="2" fill="${p.bannerFill}" stroke="${p.bannerTail}" stroke-width="0.8"/>
+    <rect x="48" y="150" width="144" height="13" rx="2" fill="#ffffff" fill-opacity="0.17"/>
+    <path d="M48,154 L34,154 L42,168 L34,182 L48,182 Z" fill="${p.bannerTail}"/>
+    <path d="M192,154 L206,154 L198,168 L206,182 L192,182 Z" fill="${p.bannerTail}"/>
+    <text x="120" y="172" text-anchor="middle" class="bdg-name" fill="${p.bannerInk}"${longAttr}>${nm}</text>
+  </svg>`;
+}
+
+// ---------- Print / PDF ----------
+function printDiploma() { window.print(); }
+window.printDiploma = printDiploma;
+
+async function savePDF() {
+  const el = document.getElementById('certificate');
+  if (!window.html2canvas || !(window.jspdf && window.jspdf.jsPDF)) {
+    showToast('error', 'PDF-værktøjet kunne ikke indlæses. Brug "Print" og vælg "Gem som PDF".');
+    return;
+  }
+  showToast('info', 'Laver din PDF…');
+  try {
+    const canvas = await window.html2canvas(el, { scale: 2, backgroundColor: '#fffdf7', useCORS: true });
+    const img = canvas.toDataURL('image/png');
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+    const pw = pdf.internal.pageSize.getWidth();
+    const ph = pdf.internal.pageSize.getHeight();
+    // Beviset er A4-proportioneret — fyld hele siden (contain, centreret)
+    const ratio = canvas.width / canvas.height;
+    let iw = pw, ih = pw / ratio;
+    if (ih > ph) { ih = ph; iw = ph * ratio; }
+    const x = (pw - iw) / 2, y = (ph - ih) / 2;
+    pdf.addImage(img, 'PNG', x, y, iw, ih);
+    pdf.save('bevis-kursus-d.pdf');
+  } catch (e) {
+    console.error(e);
+    showToast('error', 'Kunne ikke lave PDF. Brug "Print" i stedet.');
+  }
+}
+window.savePDF = savePDF;
+
+// ---------- Kursus C "læs mere" ----------
+function toggleCPreview() {
+  const panel = document.getElementById('cPreviewPanel');
+  const btn = document.getElementById('readMoreCBtn');
+  if (!panel) return;
+  const open = panel.style.display !== 'none';
+  panel.style.display = open ? 'none' : 'block';
+  if (btn) btn.textContent = open ? 'Læs mere om Kursus C' : 'Skjul';
+  if (!open) panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+window.toggleCPreview = toggleCPreview;
+
+// ---------- Toast ----------
+function showToast(type, msg) {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 300); }, 4000);
+}
+
+// ---------- Konfetti (fejring) ----------
+function burstConfetti() {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colors = ['#e0b33d', '#c8a44e', '#2f6a4a', '#dcb55f', '#f4e7cd', '#a9772b'];
+  const layer = document.createElement('div');
+  layer.className = 'confetti-layer';
+  const N = 90;
+  for (let i = 0; i < N; i++) {
+    const c = document.createElement('i');
+    c.style.left = Math.random() * 100 + 'vw';
+    c.style.background = colors[i % colors.length];
+    c.style.animationDuration = (2.6 + Math.random() * 2.2) + 's';
+    c.style.animationDelay = (Math.random() * 0.5) + 's';
+    const w = 6 + Math.random() * 7;
+    c.style.width = w + 'px';
+    c.style.height = (w * 1.5) + 'px';
+    if (Math.random() > 0.6) c.style.borderRadius = '50%';
+    layer.appendChild(c);
+  }
+  document.body.appendChild(layer);
+  setTimeout(() => layer.remove(), 5200);
+}
+window.burstConfetti = burstConfetti;
+
+// ---------- Scroll-reveal ----------
+(function () {
+  const els = document.querySelectorAll('.reveal');
+  if (!('IntersectionObserver' in window)) { els.forEach(e => e.classList.add('in')); return; }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.14, rootMargin: '0px 0px -40px 0px' });
+  els.forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>
