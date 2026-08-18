@@ -1,0 +1,407 @@
+{
+  "meta": {
+    "fil": "projektstatus.json",
+    "formaal": "Eneste sandhedskilde for Akademiet AI. Projektlederen laeser denne fil foerst i hver session og opdaterer den til sidst. Alt andet er sekundaert.",
+    "version": 1,
+    "sidst_opdateret": "2026-08-18",
+    "opdateret_af": "Alexander",
+    "brandnavn_synligt": "Akademiet AI",
+    "frosne_kodenavne": ["learnai-dk", "learnai-proxy", "learnai_api_base", "LEARNAI_API"]
+  },
+
+  "personer": {
+    "alexander": {
+      "rolle": "Vision, planlaegning, overblik over roller og arbejdstid, produkt, kursusindhold, frontend",
+      "opgaver": [
+        "Prompter",
+        "Finpudser sider inden offentliggoerelse",
+        "Kursusbygger",
+        "Bruger Claude-credits",
+        "Planlaegning og overordnet overblik"
+      ],
+      "ugeskema_min": {
+        "mandag": 60,
+        "tirsdag": 30,
+        "onsdag_torsdag_samlet": 30,
+        "fredag": 90
+      },
+      "ugetotal_hverdage_min": 210,
+      "note": "Onsdag+torsdag er 30 min TILSAMMEN, ikke 30 min hver dag."
+    },
+    "august": {
+      "efternavn": "Gade",
+      "rolle": "Cloudflare Worker, API, Firebase-infrastruktur",
+      "opgaver": [
+        "Researcher",
+        "Ideproducent til forbedringer",
+        "Excel-bygger",
+        "Holder styr paa salgsregler",
+        "Markedsfoering"
+      ],
+      "ugeskema_min": {
+        "mandag": 60,
+        "tirsdag": 30,
+        "torsdag_fredag_samlet": 60
+      },
+      "ugetotal_hverdage_min": 150,
+      "note": "Torsdag+fredag er 60 min TILSAMMEN, ikke 60 min hver dag."
+    },
+    "faelles_roller": [
+      "Saelger",
+      "Godkender",
+      "Planlaegger",
+      "Hjemmesidebygger",
+      "Redigering"
+    ]
+  },
+
+  "weekend": {
+    "fast_tid": false,
+    "regel": "Weekendtid varierer frit. Kan vaere 0-30 min hver, kan vaere 4 timer hver hvis en vigtig deadline kraever det. Ekstraarbejde er tilladt naar der er lyst og tid.",
+    "lige_fordeling_kraeves": false,
+    "projektleder_maa_indkalde_weekendarbejde": true,
+    "projektleder_skal_begrunde_indkaldelse": true
+  },
+
+  "regler": {
+    "haarde": [
+      "Spoerg altid den anden foer der indsaettes noget paa GitHub",
+      "Aftal med hinanden foer der bruges Claude-credits",
+      "Aftal hver dag hvem der goer hvad",
+      "API-noegler maa aldrig ligge i HTML eller paa GitHub",
+      "Alle AI-kald gaar gennem learnai-proxy Worker'en, aldrig direkte til Anthropic",
+      "Synligt brandnavn er altid 'Akademiet AI', aldrig 'LearnAI'",
+      "Filnavne er altid ASCII: ae, oe, o, a",
+      "Ingen loefter om loenstigning i salgsmateriale. Kun: sparet tid x timeloen, faerre fejl, dokumenteret AI-traening"
+    ],
+    "byggeworkflow": [
+      "Hent altid live raa-fil fra raw.githubusercontent.com foer redigering",
+      "Kirurgiske str_replace-aendringer, ikke fulde omskrivninger",
+      "Validér JS med node --check og DOM-balance med Python/lxml",
+      "Verificér visuelt med Playwright-screenshot foer levering",
+      "Lever komplet upload-klar fil via present_files",
+      "Flag afvigelser aktivt, ogsaa naar Alexander selv afviger"
+    ]
+  },
+
+  "byggeplaner": {
+    "status": "FORAELDET",
+    "regel": "Alle eksisterende byggeplan-filer er gamle og maa IKKE bruges som kilde. projektstatus.json er eneste sandhedskilde.",
+    "foraeldede_filer": [
+      "byggeplan.html",
+      "byggeplan-b2b.html",
+      "byggeplan-kursus-c.html",
+      "kursus-d-system-tjekliste.html"
+    ],
+    "handling_paakraevet": "Arkivér eller markér filerne tydeligt som FORAELDET, saa en fremtidig session ikke bygger efter dem ved en fejl."
+  },
+
+  "kurser": {
+    "D": {
+      "navn": "Kursus D (gratis lead magnet)",
+      "status": "Bygget og live, men ikke valideret",
+      "problemer": [
+        "Aldrig testet med et rigtigt menneske udefra. Vi ved ikke om det virker paedagogisk.",
+        "Chatbotten koerer ikke paa den korrekte model. Korrekt modelstreng skal verificeres hos August foer der rettes."
+      ],
+      "beskyttet": false,
+      "note": "Gratis lead magnet. Indholdsbeskyttelse ikke noedvendig."
+    },
+    "C": {
+      "navn": "Kursus C (betalt)",
+      "status": "Delvist bygget",
+      "problemer": [
+        "En stoerre del af kurset mangler at blive bygget",
+        "Tekst mangler paa eksisterende sider",
+        "Optimering og finpudsning mangler paa hele kurset"
+      ]
+    },
+    "D_plus": {
+      "navn": "Kursus D+ (bro mellem D og C)",
+      "status": "BESLUTNING KRAEVES",
+      "problemer": [
+        "Passer ikke ind i den nye struktur i sin nuvaerende form"
+      ],
+      "valg": ["Droppes helt", "Redesignes kraftigt saa det passer til ny struktur"],
+      "besluttet": false
+    },
+    "B": {
+      "navn": "Kursus B (betalt)",
+      "status": "Ikke paabegyndt",
+      "problemer": [
+        "Gamle B-filer ligger paa GitHub. De er meget gamle og skal ikke eksistere mere.",
+        "Skal bygges helt fra bunden, ikke migreres fra gamle filer"
+      ],
+      "blokeret_af": ["beskyttelsesarkitektur"]
+    },
+    "A": {
+      "navn": "Kursus A (betalt)",
+      "status": "Ikke paabegyndt",
+      "problemer": [
+        "Gamle A-filer ligger paa GitHub. De er meget gamle og skal ikke eksistere mere.",
+        "Skal bygges helt fra bunden, ikke migreres fra gamle filer"
+      ],
+      "blokeret_af": ["beskyttelsesarkitektur"]
+    }
+  },
+
+  "sidekurser": {
+    "status": "Grundlaeggende fundament lagt paa 2-5 stk",
+    "problemer": [
+      "Ingen af de paabegyndte sidekurser er faerdige",
+      "Der mangler mindst ca. 5 yderligere sidekurser udover de paabegyndte"
+    ],
+    "oekonomi_note": "Sidekurser var tidligere coin-sink. Coinsystemet skrottes, saa forretningsmodellen for sidekurser skal genbesluttes."
+  },
+
+  "coins": {
+    "status": "SKROTTES",
+    "begrundelse": "Systemet har ikke laengere et formaal naar sidekurser ikke koebes med coins",
+    "uafklaret": [
+      "Skal allerede udstedte coins fjernes fra Firestore, eller bare skjules i UI?",
+      "Hvilke sider viser i dag coins og skal ryddes?"
+    ]
+  },
+
+  "app_system": {
+    "status": "Sidst i raekkefoelgen",
+    "regel": "Hele app-systemet bygges til allersidst, efter alle kurser. Maa ikke paabegyndes foer."
+  },
+
+  "instagram": {
+    "status": "Skal holdes i live",
+    "problem": "Profilen doer hvis der ikke kommer indhold. Tom profil signalerer hobbyprojekt.",
+    "minimumskrav": "Loebende opslag saa profilen ikke fremstaar doed",
+    "note": "Kursus D er faerdigbygget og kan bruges som indhold uden yderligere udvikling"
+  },
+
+  "fremtidig_agent": {
+    "navn": "Projektleder-agent",
+    "status": "Trin 1 af 3 - koerer som Claude Project med manuel statusopdatering",
+    "trin": {
+      "1": {
+        "beskrivelse": "Claude Project med projektstatus.json som projektviden. Manuel opdatering efter hver session.",
+        "infrastruktur_kraevet": "ingen",
+        "status": "under opbygning"
+      },
+      "2": {
+        "beskrivelse": "projektstatus.json ligger i repoet som faelles sandhed. Begge peger paa samme fil og kan se hinandens fremdrift og blokeringer.",
+        "infrastruktur_kraevet": "GitHub repo",
+        "status": "ikke startet"
+      },
+      "3": {
+        "beskrivelse": "Rigtig agent med tool-use i Cloudflare Worker'en. Laeser og skriver status direkte til Firestore. Ingen manuel opdatering.",
+        "infrastruktur_kraevet": "Worker tool-use loop, Firebase ID-token verifikation, whitelistede vaerktoejer, hardt loft paa antal runder",
+        "sikkerhedsregel": "Modellen faar aldrig direkte adgang til Firestore. Worker'en afgoer om et vaerktoej maa bruges og udfoerer det med brugerens eget uid.",
+        "status": "maa ikke bygges foer trin 1 har koert i mindst 4 uger",
+        "genbrug": "Samme arkitektur som indholdsbeskyttelsen. Byg beskyttelsen foerst, genbrug moenstret."
+      }
+    },
+    "afvist": {
+      "google_adk": "Afvist. Kraever server-runtime og Google Cloud billing. Vi har ingen backend, og betalingskonto er en juridisk knude for mindreaarige. Revurderes tidligst naar Kursus A bygges."
+    }
+  },
+
+  "beskyttelsesarkitektur": {
+    "status": "Ikke bygget",
+    "loesning": "Betalt kursusindhold ud af HTML og ind i Firestore/KV. Siden er en tom skal. Worker verificerer Firebase ID-token og koebt adgang foer indhold serveres.",
+    "regel": "SKAL bygges FOER Kursus B paabegyndes. Retrofit koster 3x arbejdet.",
+    "afvist": "At forlade GitHub Pages"
+  },
+
+  "opgaver": [
+    {
+      "id": "T01",
+      "titel": "Test Kursus D med et rigtigt menneske udefra",
+      "ejer": "Alexander",
+      "estimat_min": 60,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Uden ekstern test ved vi ikke om produktet virker. Dette er den billigste validering vi kan lave."
+    },
+    {
+      "id": "T02",
+      "titel": "Verificér korrekt modelstreng hos August",
+      "ejer": "August",
+      "estimat_min": 15,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Forkert modelnavn fejler stille i Worker'en. Maa ikke gaettes."
+    },
+    {
+      "id": "T03",
+      "titel": "Ret Kursus D chatbot til korrekt model",
+      "ejer": "Alexander",
+      "estimat_min": 30,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": ["T02"]
+    },
+    {
+      "id": "T04",
+      "titel": "Markér alle gamle byggeplaner som FORAELDET",
+      "ejer": "Alexander",
+      "estimat_min": 20,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Forhindrer at en fremtidig session bygger efter en doed plan."
+    },
+    {
+      "id": "T05",
+      "titel": "Beslut: droppes eller redesignes Kursus D+",
+      "ejer": "Alexander",
+      "estimat_min": 20,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Beslutning, ikke byggearbejde. Blokerer al videre D+ indsats."
+    },
+    {
+      "id": "T06",
+      "titel": "Instagram: fast opslagsrytme saa profilen ikke doer",
+      "ejer": "faelles",
+      "estimat_min": 30,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "gentages": "ugentligt"
+    },
+    {
+      "id": "T07",
+      "titel": "Kortlaeg praecist hvad der mangler i Kursus C",
+      "ejer": "Alexander",
+      "estimat_min": 45,
+      "prioritet": "hoej",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Vi kan ikke estimere C foer vi ved hvor stort hullet er."
+    },
+    {
+      "id": "T08",
+      "titel": "Byg de manglende C-sider",
+      "ejer": "Alexander",
+      "estimat_min": null,
+      "prioritet": "mellem",
+      "status": "ikke_startet",
+      "blokeret_af": ["T07"],
+      "note": "Estimat kan foerst saettes efter T07."
+    },
+    {
+      "id": "T09",
+      "titel": "Skriv manglende tekst paa Kursus C",
+      "ejer": "Alexander",
+      "estimat_min": null,
+      "prioritet": "mellem",
+      "status": "ikke_startet",
+      "blokeret_af": ["T07"]
+    },
+    {
+      "id": "T10",
+      "titel": "Optimering og finpudsning af Kursus C",
+      "ejer": "Alexander",
+      "estimat_min": null,
+      "prioritet": "lav",
+      "status": "ikke_startet",
+      "blokeret_af": ["T08", "T09"]
+    },
+    {
+      "id": "T11",
+      "titel": "Fjern coinsystemet fra UI og afklar Firestore-data",
+      "ejer": "faelles",
+      "estimat_min": 60,
+      "prioritet": "mellem",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Kraever beslutning om allerede udstedte coins."
+    },
+    {
+      "id": "T12",
+      "titel": "Faerdiggoer de 2-5 paabegyndte sidekurser",
+      "ejer": "Alexander",
+      "estimat_min": null,
+      "prioritet": "lav",
+      "status": "ikke_startet",
+      "blokeret_af": ["T11"],
+      "note": "Forretningsmodel skal genbesluttes foerst, nu hvor coins forsvinder."
+    },
+    {
+      "id": "T13",
+      "titel": "Planlaeg og byg ca. 5 nye sidekurser",
+      "ejer": "Alexander",
+      "estimat_min": null,
+      "prioritet": "lav",
+      "status": "ikke_startet",
+      "blokeret_af": ["T12"]
+    },
+    {
+      "id": "T14",
+      "titel": "Slet gamle Kursus B- og A-filer fra GitHub",
+      "ejer": "Alexander",
+      "estimat_min": 20,
+      "prioritet": "mellem",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "Husk regel: spoerg August foer der roeres ved repoet."
+    },
+    {
+      "id": "T15",
+      "titel": "Byg beskyttelsesarkitektur (Firestore/KV + Worker)",
+      "ejer": "August",
+      "estimat_min": null,
+      "prioritet": "mellem",
+      "status": "ikke_startet",
+      "blokeret_af": [],
+      "note": "SKAL vaere faerdig foer T16. Samme moenster genbruges til agent trin 3."
+    },
+    {
+      "id": "T16",
+      "titel": "Byg Kursus B fra bunden",
+      "ejer": "faelles",
+      "estimat_min": null,
+      "prioritet": "lav",
+      "status": "ikke_startet",
+      "blokeret_af": ["T15", "T14"]
+    },
+    {
+      "id": "T17",
+      "titel": "Byg Kursus A fra bunden",
+      "ejer": "faelles",
+      "estimat_min": null,
+      "prioritet": "lav",
+      "status": "ikke_startet",
+      "blokeret_af": ["T16"]
+    },
+    {
+      "id": "T18",
+      "titel": "Byg hele app-systemet",
+      "ejer": "faelles",
+      "estimat_min": null,
+      "prioritet": "sidst",
+      "status": "ikke_startet",
+      "blokeret_af": ["T17"],
+      "note": "Maa ikke paabegyndes foer alle kurser er faerdige."
+    }
+  ],
+
+  "deadlines": [
+    {
+      "hvad": "Instagram-launch af gratis Kursus D",
+      "dato": "2026-09-04",
+      "status": "SKAL BEKRAEFTES",
+      "note": "Datoen stammer fra tidligere planlaegning. Alexander skal bekraefte om den stadig gaelder, eller om Instagram nu blot er loebende vedligehold."
+    }
+  ],
+
+  "sessionslog": [],
+
+  "aabne_beslutninger": [
+    "Gaelder 4. september stadig som launch-deadline?",
+    "Droppes eller redesignes Kursus D+?",
+    "Skal allerede udstedte coins slettes i Firestore eller kun skjules?",
+    "Hvad er sidekursernes forretningsmodel uden coins?",
+    "Hvilken model skal Kursus D chatbotten koere paa (praecis streng fra August)?"
+  ]
+}
