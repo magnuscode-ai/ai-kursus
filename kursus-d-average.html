@@ -1848,6 +1848,7 @@
     .wb-word{ display:inline-block; opacity:0; transform:translateY(9px); transition:opacity .34s ease, transform .34s ease, color .34s ease; margin-right:0.26em; }
     .wb-word.in{ opacity:1; transform:none; }
     .wb-word.flash{ color:var(--gold); }
+    .wb-word.join{ margin-left:-0.26em; }
     .wb-caret{ display:inline-block; width:3px; height:1.02em; background:var(--gold); vertical-align:-0.16em; border-radius:2px; animation:wbBlink 1s steps(1) infinite; }
     @keyframes wbBlink{ 50%{ opacity:0; } }
     .wb-cap{ margin-top:1.1rem; font-family:var(--sans); font-size:13.5px; line-height:1.5; color:rgba(255,255,255,0.82); opacity:0; transition:opacity .5s ease; display:flex; flex-direction:column; gap:0.85rem; position:relative; z-index:1; }
@@ -1859,24 +1860,38 @@
     .wb-replay:hover{ background:rgba(255,255,255,0.26); }
     .wb-replay .ti{ font-size:14px; }
 
-    /* ===== Modul 1 · Det ved AI'en ikke ===== */
-    .kn-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:1.5rem 0; }
-    .kn-card{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.25rem; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; }
-    .kn-icon{ width:34px; height:34px; border-radius:10px; display:grid; place-items:center; background:var(--primary-soft); color:var(--primary); margin-bottom:0.8rem; flex:none; }
-    .kn-icon .ti{ font-size:18px; }
-    .kn-q{ font-family:var(--serif); font-size:16.5px; font-weight:600; color:var(--ink); line-height:1.35; margin-bottom:1rem; }
-    .kn-ask{ margin-top:auto; font-family:var(--sans); font-weight:700; font-size:14px; background:var(--primary); color:#fff; border:none; border-radius:10px; padding:9px 14px; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease; }
-    .kn-ask:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
-    .kn-reveal{ animation:knIn .4s cubic-bezier(.16,1,.3,1); }
+    /* ===== Modul 1 · Kan du stole på svaret? ===== */
+    .kn-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:1.5rem 0; align-items:stretch; }
+    .kn-card{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.35rem; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; transition:border-color .25s ease, box-shadow .25s ease; }
+    .kn-card.ok{ border-color:#a8c9b4; box-shadow:0 6px 18px rgba(47,106,74,0.12); }
+    .kn-card.miss{ border-color:#dcb9ae; box-shadow:0 6px 18px rgba(158,74,58,0.10); }
+    .kn-icon{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; background:var(--primary-soft); color:var(--primary); margin-bottom:0.85rem; flex:none; }
+    .kn-icon .ti{ font-size:19px; }
+    .kn-q{ font-family:var(--serif); font-size:17px; font-weight:600; color:var(--ink); line-height:1.35; margin-bottom:0.8rem; }
+    .kn-ans{ position:relative; font-size:14.5px; color:var(--ink); line-height:1.55; background:#fff; border:1px solid var(--line); border-radius:12px; padding:0.8rem 0.9rem; margin-bottom:1rem; font-style:italic; }
+    .kn-ans::before{ content:""; position:absolute; left:-1px; top:0.85rem; bottom:0.85rem; width:3px; border-radius:3px; background:var(--gold); }
+    .kn-guess{ margin-top:auto; display:flex; flex-direction:column; gap:8px; }
+    .kn-btn{ font-family:var(--sans); font-weight:700; font-size:14px; border-radius:10px; padding:10px 14px; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease, background .18s ease; border:1px solid var(--line); }
+    .kn-btn.yes{ background:var(--primary); color:#fff; border-color:var(--primary); }
+    .kn-btn.no{ background:#fff; color:var(--ink); }
+    .kn-btn:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
+    .kn-btn:focus-visible{ outline:2px solid var(--primary); outline-offset:2px; }
+    .kn-reveal{ margin-top:auto; animation:knIn .4s cubic-bezier(.16,1,.3,1); }
     @keyframes knIn{ from{ opacity:0; transform:translateY(6px); } to{ opacity:1; transform:none; } }
-    .kn-badge{ display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; padding:4px 10px; border-radius:50px; margin-bottom:0.7rem; align-self:flex-start; }
+    .kn-badge{ align-self:flex-start; white-space:nowrap; display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; padding:5px 11px; border-radius:50px; margin-bottom:0.6rem; }
     .kn-badge .ti{ font-size:13px; }
     .kn-badge.ok{ background:#dee8de; color:#2f6a4a; }
-    .kn-badge.warn{ background:var(--brass-soft); color:var(--brass-deep); }
     .kn-badge.no{ background:#f4dcd6; color:#a3392b; }
-    .kn-ans{ font-size:14.5px; color:var(--ink); line-height:1.5; background:#fff; border:1px solid var(--line); border-radius:10px; padding:0.7rem 0.85rem; margin-bottom:0.7rem; }
-    .kn-lesson{ font-size:13px; color:var(--ink-soft); line-height:1.5; }
-    @media (max-width:720px){ .kn-grid{ grid-template-columns:1fr; } }
+    .kn-verdict{ font-family:var(--sans); font-size:13.5px; font-weight:700; margin-bottom:0.45rem; }
+    .kn-verdict.ok{ color:#2f6a4a; }
+    .kn-verdict.miss{ color:#9e4a3a; }
+    .kn-lesson{ font-size:13.5px; color:var(--ink-soft); line-height:1.55; }
+    .kn-score{ display:flex; gap:14px; align-items:flex-start; background:var(--brass-soft); border:1px solid rgba(169,136,65,0.32); border-radius:var(--radius-lg); padding:1.15rem 1.35rem; margin:1.3rem 0 1.6rem; animation:knIn .45s cubic-bezier(.16,1,.3,1); }
+    .kn-score-icon{ flex:none; color:var(--brass-deep); }
+    .kn-score-icon .ti{ font-size:22px; }
+    .kn-score-text{ font-size:15.5px; line-height:1.6; color:#6d5320; }
+    .kn-score-text b{ color:var(--brass-deep); }
+    @media (max-width:820px){ .kn-grid{ grid-template-columns:1fr; } .kn-card{ min-height:0; } }
 
     /* ===== Modul 1 · Token-visualiser ===== */
     .tv-box{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0; }
@@ -1894,6 +1909,48 @@
     .tv-tok.punct{ background:#eef0ee; color:#7c857c; }
     .tv-note{ font-size:12.5px; color:var(--ink-mute); margin-top:1rem; font-style:italic; display:flex; gap:7px; align-items:flex-start; line-height:1.5; }
     .tv-note .ti{ flex:none; margin-top:2px; font-style:normal; }
+
+    /* ===== Modul 1 · Token-infoboks ===== */
+    .tk-box{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); margin:1.6rem 0; box-shadow:var(--shadow-md); overflow:hidden; }
+    .tk-head{ padding:1.5rem 1.6rem 1.1rem; background:linear-gradient(180deg,#fff 0%, var(--cream) 100%); border-bottom:1px solid var(--line); }
+    .tk-eyebrow{ display:block; font-family:var(--sans); font-size:11px; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--brass-deep); margin-bottom:0.5rem; }
+    .tk-title{ font-family:var(--serif); font-size:clamp(20px,2.5vw,24px); font-weight:600; color:var(--ink); margin:0 0 0.5rem; line-height:1.25; }
+    .tk-title::after{ content:""; display:block; width:38px; height:2px; background:var(--gold); border-radius:2px; margin-top:0.6rem; }
+    .tk-lead{ font-size:15.5px; color:var(--ink-soft); line-height:1.55; margin:0.85rem 0 0; }
+    .tk-rows{ padding:0.35rem 1.6rem; }
+    .tk-row{ display:flex; align-items:center; gap:16px; padding:0.72rem 0; border-bottom:1px solid rgba(32,49,42,0.07); }
+    .tk-row:last-child{ border-bottom:none; }
+    .tk-chip{ flex:none; min-width:74px; text-align:center; padding:6px 12px; border-radius:8px; font-size:15px; font-weight:700; font-family:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace; background:var(--green-soft); color:var(--green); border:1px solid rgba(27,70,54,0.14); }
+    .tk-desc{ font-size:15.5px; color:var(--ink); line-height:1.5; }
+    .tk-desc em{ font-family:'SFMono-Regular',ui-monospace,Menlo,Consolas,monospace; font-style:normal; font-size:14.5px; color:var(--brass-deep); }
+    .tk-foot{ display:flex; gap:10px; align-items:flex-start; padding:1.05rem 1.6rem 1.15rem; background:var(--brass-soft); border-top:1px solid rgba(169,136,65,0.3); font-size:14.5px; line-height:1.6; color:#6d5320; }
+    .tk-foot .ti{ flex:none; margin-top:2px; color:var(--brass-deep); font-size:17px; }
+    @media (max-width:600px){
+      .tk-head,.tk-foot{ padding-left:1.15rem; padding-right:1.15rem; }
+      .tk-rows{ padding-left:1.15rem; padding-right:1.15rem; }
+      .tk-chip{ min-width:62px; font-size:14px; }
+      .tk-desc{ font-size:15px; }
+    }
+
+    /* ===== Modul 1 · Vælg selv det næste token ===== */
+    .tp-box{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0; }
+    .tp-stem{ font-family:var(--serif); font-size:clamp(19px,2.6vw,25px); line-height:1.5; color:var(--ink); min-height:1.5em; margin-bottom:1.1rem; }
+    .tp-stem .tp-pick{ color:var(--primary); font-weight:600; }
+    .tp-stem .tp-caret{ display:inline-block; width:3px; height:0.95em; background:var(--gold); vertical-align:-0.12em; border-radius:2px; animation:wbBlink 1s steps(1) infinite; margin-left:2px; }
+    .tp-hint{ font-family:var(--sans); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-mute); margin-bottom:0.7rem; }
+    .tp-opts{ display:flex; flex-direction:column; gap:8px; }
+    .tp-opt{ display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:#fff; border:1px solid var(--line); border-radius:12px; padding:11px 14px; cursor:pointer; font-family:var(--sans); font-size:15px; color:var(--ink); transition:border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+    .tp-opt:hover{ border-color:var(--primary); transform:translateY(-2px); box-shadow:var(--shadow-sm); }
+    .tp-opt:focus-visible{ outline:2px solid var(--primary); outline-offset:2px; }
+    .tp-word{ font-weight:600; flex:none; min-width:5.5em; }
+    .tp-meter{ display:block; flex:1 1 auto; height:8px; background:#e7e2d6; border-radius:50px; overflow:hidden; }
+    .tp-fill{ display:block; height:100%; background:linear-gradient(90deg,var(--green),var(--green-mid)); border-radius:50px; }
+    .tp-pct{ flex:none; font-size:13px; font-weight:700; color:var(--ink-soft); min-width:3em; text-align:right; }
+    .tp-done{ animation:knIn .4s cubic-bezier(.16,1,.3,1); }
+    .tp-done-text{ font-size:15.5px; color:var(--ink); line-height:1.6; background:#fff; border:1px solid var(--line); border-radius:12px; padding:1rem 1.15rem; }
+    .tp-done-text strong{ color:var(--primary); }
+    .tp-again{ margin-top:0.85rem; background:var(--primary); color:#fff; border:none; border-radius:10px; padding:9px 16px; font-family:var(--sans); font-weight:700; font-size:14px; cursor:pointer; transition:transform .18s ease, box-shadow .18s ease; }
+    .tp-again:hover{ transform:translateY(-2px); box-shadow:var(--shadow-md); }
 
     /* ===== XP-rang i progress-baren ===== */
     .xp-chip{ display:inline-flex; align-items:center; gap:6px; font-family:var(--sans); font-size:11.5px; font-weight:800; letter-spacing:.03em; text-transform:uppercase; color:var(--brass-deep); background:var(--brass-soft); border:1px solid rgba(169,136,65,0.35); padding:5px 11px; border-radius:50px; white-space:nowrap; }
@@ -1972,7 +2029,12 @@
     .pa-answer-label{ font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-mute); margin-bottom:0.55rem; display:flex; align-items:center; gap:6px; }
     .pa-answer-label .ti{ font-size:15px; color:var(--primary); }
     .pa-answer-text{ font-size:15px; line-height:1.6; color:var(--ink); white-space:pre-line; transition:opacity .18s ease; }
+    .pa-answer-text{ min-height:180px; }
     .pa-answer-text.swap{ opacity:0; }
+    .pa-why{ display:flex; gap:8px; align-items:flex-start; margin-top:0.9rem; padding-top:0.85rem; border-top:1px solid var(--line); font-size:13.5px; line-height:1.5; color:var(--brass-deep); transition:opacity .18s ease; }
+    .pa-why.ok{ color:var(--green-mid); }
+    .pa-why.swap{ opacity:0; }
+    .pa-why .ti{ flex:none; margin-top:1px; font-size:15px; }
 
     /* ===== Modul 3 · Iterations-demo ===== */
     .it-box{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.4rem 1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0; }
@@ -2208,7 +2270,7 @@
 
     /* — FASE 2 · Knapper: blød trykfølelse (tactility) — */
     .btn-start:active, .btn-next:active, .btn-prev:active, .btn-exam:active,
-    .btn-exam-big:active, .copy-btn:active, .guess-next:active, .kn-ask:active,
+    .btn-exam-big:active, .copy-btn:active, .guess-next:active, .kn-ask:active, .kn-btn:active, .tp-opt:active,
     .it-next:active, .pc-send:active, .hl-btn:active, .home-btn:active{
       transform:scale(.972); transition-duration:.09s;
     }
@@ -2232,7 +2294,7 @@
     .lux-sheen-host:hover .lux-sheen{ transform:translateX(240%) skewX(-14deg); opacity:.9; }
     @media (prefers-reduced-motion: reduce){
       .btn-start:active,.btn-next:active,.btn-prev:active,.btn-exam:active,.btn-exam-big:active,
-      .copy-btn:active,.guess-next:active,.kn-ask:active,.it-next:active,.pc-send:active,.hl-btn:active,.home-btn:active{ transform:none; }
+      .copy-btn:active,.guess-next:active,.kn-ask:active,.kn-btn:active,.tp-opt:active,.it-next:active,.pc-send:active,.hl-btn:active,.home-btn:active{ transform:none; }
       .lux-sheen{ display:none; }
     }
 
@@ -2291,7 +2353,7 @@
     .tv-box:hover, .oc-box:hover { box-shadow: var(--shadow-lg); border-color: rgba(169,136,65,0.32); }
 
     /* — forfinet, konsistent fokus-ring i messing (tilgængelighed + polish) — */
-    :where(a, button, [tabindex], .oc-item, .kn-ask, .module-tab, .wb-replay):focus-visible {
+    :where(a, button, [tabindex], .oc-item, .kn-ask, .kn-btn, .tp-opt, .module-tab, .wb-replay):focus-visible {
       outline: none;
       box-shadow: 0 0 0 3px rgba(201,162,75,0.45);
       border-radius: 9px;
@@ -2315,7 +2377,8 @@
     /* ═══════════════ FASE 3 · ren C + dyb guld ═══════════════ */
     /* nummererede underoverskrifter: brass-tal + guld-separator, ingen grøn venstre-streg */
     h3.step-h { padding-left: 0; }
-    h3.step-h::before { content: none; }
+    h3.step-h::before, h3.tk-title::before { content: none; }
+    h3.tk-title{ padding-left:0 !important; }
     .step-h .hn { font-family: var(--serif); font-weight: 700; font-size: 1.1em; color: #9a7414; margin-right: 7px; }
     .step-h .hs { color: #c9a24b; margin-right: 6px; }
     /* modul-label: diskret guld-diamant som separator */
@@ -2406,18 +2469,50 @@
         <div class="module-header">
           <div class="module-label">Modul 1 <span class="ml-dot">◆</span> Fundamentet</div>
           <h2 class="module-title">Sådan tænker en AI</h2>
-          <p class="module-intro">En AI forstår ikke det du skriver. Den forudsiger det mest sandsynlige næste ord — igen og igen. Det er hele hemmeligheden.</p>
+          <p class="module-intro">En AI slår ikke noget op. Den vælger det næste <strong>token</strong> — igen og igen — indtil svaret står der. Det er hele hemmeligheden.</p>
         </div>
 
         <div class="wb-box reveal" id="wordBuilder">
           <div class="wb-line"></div>
-          <div class="wb-cap"><div class="wb-cap-row"><i class="ti ti-brain" aria-hidden="true"></i><span class="wb-cap-txt">Sådan bygger en AI sit svar: ét ord ad gangen — hvert ord det mest sandsynlige efter de forrige.</span></div><button class="wb-replay" type="button"><i class="ti ti-arrow-down" aria-hidden="true" style="transform:rotate(90deg)"></i> Afspil igen</button></div>
+          <div class="wb-cap"><div class="wb-cap-row"><i class="ti ti-brain" aria-hidden="true"></i><span class="wb-cap-txt">Ét token ad gangen. Da AI'en skrev det første token, fandtes resten af sætningen ikke endnu — heller ikke inde i maskinen.</span></div><button class="wb-replay" type="button"><i class="ti ti-arrow-down" aria-hidden="true" style="transform:rotate(90deg)"></i> Afspil igen</button></div>
         </div>
 
-        <p>Det får to ting til at ske, som du mærker hver gang du bruger AI. Prøv dem her:</p>
+        <div class="tk-box reveal">
+          <div class="tk-head">
+            <span class="tk-eyebrow">Begrebet</span>
+            <h3 class="tk-title">Hvad er et token?</h3>
+            <p class="tk-lead">Et token er den bid tekst, AI'en arbejder med. En bid kan være:</p>
+          </div>
+          <div class="tk-rows">
+            <div class="tk-row">
+              <span class="tk-chip">hus</span>
+              <span class="tk-desc">et helt ord</span>
+            </div>
+            <div class="tk-row">
+              <span class="tk-chip">tek</span>
+              <span class="tk-desc">en stump af et ord — her enden af <em>biblio·tek</em></span>
+            </div>
+            <div class="tk-row">
+              <span class="tk-chip">2026</span>
+              <span class="tk-desc">et tal</span>
+            </div>
+            <div class="tk-row">
+              <span class="tk-chip">,</span>
+              <span class="tk-desc">et tegn</span>
+            </div>
+            <div class="tk-row">
+              <span class="tk-chip">ø</span>
+              <span class="tk-desc">et enkelt bogstav</span>
+            </div>
+          </div>
+          <div class="tk-foot">
+            <i class="ti ti-bulb" aria-hidden="true"></i>
+            <span>Opdelingen følger hverken grammatik eller mening. Den giver ikke rigtig mening for os — men det er sådan AI'en gør det, og det er nok at vide.</span>
+          </div>
+        </div>
 
-        <h3 class="step-h"><span class="hn">1</span><span class="hs">·</span> Den læser i stumper <i class="ti ti-zoom" aria-hidden="true"></i></h3>
-        <p>Før AI'en regner, deler den din tekst op i små stumper kaldet <span class="term" tabindex="0">tokens<span class="term-tip">En token er en lille tekststump — ofte et helt ord, men lange eller sjældne ord deles op.</span></span>. Skriv noget og se det selv:</p>
+        <h3 class="step-h"><span class="hn">1</span><span class="hs">·</span> Se dine egne tokens <i class="ti ti-zoom" aria-hidden="true"></i></h3>
+        <p>Skriv noget og se hvordan det bliver delt op:</p>
 
         <div class="tv-box reveal">
           <textarea id="tvInput" class="tv-input" rows="2" spellcheck="false">Jeg elsker at bygge AI-kurser med kunstig intelligens.</textarea>
@@ -2426,33 +2521,47 @@
             <div class="tv-stat">Tokens<b id="tvTokCount">0</b></div>
           </div>
           <div class="tv-out" id="tvOut"></div>
-          <div class="tv-note"><i class="ti ti-bulb" aria-hidden="true"></i> Forenklet visning — rigtige AI'er deler lidt anderledes op, og selv mellemrum og tegn tæller med. Men princippet er det samme: AI'en ser stumper, ikke hele ord.</div>
+          <div class="tv-note"><i class="ti ti-bulb" aria-hidden="true"></i> Forenklet visning — rigtige AI'er deler lidt anderledes op. Princippet er det samme.</div>
         </div>
 
-        <h3 class="step-h"><span class="hn">2</span><span class="hs">·</span> Hvad den ikke kan vide <i class="ti ti-help-circle" aria-hidden="true"></i></h3>
-        <p>AI'en kender en masse fra alt det tekst, den er trænet på — men den slår ikke noget op, og den ved ingenting om dig. Klik og se svaret på tre spørgsmål:</p>
+        <h3 class="step-h"><span class="hn">2</span><span class="hs">·</span> Vælg selv det næste token <i class="ti ti-hand-click" aria-hidden="true"></i></h3>
+        <p>Nu er <em>du</em> AI'en. Procenterne viser hvor sandsynligt hvert token er.</p>
+
+        <div class="tp-box reveal" id="tokenPicker">
+          <div class="tp-stem" id="tpStem"></div>
+          <div class="tp-hint" id="tpHint">Vælg det næste token</div>
+          <div class="tp-opts" id="tpOpts"></div>
+        </div>
+
+        <h3 class="step-h"><span class="hn">3</span><span class="hs">·</span> Kan du stole på svaret? <i class="ti ti-help-circle" aria-hidden="true"></i></h3>
+        <p>Her er tre spørgsmål og AI'ens svar. <strong>Gæt for hvert kort</strong>, om du kan stole på det:</p>
 
         <div class="kn-grid reveal" id="knowsNot"></div>
+
+        <div class="kn-score reveal" id="knScore" hidden>
+          <div class="kn-score-icon"><i class="ti ti-target" aria-hidden="true"></i></div>
+          <div class="kn-score-text" id="knScoreText"></div>
+        </div>
 
         <div class="callout tip reveal">
           <div class="callout-icon"><i class="ti ti-message-circle" aria-hidden="true"></i></div>
           <div class="callout-body">
-            <div class="callout-title">Læg mærke til én ting</div>
-            <p class="callout-text">AI'en lyder <strong>næsten lige sikker</strong> i alle tre tilfælde — også når den tager fejl eller finder på. Det er selve kernen i <em>hallucination</em>, som vi går i dybden med i Modul 4.</p>
+            <div class="callout-title">Den lyder altid lige sikker</div>
+            <p class="callout-text">Samme rolige tone, uanset om svaret er rigtigt eller opdigtet. Det er selve kernen i <em>hallucination</em> — vi går i dybden i Modul 4.</p>
           </div>
         </div>
 
-        <div class="key-band reveal"><div class="key-band-label">Husk</div><div class="key-band-text">En AI slår ikke noget op — den forudsiger det mest sandsynlige næste ord.</div></div>
+        <div class="key-band reveal"><div class="key-band-label">Husk</div><div class="key-band-text">Google finder en side, der findes. En AI former en tekst, der aldrig har eksisteret før.</div></div>
 
         <div class="callout summary reveal">
           <div class="callout-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
           <div class="callout-body">
             <div class="callout-title">Det lærte du i dette modul</div>
             <ul class="summary-list">
-              <li>En AI forudsiger det mest sandsynlige næste ord — og bygger svaret ét ord ad gangen</li>
-              <li>Den læser tekst som stumper (tokens), ikke som hele ord</li>
-              <li>Den slår ikke noget op: helt ny info og ting om dig kender den ikke</li>
-              <li>Den lyder næsten lige sikker — også når den tager fejl</li>
+              <li>En AI ser tekst som <strong>tokens</strong> — hele ord, orddele, tal og tegn</li>
+              <li>Den bygger svaret ét token ad gangen og kender ikke selv slutningen undervejs</li>
+              <li>Den vælger ikke altid det mest sandsynlige token — den trækker lod. Derfor får du forskellige svar</li>
+              <li>Modellen slår ikke op, den regner — og lyder lige sikker, også når den tager fejl</li>
               <li>Det sætter scenen for prompting (Modul 3) og hallucination (Modul 4)</li>
             </ul>
           </div>
@@ -2630,6 +2739,18 @@
           <div class="module-label">Modul 4 <span class="ml-dot">◆</span> Fejl &amp; tryghed</div>
           <h2 class="module-title">Når AI finder på</h2>
           <p class="module-intro">AI lyder lige så sikker når den tager fejl som når den har ret. Nu giver teorien fra Modul 1 pote: du lærer <em>hvorfor</em> den hallucinerer — og hvordan du fanger den, før den narrer dig. Til sidst ser du, hvad du trygt kan dele med en AI — og hvad du bør holde for dig selv.</p>
+        </div>
+
+        <div class="tk-box reveal">
+          <div class="tk-head">
+            <span class="tk-eyebrow">Kernen</span>
+            <h3 class="tk-title">Hvorfor hallucinationer overhovedet findes</h3>
+            <p class="tk-lead" style="color:var(--ink);">En hallucination er ikke en fejl i maskinen. Det er maskinen, der gør præcis det, den skal: vælge de tokens, der <strong>lyder mest rigtige</strong>. Sandhed indgår ikke i regnestykket — kun sandsynlighed.</p>
+          </div>
+          <div class="tk-foot">
+            <i class="ti ti-bulb" aria-hidden="true"></i>
+            <span>Derfor lyder et opdigtet svar lige så godt som et sandt.</span>
+          </div>
         </div>
 
         <h3 class="step-h"><span class="hn">1</span><span class="hs">·</span> Spot hallucinationen <i class="ti ti-target" aria-hidden="true"></i></h3>
@@ -2836,7 +2957,7 @@
 <script>
   /* ---- Velkomst-puslespil: re-temaet til average ---- */
   const PIECES = [
-    { num: '01', icon: '<i class="ti ti-brain" aria-hidden="true"></i>', title: 'Sådan tænker en AI', desc: 'Forstå hvorfor AI forudsiger det næste ord — fundamentet for alt.', bg: '#dee8de', fg: '#143a2c', from: 'rgba(27,70,54,0.10)', sx: -260, sy: -120, sr: -25 },
+    { num: '01', icon: '<i class="ti ti-brain" aria-hidden="true"></i>', title: 'Sådan tænker en AI', desc: 'Forstå hvorfor AI vælger det næste token — fundamentet for alt.', bg: '#dee8de', fg: '#143a2c', from: 'rgba(27,70,54,0.10)', sx: -260, sy: -120, sr: -25 },
     { num: '02', icon: '<i class="ti ti-settings" aria-hidden="true"></i>', title: 'Indstil Claude rigtigt', desc: 'Opret Claude fra bunden og sæt data, stil og projekter som en prof.', bg: '#f1e7cc', fg: '#8a6a2a', from: 'rgba(169,136,65,0.10)', sx: 280, sy: -100, sr: 22 },
     { num: '03', icon: '<i class="ti ti-pencil" aria-hidden="true"></i>', title: 'Prompt som en prof', desc: 'Prompt-anatomi, iteration og at "træne" AI gennem samtalen.', bg: '#f0e2cf', fg: '#8a4a24', from: 'rgba(160,90,44,0.10)', sx: -220, sy: 140, sr: 18 },
     { num: '04', icon: '<i class="ti ti-alert-triangle" aria-hidden="true"></i>', title: 'Når AI finder på', desc: 'Lær hvorfor AI hallucinerer — og hvordan du fanger den.', bg: '#efded7', fg: '#7e342a', from: 'rgba(126,52,42,0.10)', sx: 240, sy: 130, sr: -18 },
@@ -2990,7 +3111,10 @@
     /* --- Sætnings-bygger (animeret demonstration) --- */
     const wb=document.getElementById('wordBuilder');
     if(wb){
-      const WORDS=['Jeg','glæder','mig','til','at','komme','hjem','og','slappe','af.'];
+      const WORDS=[
+        {t:'Jeg'},{t:'glæ'},{t:'der',join:true},{t:'mig'},{t:'til'},{t:'at'},
+        {t:'komme'},{t:'hjem'},{t:'og'},{t:'slap'},{t:'pe',join:true},{t:'af'},{t:'.',join:true}
+      ];
       const line=wb.querySelector('.wb-line');
       const cap=wb.querySelector('.wb-cap');
       const reduce=window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2998,7 +3122,7 @@
       function play(){
         if(playing) return; playing=true;
         clearTimeout(timer);
-        line.innerHTML=WORDS.map(function(w){ return '<span class="wb-word">'+w+'</span>'; }).join('')+'<span class="wb-caret"></span>';
+        line.innerHTML=WORDS.map(function(w){ return '<span class="wb-word'+(w.join?' join':'')+'">'+w.t+'</span>'; }).join('')+'<span class="wb-caret"></span>';
         if(cap) cap.classList.remove('in');
         const words=line.querySelectorAll('.wb-word');
         if(reduce){ words.forEach(function(w){ w.classList.add('in'); }); if(cap) cap.classList.add('in'); playing=false; return; }
@@ -3022,34 +3146,58 @@
       if(rep) rep.addEventListener('click', function(){ playing=false; play(); });
     }
 
-    /* --- Det ved AI'en ikke --- */
+    /* --- Kan du stole på svaret? --- */
     const KN_CARDS=[
-      { icon:'world', q:'Hvad er Danmarks hovedstad?', verdict:'ok', vlabel:'Rammer plet', vicon:'circle-check',
-        ans:'København.', lesson:'Den slags står i tusindvis af tekster — så det mest sandsynlige svar er også det rigtige.' },
-      { icon:'calendar', q:'Hvem vandt fodboldkampen i går?', verdict:'warn', vlabel:'Kan ikke vide det', vicon:'alert-triangle',
-        ans:'Det kan jeg desværre ikke vide — min viden stopper på et tidspunkt, og jeg er ikke live på nettet.', lesson:'AI er trænet på ældre tekst. Helt nye ting kender den ikke — medmindre værktøjet selv kan søge online.' },
-      { icon:'user', q:'Hvad hedder min hund?', verdict:'no', vlabel:'Aner det ikke', vicon:'circle-x',
-        ans:'Din hund hedder sikkert Bella!', lesson:'Den ved intet om dig — men kan finde på et navn der lyder overbevisende. Det er ren gætning.' }
+      { icon:'world', q:'Hvad er Danmarks hovedstad?',
+        ans:'København.',
+        trust:true, vlabel:'Stol på det', vicon:'circle-check',
+        lesson:'Det står i tusindvis af tekster. Her er det mest sandsynlige svar også det rigtige.' },
+      { icon:'calendar', q:'Hvem vandt fodboldkampen i går?',
+        ans:'Det kan jeg desværre ikke vide — min viden stopper på et tidspunkt, og jeg er ikke live på nettet.',
+        trust:true, vlabel:'Stol på det', vicon:'circle-check',
+        lesson:'Her siger AI\'en selv fra. Det er det bedste tegn du kan få — men den gør det ikke altid.' },
+      { icon:'user', q:'Hvad hedder min hund?',
+        ans:'Din hund hedder sikkert Bella!',
+        trust:false, vlabel:'Stol ikke på det', vicon:'circle-x',
+        lesson:'Den ved intet om dig. Alligevel finder den på et navn — i samme rolige tone som de to andre svar.' }
     ];
     const knMount=document.getElementById('knowsNot');
+    const knScore=document.getElementById('knScore');
+    const knScoreText=document.getElementById('knScoreText');
     if(knMount){
+      let answered=0, right=0;
       knMount.innerHTML=KN_CARDS.map(function(c,i){
         return '<div class="kn-card" data-i="'+i+'">'+
           '<div class="kn-icon"><i class="ti ti-'+c.icon+'" aria-hidden="true"></i></div>'+
           '<div class="kn-q">'+c.q+'</div>'+
-          '<button class="kn-ask">Se svaret</button>'+
+          '<div class="kn-ans">'+c.ans+'</div>'+
+          '<div class="kn-guess">'+
+            '<button class="kn-btn yes" type="button" data-v="1">Stol på det</button>'+
+            '<button class="kn-btn no" type="button" data-v="0">Stol ikke på det</button>'+
+          '</div>'+
         '</div>';
       }).join('');
-      knMount.querySelectorAll('.kn-ask').forEach(function(btn){
+      knMount.querySelectorAll('.kn-btn').forEach(function(btn){
         btn.addEventListener('click',function(){
           const card=btn.closest('.kn-card');
+          if(card.dataset.done) return;
+          card.dataset.done='1';
           const c=KN_CARDS[parseInt(card.dataset.i,10)];
-          btn.outerHTML=
+          const guess=btn.dataset.v==='1';
+          const correct=(guess===c.trust);
+          if(correct) right++;
+          answered++;
+          card.classList.add(correct?'ok':'miss');
+          card.querySelector('.kn-guess').outerHTML=
             '<div class="kn-reveal">'+
-              '<span class="kn-badge '+c.verdict+'"><i class="ti ti-'+c.vicon+'" aria-hidden="true"></i> '+c.vlabel+'</span>'+
-              '<div class="kn-ans">'+c.ans+'</div>'+
+              '<span class="kn-badge '+(c.trust?'ok':'no')+'"><i class="ti ti-'+c.vicon+'" aria-hidden="true"></i> '+c.vlabel+'</span>'+
+              '<div class="kn-verdict '+(correct?'ok':'miss')+'">'+(correct?'Rigtigt gættet':'Ikke helt — se hvorfor')+'</div>'+
               '<div class="kn-lesson">'+c.lesson+'</div>'+
             '</div>';
+          if(answered===KN_CARDS.length && knScore && knScoreText){
+            knScore.hidden=false;
+            knScoreText.innerHTML='<b>'+right+' af 3 rigtige.</b> Læg mærke til én ting: svar 2 og 3 handler begge om noget AI\'en ikke kan vide. Forskellen er, om den indrømmer det — og den forskel kan du ikke høre på tonen.';
+          }
         });
       });
     }
@@ -3086,6 +3234,70 @@
       tv.addEventListener('input',render);
       render();
     }
+
+    /* --- Vælg selv det næste token --- */
+    (function(){
+      const box=document.getElementById('tokenPicker');
+      if(!box) return;
+      const stemEl=document.getElementById('tpStem');
+      const hintEl=document.getElementById('tpHint');
+      const optsEl=document.getElementById('tpOpts');
+      const STEM='Jeg glæder mig til at';
+      const L1=[
+        { t:'komme', p:34 }, { t:'se', p:22 }, { t:'høre', p:14 }, { t:'arbejde', p:9 }, { t:'sove', p:4 }
+      ];
+      const L2={
+        'komme':  [{t:'hjem',p:51},{t:'i',p:18},{t:'forbi',p:12},{t:'ud',p:8},{t:'tilbage',p:6}],
+        'se':     [{t:'dig',p:41},{t:'filmen',p:19},{t:'resultatet',p:11},{t:'hvad',p:9},{t:'det',p:7}],
+        'høre':   [{t:'fra',p:46},{t:'mere',p:21},{t:'din',p:10},{t:'musikken',p:8},{t:'nyt',p:6}],
+        'arbejde':[{t:'videre',p:38},{t:'med',p:25},{t:'på',p:17},{t:'sammen',p:8},{t:'hjemme',p:5}],
+        'sove':   [{t:'længe',p:44},{t:'ud',p:23},{t:'i',p:12},{t:'hele',p:8},{t:'trygt',p:5}]
+      };
+      let picked=[];
+
+      function drawStem(showCaret){
+        const chosen=picked.map(function(w){ return '<span class="tp-pick">'+w+'</span>'; }).join(' ');
+        stemEl.innerHTML=STEM+(chosen?' '+chosen:'')+(showCaret?'<span class="tp-caret"></span>':'');
+      }
+      function drawOpts(list){
+        optsEl.innerHTML=list.map(function(o){
+          return '<button class="tp-opt" type="button" data-t="'+o.t+'">'+
+            '<span class="tp-word">'+o.t+'</span>'+
+            '<span class="tp-meter"><span class="tp-fill" style="width:'+Math.min(100,o.p*2)+'%"></span></span>'+
+            '<span class="tp-pct">'+o.p+'%</span>'+
+          '</button>';
+        }).join('');
+        optsEl.querySelectorAll('.tp-opt').forEach(function(b){
+          b.addEventListener('click',function(){ choose(b.dataset.t); });
+        });
+      }
+      function finish(){
+        hintEl.textContent='Færdig';
+        optsEl.innerHTML='<div class="tp-done">'+
+          '<div class="tp-done-text">Du valgte selv hver gang. <strong>En AI gør ikke det.</strong> Den trækker lod — vægtet efter procenterne. Derfor får du sjældent præcis samme svar to gange på det samme spørgsmål.</div>'+
+          '<button class="tp-again" type="button">Prøv igen</button>'+
+        '</div>';
+        const again=optsEl.querySelector('.tp-again');
+        if(again) again.addEventListener('click',reset);
+      }
+      function choose(t){
+        picked.push(t);
+        if(picked.length===1){
+          drawStem(true);
+          drawOpts(L2[t]||L1);
+        } else {
+          drawStem(false);
+          finish();
+        }
+      }
+      function reset(){
+        picked=[];
+        hintEl.textContent='Vælg det næste token';
+        drawStem(true);
+        drawOpts(L1);
+      }
+      reset();
+    })();
   })();
   </script>
 
@@ -3160,31 +3372,89 @@
         { id:'eksempel', label:'Eksempel', text:'Fx: Mandag – 10 armbøjninger, 20 squats.', on:false }
       ];
       const ORDER=['rolle','kontekst','opgave','format','eksempel'];
+      /* Ét unikt svar pr. kombination af rolle(r)/kontekst(k)/format(f)/eksempel(e).
+         Opgaven er altid med, så der er 2^4 = 16 mulige svar. */
       const ANS={
-        vagt:'Her er en generel træningsplan: lav lidt cardio, nogle styrkeøvelser og husk at strække ud. Træn 3-4 gange om ugen, så er du godt i gang.',
-        ok:'Da du er nybegynder, så start roligt. Prøv 3 dage om ugen med squats, armbøjninger og en rask gåtur. Øg langsomt, når det bliver nemmere.',
-        skarpt:'Perfekt — her er en 20-minutters plan til en nybegynder:\nMandag – 10 armbøjninger · 20 squats · 1 min planke\nOnsdag – 15 min rask gåtur · 20 udfald\nFredag – 10 armbøjninger · 30 sek planke · 20 squats\nKort, simpelt og til at gå til.'
+        '':'Det vil jeg gerne hjælpe med. Men for at lave en plan der faktisk passer til dig, mangler jeg lidt at vide:\n\n· Hvad er dit mål — styrke, kondition eller vægttab?\n· Hvor mange dage om ugen kan du træne, og hvor længe ad gangen?\n· Træner du hjemme eller i et center?\n\nSkriv det, så laver jeg planen.',
+
+        'r':'Godt at have dig med! Før jeg skruer noget sammen, vil jeg gerne kende dig lidt bedre.\n\nJeg starter altid med tre ting: hvor du er henne lige nu, hvor meget tid du realistisk har, og om du træner hjemme eller i et center. Send mig det, så bygger jeg en plan du rent faktisk kan holde til — ikke bare en der ser flot ud på papiret.',
+
+        'k':'Med 20 minutter om dagen som nybegynder er der masser at arbejde med. Kort og regelmæssigt slår langt og sporadisk hver gang.\n\nStart med tre træningsdage om ugen, så kroppen får hvile imellem. Brug øvelser med din egen kropsvægt, hvor du selv kan skrue op og ned for sværhedsgraden. De første to uger handler om at få vanen på plads — ikke om at presse dig. Når de 20 minutter begynder at føles overskuelige, øger du langsomt antallet af gentagelser.',
+
+        'f':'Her er en plan, dag for dag:\n\nMandag – styrketræning, overkrop\nTirsdag – hvile eller let gang\nOnsdag – ben og core\nTorsdag – hvile\nFredag – konditionstræning\nWeekend – aktiv restitution\n\nJeg kender ikke dit niveau eller hvor lang tid du har, så varighed og sværhedsgrad har jeg holdt åben. Sig til, så justerer jeg.',
+
+        'e':'Sådan kunne en uge se ud:\n\nMandag – 10 armbøjninger, 20 squats\nOnsdag – 20 min rask gåtur\nFredag – 10 armbøjninger, 30 sek planke\n\nJeg har gættet på et middelniveau, fordi jeg ikke ved hvor du står. Fortæl mig det, så tilpasser jeg antallet.',
+
+        'rk':'Fint udgangspunkt — 20 minutter om dagen er rigeligt til at komme godt i gang.\n\nMit råd: hold dig til tre faste dage om ugen i stedet for syv. Du får mere ud af at møde op tre gange og være frisk, end af at brænde ud på ti dage. Brug kropsvægtsøvelser, og stop hver gang mens du stadig har lidt tilbage i tanken.\n\nOm cirka to uger skruer vi op. Vil du have det som en konkret ugeplan, siger du bare til.',
+
+        'rf':'Klar. Her er skelettet, dag for dag:\n\nMandag – styrke, overkrop\nOnsdag – ben og core\nFredag – kondition\nØvrige dage – gang eller hvile\n\nDet er strukturen. Jeg ved endnu ikke hvor du starter fra, eller hvor lang tid du har — så antal gentagelser og varighed lægger vi på, når du fortæller mig det.',
+
+        're':'Sådan ville jeg skrue det sammen:\n\nMandag – 10 armbøjninger, 20 squats\nOnsdag – 20 min rask gåtur\nFredag – 10 armbøjninger, 30 sek planke\n\nDet er et bevidst forsigtigt udgangspunkt, fordi jeg ikke kender dit niveau. Er det for let, lægger vi en runde mere på med det samme.',
+
+        'kf':'Plan til 20 minutter om dagen som nybegynder:\n\nMandag – rolig styrketræning\nTirsdag – fri\nOnsdag – gang i højt tempo\nTorsdag – fri\nFredag – styrketræning igen\nWeekend – fri\n\nTre dage er rigeligt i starten. Øg først, når alle tre dage føles nemme.',
+
+        'ke':'Med 20 minutter og et nybegynderniveau kunne det se sådan ud:\n\nMandag – 10 armbøjninger, 20 squats\nOnsdag – 15 min rask gåtur\nFredag – 10 armbøjninger, 30 sek planke\n\nHviledagene imellem er der med vilje. Kroppen bliver stærkere i pauserne — ikke under selve træningen.',
+
+        'fe':'Ugeplan:\n\nMandag – 10 armbøjninger, 20 squats\nTirsdag – hvile\nOnsdag – 20 min gåtur, 20 udfald\nTorsdag – hvile\nFredag – 10 armbøjninger, 30 sek planke\n\nBemærk: antallet er et gæt. Jeg ved hverken hvor meget tid du har, eller hvor du starter fra.',
+
+        'rkf':'Godt — så bygger vi en plan der passer til 20 minutter og et nybegynderniveau:\n\nMandag – styrke, rolig start\nTirsdag – fri\nOnsdag – rask gang\nTorsdag – fri\nFredag – styrke igen\nWeekend – fri\n\nTre dage om ugen med hvile imellem. Vi skruer op om cirka to uger, når det begynder at føles nemt.',
+
+        'rke':'Perfekt udgangspunkt. Med 20 minutter som nybegynder ville jeg starte her:\n\nMandag – 10 armbøjninger, 20 squats\nOnsdag – 15 min rask gåtur\nFredag – 10 armbøjninger, 30 sek planke\n\nHviledagene er lige så vigtige som træningsdagene. Føles det for let efter to uger, lægger vi en runde på hver dag.',
+
+        'rfe':'Her er planen, dag for dag:\n\nMandag – 10 armbøjninger, 20 squats\nOnsdag – 20 min rask gåtur\nFredag – 10 armbøjninger, 30 sek planke\n\nJeg vil gerne vide hvor du starter fra, og hvor lang tid du har til rådighed — så justerer jeg antallet, så det hverken bliver for let eller for hårdt.',
+
+        'kfe':'20-minutters plan til en nybegynder, dag for dag:\n\nMandag – 10 armbøjninger, 20 squats, 1 min planke\nTirsdag – fri\nOnsdag – 15 min rask gåtur, 20 udfald\nTorsdag – fri\nFredag – 10 armbøjninger, 30 sek planke, 20 squats\nWeekend – fri\n\nHold antallet fast i to uger. Øg derefter med fem gentagelser ad gangen.',
+
+        'rkfe':'Godt — 20 minutter, tre dage om ugen. Her er din plan:\n\nMandag – 10 armbøjninger · 20 squats · 1 min planke\nOnsdag – 15 min rask gåtur · 20 udfald\nFredag – 10 armbøjninger · 30 sek planke · 20 squats\n\nHviledagene imellem er en del af planen, ikke en pause fra den. Kør de tre dage igennem i 14 dage. Når det sidste sæt føles overskueligt, lægger du fem gentagelser på hver øvelse.\n\nDriller en øvelse undervejs, så sig til — så finder vi et alternativ.'
+      };
+      const KEY={ rolle:'r', kontekst:'k', format:'f', eksempel:'e' };
+      /* inv = efter "derfor" (V2-inversion), norm = i et efterfølgende ledsætningsled */
+      const MISS={
+        r:{ navn:'rolle', inv:'er tonen neutral og upersonlig', norm:'tonen er neutral og upersonlig' },
+        k:{ navn:'kontekst', inv:'gætter den på dit niveau og din tid', norm:'den gætter på dit niveau og din tid' },
+        f:{ navn:'format', inv:'bestemmer du ikke selv hvordan svaret ser ud', norm:'du bestemmer ikke selv hvordan svaret ser ud' },
+        e:{ navn:'eksempel', inv:'bliver øvelserne upræcise', norm:'øvelserne bliver upræcise' }
       };
       const LABELS={ 1:'Vagt', 2:'Vagt', 3:'OK', 4:'Stærkt', 5:'Knivskarpt' };
       pb.innerHTML=
         '<div class="pa-head">Byg et stærkt prompt — klik delene til</div>'+
-        '<div class="pa-sub">Opgaven er altid med. Tilføj rolle, kontekst, format og et eksempel.</div>'+
+        '<div class="pa-sub">Opgaven er altid med. Tilføj rolle, kontekst, format og eksempel — der er 16 kombinationer, og AI\u2019en svarer forskelligt på dem alle.</div>'+
         '<div class="pa-blocks">'+PA.map(function(p){
           return '<button type="button" class="pa-chip'+(p.on?' on':'')+(p.locked?' locked':'')+'" data-id="'+p.id+'"><span class="pa-tick">'+CHECK+'</span>'+p.label+'</button>';
         }).join('')+'</div>'+
         '<div class="pa-preview"><div class="pa-preview-label">Dit prompt</div><div class="pa-preview-text" id="paPreview"></div></div>'+
         '<div class="pa-meter"><div class="pa-meter-now"><span class="pa-meter-now-label">Promptets styrke:</span> <span class="pa-strength" id="paStrength">Vagt</span></div><div class="pa-meter-track"><div class="pa-meter-fill" id="paFill"></div></div><div class="pa-meter-ends"><span>Vagt</span><span>Knivskarpt</span></div></div>'+
-        '<div class="pa-answer"><div class="pa-answer-label"><i class="ti ti-robot" aria-hidden="true"></i> Claudes svar</div><div class="pa-answer-text" id="paAnswer"></div></div>';
+        '<div class="pa-answer"><div class="pa-answer-label"><i class="ti ti-robot" aria-hidden="true"></i> Claudes svar</div><div class="pa-answer-text" id="paAnswer"></div><div class="pa-why" id="paWhy"></div></div>';
       function render(){
         const active=ORDER.map(function(id){ return PA.find(function(p){ return p.id===id; }); }).filter(function(p){ return p.on; });
         document.getElementById('paPreview').textContent=active.map(function(p){ return p.text; }).join(' ');
         const n=active.length;
         document.getElementById('paStrength').textContent=LABELS[n]||'Vagt';
         document.getElementById('paFill').style.width=(n/5*100)+'%';
-        const bucket = n<=2 ? 'vagt' : (n===3 ? 'ok' : 'skarpt');
+        const key=['rolle','kontekst','format','eksempel']
+          .filter(function(id){ return PA.find(function(p){ return p.id===id; }).on; })
+          .map(function(id){ return KEY[id]; }).join('');
+        const missing=['r','k','f','e'].filter(function(k){ return key.indexOf(k)===-1; });
+        let why;
+        if(!missing.length){
+          why='<i class="ti ti-circle-check" aria-hidden="true"></i> Alle fem dele er med — AI\u2019en har intet tilbage at gætte på.';
+        } else {
+          const navne=missing.map(function(k){ return MISS[k].navn; });
+          const list=function(a){ return a.length===1 ? a[0] : a.slice(0,-1).join(', ')+' og '+a[a.length-1]; };
+          const hale = missing.length>=3
+            ? 'AI\u2019en har for lidt at gå efter og må gætte sig frem.'
+            : 'derfor '+MISS[missing[0]].inv+(missing[1] ? ', og '+MISS[missing[1]].norm : '')+'.';
+          why='<i class="ti ti-alert-triangle" aria-hidden="true"></i> Mangler '+list(navne)+' — '+hale;
+        }
         const ans=document.getElementById('paAnswer');
-        ans.classList.add('swap');
-        setTimeout(function(){ ans.textContent=ANS[bucket]; ans.classList.remove('swap'); }, 160);
+        const wh=document.getElementById('paWhy');
+        ans.classList.add('swap'); wh.classList.add('swap');
+        setTimeout(function(){
+          ans.textContent=ANS[key];
+          ans.classList.remove('swap');
+          wh.innerHTML=why;
+          wh.className='pa-why'+(missing.length?'':' ok');
+        }, 160);
       }
       pb.querySelectorAll('.pa-chip').forEach(function(c){
         c.addEventListener('click',function(){
@@ -3482,7 +3752,7 @@
 
     /* --- 1: Recap-kort --- */
     var RECAP=[
-      { icon:'brain', label:'Modul 1', title:'Sådan tænker en AI', take:'En AI slår ikke noget op — den <b>forudsiger det mest sandsynlige næste ord</b>.' },
+      { icon:'brain', label:'Modul 1', title:'Sådan tænker en AI', take:'En AI slår ikke op — den vælger det <b>næste token</b>, igen og igen.' },
       { icon:'settings', label:'Modul 2', title:'Opret og indstil Claude', take:'<b>To minutters opsætning</b> gør AI\u2019en til din — ikke bare en generisk hjælper.' },
       { icon:'target', label:'Modul 3', title:'Prompt som en prof', take:'<b>Rolle + kontekst + opgave + format</b> = svar i topklasse. Og du må rette undervejs.' },
       { icon:'alert-triangle', label:'Modul 4', title:'Når AI finder på', take:'Selvsikker tone er ikke sandhed — <b>tjek altid det vigtige</b>, og pas på hvad du deler.' }
@@ -3502,7 +3772,7 @@
 
     /* --- 2: Selvtjek --- */
     var ITEMS=[
-      { icon:'brain', text:'Jeg forstår, at AI gætter det næste ord — ikke slår op' },
+      { icon:'brain', text:'Jeg forstår, at AI vælger det næste token — ikke slår op' },
       { icon:'settings', text:'Jeg kan oprette og indstille min AI' },
       { icon:'target', text:'Jeg kan skrive en skarp prompt med rolle, kontekst, opgave og format' },
       { icon:'alert-triangle', text:'Jeg ved, at AI kan tage fejl — og hvordan jeg tjekker efter' },
