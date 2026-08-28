@@ -1897,6 +1897,7 @@
     .tv-box{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0; }
     .tv-input{ width:100%; font-family:var(--sans); font-size:16px; color:var(--ink); background:#fff; border:2px solid var(--line); border-radius:12px; padding:12px 14px; resize:none; line-height:1.5; }
     .tv-input:focus{ outline:none; border-color:var(--primary); }
+    .tv-input::placeholder{ color:var(--ink-soft); opacity:.5; }
     .tv-stats{ display:flex; gap:1.6rem; margin:1rem 0 0.9rem; }
     .tv-stat{ font-size:12.5px; font-weight:600; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; }
     .tv-stat b{ font-size:22px; font-family:var(--serif); color:var(--primary); display:block; letter-spacing:0; }
@@ -2512,10 +2513,10 @@
         </div>
 
         <h3 class="step-h"><span class="hn">1</span><span class="hs">·</span> Se dine egne tokens <i class="ti ti-zoom" aria-hidden="true"></i></h3>
-        <p>Skriv noget og se hvordan det bliver delt op:</p>
+        <p>Teksten herunder kan du rette i. Slet den og skriv din egen — fx dit navn eller dit længste ord:</p>
 
         <div class="tv-box reveal">
-          <textarea id="tvInput" class="tv-input" rows="2" spellcheck="false">Jeg elsker at bygge AI-kurser med kunstig intelligens.</textarea>
+          <textarea id="tvInput" class="tv-input" rows="2" spellcheck="false" placeholder="Skriv din egen sætning her — fx dit navn eller dit længste ord …">Har de en grundlov i Spanien ligesom i Danmark?</textarea>
           <div class="tv-stats">
             <div class="tv-stat">Tegn<b id="tvCharCount">0</b></div>
             <div class="tv-stat">Tokens<b id="tvTokCount">0</b></div>
@@ -3156,10 +3157,10 @@
         ans:'Det kan jeg desværre ikke vide — min viden stopper på et tidspunkt, og jeg er ikke live på nettet.',
         trust:true, vlabel:'Stol på det', vicon:'circle-check',
         lesson:'Her siger AI\'en selv fra. Det er det bedste tegn du kan få — men den gør det ikke altid.' },
-      { icon:'user', q:'Hvad hedder min hund?',
-        ans:'Din hund hedder sikkert Bella!',
+      { icon:'book', q:'Hvorfor troede man i middelalderen, at Jorden var flad?',
+        ans:'Fordi kirken lærte, at Jorden var en flad skive — og først Columbus beviste det modsatte i 1492.',
         trust:false, vlabel:'Stol ikke på det', vicon:'circle-x',
-        lesson:'Den ved intet om dig. Alligevel finder den på et navn — i samme rolige tone som de to andre svar.' }
+        lesson:'Spørgsmålet bygger på en myte: lærde i middelalderen vidste udmærket, at Jorden er rund. AI\'en retter ikke fejlen — den bygger videre på den og pynter med et årstal, så svaret lyder overbevisende.' }
     ];
     const knMount=document.getElementById('knowsNot');
     const knScore=document.getElementById('knScore');
@@ -3196,7 +3197,7 @@
             '</div>';
           if(answered===KN_CARDS.length && knScore && knScoreText){
             knScore.hidden=false;
-            knScoreText.innerHTML='<b>'+right+' af 3 rigtige.</b> Læg mærke til én ting: svar 2 og 3 handler begge om noget AI\'en ikke kan vide. Forskellen er, om den indrømmer det — og den forskel kan du ikke høre på tonen.';
+            knScoreText.innerHTML='<b>'+right+' af 3 rigtige.</b> Læg mærke til én ting: alle tre svar lyder lige rolige og lige sikre. Tonen fortæller dig intet om, hvornår du kan stole på svaret — kun om du selv kan tjekke det efter.';
           }
         });
       });
