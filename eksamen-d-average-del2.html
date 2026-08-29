@@ -759,7 +759,7 @@ ${prompt}
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-sonnet-4-6',
+      model: 'claude-haiku-4-5-20251001',
       max_tokens: 250,
       messages: [{ role: 'user', content }]
     })
@@ -781,13 +781,13 @@ ${prompt}
     format: truthy(j.format)
   };
   // Holistisk beståelse: begge porte SKAL være opfyldt, OG output-kvaliteten skal være høj nok.
-  // Kravene tælles ikke mekanisk — de løfter kun kvalitetsscoren via Sonnets vurdering.
+  // Kravene tælles ikke mekanisk — de løfter kun kvalitetsscoren via Haikus vurdering.
   const passed = meaningful && realSituation && quality >= 7;
   const mangel = (typeof j.mangel === 'string' && j.mangel.trim()) ? j.mangel.trim() : '';
   return { passed, quality, meaningful, realSituation, strengths, mangel, source: 'ai' };
 }
 
-// ---- Backup-bedømmelse: lokal heuristik (bruges KUN hvis Sonnet fejler) ----
+// ---- Backup-bedømmelse: lokal heuristik (bruges KUN hvis Haiku fejler) ----
 // Efterligner den holistiske vurdering så godt en offline-regel kan: to hårde porte
 // (meningsfuld tekst + ægte situation) og pluspoint for styrker.
 function evaluatePromptLocal(prompt) {
