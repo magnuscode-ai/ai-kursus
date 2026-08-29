@@ -2243,12 +2243,18 @@
 
     /* ====== Modul 4 — Fejl & tryghed (spilbaseret redesign) ====== */
     /* — Odds-panel: 8 rammer plet, 2 er opfundet — */
-    .hl-odds{ display:grid; grid-template-columns:auto 1fr; gap:1.5rem; align-items:center;
+    .hl-odds{ display:grid; grid-template-columns:auto minmax(0,auto); gap:1.6rem; align-items:center; justify-content:center;
       background:linear-gradient(150deg,#fdfbf4,#f2ebda); border:1.5px solid var(--brass);
-      border-radius:var(--radius-lg); padding:1.35rem 1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0 2.2rem; }
-    @media (max-width:640px){ .hl-odds{ grid-template-columns:1fr; gap:1.1rem; padding:1.2rem 1.2rem; } }
-    .hl-dots{ display:grid; grid-template-columns:repeat(5,34px); gap:9px; }
-    @media (max-width:420px){ .hl-dots{ grid-template-columns:repeat(5,1fr); } }
+      border-radius:var(--radius-lg); padding:1.45rem 1.5rem; box-shadow:var(--shadow-md); margin:1.5rem 0 2.2rem; }
+    .hl-odds-txt{ max-width:400px; }
+    @media (max-width:700px){
+      .hl-odds{ grid-template-columns:1fr; gap:1.1rem; padding:1.3rem 1.2rem; justify-items:center; }
+      .hl-odds-txt{ text-align:center; }
+      .hl-odds-foot{ display:inline-flex; align-items:flex-start; text-align:left; }
+      .hl-odds-foot .ti{ margin-top:1px; }
+    }
+    .hl-dots{ display:grid; grid-template-columns:repeat(5,34px); gap:9px; justify-content:center; }
+    @media (max-width:400px){ .hl-dots{ grid-template-columns:repeat(5,1fr); width:100%; } }
     .hl-dot{ height:34px; border-radius:11px; display:grid; place-items:center; color:#fff; opacity:0; transform:scale(.4); }
     .hl-odds.in .hl-dot{ animation:hlPop .5s cubic-bezier(.16,1,.3,1) forwards; }
     .hl-dot svg{ width:16px; height:16px; }
@@ -2307,6 +2313,9 @@
     .hl-g-end-k{ font-family:var(--serif); font-size:20px; font-weight:700; color:var(--ink); }
     .hl-g-end-k b{ color:var(--green-mid); }
     .hl-g-end-p{ font-size:14.5px; color:var(--ink-soft); margin-top:.35rem; }
+    .hl-g-end-pips{ display:flex; justify-content:center; margin-top:.9rem; }
+    .hl-g-end-pips .hl-g-pips{ gap:8px; }
+    .hl-g-end-pips .hl-pip{ width:14px; height:14px; }
 
     /* — Tjek-vaner — */
     .hl-check{ display:flex; flex-direction:column; gap:12px; margin:1.4rem 0 2rem; }
@@ -2336,12 +2345,13 @@
     @media (max-width:620px){ .hl-s-grid{ grid-template-columns:1fr; } }
     .hl-s-item{ background:var(--cream); border:1.5px solid var(--line); border-radius:16px; padding:.8rem .9rem;
       display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:var(--shadow-sm);
-      transition:background .3s ease, border-color .3s ease; }
-    .hl-s-label{ display:flex; align-items:center; gap:9px; font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.25; }
+      min-height:58px; transition:background .3s ease, border-color .3s ease; }
+    .hl-s-label{ display:flex; align-items:center; gap:9px; min-width:0; font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.25; }
     .hl-s-label .ti{ font-size:19px; color:var(--primary); flex:none; }
     .hl-s-btns{ display:flex; gap:6px; flex:none; }
-    .hl-sb{ min-width:58px; height:36px; padding:0 10px; border-radius:11px; display:grid; place-items:center; cursor:pointer;
-      background:#fff; border:1.5px solid var(--line); color:var(--ink-soft); font-family:var(--sans); font-weight:700; font-size:13px;
+    .hl-sb{ min-width:54px; height:36px; padding:0 9px; border-radius:11px; display:grid; place-items:center; cursor:pointer;
+      background:#fff; border:1.5px solid var(--line); color:var(--ink-soft); font-family:var(--sans); font-weight:700; font-size:12.5px;
+      white-space:nowrap;
       transition:transform .16s ease, background .2s ease, color .2s ease, border-color .2s ease, opacity .2s ease; }
     .hl-sb:hover{ transform:translateY(-2px); border-color:var(--primary); color:var(--primary); }
     .hl-s-item.done .hl-sb{ pointer-events:none; opacity:.28; transform:none; }
@@ -4083,9 +4093,9 @@
 
     /* --- Spil 1: Fang opspindet --- */
     var ROUNDS=[
-      { q:'Hvem skrev Den lille prins?',
-        a:'Antoine de Saint-Exup\u00E9ry skrev den i 1943.',
-        fake:false, t:'\u00C6gte.', w:'Den historie st\u00E5r i tusindvis af tekster.' },
+      { q:'Hvorn\u00E5r kom den f\u00F8rste iPhone?',
+        a:'Den f\u00F8rste iPhone kom i 2007.',
+        fake:false, t:'\u00C6gte.', w:'Rigtigt. Det st\u00E5r i millioner af tekster.' },
       { q:'Koger vand ved 100 grader?',
         a:'Ja. P\u00E5 Mount Everest koger det ved pr\u00E6cis 71,4 grader.',
         fake:true, t:'Opspind.', w:'Halvt sandt. Det pr\u00E6cise tal er ren fantasi.' },
@@ -4150,6 +4160,7 @@
             '<div class="hl-g-end-ic"><i class="ti ti-'+(hits===ROUNDS.length?'trophy':'mood-smile')+'" aria-hidden="true"></i></div>'+
             '<div class="hl-g-end-k">Du fangede <b>'+hits+' af '+ROUNDS.length+'</b></div>'+
             '<p class="hl-g-end-p">'+(hits===ROUNDS.length?'Skarpt. Tonen narrede dig ikke.':'Sv\u00E6rt, ikke? Tonen afsl\u00F8rer intet.')+'</p>'+
+            '<div class="hl-g-end-pips">'+pips()+'</div>'+
           '</div>';
       }
 
