@@ -1965,6 +1965,18 @@
     .oc-head{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:1rem; }
     .oc-head-title{ font-family:var(--serif); font-weight:600; font-size:17px; color:var(--ink); }
     .oc-progress{ font-size:12px; font-weight:700; color:var(--brass-deep); background:var(--brass-soft); padding:4px 11px; border-radius:50px; white-space:nowrap; }
+    .oc-have{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+      background:#fff; border:1.5px dashed var(--brass); border-radius:12px; padding:.7rem .85rem;
+      margin-bottom:0.9rem; font-size:13.5px; font-weight:600; color:var(--ink-soft); line-height:1.4; }
+    .oc-have b{ color:var(--ink); }
+    .oc-have-btn{ font-family:var(--sans); font-weight:800; font-size:12.5px; cursor:pointer; white-space:nowrap;
+      background:var(--brass-soft); color:var(--brass-deep); border:1.5px solid var(--brass);
+      border-radius:10px; padding:7px 13px; flex:none;
+      transition:transform .16s ease, background .2s ease, color .2s ease; }
+    .oc-have-btn:hover{ transform:translateY(-1px); background:var(--brass); color:#fff; }
+    .oc-have-btn:focus-visible{ outline:2px solid var(--accent-green,#2f6a4a); outline-offset:2px; }
+    .oc-have.used{ opacity:.5; }
+    .oc-have.used .oc-have-btn{ pointer-events:none; }
     .oc-list{ display:flex; flex-direction:column; gap:8px; }
     .oc-item{ display:flex; gap:12px; align-items:flex-start; background:#fff; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px; cursor:pointer; transition:border-color .18s ease, background .18s ease; }
     .oc-item:hover{ border-color:var(--primary); }
@@ -1993,15 +2005,37 @@
     .sd-note{ font-size:12.5px; color:var(--ink-mute); margin-top:0.9rem; font-style:italic; line-height:1.5; }
 
     /* ===== Modul 2 · Indstillings-kort ===== */
-    .set-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:1.5rem 0; }
-    .set-card{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:1.25rem; box-shadow:var(--shadow-sm); }
-    .set-icon{ width:36px; height:36px; border-radius:10px; display:grid; place-items:center; background:var(--primary-soft); color:var(--primary); margin-bottom:0.8rem; }
-    .set-icon .ti{ font-size:19px; }
-    .set-title{ font-family:var(--serif); font-weight:600; font-size:16px; color:var(--ink); margin-bottom:0.45rem; }
-    .set-what{ font-size:13.5px; color:var(--ink-soft); line-height:1.5; margin-bottom:0.75rem; }
-    .set-where{ font-size:12px; color:var(--ink-mute); display:flex; gap:6px; align-items:flex-start; }
-    .set-where .ti{ flex:none; margin-top:1px; color:var(--brass-deep); }
-    .set-where b{ color:var(--ink-soft); font-weight:700; }
+    .set-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin:1.5rem 0; align-items:start; }
+    .set-card{ background:var(--cream); border:1px solid var(--line); border-radius:var(--radius-lg); padding:0;
+      box-shadow:var(--shadow-sm); overflow:hidden; transition:border-color .25s ease, box-shadow .25s ease; }
+    .set-card.open{ border-color:var(--brass); box-shadow:var(--shadow-md); }
+    .set-head{ width:100%; display:flex; align-items:flex-start; gap:11px; text-align:left; background:none;
+      border:none; padding:0.9rem 1rem; cursor:pointer; font-family:var(--sans); }
+    .set-icon{ width:32px; height:32px; border-radius:9px; display:grid; place-items:center;
+      background:var(--primary-soft); color:var(--primary); flex:none; margin:0; }
+    .set-icon .ti{ font-size:17px; }
+    .set-hd{ flex:1; min-width:0; }
+    .set-title{ display:block; font-family:var(--serif); font-weight:600; font-size:15.5px; color:var(--ink); margin-bottom:0.25rem; }
+    .set-what{ display:block; font-size:12.8px; color:var(--ink-soft); line-height:1.45; margin:0; }
+    .set-chev{ flex:none; width:8px; height:8px; border-right:2.5px solid var(--ink-mute); border-bottom:2.5px solid var(--ink-mute);
+      transform:rotate(45deg); transition:transform .25s ease, margin-top .25s ease; margin:7px 3px 0 0; }
+    .set-card.open .set-chev{ transform:rotate(-135deg); margin-top:12px; }
+    .set-head:focus-visible{ outline:2px solid var(--accent-green,#2f6a4a); outline-offset:-3px; border-radius:var(--radius-lg); }
+    .set-body{ display:none; padding:0 1rem 1.05rem; }
+    .set-card.open .set-body{ display:block; animation:accIn .32s cubic-bezier(.16,1,.3,1); }
+    .set-p{ font-size:13.5px; line-height:1.55; color:var(--ink-soft); margin:0 0 0.8rem;
+      padding-top:0.7rem; border-top:1px solid var(--line); }
+    .set-steps{ list-style:none; margin:0 0 0.85rem; padding:0; counter-reset:setst;
+      display:flex; flex-direction:column; gap:8px; }
+    .set-steps li{ counter-increment:setst; position:relative; padding-left:29px;
+      font-size:13.5px; line-height:1.45; color:var(--ink-soft); }
+    .set-steps li::before{ content:counter(setst); position:absolute; left:0; top:0; width:21px; height:21px;
+      border-radius:7px; display:grid; place-items:center;
+      background:var(--brass-soft); color:var(--brass-deep); font-size:11.5px; font-weight:800; }
+    .set-steps li b{ color:var(--ink); }
+    .set-note{ display:flex; gap:8px; align-items:flex-start; font-size:12.5px; line-height:1.45;
+      color:var(--ink-soft); background:var(--primary-soft); border-radius:10px; padding:0.62rem 0.72rem; }
+    .set-note .ti{ font-size:16px; flex:none; color:var(--primary); margin-top:1px; }
     @media (max-width:720px){ .set-grid{ grid-template-columns:1fr; } }
 
     /* ===== Modul 2 · Vaerktoejsvalg (ChatGPT vs. Claude) ===== */
@@ -2128,6 +2162,19 @@
     .ib-copy:hover{ transform:translateY(-2px); }
     .ib-copy.ok{ background:var(--accent-green); }
     .ib-where{ font-size:13px; line-height:1.45; color:var(--ink-soft); flex:1; min-width:220px; }
+    .ib-how{ margin-top:1rem; padding-top:1rem; border-top:1.5px solid var(--line); }
+    .ib-how-warn{ display:flex; align-items:flex-start; gap:9px; background:var(--accent-red-soft);
+      border:1px solid var(--accent-red); border-radius:12px; padding:0.75rem 0.9rem;
+      font-size:13.5px; line-height:1.45; color:var(--ink); margin-bottom:0.95rem; }
+    .ib-how-warn .ti{ font-size:19px; color:var(--accent-red); flex:none; margin-top:1px; }
+    .ib-how-h{ font-size:13.5px; font-weight:800; color:var(--ink); margin-bottom:0.6rem; }
+    .ib-how-l{ list-style:none; margin:0; padding:0; counter-reset:ibh; display:flex; flex-direction:column; gap:9px; }
+    .ib-how-l li{ counter-increment:ibh; position:relative; padding-left:34px;
+      font-size:14px; line-height:1.45; color:var(--ink-soft); }
+    .ib-how-l li::before{ content:counter(ibh); position:absolute; left:0; top:0; width:24px; height:24px;
+      border-radius:8px; display:grid; place-items:center;
+      background:var(--brass-soft); color:var(--brass-deep); font-size:12.5px; font-weight:800; }
+    .ib-how-l li b{ color:var(--ink); }
     .ib-where b{ color:var(--brass-deep); font-weight:700; }
 
     .ef-q{ font-size:12.5px; color:var(--ink-mute); margin:1.15rem 0 0.5rem; }
@@ -2344,8 +2391,13 @@
     .hl-s-grid{ display:grid; grid-template-columns:1fr 1fr; gap:11px; }
     @media (max-width:620px){ .hl-s-grid{ grid-template-columns:1fr; } }
     .hl-s-item{ background:var(--cream); border:1.5px solid var(--line); border-radius:16px; padding:.8rem .9rem;
-      display:flex; align-items:center; justify-content:space-between; gap:10px; box-shadow:var(--shadow-sm);
+      display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; box-shadow:var(--shadow-sm);
       min-height:58px; transition:background .3s ease, border-color .3s ease; }
+    .hl-s-why{ flex:0 0 100%; max-height:0; overflow:hidden; opacity:0; font-size:13px; font-weight:600;
+      line-height:1.4; color:var(--ink-soft);
+      transition:max-height .32s ease, opacity .26s ease, margin-top .32s ease; }
+    .hl-s-item.done .hl-s-why{ max-height:80px; opacity:1; margin-top:.5rem; }
+    .hl-s-why b{ color:var(--ink); }
     .hl-s-label{ display:flex; align-items:center; gap:9px; min-width:0; font-size:14.5px; font-weight:600; color:var(--ink); line-height:1.25; }
     .hl-s-label .ti{ font-size:19px; color:var(--primary); flex:none; }
     .hl-s-btns{ display:flex; gap:6px; flex:none; }
@@ -2762,7 +2814,7 @@
         <div class="module-header">
           <div class="module-label">Modul 2 <span class="ml-dot">◆</span> Opsætning</div>
           <h2 class="module-title">Opret dit AI-værktøj — og indstil det rigtigt</h2>
-          <p class="module-intro">To minutter. Så er din AI sat op, så den passer til dig fra første besked.</p>
+          <p class="module-intro">Fem minutter. Så er din AI sat op, så den passer til dig fra første besked.</p>
         </div>
 
         <div class="stance-box reveal">
@@ -2883,9 +2935,30 @@
               <div class="acc-body">
                 <div class="ib-box" data-builder data-tool="ChatGPT" data-where="Indstillinger → Tilpasning"></div>
                 <div class="set-grid">
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-lock" aria-hidden="true"></i></div><div class="set-title">Dine data</div><div class="set-what">Her kan du slå fra, at dine samtaler bruges til at træne modellen.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Indstillinger → Datakontrol</b></span></div></div>
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-palette" aria-hidden="true"></i></div><div class="set-title">Tilpas ChatGPT</div><div class="set-what">Her sætter du instruktionen fra oven ind.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Indstillinger → Tilpasning</b></span></div></div>
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-clipboard" aria-hidden="true"></i></div><div class="set-title">Projekter</div><div class="set-what">Saml samtaler og filer om ét emne.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Venstre menu → Projekter</b></span></div></div>
+                  <div class="set-card set-fold">
+                    <button type="button" class="set-head" aria-expanded="false">
+                      <span class="set-icon"><i class="ti ti-lock" aria-hidden="true"></i></span>
+                      <span class="set-hd"><span class="set-title">Dine data</span><span class="set-what">Her kan du slå fra, at dine samtaler bruges til at træne modellen.</span></span>
+                      <span class="set-chev" aria-hidden="true"></span>
+                    </button>
+                    <div class="set-body">
+                      <p class="set-p">ChatGPT bruger som udgangspunkt dine samtaler til at gøre modellen bedre. Du kan slå det fra på et halvt minut — og ChatGPT virker nøjagtig som før bagefter.</p>
+                      <ol class="set-steps"><li>Klik på dit navn <b>nederst til venstre</b> og vælg <b>Indstillinger</b>.</li><li>Vælg <b>Datakontrol</b> i menuen.</li><li>Slå <b>&quot;Forbedr modellen for alle&quot;</b> fra.</li></ol>
+                      <div class="set-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Dine gamle samtaler bliver ikke slettet af det her — de bliver bare ikke brugt til træning fremover. Vil du også slette dem, gør du det i samme menu.</span></div>
+                    </div>
+                  </div>
+                  <div class="set-card set-fold">
+                    <button type="button" class="set-head" aria-expanded="false">
+                      <span class="set-icon"><i class="ti ti-clipboard" aria-hidden="true"></i></span>
+                      <span class="set-hd"><span class="set-title">Projekter</span><span class="set-what">Saml samtaler og filer om ét emne.</span></span>
+                      <span class="set-chev" aria-hidden="true"></span>
+                    </button>
+                    <div class="set-body">
+                      <p class="set-p">Et projekt er en mappe til ét emne. Alle samtaler og filer inde i mappen hører sammen, og ChatGPT kender indholdet i hver ny samtale derinde — så du slipper for at forklare det hele forfra hver gang.</p>
+                      <ol class="set-steps"><li>Klik <b>Projekter</b> i venstre menu og opret et nyt.</li><li>Giv det navn efter emnet — fx <b>Jobansøgning</b> eller <b>Skole</b>.</li><li>Læg de filer op der hører til, fx dit CV, og skriv en linje om hvad projektet handler om.</li><li>Start dine samtaler <b>inde i</b> projektet — ikke i en almindelig chat.</li></ol>
+                      <div class="set-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Et projekt kender kun sine egne samtaler. Skriver du uden for projektet, ved ChatGPT ikke noget om det.</span></div>
+                    </div>
+                  </div>
                 </div>
                 <div class="mini-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Menuerne kan hedde noget lidt andet — ChatGPT opdateres tit. Start altid i <b>Indstillinger</b>.</span></div>
               </div>
@@ -2915,9 +2988,30 @@
               <div class="acc-body">
                 <div class="ib-box" data-builder data-tool="Claude" data-where="Indstillinger → Profil"></div>
                 <div class="set-grid">
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-lock" aria-hidden="true"></i></div><div class="set-title">Dine data</div><div class="set-what">Her kan du slå fra, at dine samtaler bruges til at træne modellen.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Indstillinger → Privatliv</b></span></div></div>
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-palette" aria-hidden="true"></i></div><div class="set-title">Personlig stil</div><div class="set-what">Her sætter du instruktionen fra oven ind.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Indstillinger → Profil</b></span></div></div>
-                  <div class="set-card"><div class="set-icon"><i class="ti ti-clipboard" aria-hidden="true"></i></div><div class="set-title">Projekter</div><div class="set-what">Saml samtaler og filer om ét emne.</div><div class="set-where"><i class="ti ti-settings" aria-hidden="true"></i> <span><b>Venstre menu → Projekter</b></span></div></div>
+                  <div class="set-card set-fold">
+                    <button type="button" class="set-head" aria-expanded="false">
+                      <span class="set-icon"><i class="ti ti-lock" aria-hidden="true"></i></span>
+                      <span class="set-hd"><span class="set-title">Dine data</span><span class="set-what">Her kan du slå fra, at dine samtaler bruges til at træne modellen.</span></span>
+                      <span class="set-chev" aria-hidden="true"></span>
+                    </button>
+                    <div class="set-body">
+                      <p class="set-p">Claude bruger som udgangspunkt dine samtaler til at gøre modellen bedre. Du kan slå det fra på et halvt minut — og Claude virker nøjagtig som før bagefter.</p>
+                      <ol class="set-steps"><li>Klik på dine initialer <b>nederst til venstre</b> og vælg <b>Indstillinger</b>.</li><li>Vælg <b>Privatliv</b> i menuen.</li><li>Slå <b>&quot;Help improve Claude&quot;</b> fra.</li></ol>
+                      <div class="set-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Dine gamle samtaler bliver ikke slettet af det her — de bliver bare ikke brugt til træning fremover. Vil du også slette dem, gør du det i samme menu.</span></div>
+                    </div>
+                  </div>
+                  <div class="set-card set-fold">
+                    <button type="button" class="set-head" aria-expanded="false">
+                      <span class="set-icon"><i class="ti ti-clipboard" aria-hidden="true"></i></span>
+                      <span class="set-hd"><span class="set-title">Projekter</span><span class="set-what">Saml samtaler og filer om ét emne.</span></span>
+                      <span class="set-chev" aria-hidden="true"></span>
+                    </button>
+                    <div class="set-body">
+                      <p class="set-p">Et projekt er en mappe til ét emne. Alle samtaler og filer inde i mappen hører sammen, og Claude kender indholdet i hver ny samtale derinde — så du slipper for at forklare det hele forfra hver gang.</p>
+                      <ol class="set-steps"><li>Klik <b>Projekter</b> i venstre menu og opret et nyt.</li><li>Giv det navn efter emnet — fx <b>Jobansøgning</b> eller <b>Skole</b>.</li><li>Læg de filer op der hører til, fx dit CV, og skriv en linje om hvad projektet handler om.</li><li>Start dine samtaler <b>inde i</b> projektet — ikke i en almindelig chat.</li></ol>
+                      <div class="set-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Et projekt kender kun sine egne samtaler. På gratisversionen kan du oprette et begrænset antal projekter.</span></div>
+                    </div>
+                  </div>
                 </div>
                 <div class="mini-note"><i class="ti ti-bulb" aria-hidden="true"></i><span>Menuerne kan hedde noget lidt andet — Claude opdateres tit. Start altid i <b>Indstillinger</b>.</span></div>
               </div>
@@ -2926,7 +3020,7 @@
 
         </div>
 
-        <div class="key-band reveal"><div class="key-band-label">Husk</div><div class="key-band-text">To minutters opsætning gør AI’en til din — ikke bare en generisk hjælper.</div></div>
+        <div class="key-band reveal"><div class="key-band-label">Husk</div><div class="key-band-text">Fem minutters opsætning gør AI’en til din — så den kender dig fra første besked.</div></div>
 
         <div class="callout summary reveal">
           <div class="callout-icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
@@ -3271,6 +3365,10 @@
   }
 
   function showModule(num, skipTransition) {
+    /* Toppen ryddes FOER indholdet skiftes. Ellers klamper browseren scroll-
+       positionen til bunden af det nye (kortere) modul, hvilket sendte brugeren
+       direkte ned i bunden af proeve-siden. */
+    window.scrollTo({ top: 0, behavior: 'instant' });
     document.querySelectorAll('.module-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.module-tab').forEach(t => t.classList.remove('active'));
     const sec = document.getElementById('module-' + num);
@@ -3310,7 +3408,11 @@
     if (num === lastModule + 1 && num >= 2 && num <= 6) showRecap(lastModule);
     lastModule = num;
     if (window.revealModule) window.revealModule(num);
-    window.scrollTo({ top: 0, behavior: skipTransition ? 'auto' : 'smooth' });
+    /* 'instant' er noedvendigt: html{scroll-behavior:smooth} goer at 'auto'
+       ogsaa bliver en bloed rulning — den kan afbrydes, saerligt i Firefox.
+       Anden runde paa naeste frame, fordi reveal-animationer aendrer sidehoejden. */
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    requestAnimationFrame(function(){ window.scrollTo({ top: 0, behavior: 'instant' }); });
     return false;
   }
 
@@ -3548,14 +3650,14 @@
 
     /* ---------- 1) Tjeklister: ét datasaet pr. vaerktoej ---------- */
     var CHECKLISTS={
-      claude:{ lead:'Åbn <b>claude.ai</b> i en ny fane og følg de fem trin. Sæt flueben, efterhånden som du klarer dem.', steps:[
+      claude:{ name:'Claude', lead:'Åbn <b>claude.ai</b> i en ny fane og følg de fem trin. Sæt flueben, efterhånden som du klarer dem.', steps:[
         { t:'Gå til <b>claude.ai</b>' },
         { t:'Klik <b>"Sign up"</b> <span style="font-weight:400;color:var(--ink-mute)">(tilmeld dig)</span> — vælg Google eller e-mail' },
         { t:'Bekræft din e-mail <span style="font-weight:400;color:var(--ink-mute)">— springes over ved Google-login</span>' },
         { t:'Log ind og acceptér vilkårene <span style="font-weight:400;color:var(--ink-mute)">— du skal være fyldt 18 for at bruge Claude</span>' },
         { t:'Skriv din første besked' }
       ]},
-      gpt:{ lead:'Åbn <b>chatgpt.com</b> i en ny fane og følg de fem trin. Sæt flueben, efterhånden som du klarer dem.', steps:[
+      gpt:{ name:'ChatGPT', lead:'Åbn <b>chatgpt.com</b> i en ny fane og følg de fem trin. Sæt flueben, efterhånden som du klarer dem.', steps:[
         { t:'Gå til <b>chatgpt.com</b>' },
         { t:'Klik <b>"Registrer dig"</b> — vælg Google, Apple eller e-mail' },
         { t:'Bekræft din e-mail <span style="font-weight:400;color:var(--ink-mute)">— springes over ved Google- eller Apple-login</span>' },
@@ -3571,6 +3673,10 @@
       card.innerHTML=
         '<div class="task-band"><i class="ti ti-clipboard" aria-hidden="true"></i> Din tjekliste — gør det nu <span class="tb-count">0 / '+OC.length+'</span></div>'+
         '<div class="task-in">'+
+          '<div class="oc-have">'+
+            '<span>Har du allerede en konto til <b>'+(data.name||'AI-værktøjet')+'</b>?</span>'+
+            '<button type="button" class="oc-have-btn">Ja — spring til opsætningen</button>'+
+          '</div>'+
           '<div class="task-lead">'+data.lead+'</div>'+
           '<div class="oc-list">'+OC.map(function(s,i){
             return '<div class="oc-item" role="button" tabindex="0" data-i="'+i+'"><div class="oc-check">'+CHECK+'</div><div class="oc-body"><div class="oc-step">'+s.t+'</div></div></div>';
@@ -3585,6 +3691,13 @@
         if(done===OC.length && !fired){ fired=true; if(onDone) setTimeout(onDone, 700); }
         if(done<OC.length) fired=false;
       }
+      var haveBtn=card.querySelector('.oc-have-btn');
+      if(haveBtn) haveBtn.addEventListener('click', function(){
+        card.querySelectorAll('.oc-item').forEach(function(it){ it.classList.add('done'); });
+        var hb=card.querySelector('.oc-have');
+        if(hb) hb.classList.add('used');
+        recount();
+      });
       card.querySelectorAll('.oc-item').forEach(function(it){
         function act(){ it.classList.toggle('done'); recount(); }
         it.addEventListener('click', act);
@@ -3624,6 +3737,19 @@
       'Du låner staten penge. De betaler rente undervejs og hele beløbet tilbage til sidst. Det er hele idéen.'
     ];
 
+    var IB_PATH={
+      'ChatGPT':[
+        'Klik på dit <b>navn nederst til venstre</b> i ChatGPT.',
+        'Vælg <b>Indstillinger</b> og derefter fanen <b>Tilpasning</b>.',
+        'Åbn <b>Tilpassede instruktioner</b>, sæt din tekst ind i den første boks — og klik <b>Gem</b>.'
+      ],
+      'Claude':[
+        'Klik på dine <b>initialer nederst til venstre</b> i Claude.',
+        'Vælg <b>Indstillinger</b> og derefter <b>Profil</b>.',
+        'Sæt din tekst ind i det store felt om <b>personlige præferencer</b> — og klik <b>Gem</b>.'
+      ]
+    };
+
     function buildBuilder(box){
       var tool=box.getAttribute('data-tool')||'din AI';
       var where=box.getAttribute('data-where')||'Indstillinger';
@@ -3647,7 +3773,15 @@
         '</div>'+
         '<div class="ib-rebuild" hidden><span>Du har rettet i teksten, så knapperne opdaterer den ikke længere.</span><button type="button">Byg forfra</button></div>'+
         '<div class="ib-actions"><button type="button" class="ib-copy">Kopiér instruktionen</button>'+
-        '<span class="ib-where">Sæt den ind i <b>'+where+'</b> i '+tool+' — så gælder den i alle dine samtaler.</span></div>'+
+        '<span class="ib-where">Den skal ind i <b>'+where+'</b> i '+tool+' — se de tre trin lige nedenfor.</span></div>'+
+        '<div class="ib-how">'+
+          '<div class="ib-how-warn">'+
+            '<i class="ti ti-alert-triangle" aria-hidden="true"></i>'+
+            '<span><b>Skriv den ikke i en chat.</b> Instruktionen hører hjemme i indstillingerne. Sætter du den ind i en chat, gælder den kun lige dér — sætter du den ind i indstillingerne, gælder den i alle dine samtaler fremover.</span>'+
+          '</div>'+
+          '<div class="ib-how-h">Sådan finder du feltet i '+tool+'</div>'+
+          '<ol class="ib-how-l">'+(IB_PATH[tool]||[]).map(function(t){ return '<li>'+t+'</li>'; }).join('')+'</ol>'+
+        '</div>'+
         '<div class="ef-q">Samme spørgsmål — <b>Forklar hvad en obligation er</b> — før og efter:</div>'+
         '<div class="ef-grid">'+
           '<div class="ef"><div class="ef-l">Uden instruktion</div><div class="ef-t">'+EF_OFF+'</div></div>'+
@@ -3756,6 +3890,17 @@
       var head=acc.querySelector('.acc-head');
       head.setAttribute('aria-expanded', acc.classList.contains('open')?'true':'false');
       head.addEventListener('click', function(){ accSet(acc, !acc.classList.contains('open')); });
+    });
+
+    /* Foldbare indstillingskort (Dine data / Projekter) — begge spor */
+    document.querySelectorAll('#setupTracks .set-card.set-fold').forEach(function(card){
+      var head=card.querySelector('.set-head');
+      if(!head) return;
+      head.addEventListener('click', function(){
+        var open=!card.classList.contains('open');
+        card.classList.toggle('open', open);
+        head.setAttribute('aria-expanded', open?'true':'false');
+      });
     });
 
     /* ---------- 4) Vaelger: kortene erstattes af opsaetningen ---------- */
@@ -3934,7 +4079,7 @@
       const IT=[
         { role:'user', tag:'Dig', text:'Skriv en velkomstmail til nye kunder.' },
         { role:'ai', tag:'AI', text:'Velkommen til os! Vi er glade for at have dig som kunde og ser frem til et godt samarbejde. Kontakt os endelig, hvis du har spørgsmål.' },
-        { role:'user', train:true, tag:'Du træner den', text:'For generisk. Gør den kortere og varmere, og sig "du".' },
+        { role:'user', train:true, tag:'Du træner den', text:'For upersonlig. Gør den kortere og varmere, og sig "du".' },
         { role:'ai', tag:'AI', text:'Hej og velkommen! Dejligt at have dig med. Skriv endelig, hvis du har brug for noget — vi er her for dig.' },
         { role:'user', train:true, tag:'Du træner den', text:'Tilføj en velkomstrabat med koden VELKOMMEN10.' },
         { role:'ai', tag:'AI', text:'Hej og velkommen! Dejligt at have dig med. Brug koden VELKOMMEN10 og få 10% på dit første køb. Skriv endelig, hvis du har brug for noget.' }
@@ -4197,12 +4342,12 @@
 
     /* --- Spil 2: Del eller behold --- */
     var SORT=[
-      { icon:'user', label:'Dit fornavn', safe:true },
-      { icon:'id', label:'Dit CPR-nummer', safe:false },
-      { icon:'soup', label:'En opskrift', safe:true },
-      { icon:'key', label:'Din adgangskode', safe:false },
-      { icon:'palette', label:'Din hobby', safe:true },
-      { icon:'device-mobile', label:'Dit MitID-login', safe:false }
+      { icon:'user',          label:'Dit fornavn',      safe:true,  why:'Et fornavn alene siger ikke, hvem du er.' },
+      { icon:'id',            label:'Dit CPR-nummer',   safe:false, why:'Med dit CPR kan andre udgive sig for dig.' },
+      { icon:'soup',          label:'En opskrift',      safe:true,  why:'Der er ingen oplysninger om dig i den.' },
+      { icon:'key',           label:'Din adgangskode',  safe:false, why:'En adgangskode giver du aldrig videre — heller ikke til AI.' },
+      { icon:'palette',       label:'Din hobby',        safe:true,  why:'Det hjælper AI\'en med at svare, og du risikerer intet.' },
+      { icon:'device-mobile', label:'Dit MitID-login',  safe:false, why:'MitID er nøglen til din bank, din journal og Skat.' }
     ];
     var sortGrid=document.getElementById('hlSortGrid');
     var sortCount=document.getElementById('hlSortCount');
@@ -4216,6 +4361,7 @@
             '<button class="hl-sb" data-v="1" aria-label="Del '+s.label+'">Del</button>'+
             '<button class="hl-sb" data-v="0" aria-label="Behold '+s.label+'">Behold</button>'+
           '</div>'+
+          '<div class="hl-s-why"></div>'+
         '</div>';
       }).join('');
       sortGrid.querySelectorAll('.hl-s-item').forEach(function(item){
@@ -4227,6 +4373,8 @@
             var right=(saidShare===s.safe);
             item.classList.add('done', right?'right':'wrong');
             btn.classList.add('picked');
+            var why=item.querySelector('.hl-s-why');
+            if(why) why.innerHTML='<b>Rigtigt svar: '+(s.safe?'Del':'Behold')+'.</b> '+s.why;
             picked++; if(right) sortHits++;
             if(sortCount){
               sortCount.textContent=picked+' af '+SORT.length;
@@ -4234,7 +4382,9 @@
             }
             if(picked===SORT.length && sortDone){
               var txt=sortDone.querySelector('span');
-              if(txt && sortHits<SORT.length) txt.textContent='Tjek de r\u00F8de. Dem beholder du.';
+              if(txt && sortHits<SORT.length){
+                txt.textContent='Godt g\u00E5et \u2014 '+sortHits+' af '+SORT.length+' rigtige. Ved de r\u00F8de kort st\u00E5r nu, hvad det rigtige svar var, og hvorfor.';
+              }
               sortDone.classList.add('show');
             }
           });
@@ -4252,7 +4402,7 @@
     /* --- 1: Recap-kort --- */
     var RECAP=[
       { icon:'brain', label:'Modul 1', title:'Sådan tænker en AI', take:'En AI slår ikke op — den vælger det <b>næste token</b>, igen og igen.' },
-      { icon:'settings', label:'Modul 2', title:'Opret og indstil dit AI-værktøj', take:'<b>To minutters opsætning</b> gør AI\u2019en til din — ikke bare en generisk hjælper.' },
+      { icon:'settings', label:'Modul 2', title:'Opret og indstil dit AI-værktøj', take:'<b>Fem minutters opsætning</b> gør AI\u2019en til din — så den kender dig fra første besked.' },
       { icon:'target', label:'Modul 3', title:'Prompt som en prof', take:'<b>Rolle + kontekst + opgave + format</b> = svar i topklasse. Og du må rette undervejs.' },
       { icon:'alert-triangle', label:'Modul 4', title:'Når AI finder på', take:'Selvsikker tone er ikke sandhed — <b>tjek altid det vigtige</b>, og pas på hvad du deler.' }
     ];
