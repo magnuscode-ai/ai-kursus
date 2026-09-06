@@ -329,6 +329,17 @@
   .overlay-title{font-family:var(--serif);font-size:2.1rem;font-weight:600;margin-bottom:0.7rem;line-height:1.2}
   @media(max-width:560px){.overlay-title{font-size:1.6rem}}
   .overlay-sub{font-size:1.05rem;line-height:1.6;color:var(--on-green-soft);max-width:42ch;margin:0 auto}
+  /* Navngivet mangel: ét element ad gangen, så eleven ved præcis hvad næste forsøg skal indeholde */
+  .mangel-box{max-width:44ch;margin:1.4rem auto 0;text-align:left;background:rgba(216,183,94,0.12);
+    border:1px solid rgba(216,183,94,0.42);border-left:4px solid var(--brass-bright);
+    border-radius:14px;padding:1.05rem 1.2rem}
+  .mangel-label{font-size:0.74rem;letter-spacing:0.15em;text-transform:uppercase;font-weight:700;
+    color:var(--brass-bright);margin-bottom:0.35rem}
+  .mangel-navn{font-family:var(--serif);font-size:1.22rem;font-weight:600;color:#fff;margin-bottom:0.5rem;line-height:1.3}
+  .mangel-krop{font-size:0.99rem;line-height:1.6;color:var(--on-green-soft)}
+  .mangel-eks{display:block;margin-top:0.6rem;font-size:0.93rem;line-height:1.55;
+    color:var(--brass-bright);font-style:italic}
+  .mangel-foot{max-width:44ch;margin:0.9rem auto 0;font-size:0.9rem;line-height:1.55;color:var(--on-green-soft);opacity:0.82}
   .overlay .btn-row{justify-content:center;margin-top:1.8rem}
   .overlay-particles{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
   .overlay-particles i{position:absolute;display:block;width:6px;height:6px;border-radius:50%;background:rgba(216,183,94,0.5);bottom:-12px;animation:floatUp linear infinite}
@@ -418,7 +429,7 @@
               Del 1 bestået · Niveau: Lidt øvet
             </span>
             <h1 class="scene-title" style="margin-bottom:0">Skriv et stærkt, professionelt prompt</h1>
-            <p class="task-sub">Nu skal du vise, at du kan skrive et prompt, der faktisk virker i praksis. Vælg en <strong>rigtig situation</strong> fra dit arbejde eller din hverdag, og skriv en besked til AI'en, som du selv ville sende.</p>
+            <p class="task-sub">Vælg en <strong>rigtig situation</strong> fra dit arbejde eller din hverdag, og skriv den besked, du selv ville sende.</p>
           </div>
 
           <div class="how-graded">
@@ -426,8 +437,8 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               Sådan bliver dit prompt bedømt
             </div>
-            <p>Bedømmeren tæller <strong>ikke</strong> bare, om du har husket bestemte ting. Den læser dit prompt som en professionel og spørger: <em>“Hvis jeg sendte lige præcis dette til en dygtig AI — hvor godt og brugbart et svar ville jeg så få tilbage?”</em></p>
-            <p>Et prompt der ville give et <strong>skarpt, brugbart svar</strong>, består. Et prompt der ville give noget vagt eller ubrugeligt, gør ikke — heller ikke selvom det nævner en rolle og et format. To ting skal altid være på plads: din besked skal give <strong>sproglig mening</strong> (hele sætninger, ikke løsrevne ord), og den skal handle om et <strong>ægte behov</strong>. Jo bedre du bruger værktøjerne fra kurset (rolle, kontekst, specifik opgave, format), jo stærkere bliver svaret — og jo lettere består du.</p>
+            <p>Ville dit prompt give et <strong>skarpt, brugbart svar</strong>? Så består du. Skriv i hele sætninger om en rigtig opgave.</p>
+            <p><strong>Stavefejl tæller ikke med.</strong> Består du ikke, får du at vide præcis hvad der mangler.</p>
           </div>
 
           <div class="checklist-fold" id="checklistFold">
@@ -450,7 +461,7 @@
 
           <div class="prompt-area-wrap">
             <div class="prompt-area-label">Skriv dit prompt her<span class="prompt-char-count" id="charCount">0 / 1000 tegn</span></div>
-            <textarea class="prompt-textarea" id="promptInput" maxlength="1000" placeholder="Skriv den besked til AI'en, du selv ville sende — tag udgangspunkt i en rigtig situation fra dit arbejde eller din hverdag..." oninput="updateCharCount()" rows="5"></textarea>
+            <textarea class="prompt-textarea" id="promptInput" maxlength="1000" placeholder="Skriv din besked til AI'en her..." oninput="updateCharCount()" rows="5"></textarea>
             <p class="prompt-hint" style="margin:.5rem 0 0;font-size:.8rem;color:var(--ink-mute);line-height:1.4">Jo mere du beskriver din situation, jo bedre bedømmelse — der er ingen minimumsgrænse. Maks 1000 tegn.</p>
           </div>
 
@@ -486,7 +497,13 @@
     <div class="fail-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/></svg></div>
     <div class="overlay-label">Ikke bestået endnu</div>
     <h2 class="overlay-title">Kom igen — du er tæt på</h2>
-    <p class="overlay-sub" id="failMsg">Prøv igen — ret din besked, og send den igen.</p>
+    <p class="overlay-sub" id="failMsg">Der er én ting, dit prompt mangler.</p>
+    <div class="mangel-box" id="mangelBox">
+      <div class="mangel-label">Det mangler dit prompt</div>
+      <div class="mangel-navn" id="mangelNavn"></div>
+      <div class="mangel-krop" id="mangelKrop"></div>
+    </div>
+    <p class="mangel-foot">Ret kun den ene ting, og send igen. Stavefejl tæller ikke med i bedømmelsen.</p>
     <div class="btn-row"><button class="btn btn-gold" onclick="retryToTask()">Prøv igen</button></div>
   </div>
 </div>
@@ -690,12 +707,30 @@ function showJudging() {
   document.getElementById('judgeOverlay').classList.add('show');
 }
 function showFail(result) {
+  // Ét navngivet element ad gangen — aldrig "vær mere præcis".
+  const key = (result && result.mangel && MANGEL_TEKST[result.mangel]) ? result.mangel : 'finpuds';
+  const m = MANGEL_TEKST[key];
   const msgEl = document.getElementById('failMsg');
+  const navnEl = document.getElementById('mangelNavn');
+  const kropEl = document.getElementById('mangelKrop');
   if (msgEl) {
-    const mangel = (result && result.mangel) ? result.mangel : '';
-    msgEl.textContent = mangel
-      ? ('Kom igen — husk: ' + mangel + '. Ret din besked og send den igen.')
-      : 'Kom igen — gør din besked lidt bedre, og send den igen.';
+    msgEl.textContent = (key === 'finpuds')
+      ? 'Du er tæt på — der mangler kun en enkelt ting.'
+      : 'Der er én ting, dit prompt mangler.';
+  }
+  if (navnEl) {
+    navnEl.textContent = (key === 'finpuds')
+      ? 'Skær opgaven skarpere'
+      : ('Dit prompt mangler ' + m.navn);
+  }
+  if (kropEl) {
+    kropEl.textContent = m.krop;
+    if (m.eksempel) {
+      const eks = document.createElement('span');
+      eks.className = 'mangel-eks';
+      eks.textContent = m.eksempel;
+      kropEl.appendChild(eks);
+    }
   }
   document.getElementById('judgeOverlay').classList.remove('show');
   document.getElementById('failOverlay').classList.add('show');
@@ -736,8 +771,11 @@ async function evaluatePromptAI(prompt) {
 DIN OPGAVE er IKKE at tælle om bestemte "krav" er til stede. Din opgave er at vurdere HOLISTISK, som en professionel prompt-ekspert ville: "Hvis jeg sendte præcis dette prompt til en dygtig AI, hvor godt og brugbart et svar ville personen så realistisk få tilbage?" Et prompt, der ville give et godt, målrettet svar, skal bestå. Et prompt, der ville give et vagt, forkert eller ubrugeligt svar, skal IKKE bestå — heller ikke selvom det tilfældigvis nævner en rolle, kontekst og et format.
 
 TO HÅRDE PORTE (begge SKAL være opfyldt, ellers dumper prompten uanset alt andet):
-- meningsfuld: Er teksten skrevet i rigtige, læselige sætninger, der giver sproglig og grammatisk mening? Kaudervælsk, løsrevne ord eller tydeligt vrøvl uden punktummer/sammenhæng = false.
+- meningsfuld: Kan du forstå, hvad personen mener? Er beskeden skrevet i hele sætninger, man kan læse? Kun kaudervælsk, løsrevne ord uden sammenhæng eller tydeligt vrøvl = false.
 - ægte_situation: Handler prompten om et RIGTIGT, konkret problem eller en reel situation, som en person faktisk kunne stå i? Tomt fyld, test-tekst eller "skriv noget om noget" = false.
+
+STAVEFEJL TÆLLER ALDRIG (absolut regel — den vigtigste i hele opgaven):
+Dette er et kursus for begyndere. Stavefejl, tastefejl, manglende eller forkerte kommaer, store/små bogstaver, manglende punktummer, æ/ø/å skrevet forkert, og kejtet eller ubehjælpsom formulering må ALDRIG trække ned — hverken i porten "meningsfuld" eller i kvalitetsscoren. Et prompt fuldt af stavefejl, hvor du sagtens kan forstå meningen, er "meningsfuld": true. Nævn heller ALDRIG stavning, grammatik eller sprogrigtighed i "mangel". Du bedømmer kun indholdet af det, personen beder om — aldrig hvordan det er stavet.
 
 STYRKER der giver pluspoint (de gør et prompt bedre og lettere at bestå, men er hver for sig IKKE nok):
 - rolle: giver AI'en en klar rolle/persona.
@@ -745,10 +783,12 @@ STYRKER der giver pluspoint (de gør et prompt bedre og lettere at bestå, men e
 - specifikt: en konkret, veldefineret opgave — ikke bare "hjælp mig".
 - format: beder om et brugbart format/stil/omfang.
 
-Giv en samlet kvalitetsscore fra 1-10 for, hvor godt et output prompten realistisk ville give (10 = fremragende, professionelt prompt; 1 = ubrugeligt). Skriv også ÉN kort, konkret "mangel"-sætning på dansk, der fortæller kursisten præcis hvad de skal forbedre for at bestå (fx "din besked mangler et tydeligt formål og er svær at læse" eller "skriv i hele sætninger og forklar din situation bedre"). Hold den varm og opmuntrende.
+Giv en samlet kvalitetsscore fra 1-10 for, hvor godt et output prompten realistisk ville give (10 = fremragende, professionelt prompt; 1 = ubrugeligt).
 
 Svar KUN med ren JSON og intet andet, i præcis dette format:
-{"kvalitet": 7, "meningsfuld": true, "aegte_situation": true, "rolle": true, "kontekst": true, "specifikt": true, "format": false, "mangel": "kort sætning her"}
+{"kvalitet": 7, "meningsfuld": true, "aegte_situation": true, "rolle": true, "kontekst": true, "specifikt": true, "format": false}
+
+Booleanerne er det vigtigste i dit svar — kursisten får at vide præcis hvilket ét element der mangler, ud fra dem. Sæt dem derfor omhyggeligt og ærligt: "rolle" er kun true, hvis prompten faktisk giver AI'en en rolle; "format" er kun true, hvis der faktisk bedes om et format, og så videre.
 
 Prompt der skal bedømmes:
 <<<
@@ -759,7 +799,7 @@ ${prompt}
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
+      model: 'claude-sonnet-4-6',
       max_tokens: 250,
       messages: [{ role: 'user', content }]
     })
@@ -771,6 +811,8 @@ ${prompt}
   if (!j) throw new Error('ubrugelig JSON fra worker');
 
   const truthy = v => v === true || v === 'true' || v === 1 || v === 'ja';
+  // Bemærk: dommeren returnerer kun booleans + kvalitet. Selve feedbacken
+  // sammensættes her i frontenden, så kursisten ALTID får ét navngivet element.
   const quality = Math.max(0, Math.min(10, Number(j.kvalitet) || 0));
   const meaningful = truthy(j.meningsfuld);
   const realSituation = truthy(j.aegte_situation);
@@ -783,8 +825,61 @@ ${prompt}
   // Holistisk beståelse: begge porte SKAL være opfyldt, OG output-kvaliteten skal være høj nok.
   // Kravene tælles ikke mekanisk — de løfter kun kvalitetsscoren via Haikus vurdering.
   const passed = meaningful && realSituation && quality >= 7;
-  const mangel = (typeof j.mangel === 'string' && j.mangel.trim()) ? j.mangel.trim() : '';
+  const mangel = pickMangel({ meaningful, realSituation, strengths });
   return { passed, quality, meaningful, realSituation, strengths, mangel, source: 'ai' };
+}
+
+/* ---- Feedback der navngiver præcis ÉT manglende element ad gangen ----
+   Fast prioritet: hele sætninger → rigtig situation → specifik opgave →
+   kontekst → rolle → format. Kursisten skal aldrig i tvivl om, hvad næste
+   forsøg skal indeholde. Stavning nævnes bevidst ingen steder. */
+const MANGEL_TEKST = {
+  meningsfuld: {
+    navn: 'hele sætninger',
+    krop: 'Skriv din besked i hele sætninger i stedet for løsrevne ord. Det er ligegyldigt, om der er stavefejl — det tæller ikke med.',
+    eksempel: ''
+  },
+  situation: {
+    navn: 'en rigtig situation',
+    krop: 'Tag udgangspunkt i noget, du faktisk står med — en rigtig opgave fra dit arbejde, din skole eller din hverdag.',
+    eksempel: 'Fx: “Jeg skal skrive til min udlejer om en vandskade i køkkenet.”'
+  },
+  specifik: {
+    navn: 'en specifik opgave',
+    krop: 'Skriv præcis hvad du vil have lavet. “Hjælp mig” er ikke nok — AI’en skal vide, hvad den skal producere.',
+    eksempel: 'Fx: “Skriv en mail på fem linjer, hvor jeg beder om et møde.”'
+  },
+  kontekst: {
+    navn: 'kontekst',
+    krop: 'Fortæl hvem du er, og hvilken situation du står i. Jo mindre AI’en skal gætte, jo bedre bliver svaret.',
+    eksempel: 'Fx: “Jeg er ny i jobbet og skriver til en kunde, jeg ikke har mødt før.”'
+  },
+  rolle: {
+    navn: 'en rolle',
+    krop: 'Fortæl AI’en hvem den skal være. Det er ét af de fire trin fra Modul 3, og det er det eneste, der mangler i dit prompt.',
+    eksempel: 'Fx: “Du er en erfaren rådgiver …” eller “Du er en dygtig dansklærer …”'
+  },
+  format: {
+    navn: 'et format',
+    krop: 'Sig hvordan svaret skal se ud. Længde, form og tone gør en stor forskel.',
+    eksempel: 'Fx: “som en punktliste med fem punkter” eller “et kort, formelt brev”.'
+  },
+  finpuds: {
+    navn: 'lidt mere præcision',
+    krop: 'Du har alle fire dele med — nu skal opgaven bare skæres skarpere. Skriv mere konkret, hvad du vil have ud af svaret.',
+    eksempel: ''
+  }
+};
+
+function pickMangel(r){
+  const st = r.strengths || {};
+  if(!r.meaningful)   return 'meningsfuld';
+  if(!r.realSituation) return 'situation';
+  if(!st.specific)    return 'specifik';
+  if(!st.context)     return 'kontekst';
+  if(!st.role)        return 'rolle';
+  if(!st.format)      return 'format';
+  return 'finpuds';
 }
 
 // ---- Backup-bedømmelse: lokal heuristik (bruges KUN hvis Haiku fejler) ----
@@ -803,26 +898,22 @@ function evaluatePromptLocal(prompt) {
   const formatWords = /punktliste|liste|brev|mail|sætning|afsnit|kort|lang|formelt?|uformelt?|venlig|professionel|bullet|trin|steps?|nummereret|ca\.|cirka|ord|linjer?|format|resumé|opsummering|overskrift|tegn|punkter|tabel|skema/i;
   strengths.format = formatWords.test(p);
 
-  // Port 1 — meningsfuld: rimelig ordlængde, indeholder flere ord, og ligner sætninger
+  // Port 1 — meningsfuld: nok ord og noget der ligner sætninger.
+  // Stavefejl må ALDRIG kunne vælte denne port — derfor kigges der kun på
+  // mængde og struktur, aldrig på om ordene er stavet rigtigt.
   const words = prompt.trim().split(/\s+/).filter(Boolean);
   const avgWordLen = words.length ? words.join('').length / words.length : 0;
   const looksLikeSentences = /[.!?]/.test(prompt) || words.length >= 12;
-  const meaningful = words.length >= 8 && avgWordLen >= 2.5 && avgWordLen <= 14 && looksLikeSentences;
-  // Port 2 — ægte situation: har kontekst ELLER en specifik konkret opgave og er ikke rent generisk
+  const meaningful = words.length >= 8 && avgWordLen >= 2 && avgWordLen <= 18 && looksLikeSentences;
+  // Port 2 — ægte situation: har kontekst ELLER en specifik konkret opgave og er ikke bare et løst opråb
   const realSituation = (strengths.context || strengths.specific) && !genericOnly;
 
   const strengthCount = Object.values(strengths).filter(Boolean).length;
   const quality = Math.min(10, 4 + strengthCount * 1.5 + (meaningful ? 1 : 0));
   const passed = meaningful && realSituation && strengthCount >= 3;
 
-  // Byg en "mangel"-linje ud fra hvad der halter mest
-  let mangel = '';
-  if (!meaningful) mangel = 'skriv i hele, sammenhængende sætninger, så beskeden er nem at læse';
-  else if (!realSituation) mangel = 'tag udgangspunkt i en rigtig situation og forklar dit konkrete behov';
-  else if (!strengths.role) mangel = 'giv AI\u2019en en klar rolle, fx "Du er en erfaren rådgiver"';
-  else if (!strengths.context) mangel = 'fortæl tydeligere hvem du er, og hvilken situation du står i';
-  else if (!strengths.format) mangel = 'bed om et bestemt format — fx en punktliste eller et kort brev';
-  else mangel = 'gør din opgave endnu mere specifik og gennemtænkt';
+  // Samme navngivne mangel som ved AI-bedømmelsen — ét element ad gangen.
+  const mangel = pickMangel({ meaningful, realSituation, strengths });
 
   return { passed, quality, meaningful, realSituation, strengths, mangel, source: 'local' };
 }
@@ -835,13 +926,13 @@ function evaluatePromptLocal(prompt) {
 let helpChatOpen = false;
 const HELP_ANSWERS = {
   'prompt': 'Et prompt er den besked, du skriver til AI. Jo bedre prompt, jo bedre svar. Tænk på det som at bestille mad — jo mere præcis du er, jo mere får du, hvad du vil have.',
-  'regler': 'På Lidt øvet-sporet er der 4 trin til et stærkt prompt: (1) Giv AI\'en en rolle — fx "Du er en erfaren rådgiver". (2) Giv kontekst — hvem du er og situationen. (3) Vær specifik — præcis hvad du vil have. (4) Bed om et format — liste, brev, antal punkter osv. Du består ved at ramme mindst 4 af de 5 ting (de fire trin + at promptet er gennemtænkt/langt nok).',
-  'bedøm': 'Bedømmelsen tjekker 4 ting: (1) at promptet er langt nok, (2) at det handler om noget specifikt, (3) at du har givet kontekst om dig selv, og (4) at du beder om et bestemt format.',
+  'regler': 'På Lidt øvet-sporet er der 4 trin til et stærkt prompt: (1) Giv AI\'en en rolle — fx "Du er en erfaren rådgiver". (2) Giv kontekst — hvem du er og situationen. (3) Vær specifik — præcis hvad du vil have. (4) Bed om et format — liste, brev, antal punkter osv. Der tælles ikke point: bedømmeren læser dit prompt som helhed og spørger, om det ville give et brugbart svar. Jo flere af de fire trin du bruger godt, jo lettere består du.',
+  'bedøm': 'Bedømmeren tæller ikke krav af. Den læser dit prompt som en professionel og spørger: ville det her give et skarpt, brugbart svar? To ting skal altid være på plads: at man kan forstå, hvad du mener, og at det handler om en rigtig situation. Stavefejl bliver slet ikke bedømt.',
   'eksempel': 'Jeg giver dig ikke et færdigt prompt — det skal være dit eget, for at prøven tæller. Men her er opskriften: (1) giv AI\'en en rolle, (2) skriv hvem du er og din situation, (3) vær specifik om præcis hvad du vil have, og (4) bed om et bestemt format. Vælg gerne et emne fra dit arbejde — fx en kundemail, et oplæg eller en plan — og sæt de fire ting sammen.',
   'format': 'Format betyder, hvordan du vil have svaret. Fx: "som et brev", "som en punktliste", "i to sætninger", "på 5 linjer", "formelt" eller "kort og venligt".',
   'kontekst': 'Kontekst betyder, at du fortæller hvem du er, eller hvad situationen er. Fx "Jeg er pensionist", "Jeg arbejder som lærer", "Jeg er ny til AI" eller "Jeg har en lille butik".',
-  'bestå': 'For at bestå del 2 skal dit prompt opfylde mindst 3 ud af 4 kriterier: tilpas længde, specifikt emne, kontekst om dig og ønsket format. Du kan prøve, så mange gange du vil!',
-  'prøve': 'Ja, du kan prøve, så mange gange du vil! Der er ingen grænse. Ret det, du mangler, og send igen. Læs feedbacken — den fortæller præcis, hvad du skal forbedre.',
+  'bestå': 'Du består, når dit prompt ville give et skarpt, brugbart svar. Skriv i hele sætninger om noget, du faktisk står med, og brug rolle, kontekst, specifik opgave og format. Består du ikke, får du at vide præcis hvilket ét element der mangler — og du kan prøve, så mange gange du vil!',
+  'prøve': 'Ja, du kan prøve, så mange gange du vil! Der er ingen grænse. Feedbacken nævner ét element ad gangen ved navn — ret kun det, og send igen.',
   'coins': 'Når du har bestået begge dele, sendes du til diplom-siden, hvor du modtager 100 coins og dit badge. Coins kan bruges til sidekurser på platformen.',
   'bevis': 'Når du består, sendes du videre til diplom-siden. Der modtager du dit badge og dine 100 coins, og dit personlige bevis genereres med dit navn, e‑mail og dato. Det gemmes på din profil og kan downloades som PDF.'
 };
