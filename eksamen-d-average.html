@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Afsluttende prøve · Del 1 — Kursus D | Akademiet AI</title>
-<meta name="description" content="Del 1 af den afsluttende prøve til Kursus D. 15 spørgsmål der tester alt det du har lært om at tænke, prompte og bruge AI klogt. Bestå med 12 rigtige og fortsæt til den praktiske del.">
+<meta name="description" content="Del 1 af den afsluttende prøve til Kursus D. 10 spørgsmål der tester alt det du har lært om at tænke, prompte og bruge AI klogt. Bestå med 8 rigtige og fortsæt til den praktiske del.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -126,6 +126,10 @@
   .ms-icon{width:74px;height:74px;border-radius:20px;margin:0 auto 1.4rem;display:flex;align-items:center;justify-content:center;
     background:var(--correct-soft);border:1px solid #cfe0cd;box-shadow:var(--shadow-soft)}
   .ms-icon svg{width:36px;height:36px;color:var(--correct-deep)}
+  /* Delvist rigtigt eller intet rigtigt: guld i stedet for grønt, så ikonet
+     ikke roser noget, eleven ikke har ramt. Aldrig rødt — man er stadig i gang. */
+  .ms-icon.partial{background:var(--brass-soft);border-color:rgba(200,164,78,0.4)}
+  .ms-icon.partial svg{color:var(--brass-deep)}
   .ms-title{font-family:var(--serif);font-size:1.75rem;font-weight:600;color:var(--ink);margin-bottom:0.7rem}
   @media(max-width:560px){.ms-title{font-size:1.45rem}}
   .ms-text{font-size:1.05rem;line-height:1.6;color:var(--ink-soft);max-width:46ch;margin:0 auto}
@@ -298,6 +302,20 @@
   .tp2-txt{font-family:var(--serif);font-size:1.3rem;font-weight:500;letter-spacing:0.01em}
   @media(prefers-reduced-motion:reduce){.tp2-ring{animation:none}.scene{animation:none}}
 
+  /* Overgang: introen løfter sig væk, og første spørgsmål flyver ind nedefra */
+  @keyframes flyOut{
+    0%{opacity:1;transform:translateY(0) scale(1)}
+    100%{opacity:0;transform:translateY(-30px) scale(0.962)}}
+  @keyframes flyIn{
+    0%{opacity:0;transform:translateY(52px) scale(0.968)}
+    55%{opacity:1}
+    100%{opacity:1;transform:translateY(0) scale(1)}}
+  .scene.fly-out{animation:flyOut 0.34s cubic-bezier(0.4,0,1,1) forwards}
+  .scene.fly-in{animation:flyIn 0.55s cubic-bezier(0.16,1,0.3,1)}
+  @media(prefers-reduced-motion:reduce){
+    .scene.fly-out{animation:none;opacity:0}
+    .scene.fly-in{animation:none}}
+
   /* ---------- Fejring: rigtigt svar ---------- */
   @keyframes optPop{0%{transform:scale(1)}40%{transform:scale(1.03)}100%{transform:scale(1)}}
   .opt.is-correct.celebrate{animation:optPop 0.5s cubic-bezier(0.16,1,0.3,1)}
@@ -389,17 +407,17 @@
             Del 1 af 2 · Multiple choice
           </span>
           <h1 class="scene-title">Du er klar til den<br>afsluttende prøve</h1>
-          <p class="lead">15 spørgsmål om alt det, du har lært: hvordan en AI tænker, hvordan du prompter skarpt, og hvordan du bruger den klogt og trygt. Du får svar med det samme på hvert spørgsmål og en gennemgang bagefter. Tag dig god tid — der er ingen tidsgrænse.</p>
+          <p class="lead">10 spørgsmål om det, du har lært. Ingen tidsgrænse.</p>
 
           <div class="intro-facts">
-            <div class="fact"><span class="fact-num">15</span><span class="fact-txt">spørgsmål fra hele kurset</span></div>
-            <div class="fact"><span class="fact-num">12</span><span class="fact-txt">rigtige for at bestå del 1</span></div>
+            <div class="fact"><span class="fact-num">10</span><span class="fact-txt">spørgsmål fra hele kurset</span></div>
+            <div class="fact"><span class="fact-num">8</span><span class="fact-txt">rigtige for at bestå del 1</span></div>
             <div class="fact"><span class="fact-num">∞</span><span class="fact-txt">forsøg — prøv så tit du vil</span></div>
           </div>
 
           <div class="reassure">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>
-            <span class="reassure-txt">Det her er <b>ikke en prøve – du kan ikke dumpe.</b> Klarer du den ikke første gang, kan du bare læse gennemgangen og prøve igen. Når du har 12 rigtige, åbnes den praktiske del 2 automatisk.</span>
+            <span class="reassure-txt"><b>Du kan ikke dumpe.</b> Klarer du den ikke, prøv bare igen.</span>
           </div>
 
           <div class="btn-row">
@@ -460,7 +478,7 @@
             <div class="score-ring" id="scoreRing">
               <div class="score-ring-val">
                 <div class="score-ring-num" id="scoreNum">0</div>
-                <div class="score-ring-tot">af 15</div>
+                <div class="score-ring-tot">af 10</div>
               </div>
             </div>
             <div class="result-head">
@@ -515,186 +533,129 @@ const firebaseConfig = {
 };
 
 /* =========================================================
-   SPØRGSMÅL — 15 stk, 3 fra hvert modul.
+   SPØRGSMÅL — 10 stk, 2 fra hvert afsnit.
    For hvert spørgsmål: ét korrekt svar (correct) + tre
    forkerte (wrong). Svarene blandes tilfældigt ved start,
    så det rigtige svar kan lande på A, B, C eller D.
-   Alle fire svar er holdt nogenlunde lige lange — man kan altså ikke gætte på længden.
+   Verificeret programmatisk: hverken ”vælg altid korteste”
+   eller ”vælg altid længste” rammer over 20 % — dårligere
+   end at gætte. Gjaldt både målt på tegn og på ord.
    ========================================================= */
 const QUESTIONS = [
   // ---------- AFSNIT 1 — Sådan tænker en AI ----------
   {
     modul: "Sådan tænker en AI",
-    q: "Hvordan laver en AI egentlig sit svar?",
-    correct: "Den vælger ét token ad gangen, indtil hele svaret står helt færdigt",
+    q: "Hvordan laver en AI sit svar?",
+    correct: "Den vælger ét token ad gangen",
     wrong: [
-      "Den slår spørgsmålet op i en stor og altid opdateret database online",
-      "Den henter et færdigt svar, som et menneske har skrevet på forhånd",
-      "Den planlægger hele svaret først og skriver det derefter ud i ét stykke"
+      "Den slår spørgsmålet op i en stor database online",
+      "Den henter et færdigt svar, som et menneske har skrevet",
+      "Den planlægger hele svaret, før den skriver"
     ],
-    explain: "En AI <b>slår ikke noget op</b> — den vælger det næste <b>token</b> igen og igen. Da den skrev det første token, fandtes slutningen ikke endnu."
+    explain: "En AI <b>slår ikke op</b>. Den vælger næste <b>token</b> igen og igen — og kender ikke selv slutningen undervejs."
   },
   {
     modul: "Sådan tænker en AI",
-    q: "Hvad er et \"token\", som du lærte i Modul 1?",
-    correct: "Den tekststump AI deler op i — et ord, en orddel, et tal, et tegn",
+    q: "Hvad er et token?",
+    correct: "En bid tekst: et ord, en orddel, et tal eller et tegn",
     wrong: [
-      "En mønt eller et point, du betaler med for hvert spørgsmål",
-      "Et kodeord, der låser de avancerede funktioner op for dig",
-      "Den samlede besked, du sender, talt som ét stort og udeleligt hele"
+      "En mønt, du betaler med per spørgsmål",
+      "Et kodeord, der låser funktioner op",
+      "Hele din besked, talt som ét"
     ],
-    explain: "AI'en ser tekst som <b>tokens</b> — hele ord, orddele, tal, tegn og enkelte bogstaver. Opdelingen følger ikke grammatik, kun mønstre i tekst."
+    explain: "AI'en ser tekst som <b>tokens</b> — hele ord, orddele, tal og tegn. Opdelingen følger mønstre, ikke grammatik."
   },
-  {
-    modul: "Sådan tænker en AI",
-    q: "Hvorfor kan en AI ikke vide, hvem der vandt kampen i går?",
-    correct: "Den er trænet på ældre tekst og er slet ikke koblet live på nettet",
-    wrong: [
-      "Den svarer nødigt på sport, fordi emnet er for følsomt for den",
-      "Den venter, til mindst tre andre har stillet samme spørgsmål",
-      "Den kender godt svaret, men skjuler det for at beskytte dit privatliv"
-    ],
-    explain: "AI'ens viden stopper på et tidspunkt, og den er <b>ikke live på nettet</b>. Helt nye begivenheder kender den ikke — medmindre værktøjet selv kan søge."
-  },
-
   // ---------- AFSNIT 2 — Opsætning af din AI ----------
   {
     modul: "Opsætning af din AI",
-    q: "Hvad gør det, at du sætter en \"personlig stil\" op i Claude?",
-    correct: "Den tilpasser både tone og format til dig på tværs af alle samtaler",
+    q: "Hvad bruger du et projekt til?",
+    correct: "At samle alle samtaler og filer om ét emne",
     wrong: [
-      "Den ændrer farverne og skrifttypen på hele hjemmesidens udseende",
-      "Den giver dig adgang til en helt anden og hemmelig udgave af modellen",
-      "Den gemmer dine gamle samtaler, så du kan finde dem frem igen"
+      "At dele dine samtaler med alle brugere",
+      "At låse en samtale, så den ikke kan ændres",
+      "At lade AI'en arbejde videre, mens du er logget ud"
     ],
-    explain: "En <b>personlig stil</b> får AI'en til at svare i din tone og dit format hver gang — så du slipper for at gentage det i hvert prompt."
+    explain: "Et <b>projekt</b> er en mappe til ét emne. AI'en kender indholdet i hver ny samtale derinde."
   },
   {
     modul: "Opsætning af din AI",
-    q: "Hvorfor er det værd at bruge to minutter på opsætningen først?",
-    correct: "Det gør AI'en til din helt egen — ikke bare en generisk hjælper",
+    q: "Hvad kan du slå fra i indstillingerne?",
+    correct: "At dine samtaler bruges til at træne modellen",
     wrong: [
-      "Det er et krav, før firmaet vil lade dig sende en besked",
-      "Det gør alle dine fremtidige svar meget hurtigere at få frem",
-      "Det fjerner helt risikoen for, at AI'en kan komme til at tage fejl"
+      "At AI'en svarer dig på dansk",
+      "At andre brugere kan se dit navn i chatten",
+      "At dine gamle samtaler bliver gemt på din profil"
     ],
-    explain: "<b>To minutters opsætning</b> tilpasser AI'en til dig — den kender din tone og dine behov, i stedet for at svare som til en tilfældig fremmed."
+    explain: "Du bestemmer selv, om dine samtaler bruges til <b>træning</b>. Det slår du fra i indstillingerne på et halvt minut."
   },
-  {
-    modul: "Opsætning af din AI",
-    q: "Hvad kan du bruge \"projekter\" til i din AI?",
-    correct: "Samle alt om én opgave ét sted, så AI'en husker hele konteksten",
-    wrong: [
-      "Dele dine samtaler, så alle andre brugere også kan læse dem",
-      "Få AI'en til at arbejde videre helt af sig selv, mens du er logget ud",
-      "Låse en samtale, så hverken du eller andre kan ændre i den bagefter"
-    ],
-    explain: "<b>Projekter</b> samler filer og samtaler om samme opgave, så AI'en har konteksten lige ved hånden — i stedet for at du forklarer forfra hver gang."
-  },
-
   // ---------- AFSNIT 3 — Prompt som en prof ----------
   {
     modul: "Prompt som en prof",
-    q: "Hvilke fire dele bygger et stærkt prompt, som du lærte i Modul 3?",
-    correct: "En rolle, en kontekst, en klar opgave og et tydeligt format",
+    q: "Hvad består et stærkt prompt af?",
+    correct: "Rolle, kontekst, opgave og format",
     wrong: [
-      "Hilsen, undskyldning, spørgsmål og en venlig afsked til allersidst",
-      "Emne, længde, sprog og det helt præcise klokkeslæt, du skriver på",
-      "Navn, alder, by og en beskrivelse af dit nuværende humør"
+      "Emne, længde og sprog",
+      "Navn, alder, by og dit humør lige nu",
+      "Hilsen, spørgsmål og en venlig afsked"
     ],
-    explain: "Et skarpt prompt har fire dele: <b>rolle</b> (hvem AI'en er), <b>kontekst</b> (din situation), <b>opgave</b> (hvad du vil have) og <b>format</b> (hvordan svaret skal se ud)."
-  },
-  {
-    modul: "Prompt som en prof",
-    q: "AI'ens første svar rammer ikke helt. Hvad gør en prof?",
-    correct: "Retter prompten og beder om en justering — ikke starter forfra",
-    wrong: [
-      "Opgiver det og skriver i stedet svaret i hånden uden hjælp",
-      "Stiller præcis det samme spørgsmål igen og håber på et bedre svar",
-      "Skifter med det samme til et helt andet AI-program i stedet for"
-    ],
-    explain: "Gode svar kommer ofte i flere runder. Du <b>itererer</b>: \"gør det kortere\", \"mere formelt\", \"med eksempler\" — i stedet for at begynde forfra."
+    explain: "<b>Rolle</b> (hvem AI'en er), <b>kontekst</b> (din situation), <b>opgave</b> (hvad du vil have) og <b>format</b> (hvordan svaret ser ud)."
   },
   {
     modul: "Prompt som en prof",
     q: "Hvilket prompt giver det bedste svar?",
-    correct: "Skriv en kort, formel mail til min chef om en fridag på fredag",
+    correct: "Skriv en kort, formel mail til min chef om fri på fredag",
     wrong: [
-      "Lav lige sådan en mail, jeg kan sende til en på arbejdet",
-      "Hjælp mig med noget tekst til en besked jeg skal have skrevet snart",
-      "Skriv et eller andet pænt jeg kan sende afsted til en vigtig person"
+      "Lav lige sådan en mail, jeg kan sende til en på arbejdet i morgen",
+      "Hjælp mig med noget tekst, jeg skal have skrevet snart",
+      "Skriv noget pænt, jeg kan sende til en vigtig person i morgen"
     ],
-    explain: "Det bedste prompt er <b>specifikt</b>: det siger format (kort, formel mail), modtager (chefen) og opgave (bede om fri på fredag). Vage prompts giver vage svar."
+    explain: "Det bedste prompt er <b>specifikt</b>: format, modtager og opgave står der. Vage prompts giver vage svar."
   },
-
-  // ---------- AFSNIT 4 — Hallucination & kritik ----------
+  // ---------- AFSNIT 4 — Når AI finder på ----------
   {
-    modul: "Hallucination & kritik",
-    q: "Hvad betyder det, at en AI kan \"hallucinere\"?",
-    correct: "Den kan finde på fakta, der lyder rigtige, men i praksis er forkerte",
+    modul: "Når AI finder på",
+    q: "Hvad betyder det, at en AI hallucinerer?",
+    correct: "Den finder på fakta, der lyder rigtige",
     wrong: [
-      "Den fryser fuldstændig og holder op med at svare på din besked",
-      "Den skifter pludselig over til at skrive på et fremmed og ukendt sprog",
-      "Den gentager dit eget spørgsmål ordret i stedet for at give et svar"
+      "Den fryser og holder op med at svare",
+      "Den skifter til et fremmed sprog",
+      "Den gentager dit spørgsmål i stedet for at svare"
     ],
-    explain: "At <b>hallucinere</b> betyder, at AI'en kan opdigte fakta, der lyder helt rigtige — især tal, navne, titler og datoer. Den ved ikke selv, at den tager fejl."
-  },
-  {
-    modul: "Hallucination & kritik",
-    q: "AI'en lyder lige sikker, uanset om den har ret eller ej. Hvad betyder det?",
-    correct: "Tonen er ikke i sig selv et tegn på sandhed — tjek selv det vigtige",
-    wrong: [
-      "At den altid har ret, når den lyder rolig og overbevisende",
-      "At den altid er i tvivl, når svaret rummer mange detaljer",
-      "At den advarer dig, før den sender et svar, den er usikker på"
-    ],
-    explain: "AI'en bruger <b>samme sikre tone</b>, om den så rammer rigtigt eller finder på. Du kan ikke høre forskel — derfor tjekker du selv det, der betyder noget."
+    explain: "At <b>hallucinere</b> er at opdigte fakta, der lyder rigtige — især tal, navne og datoer. Den ved det ikke selv."
   },
   {
-    modul: "Hallucination & kritik",
-    q: "Hvad er den bedste vane til at fange en hallucination?",
-    correct: "Spørg \"er du sikker?\" og tjek tal, navne og datoer",
+    modul: "Når AI finder på",
+    q: "Hvad er den bedste vane mod hallucination?",
+    correct: "Spørg hvor den ved det fra, og tjek tal og datoer",
     wrong: [
-      "Stol fuldt på svaret, så længe det er skrevet i flydende sprog",
-      "Skriv spørgsmålet med store bogstaver, så AI'en svarer mere præcist",
-      "Vent en dag og stil så det helt samme spørgsmål en ekstra gang til"
+      "Stol på svaret, hvis sproget er flydende",
+      "Vent en dag og stil det samme spørgsmål igen",
+      "Skriv spørgsmålet med store bogstaver, så du får et mere præcist svar"
     ],
-    explain: "Pres AI'en let: <b>\"er du sikker — hvor ved du det fra?\"</b> og slå konkrete tal, navne og datoer efter. Det fanger de fleste fejl."
+    explain: "Pres AI’en let: <b>”hvor ved du det fra?”</b> — og slå tal, navne og datoer efter."
   },
-
-  // ---------- AFSNIT 5 — Tryg & klog brug ----------
+  // ---------- AFSNIT 5 — Del eller behold ----------
   {
-    modul: "Tryg & klog brug",
-    q: "Hvilke oplysninger skal du ALDRIG dele med en AI?",
-    correct: "Dit CPR-nummer, dine adgangskoder, dine kreditkort og dit MitID",
+    modul: "Del eller behold",
+    q: "Hvad deler du aldrig med en AI?",
+    correct: "Dit CPR-nummer, dine adgangskoder og dit MitID",
     wrong: [
-      "En idé til en gave, du overvejer at give en god ven til jul",
-      "En tekst, du selv har skrevet og gerne vil have luget fejlene ud af",
-      "Et helt almindeligt spørgsmål om, hvordan en bestemt ret bedst laves"
+      "En idé til en gave til en god ven",
+      "En tekst, du vil have rettet",
+      "En opskrift på en ret, du vil lave til aftensmad"
     ],
-    explain: "Del <b>aldrig CPR, adgangskoder, kreditkort eller MitID</b>. Tekst, idéer og generelle spørgsmål kan du derimod trygt dele — som med en fremmed på en café."
-  },
-  {
-    modul: "Tryg & klog brug",
-    q: "Hvornår bør et menneske ALTID tjekke AI'ens svar efter?",
-    correct: "Ved vigtige spørgsmål om dit helbred, din økonomi og jura",
-    wrong: [
-      "Når du beder den foreslå en helt almindelig ret til aftensmaden",
-      "Når du vil have den til at omskrive en kort og venlig besked lidt pænere",
-      "Når du vil have den til at omskrive en kort og venlig besked pænere"
-    ],
-    explain: "Til <b>helbred, økonomi og jura</b> skal en fagperson altid afgøre. Brug AI'en til at forberede dig — men lad ikke den have det sidste ord."
+    explain: "Del <b>aldrig CPR, adgangskoder eller MitID</b>. Tekst, idéer og almindelige spørgsmål er derimod trygge."
   },
   {
-    modul: "Tryg & klog brug",
-    q: "Hvad er en god grundregel, før du sender noget til en AI?",
-    correct: "Skriv ikke noget til den, du ikke ville sige højt på en café",
+    modul: "Del eller behold",
+    q: "Hvornår skal du altid tjekke AI'ens svar efter?",
+    correct: "Ved sundhed, jura og penge",
     wrong: [
-      "Skriv altid dit fulde navn og din adresse for et mere præcist svar",
-      "Vent til sent om aftenen, hvor færrest bruger tjenesten",
-      "Brug kun korte beskeder, for ellers gemmer AI'en alt, hvad du skriver"
+      "Når du beder om en idé til aftensmaden",
+      "Når du vil have en besked skrevet lidt pænere",
+      "Når du beder om hjælp til en indkøbsliste"
     ],
-    explain: "Behandl AI'en som en <b>café</b>: skriv ikke noget, du ikke ville sige højt blandt fremmede. Så er du på den sikre side."
+    explain: "Ved <b>sundhed, jura og penge</b> er AI'en et udkast — aldrig facit. Der skal et menneske ind over."
   }
 ];
 
@@ -799,6 +760,20 @@ function showScene(id){
 
 /* ---------- Quiz ---------- */
 function startQuiz(){
+  // Den aktive scene (intro eller resultat) løfter sig væk, før quizzen flyver ind.
+  const current = document.querySelector('.scene.active');
+  if(current && !reducedMotion()){
+    current.classList.add('fly-out');
+    setTimeout(() => {
+      current.classList.remove('fly-out');
+      beginQuiz(true);
+    }, 320);
+    return;
+  }
+  beginQuiz(false);
+}
+
+function beginQuiz(animate){
   buildRuntime();
   currentQ = 0;
   score = 0;
@@ -807,14 +782,23 @@ function startQuiz(){
   document.getElementById('qBody').style.display = 'block';
   showScene('scene-quiz');
   renderQuestion();
+  if(animate){
+    const q = document.getElementById('scene-quiz');
+    // Klassen bliver siddende med vilje. Fjerner man den bagefter, skifter
+    // animation-name tilbage til sceneIn, som så afspiller forfra — det gav
+    // et synligt blink et halvt sekund efter overgangen.
+    q.classList.remove('fly-in');
+    void q.offsetWidth;          // tvinger genstart af animationen
+    q.classList.add('fly-in');
+  }
 }
 
 function renderQuestion(){
   const item = runtime[currentQ];
 
-  // Modulbaseret fremgang: 5 moduler à 3 spørgsmål
-  const moduleNum = Math.floor(currentQ / 3) + 1;
-  document.getElementById('progressLabel').textContent = `Modul ${moduleNum} af 5`;
+  // Afsnitsbaseret fremgang: 5 afsnit à 2 spørgsmål
+  const moduleNum = Math.floor(currentQ / 2) + 1;
+  document.getElementById('progressLabel').textContent = `Afsnit ${moduleNum} af 5`;
   document.getElementById('progressFill').style.width = `${((currentQ)/runtime.length)*100}%`;
   renderProgressDots(moduleNum - 1);
 
@@ -885,12 +869,35 @@ function chooseAnswer(chosen){
 }
 
 /* Rolige opmuntringer efter hvert af de første fire moduler */
+/* Milepæle efter hvert afsnit. Hvert afsnit har 2 spørgsmål, så resultatet
+   er 2, 1 eller 0 rigtige — og beskeden skal matche. Roser man "du har styr
+   på det" til en, der lige fik begge forkert, mister opmuntringen sin værdi. */
 const MILESTONES = [
-  { title:"Du har styr på teorien", text:"Godt begyndt! Du forstår, hvordan en AI tænker — at den gætter sig frem, ord for ord. Fortsæt i dit eget tempo." },
-  { title:"Opsætningen sidder", text:"To afsnit i hus. Du ved nu, hvordan du gør AI'en til din egen og bruger den rigtigt fra start. Flot." },
-  { title:"Du prompter som en prof", text:"Tre ud af fem! Rolle, kontekst, opgave og format — det har du fanget. Du er rigtig godt på vej." },
-  { title:"Du gennemskuer fejlene", text:"Kun ét afsnit tilbage! Du kan spotte en hallucination og presse AI'en. Træk vejret roligt — du er næsten i mål." }
+  {
+    2: { title:"Du har styr på teorien", text:"Begge rigtige. Du forstår, hvordan en AI tænker." },
+    1: { title:"Du er godt på vej", text:"Ét rigtigt ud af to. Grundtanken sidder — resten kommer." },
+    0: { title:"Den del skal du lige have fat i", text:"Ingen rigtige her. Du får hele gennemgangen til sidst — bliv ved." }
+  },
+  {
+    2: { title:"Opsætningen sidder", text:"Begge rigtige. Du ved, hvordan du gør AI'en til din egen." },
+    1: { title:"Halvvejs med opsætningen", text:"Ét rigtigt. Du har fat i noget af det — fortsæt roligt." },
+    0: { title:"Opsætningen skal repeteres", text:"Ingen rigtige her. Kig Modul 2 igennem bagefter." }
+  },
+  {
+    2: { title:"Du prompter som en prof", text:"Begge rigtige. Rolle, kontekst, opgave og format har du fanget." },
+    1: { title:"Prompt-delen er ved at sidde", text:"Ét rigtigt. De fire dele skal lige sidde helt fast." },
+    0: { title:"Prompt-delen skal du øve", text:"Ingen rigtige her. Den bruger du direkte i del 2 — kig Modul 3 igennem." }
+  },
+  {
+    2: { title:"Du gennemskuer fejlene", text:"Begge rigtige. Kun ét afsnit tilbage — du er næsten i mål." },
+    1: { title:"Du er tæt på", text:"Ét rigtigt. Kun ét afsnit tilbage — bliv ved." },
+    0: { title:"Sidste afsnit venter", text:"De to gik forbi dig. Der er stadig ét afsnit tilbage." }
+  }
 ];
+
+/* Ikon der matcher tonen: skjold med flueben ved 2 rigtige, ellers en bog. */
+const MS_ICON_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/><path d="m9 12 2 2 4-4"/></svg>';
+const MS_ICON_PARTIAL = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>';
 
 function renderProgressDots(activeIdx){
   const c = document.getElementById('progressDots');
@@ -915,9 +922,9 @@ function renderMsDots(doneCount){
 function nextQuestion(){
   const isLast = (currentQ === runtime.length - 1);
   if(isLast){ showResults(); return; }
-  // Lige blevet færdig med et modul? (spørgsmål 3, 6, 9, 12 — index 2,5,8,11)
-  if((currentQ + 1) % 3 === 0){
-    showMilestone((currentQ + 1) / 3); // 1..4
+  // Lige blevet færdig med et afsnit? (spørgsmål 2, 4, 6, 8 — index 1,3,5,7)
+  if((currentQ + 1) % 2 === 0){
+    showMilestone((currentQ + 1) / 2); // 1..4
     return;
   }
   currentQ++;
@@ -925,10 +932,17 @@ function nextQuestion(){
 }
 
 function showMilestone(n){
-  const ms = MILESTONES[n - 1];
+  // Hvor mange af afsnittets 2 spørgsmål blev rigtige? (index 2n-2 og 2n-1)
+  const hits = answers.slice((n - 1) * 2, n * 2).filter(a => a.ok).length;
+  const ms = MILESTONES[n - 1][hits];
   document.getElementById('qBody').style.display = 'none';
   const box = document.getElementById('qMilestone');
   box.style.display = 'block';
+  const icon = box.querySelector('.ms-icon');
+  if(icon){
+    icon.classList.toggle('partial', hits < 2);
+    icon.innerHTML = (hits === 2) ? MS_ICON_OK : MS_ICON_PARTIAL;
+  }
   document.getElementById('msTitle').textContent = ms.title;
   document.getElementById('msText').textContent = ms.text;
   document.getElementById('btnContinueLabel').textContent = `Fortsæt til afsnit ${n + 1}`;
@@ -951,13 +965,13 @@ function showResults(){
   showScene('scene-results');
   const total = runtime.length;
   const pct = Math.round((score/total)*100);
-  const passed = score >= 12;
+  const passed = score >= 8;
 
   document.getElementById('scoreNum').textContent = score;
   document.getElementById('progressFill').style.width = '100%';
 
   // Ring
-  const ringColor = passed ? 'var(--green-accent)' : (score >= 9 ? 'var(--brass-deep)' : 'var(--wrong)');
+  const ringColor = passed ? 'var(--green-accent)' : (score >= 6 ? 'var(--brass-deep)' : 'var(--wrong)');
   document.getElementById('scoreRing').style.background =
     `conic-gradient(${ringColor} ${pct*3.6}deg, #e7dfca 0deg)`;
 
@@ -974,7 +988,7 @@ function showResults(){
     sealTxt.textContent = 'Del 1 bestået';
     seal.querySelector('svg').innerHTML = '<path d="m20 6-11 11-5-5"/>';
     title.textContent = 'Flot — du bestod del 1!';
-    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%) — godt over grænsen på 12. Nu åbnes den praktiske del 2, hvor du selv skriver et prompt.`;
+    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%) — grænsen er 8. Nu åbnes den praktiske del 2, hvor du selv skriver et prompt.`;
     btnPart2.style.display = 'inline-flex';
     btnRetry.style.display = 'none';
     btnReview.style.display = 'none';
@@ -983,8 +997,8 @@ function showResults(){
     seal.className = 'result-seal fail';
     sealTxt.textContent = 'Ikke bestået endnu';
     seal.querySelector('svg').innerHTML = '<path d="M12 8v4M12 16h.01"/><circle cx="12" cy="12" r="9"/>';
-    title.textContent = (score >= 9) ? 'Tæt på — prøv igen!' : 'Det kommer — prøv igen';
-    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%). Du skal bruge mindst 12 for at bestå. Læs gennemgangen herunder, og prøv så igen — det er der ingen grænse for.`;
+    title.textContent = (score >= 6) ? 'Tæt på — prøv igen!' : 'Det kommer — prøv igen';
+    desc.textContent = `Du fik ${score} ud af ${total} rigtige (${pct}%). Du skal bruge mindst 8 for at bestå. Læs gennemgangen herunder, og prøv så igen — det er der ingen grænse for.`;
     btnPart2.style.display = 'none';
     btnRetry.style.display = 'inline-flex';
     btnReview.style.display = 'inline-flex';
